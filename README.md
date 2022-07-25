@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 ![](https://img.shields.io/badge/cool-useless-green.svg)
-[![R-CMD-check](https://github.com/coolbutuseless/nativeraster-dev/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nativeraster-dev/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nativeraster-dev/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{nara}` provides tools for working with R’s `nativeRaster` image format
