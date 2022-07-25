@@ -1,0 +1,92 @@
+---
+title: "Convert images to/from nativeRaster"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Convert images to/from nativeRaster}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(grid)
+library(nara)
+```
+
+
+## Create a `nativeRaster`
+
+```{r}
+nr <- nr_new(10, 10, fill = 'white')
+class(nr)
+```
+
+
+
+## Save/Load `nativeRaster` images to/from PNG and JPEG
+
+Both the `{png}` and `{jpeg}` packages allow images to be loaded directly 
+as `nativeRaster` images.
+
+```{r}
+img <- jpeg::readJPEG(system.file("img", "Rlogo.jpg", package="jpeg"), native = TRUE)
+class(img)
+grid.raster(img, interpolate = FALSE)
+```
+
+
+```{r}
+img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+class(img)
+grid.raster(img, interpolate = FALSE)
+```
+
+
+```{r eval=FALSE}
+# {jpeg} and {png} will automatically detect and save 'nativeRaster' images
+jpeg::writeJPEG(img, "test.jpg")
+png::writePNG(img, "test.png")
+```
+
+## Convert a regular R `raster` image to/from `nativeRaster`
+
+```{r}
+ras <- matrix(c('brown', 'darkblue', 'darkblue', 'brown'), 2, 2)
+ras
+grid.raster(ras, interpolate = FALSE)
+```
+
+
+```{r}
+nr <- nara::raster_to_nr(ras)
+nr
+grid.raster(nr, interpolate = FALSE)
+```
+
+## Convert a regular R `array` iamge to/from `nativeRaster`
+
+```{r}
+arr <- array(c(
+  1, 1, 0,
+  0, 0, 0,
+  0, 0, 0, 
+  1, 1, 0
+), dim = c(2, 2, 3))
+
+arr
+grid.raster(arr, interpolate = FALSE)
+```
+
+```{r}
+nr <- nara::array_to_nr(arr)
+nr
+grid.raster(nr, interpolate = FALSE)
+```
+
+

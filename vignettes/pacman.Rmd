@@ -1,0 +1,618 @@
+---
+title: "pacman"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{pacman}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 5
+)
+```
+
+```{r setup}
+library(grid)
+library(nara)
+```
+
+## Pacman
+
+This vignette shows how to build a Pacman game board and animate the 
+sprites within to produce a system which displays the movement in realtime.
+
+
+<video controls>
+  <source src="./image/pacman-attractb.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
+
+
+#### To turn this into an actual game
+
+This vignette is just a demo of the graphical framework for a game using the
+`{nara}` package.  It is not meant to be a playable game.
+
+Many things be needed to make this into an actual game.  Listed in 
+a rough order of importance:
+
+1. User control with `{eventloop}`
+2. pacman/ghost collision detection. A check if they're both simultaneously
+   at the same coordinates would be sufficient for a first draft
+3. Scoring
+4. End condition check
+5. More levels
+6. Actual ghost behaviour (which is more complex than constant-velocity random 
+   movement)
+7. Power dots
+8. Sound
+
+## Game Board
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Helper function: Reverse the characters in a string
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+str_rev <- function(x) {
+  paste(rev(strsplit(x, '')[[1]]), collapse="")
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Helper function: Swap 2 characters in a string.  
+# Dodgy implementation. Good enough for now.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+str_swap <- function(x, s1, s2) {
+  x <- gsub(s1 , 'x', x)
+  x <- gsub(s2 ,  s1, x)
+  x <- gsub('x',  s2, x)
+  x
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the left half of the board
+# Board is symmetrical.
+# Full board = 31 x 28
+#
+# Define "obstruction" pieces.  e.g. "1" represents a rounded quarter-circle
+# corner in the top-left of a square
+#
+#   1 2 3
+#   4 5 6
+#   7 8 9
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+left <- c(
+"12222222222223", 
+"4............6", 
+"4.1223.12223.6", 
+"4.6554.45556.6", 
+"4.7889.78889.7", 
+"4.............", 
+"4.1223.13.1222", 
+"4.7889.46.7883", 
+"4......46....4", 
+"788883.47883.4", 
+"555556.41229.7", 
+"555556.46.....", 
+"555556.46.1222",
+"555556.79.4555",
+"555556....4555", # Middle
+"555556.13.4555", 
+"555556.46.7888", 
+"555556.46.....",
+"555556.46.1222",
+"122229.79.7883",
+"4............6",
+"4.1223.12223.6",
+"4.7834.78889.7",
+"4...46........",
+"783.46.13.1222",
+"129.79.46.7883",
+"4......46....6",
+"4.1222297223.6",
+"4.7888888889.7",
+"4.............",
+"78888888888888"
+)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Mirror the left of the board and update the tile references
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+right <- purrr::map_chr(left, str_rev)
+right <- str_swap(right, '1', '3')
+right <- str_swap(right, '4', '6')
+right <- str_swap(right, '7', '9')
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Rearracnge board into a 31*28 character matrix
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+board <- purrr::map2_chr(left, right, ~paste0(.x, .y, collapse = ""))
+board <- unlist(stringr::str_split(board, ''))
+board <- matrix(board, nrow = 31, ncol = 28, byrow = TRUE)
+```
+
+## Board pathways
+
+```{r echo = FALSE}
+mat <- board
+mat[] <- ifelse(board == '.', 'black', 'white')
+# mat
+
+grid.raster(mat, interpolate = FALSE)
+```
+
+
+## Maze parts
+
+```{r fig.width = 6, fig.height=4}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Load the maze parts
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+im <- png::readPNG("image/game-maze.png")
+dim(im)
+grid.raster(im)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Parse out the pacman sprites
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+s <- vector('list', 9)
+row <- 1; col <- 7; s[[1]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 1; col <- 5; s[[2]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 1; col <- 6; s[[3]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+
+row <- 1; col <- 8; s[[4]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 2; col <-12; s[[5]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 1; col <- 9; s[[6]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+
+row <- 1; col <-11; s[[7]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 1; col <- 5; s[[8]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+row <- 1; col <-10; s[[9]] <- im[28 + row*9 + 0:7, 226 + col*9 + 0:7,]
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Convert from array to nativeraster
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+s <- lapply(s, nara::array_to_nr)
+```
+
+#### 3x3 grid of the maze pieces
+
+```{r echo=FALSE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a montage 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr <- nr_new(3*8 + 3, 3*8 + 3, fill = 'white')
+nr_blit(nr, s[[1]], 1 + 0 * 8 + 0, 1 + 2 * 8 + 2)
+nr_blit(nr, s[[2]], 1 + 1 * 8 + 1, 1 + 2 * 8 + 2)
+nr_blit(nr, s[[3]], 1 + 2 * 8 + 2, 1 + 2 * 8 + 2)
+
+nr_blit(nr, s[[4]], 1 + 0 * 8 + 0, 1 + 1 * 8 + 1)
+nr_blit(nr, s[[5]], 1 + 1 * 8 + 1, 1 + 1 * 8 + 1)
+nr_blit(nr, s[[6]], 1 + 2 * 8 + 2, 1 + 1 * 8 + 1)
+
+nr_blit(nr, s[[7]], 1 + 0 * 8 + 0, 1 + 0 * 8 + 0)
+nr_blit(nr, s[[8]], 1 + 1 * 8 + 1, 1 + 0 * 8 + 0)
+nr_blit(nr, s[[9]], 1 + 2 * 8 + 2, 1 + 0 * 8 + 0)
+
+grid.newpage()
+grid.raster(nr, interpolate = FALSE)
+```
+
+
+## Paste maze pieces to make board
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a blank native raster for the board
+# 31 squares high. 28 squares wide
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+blank_board_nr <- nr_new(width = 28 * 8, height = 31 * 8, fill = 'black')
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Copy the appropriate maze piece into the board
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for (row in 1:31) {
+  for (col in 1:28) {
+    val <- board[31 + 1 - row, col]
+    if (val != '.') {
+      idx <- as.integer(val)
+      nr_blit(blank_board_nr, s[[idx]], (col - 1) * 8 + 1, (row - 1) * 8 + 1)
+    }
+  }
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Draw the blank board
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grid.newpage()
+grid.raster(blank_board_nr, interpolate = FALSE)
+```
+
+## Define the starting dots
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dots <- arrayInd(which(board == '.'), dim(board))
+dots[,1] <- 32 - dots[,1] # flip y
+dots <- as.data.frame(dots)
+names(dots) <- c('y', 'x')
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a 2x2 pixel nativeraster to represented the dot onscreen
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+dot_mat <- matrix(rep('white', 4), 2, 2)
+dot_nr  <- nara::raster_to_nr(dot_mat)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Test drawing the dots over the blank board
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr <- nr_duplicate(blank_board_nr)  
+nr_blit(nr, dot_nr, (dots$x - 0.5) * 8, (dots$y - 0.5) * 8)
+
+grid.newpage()
+grid.raster(nr, interpolate = FALSE)
+```
+
+
+#### Extracting the character sprites
+
+```{r fig.width = 9, fig.height=4}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Load the spritemap for pacman and the ghosts
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+spritemap <- png::readPNG("image/game-sprites.png")
+dim(spritemap)
+grid.raster(spritemap)
+```
+
+
+```{r  fig.width=2, fig.height=2}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Extract a sprite from the spritemap
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extract <- function(row, col) {
+  sprite <- spritemap[1 + (row-1)*16 + 0:15, 457 + (col-1)*16 + 0:15,]
+  
+  alpha <- sprite[,,1] == 1 | sprite[,,2] == 1 | sprite[,,3] == 1 
+  alpha[] <- as.numeric(alpha)
+  
+  new <- c(sprite, alpha)
+  d <- dim(sprite)
+  d[3] <- 4
+  dim(new) <- d
+  
+  nara::array_to_nr(new)
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Extract pacman sprites
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pacman <- list(
+  right = list(extract(1, 1), extract(1, 2), extract(1, 3), extract(1, 2)),
+  left  = list(extract(2, 1), extract(2, 2), extract(1, 3), extract(2, 2)),
+  up    = list(extract(3, 1), extract(3, 2), extract(1, 3), extract(3, 2)),
+  down  = list(extract(4, 1), extract(4, 2), extract(1, 3), extract(4, 2))
+)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Extract ghost sprites
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ghost1 <- list(
+  right = list(extract(5, 1), extract(5, 2)),
+  left  = list(extract(5, 3), extract(5, 4)),
+  up    = list(extract(5, 5), extract(5, 6)),
+  down  = list(extract(5, 7), extract(5, 8))
+)
+
+ghost2 <- list(
+  right = list(extract(6, 1), extract(6, 2)),
+  left  = list(extract(6, 3), extract(6, 4)),
+  up    = list(extract(6, 5), extract(6, 6)),
+  down  = list(extract(6, 7), extract(6, 8))
+)
+
+ghost3 <- list(
+  right = list(extract(7, 1), extract(7, 2)),
+  left  = list(extract(7, 3), extract(7, 4)),
+  up    = list(extract(7, 5), extract(7, 6)),
+  down  = list(extract(7, 7), extract(7, 8))
+)
+
+ghost4 <- list(
+  right = list(extract(8, 1), extract(8, 2)),
+  left  = list(extract(8, 3), extract(8, 4)),
+  up    = list(extract(8, 5), extract(8, 6)),
+  down  = list(extract(8, 7), extract(8, 8))
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Combine all ghosts
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ghost <- list(
+  ghost1, ghost2, ghost3, ghost4
+)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Test plot of a single sprite
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+grid.raster(ghost4$right[[1]], interpolate = FALSE)
+```
+
+## Sprite rendering demo
+
+Generate a realtime animation of pacman and ghosts running across the screen.
+
+```{r eval=FALSE}
+library(grid)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Open a a double-buffered x11() device.
+# - turn antialiasing off (don't need it for pixel rendering)
+# - inibit storaget of a displaylist
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+x11(type = 'dbcairo', antialias = 'none')
+dev.control('inhibit')
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# In-memory rendering buffer
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr <- nr_new(100, 30, fill = 'black')
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Loop and display
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for (i in c((-20):180, (-20):180)) {
+  nr_fill(nr, 'black')
+  nr_blit(nr, pacman$right[[(bitwShiftR(i, 1) %% 4) + 1]], i     , 5)
+  nr_blit(nr, ghost1$right[[(bitwShiftR(i, 1) %% 2) + 1]], i - 20, 5)
+  nr_blit(nr, ghost2$right[[(bitwShiftR(i, 1) %% 2) + 1]], i - 40, 5)
+  nr_blit(nr, ghost3$right[[(bitwShiftR(i, 1) %% 2) + 1]], i - 60, 5)
+  nr_blit(nr, ghost4$right[[(bitwShiftR(i, 1) %% 2) + 1]], i - 80, 5)
+  
+  
+  if (i < 20 + 0 * 11) nr_text(nr, "#", 20 + 0 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 1 * 11) nr_text(nr, "R", 20 + 1 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 2 * 11) nr_text(nr, "s", 20 + 2 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 3 * 11) nr_text(nr, "t", 20 + 3 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 4 * 11) nr_text(nr, "a", 20 + 4 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 5 * 11) nr_text(nr, "t", 20 + 5 * 11, 9, colour = 'white', fontsize = 11)
+  if (i < 20 + 6 * 11) nr_text(nr, "s", 20 + 6 * 11, 9, colour = 'white', fontsize = 11)
+  
+  dev.hold()
+  grid.raster(nr, interpolate = FALSE)
+  dev.flush()
+  Sys.sleep(0.02)
+}
+```
+
+
+<video controls>
+  <source src="./image/pacman2b.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
+
+## Figure out junctions in the game grid
+
+Junctions in the game are where the character could change directions.
+
+Ghosts (and the auto-driving pacman) should only change directions at a junction
+where there is a choice in direcctions.  This will remove arbitrary reversals
+in direction.
+
+```{r}
+# Movement map
+roll_down  <- rbind(board[-1, ], rep(NA, 28)) 
+roll_up    <- rbind(rep(NA, 28), board[-nrow(board), ]) 
+roll_right <- cbind(board[,-1], rep(NA, 31))
+roll_left  <- cbind(rep(NA, 31), board[,-ncol(board)])
+
+move_left  <- board == '.' & roll_left  == '.'
+move_right <- board == '.' & roll_right == '.'
+move_up    <- board == '.' & roll_up    == '.'
+move_down  <- board == '.' & roll_down  == '.'
+
+moves <- list(
+  left  = move_left ,
+  right = move_right,
+  up    = move_up   ,
+  down  = move_down 
+)
+
+junction <- (move_left | move_right) & (move_up | move_down) #&
+              # (move_left + move_right + move_up + move_down > 2)
+
+mode(move_left)  <- 'integer'
+mode(move_right) <- 'integer'
+mode(move_up)    <- 'integer'
+mode(move_down)  <- 'integer'
+mode(junction)   <- 'integer'
+
+# Plot junction locations where ghost/pacman movements may be changed
+coords <- arrayInd(which(junction == 1), dim(junction))
+junction_nr <- nr_duplicate(blank_board_nr)
+nr_rect(junction_nr, coords[,2]*8 - 3, (32 - coords[,1])*8 - 3, 2, 2, 'white')
+grid.raster(junction_nr, interpolate = FALSE)
+```
+
+
+## Movement engine
+
+
+```{r eval=FALSE}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Open a a double-buffered x11() device.
+# - turn antialiasing off (don't need it for pixel rendering)
+# - inibit storage of a displaylist. not needed.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+x11(type = 'dbcairo', antialias = 'none')
+dev.control(displaylist = 'inhibit')
+  
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Given the row and column pick a random direction to move in
+# Ensure that the direction chosen isn't the reverse of the current
+# direction
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+choose_direction <- function(row, col, current) {
+  dirs <- c('left', 'right', 'up', 'down')
+  reverse <- c('right', 'left', 'down', 'up')
+  remove <- which(reverse == current)
+  idxs <- setdiff(1:4, remove)
+  for (i in sample(idxs)) {
+    if (moves[[i]][32 - row, col]) break
+  }
+  dirs[i]
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 'pacman' state information
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+pacdir <- ""
+dx     <- 0
+dy     <- 0
+row    <- 2
+col    <- 2
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Current dots in the scene
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cdots <- dots
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Ghost state information. This will be updated during the game
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gh <- list(
+  list(row =  2, col =  2, dx = 0, dy = 0, dir = "down"),
+  list(row =  2, col = 27, dx = 0, dy = 0, dir = "down"),
+  list(row = 30, col =  2, dx = 0, dy = 0, dir = "down"),
+  list(row = 30, col = 27, dx = 0, dy = 0, dir = "down")
+)
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create working buffer where the board will be rendered
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+board_nr <- nr_duplicate(blank_board_nr)
+  
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for (i in 1:100) {
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Eat the dot where the pacman is
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  matches <- (cdots$y == row & cdots$x == col)
+  cdots <- cdots[!matches,, drop = FALSE]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # If pacman at a junction, then decide new direction
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (junction[32 - row, col]) {
+    dir <- choose_direction(row, col, pacdir)
+    pacdir <- dir
+    if (dir == 'left' ) {dx = -1; dy =  0} else
+    if (dir == 'right') {dx =  1; dy =  0} else
+    if (dir == 'up'   ) {dx =  0; dy =  1} else
+    if (dir == 'down' ) {dx =  0; dy = -1} else 
+    {dx = 0; dy = 0}
+  }
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # For each ghost:
+  #  - if at a junction, choose a random new direction
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  for (i in seq_along(gh)) {
+    if (junction[32 - gh[[i]]$row, gh[[i]]$col]) {
+      dir <- choose_direction(gh[[i]]$row, gh[[i]]$col, gh[[i]]$dir)
+      gh[[i]]$dir <- dir
+      if (dir == 'left' ) {gh[[i]]$dx = -1; gh[[i]]$dy =  0} else
+      if (dir == 'right') {gh[[i]]$dx =  1; gh[[i]]$dy =  0} else
+      if (dir == 'up'   ) {gh[[i]]$dx =  0; gh[[i]]$dy =  1} else
+      if (dir == 'down' ) {gh[[i]]$dx =  0; gh[[i]]$dy = -1} else 
+      {gh[[i]]$dx = 0; gh[[i]]$dy = 0}
+    }
+  }
+  
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Move pacman/ghosts from one location to the next in 8 steps
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  for (step in 1:8) {
+    
+    # Copy blank board into our working buffer
+    nr_copy_into(board_nr, blank_board_nr)
+    
+    # Blit current dots into board
+    nr_blit(board_nr, dot_nr, (cdots$x - 0.5) * 8, (cdots$y - 0.5) * 8)
+    
+    # Blit ghosts into board
+    for (i in seq_along(gh)) {
+      nr_blit(
+        board_nr, 
+        ghost[[i]][[gh[[i]]$dir]][[ bitwShiftR(step, 1L) %% 2 + 1L]], 
+        x = gh[[i]]$col * 8 - 11 + step * gh[[i]]$dx, 
+        y = gh[[i]]$row * 8 - 11 + step * gh[[i]]$dy
+      )
+    }
+    
+    # Blit pacman into board
+    nr_blit(
+      board_nr, 
+      pacman[[pacdir]][[ bitwShiftR(step, 1L) %% 4 + 1L]], 
+      x = col * 8 - 11 + step * dx, 
+      y = row * 8 - 11 + step * dy
+    )
+    
+    # Draw everything to screen
+    dev.hold()
+    grid.raster(board_nr)
+    dev.flush()
+    
+    # regulate drawing speed. Replace with {eventloop} for actual game
+    Sys.sleep(0.01)
+  }
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Advance pacman location to new row/col
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  row <- row + dy
+  col <- col + dx
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Advance ghosts to the next row/col
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  for (i in seq_along(gh)) {
+    gh[[i]]$row <- gh[[i]]$row + gh[[i]]$dy
+    gh[[i]]$col <- gh[[i]]$col + gh[[i]]$dx
+  }
+}
+```
+
+<video controls>
+  <source src="./image/pacman-attractb.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
