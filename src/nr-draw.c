@@ -543,7 +543,7 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *hs = dbl_to_int(h_, &freeh);
 
   int w = ws[0] - 1;
-  int h = ws[0] - 1;
+  int h = hs[0] - 1;
 
 
   int colour = colour_to_integer(colour_);
