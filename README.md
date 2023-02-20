@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 ![](https://img.shields.io/badge/cool-useless-green.svg)
-[![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nativeraster-dev/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `{nara}` provides tools for working with R’s `nativeRaster` image format
@@ -30,12 +30,12 @@ vignette)](https://coolbutuseless.github.io/package/nara/articles/pacman.html):
 
 `{nara}`:
 
--   is an *off-screen* rendering buffer.
--   is fast to render.
--   uses *in-place* operations to avoid memory allocations.
--   is focussed on rendering discrete pixels, so
-    -   no anti-aliasing is done.
-    -   all dimensions are rounded to integer values prior to rendering.
+- is an *off-screen* rendering buffer.
+- is fast to render.
+- uses *in-place* operations to avoid memory allocations.
+- is focussed on rendering discrete pixels, so
+  - no anti-aliasing is done.
+  - all dimensions are rounded to integer values prior to rendering.
 
 ### What is a `nativeRaster` and why is it fast?
 
@@ -77,10 +77,10 @@ remotes::install_github('coolbutuseless/nara')
 
 ## Vignettes
 
--   [Pacman
-    demo](https://coolbutuseless.github.io/package/nara/articles/pacman.html)
--   [Creating, transforming, reading, writing nativeRaster
-    images](https://coolbutuseless.github.io/package/nara/articles/conversion.html)
+- [Pacman
+  demo](https://coolbutuseless.github.io/package/nara/articles/pacman.html)
+- [Creating, transforming, reading, writing nativeRaster
+  images](https://coolbutuseless.github.io/package/nara/articles/conversion.html)
 
 ## Static Rendering: Example
 
@@ -269,6 +269,29 @@ for (frame in 1:1000) {
 
 <img src="man/figures/multiball.gif" />
 
+## Isocubes
+
+Pixel-based isocubes are now backed into this package.
+
+``` r
+set.seed(1988)
+nr <- nr_new(400, 400)
+
+# Create a sparse RGB colour cube
+coords <- expand.grid(x=1:10, y=1:10, z=1:10) %>%
+  sample_frac(0.3) %>%
+  mutate(
+    col = rgb(x, y, z, maxColorValue = 10)
+  )
+
+
+nr_isocube3d(nr, coords = coords, fill = coords$col, ysize = 15)
+
+grid::grid.raster(nr, interpolate = FALSE)
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
 ## Coordinate System
 
 The coordinate system for `nara` nativeRaster objects has its origins at
@@ -280,8 +303,8 @@ the bottom left corner of the image with coordinates `(1,1)`.
 
 A pretty naive benchmark showing that drawing a `nativeRaster`
 
--   is approx **5x faster** than drawing a `raster`
--   allocates **only one quarter of the memory** compared to `raster`
+- is approx **5x faster** than drawing a `raster`
+- allocates **only one quarter of the memory** compared to `raster`
 
 ``` r
 nr  <- nr_new(800, 600)
@@ -316,10 +339,10 @@ bench::mark(
 
 ## Future possibilities
 
--   More efficient polygon drawing with active edge lists.
+- More efficient polygon drawing with active edge lists.
 
 ## Acknowledgements
 
--   R Core for developing and maintaining the language.
--   CRAN maintainers, for patiently shepherding packages onto CRAN and
-    maintaining the repository
+- R Core for developing and maintaining the language.
+- CRAN maintainers, for patiently shepherding packages onto CRAN and
+  maintaining the repository
