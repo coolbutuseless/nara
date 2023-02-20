@@ -8,6 +8,8 @@ extern SEXP duplicate_();
 extern SEXP fill_();
 extern SEXP blit_();
 
+extern SEXP isocube_();
+
 extern SEXP draw_points_();
 extern SEXP draw_line_();
 extern SEXP draw_polyline_();
@@ -30,6 +32,7 @@ static const R_CallMethodDef CEntries[] = {
   {"fill_"     , (DL_FUNC) &fill_     , 3},
 
   {"blit_"     , (DL_FUNC) &blit_     , 4},
+  {"isocube_"  , (DL_FUNC) &isocube_  , 7},
 
   {"draw_points_"  , (DL_FUNC) &draw_points_  , 5},
   {"draw_line_"    , (DL_FUNC) &draw_line_    , 7},
