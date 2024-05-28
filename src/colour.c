@@ -123,7 +123,7 @@ SEXP integer_to_colour_(SEXP ints_) {
 
   for (int i=0; i<length(ints_); i++) {
     char buf[10];
-    sprintf(buf, "#%02x%02x%02x%02x",
+    snprintf(buf, 10, "#%02x%02x%02x%02x",
             ints[i]       & 255,
             ints[i] >> 8  & 255,
             ints[i] >> 16 & 255,
