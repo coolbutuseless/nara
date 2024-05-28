@@ -21,6 +21,9 @@ RUN install2.r --error --skipinstalled -n -1 \
         cluster \
         tidymodels \
         markdown \
+	jpeg \
+	png \
+	checkhelper \
         ottr \
     && rm -rf /tmp/downloaded_packages \
     && R -q -e 'remotes::install_github("https://github.com/dcomtois/summarytools/tree/0-8-9")'
