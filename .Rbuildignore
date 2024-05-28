@@ -6,3 +6,4 @@
 ^data-raw$
 ^LICENSE-spleen.txt$
 ^\.github$
+^.devcontainer$

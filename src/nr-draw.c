@@ -412,7 +412,7 @@ SEXP draw_text_(SEXP nr_, SEXP str_, SEXP colour_, SEXP x_, SEXP y_, SEXP fontsi
   for (int char_idx = 0; char_idx < nchars; char_idx++) {
     int c = str[char_idx] - 32;
     if (c < 0 || c > 94) {
-      error("draw_text() only accepts plain ASCII.  Char out of range: %i = %s", c, str[char_idx]);
+      error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
     }
 
     unsigned char *letter = &font[c * char_h];
