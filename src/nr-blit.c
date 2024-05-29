@@ -19,28 +19,23 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(SEXP nr_, int x, int y, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_) {
+void blit_core_(SEXP nr_, int x, int y, SEXP src_, int x0, int y0, int w, int h, int src_width, int src_height) {
 
-  int *nr     = INTEGER(nr_);
-  int *sprite = INTEGER(src_);
+  int *nr  = INTEGER(nr_);
+  int *src = INTEGER(src_);
 
   SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
   int  nr_height = INTEGER(nr_dim_)[0];
   int  nr_width  = INTEGER(nr_dim_)[1];
   UNPROTECT(1);
 
-  SEXP src_dim_ = PROTECT(GET_DIM(src_));
-  int  src_height = INTEGER(src_dim_)[0];
-  int  src_width  = INTEGER(src_dim_)[1];
-  UNPROTECT(1);
+  for (int yoff = 0; yoff < h; yoff++) {
+    int y1 = src_height - y0 - yoff;
+    for (int xoff = 0; xoff < w; xoff++) {
 
-  for (int row = 0; row < src_height; row++) {
-    for (int col = 0; col < src_width; col++) {
+      int src_col = src[y1 * src_width + x0 + xoff - 1];
 
-      int y1 = src_height - row - 1;
-      int this_col = sprite[y1 * src_width + col];
-
-      draw_point_c(nr, nr_height, nr_width, this_col, col + x, row + y);
+      draw_point_c(nr, nr_height, nr_width, src_col, x + xoff, y + yoff);
     }
   }
 }
@@ -74,13 +69,13 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   int x0 = asInteger(x0_);
   int y0 = asInteger(y0_);
   
-  int srcw, srch;
-  nr_dim(src_, &srcw, &srch);
+  int src_width, src_height;
+  nr_dim(src_, &src_width, &src_height);
   
-  int w = isNull(w_) ? srcw : asInteger(w_);
-  int h = isNull(h_) ? srch : asInteger(h_);
+  int w = isNull(w_) ? src_width : asInteger(w_);
+  int h = isNull(h_) ? src_height : asInteger(h_);
   
-  if (x0 + w - 1 > srcw || y0 + h - 1 > srch) {
+  if (x0 + w - 1 > src_width || y0 + h - 1 > src_height) {
     error("Specified src [x0,y0] + [w,h] is outside bounds");
   }
   
@@ -88,7 +83,7 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   for (int i = 0; i < length(x_); i++) {
-    blit_core_(nr_, x[i], y[i], src_, x0_, y0_, w_, h_);
+    blit_core_(nr_, x[i], y[i], src_, x0, y0, w, h, src_width, src_height);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
