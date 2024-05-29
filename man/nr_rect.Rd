@@ -20,3 +20,9 @@ nr_rect(nr, x, y, w, h, fill = "black", colour = NA)
 \description{
 Draw rectangles on a \code{nativeRaster} image
 }
+\examples{
+nr <- nr_new(400, 400)
+nr_rect(nr, 20, 20, 100, 10)
+
+
+}

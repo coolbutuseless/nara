@@ -179,6 +179,11 @@ nr_text <- function(nr, str, x, y, colour = 'black', fontsize = 8L) {
 #' @param colour outline colour. Default: NA. [vector]
 #' @param fill interior fill colour [vector]
 #'
+#' @examples
+#' nr <- nr_new(400, 400)
+#' nr_rect(nr, 20, 20, 100, 10)
+#' 
+#'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
