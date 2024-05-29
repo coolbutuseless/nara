@@ -23,6 +23,9 @@ array_to_nr(arr)
 \item{arr}{3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 [nrow, ncol, 3]. Each value is in range [0,1].}
 }
+\value{
+raster, array or nativeRaster
+}
 \description{
 Convert nativeRaster images to/from other R objects
 }

@@ -14,6 +14,7 @@
 #'        origin of \code{nativeraster} images is the bottom-left
 #'        where the coordinates are (1, 1).
 #'
+#' @return Native raster
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit <- function(nr, sprite, x, y) {

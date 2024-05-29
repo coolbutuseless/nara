@@ -44,6 +44,7 @@ if (FALSE) {
 #'
 #' @param colour character vector of R colour names (including hex colours)
 #'
+#' @return Integer value representing RGBA colour
 #' @importFrom grDevices col2rgb
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

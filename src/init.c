@@ -3,25 +3,23 @@
 #include <R.h>
 #include <Rinternals.h>
 
-extern SEXP copy_into_();
-extern SEXP duplicate_();
-extern SEXP fill_();
-extern SEXP blit_();
+extern SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_);
+extern SEXP duplicate_(SEXP nr_);
+extern SEXP fill_(SEXP nr_, SEXP colour_, SEXP op_);
+extern SEXP blit_(SEXP nr_, SEXP sprite_, SEXP x_, SEXP y_);
 
-extern SEXP isocube_();
+extern SEXP draw_points_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP op_);
+extern SEXP draw_line_(SEXP nr_, SEXP colour_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP op_);
+extern SEXP draw_polyline_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP op_, SEXP close_);
+extern SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_, SEXP op_);
+extern SEXP draw_text_(SEXP nr_, SEXP str_, SEXP colour_, SEXP x_, SEXP y_, SEXP fontsize_);
+extern SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_, SEXP fill_, SEXP colour_);
+extern SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_);
 
-extern SEXP draw_points_();
-extern SEXP draw_line_();
-extern SEXP draw_polyline_();
-extern SEXP draw_polygon_();
-extern SEXP draw_text_();
+extern SEXP colour_to_integer_(SEXP colour_);
+extern SEXP integer_to_colour_(SEXP ints_);
 
-extern SEXP colour_to_integer_();
-extern SEXP integer_to_colour_();
-
-extern SEXP djb2_hash_();
-extern SEXP draw_rect_();
-extern SEXP draw_circle_();
+extern SEXP djb2_hash_(SEXP str_);
 
 
 
@@ -32,7 +30,6 @@ static const R_CallMethodDef CEntries[] = {
   {"fill_"     , (DL_FUNC) &fill_     , 3},
 
   {"blit_"     , (DL_FUNC) &blit_     , 4},
-  {"isocube_"  , (DL_FUNC) &isocube_  , 7},
 
   {"draw_points_"  , (DL_FUNC) &draw_points_  , 5},
   {"draw_line_"    , (DL_FUNC) &draw_line_    , 7},

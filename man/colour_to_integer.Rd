@@ -9,6 +9,9 @@ colour_to_integer(colour)
 \arguments{
 \item{colour}{character vector of R colour names (including hex colours)}
 }
+\value{
+Integer value representing RGBA colour
+}
 \description{
 Convert a colour as a character string  into an integer value representing RGBA
 }

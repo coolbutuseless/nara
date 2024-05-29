@@ -18,6 +18,9 @@ Note that the
 origin of \code{nativeraster} images is the bottom-left
 where the coordinates are (1, 1).}
 }
+\value{
+Native raster
+}
 \description{
 This is useful as a way of positioning sprites or icons in an image.
 }

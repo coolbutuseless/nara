@@ -8,3 +8,4 @@
 ^\.github$
 ^.devcontainer$
 ^LICENSE.md$
+^man/figures$

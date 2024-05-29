@@ -8,6 +8,7 @@
 #' @param arr 3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 #'        [nrow, ncol, 3]. Each value is in range [0,1].
 #'
+#' @return raster, array or nativeRaster
 #' @import grDevices
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
