@@ -19,15 +19,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(SEXP nr_, int x, int y, SEXP src_, int x0, int y0, int w, int h, int src_width, int src_height) {
+void blit_core_(int *nr, int x, int y, int nr_width, int nr_height, int *src, int x0, int y0, int w, int h, int src_width, int src_height) {
 
-  int *nr  = INTEGER(nr_);
-  int *src = INTEGER(src_);
-
-  SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
-  int  nr_height = INTEGER(nr_dim_)[0];
-  int  nr_width  = INTEGER(nr_dim_)[1];
-  UNPROTECT(1);
 
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - y0 - yoff;
@@ -57,6 +50,12 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Destination deimensions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nr_width, nr_height;
+  nr_dim(nr_, &nr_width, &nr_height);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Ensure the coordinates are integers
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int freex = 0, freey = 0;
@@ -82,8 +81,10 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int *nr  = INTEGER(nr_);
+  int *src = INTEGER(src_);
   for (int i = 0; i < length(x_); i++) {
-    blit_core_(nr_, x[i], y[i], src_, x0, y0, w, h, src_width, src_height);
+    blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
