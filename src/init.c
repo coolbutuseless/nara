@@ -5,13 +5,13 @@
 
 extern SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_);
 extern SEXP duplicate_(SEXP nr_);
-extern SEXP fill_(SEXP nr_, SEXP colour_, SEXP op_);
-extern SEXP blit_(SEXP nr_, SEXP sprite_, SEXP x_, SEXP y_);
+extern SEXP fill_(SEXP nr_, SEXP colour_);
+extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_);
 
-extern SEXP draw_points_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP op_);
-extern SEXP draw_line_(SEXP nr_, SEXP colour_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP op_);
-extern SEXP draw_polyline_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP op_, SEXP close_);
-extern SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_, SEXP op_);
+extern SEXP draw_points_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_);
+extern SEXP draw_line_(SEXP nr_, SEXP colour_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_);
+extern SEXP draw_polyline_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP close_);
+extern SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_);
 extern SEXP draw_text_(SEXP nr_, SEXP str_, SEXP colour_, SEXP x_, SEXP y_, SEXP fontsize_);
 extern SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_, SEXP fill_, SEXP colour_);
 extern SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_);
@@ -27,15 +27,15 @@ static const R_CallMethodDef CEntries[] = {
 
   {"copy_into_", (DL_FUNC) &copy_into_, 2},
   {"duplicate_", (DL_FUNC) &duplicate_, 1},
-  {"fill_"     , (DL_FUNC) &fill_     , 3},
+  {"fill_"     , (DL_FUNC) &fill_     , 2},
 
-  {"blit_"     , (DL_FUNC) &blit_     , 4},
+  {"blit_"     , (DL_FUNC) &blit_     , 8},
 
-  {"draw_points_"  , (DL_FUNC) &draw_points_  , 5},
-  {"draw_line_"    , (DL_FUNC) &draw_line_    , 7},
-  {"draw_polyline_", (DL_FUNC) &draw_polyline_, 6},
+  {"draw_points_"  , (DL_FUNC) &draw_points_  , 4},
+  {"draw_line_"    , (DL_FUNC) &draw_line_    , 6},
+  {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
+  {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},
   {"draw_text_"    , (DL_FUNC) &draw_text_    , 6},
-  {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 6},
   {"draw_rect_"    , (DL_FUNC) &draw_rect_    , 7},
   {"draw_circle_"  , (DL_FUNC) &draw_circle_  , 6},
 

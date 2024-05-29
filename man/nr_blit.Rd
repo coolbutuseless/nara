@@ -4,12 +4,10 @@
 \alias{nr_blit}
 \title{Copy one \code{nativeRaster} image into another at an arbitrary location.}
 \usage{
-nr_blit(nr, sprite, x, y)
+nr_blit(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL)
 }
 \arguments{
-\item{nr}{native raster}
-
-\item{sprite}{native raster to copy into \code{nr}}
+\item{nr}{native raster to copy into}
 
 \item{x, y}{Where in \code{nr} to place the \code{sprite}. These values must
 be vectors of the same length.  If the length is greater than 1, then
@@ -17,6 +15,12 @@ the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
 origin of \code{nativeraster} images is the bottom-left
 where the coordinates are (1, 1).}
+
+\item{src}{native raster to copy from}
+
+\item{x0, y0}{start coordiates within src}
+
+\item{w, h}{size within src}
 }
 \value{
 Native raster

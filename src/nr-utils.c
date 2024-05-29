@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "colour.h"
+#include "nr-utils.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Assert object is a native raster
@@ -45,6 +46,13 @@ int *dbl_to_int(SEXP vec_, int *do_free) {
 }
 
 
-
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Extract dimensions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void nr_dim(SEXP nr_, int *w, int *h) {
+  SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
+  *h = INTEGER(nr_dim_)[0];
+  *w = INTEGER(nr_dim_)[1];
+  UNPROTECT(1);
+}
 

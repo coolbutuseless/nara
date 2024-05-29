@@ -4,15 +4,13 @@
 \alias{nr_fill}
 \title{Fill a \code{nativeRaster} image with the given colour}
 \usage{
-nr_fill(nr, colour, op = 2L)
+nr_fill(nr, colour)
 }
 \arguments{
 \item{nr}{\code{nativeRaster} image}
 
 \item{colour}{Color as a character string. Either a standard R color
-or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}}
-
-\item{op}{Drawing mode. Default: 2.  Possible values: 0, 1, 2
+       or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
 \describe{
   \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
         is useful when you are using an indexed palette like many old school games

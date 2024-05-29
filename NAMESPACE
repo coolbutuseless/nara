@@ -3,6 +3,7 @@
 export(array_to_nr)
 export(colour_to_integer)
 export(integer_to_colour)
+export(is_nativeraster)
 export(nr_blit)
 export(nr_circle)
 export(nr_copy_into)

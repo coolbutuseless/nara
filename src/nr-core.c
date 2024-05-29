@@ -86,10 +86,8 @@ SEXP duplicate_(SEXP nr_) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill nativeraster with value [C interface]
-// The 'op' argument is needed/used by the AnotherWorld game engine,
-//   but not yet implemented mike 2022-07-17
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_c(int *nr, unsigned int height, unsigned int width, int colour, int op) {
+void fill_c(int *nr, unsigned int height, unsigned int width, int colour) {
   int *nrp = nr;
   for (int i = 0; i < height * width; i++) {
     *nrp++ = colour;
@@ -100,9 +98,8 @@ void fill_c(int *nr, unsigned int height, unsigned int width, int colour, int op
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill raster with value - R interface
-// The 'op' argument is needed/used by the AnotherWorld game engine
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP fill_(SEXP nr_, SEXP colour_, SEXP op_) {
+SEXP fill_(SEXP nr_, SEXP colour_) {
 
   assert_nativeraster(nr_);
 
@@ -114,9 +111,8 @@ SEXP fill_(SEXP nr_, SEXP colour_, SEXP op_) {
   UNPROTECT(1);
 
   int colour = colour_to_integer(colour_);
-  int op     = asInteger(op_);
 
-  fill_c(nr, height, width, colour, op);
+  fill_c(nr, height, width, colour);
 
   return nr_;
 }

@@ -4,7 +4,7 @@
 \alias{nr_point}
 \title{Draw points on a \code{nativeRaster} image}
 \usage{
-nr_point(nr, x, y, colour = "black", op = 2L)
+nr_point(nr, x, y, colour = "black")
 }
 \arguments{
 \item{nr}{\code{nativeRaster} image}
@@ -13,18 +13,6 @@ nr_point(nr, x, y, colour = "black", op = 2L)
 
 \item{colour}{Single colour or character vector of colours the same length
 as \code{x} and \code{y}}
-
-\item{op}{Drawing mode. Default: 2.  Possible values: 0, 1, 2
-\describe{
-  \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
-        is useful when you are using an indexed palette like many old school games
-        (like AnotherWorld) and do not want the value interpreted as a colour and
-        alpha blended when drawing etc}
-  \item{\code{1}}{ This operation performs
-       a bitwise logical-or with the current value.  This is needed for
-       rendering in the \code{AnotherWorld} game engine.}
-  \item{\code{2 (default)}}{Regular colour handing for standard pixel handling}
-  }}
 }
 \description{
 Draw points on a \code{nativeRaster} image

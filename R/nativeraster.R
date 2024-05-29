@@ -32,7 +32,6 @@ nr_new <- function(width, height, fill = 'white') {
 #' @param nr \code{nativeRaster} image
 #' @param colour Color as a character string. Either a standard R color
 #'        or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
-#' @param op Drawing mode. Default: 2.  Possible values: 0, 1, 2
 #' \describe{
 #'   \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
 #'         is useful when you are using an indexed palette like many old school games
@@ -45,8 +44,8 @@ nr_new <- function(width, height, fill = 'white') {
 #'   }
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_fill <- function(nr, colour, op = 2L) {
-  .Call(fill_, nr, colour, op)
+nr_fill <- function(nr, colour) {
+  .Call(fill_, nr, colour)
   invisible(nr)
 }
 
@@ -92,8 +91,8 @@ nr_duplicate <- function(nr) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_point <- function(nr, x, y, colour = 'black', op = 2L) {
-  .Call(draw_points_, nr, colour, x, y, op)
+nr_point <- function(nr, x, y, colour = 'black') {
+  .Call(draw_points_, nr, colour, x, y)
   invisible(nr)
 }
 
@@ -108,8 +107,8 @@ nr_point <- function(nr, x, y, colour = 'black', op = 2L) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x0, y0, x1, y1, colour = 'black', op = 2L) {
-  .Call(draw_line_, nr, colour, x0, y0, x1, y1, op)
+nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
+  .Call(draw_line_, nr, colour, x0, y0, x1, y1)
   invisible(nr)
 }
 
@@ -124,8 +123,8 @@ nr_line <- function(nr, x0, y0, x1, y1, colour = 'black', op = 2L) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, colour = 'black', op = 2L, close = FALSE) {
-  .Call(draw_polyline_, nr, colour, x, y, op, close)
+nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
+  .Call(draw_polyline_, nr, colour, x, y, close)
   invisible(nr)
 }
 
@@ -138,8 +137,8 @@ nr_polyline <- function(nr, x, y, colour = 'black', op = 2L, close = FALSE) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, fill = 'black', colour = NA, op = 2L) {
-  .Call(draw_polygon_, nr, x, y, fill, colour, op)
+nr_polygon <- function(nr, x, y, fill = 'black', colour = NA) {
+  .Call(draw_polygon_, nr, x, y, fill, colour)
   invisible(nr)
 }
 
@@ -164,7 +163,7 @@ nr_polygon <- function(nr, x, y, fill = 'black', colour = NA, op = 2L) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text <- function(nr, str, x, y, colour = 'black', fontsize = 8) {
+nr_text <- function(nr, str, x, y, colour = 'black', fontsize = 8L) {
   .Call(draw_text_, nr, str, colour, x, y, fontsize)
   invisible(nr)
 }

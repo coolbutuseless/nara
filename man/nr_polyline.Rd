@@ -4,7 +4,7 @@
 \alias{nr_polyline}
 \title{Draw polyline on a \code{nativeRaster} image}
 \usage{
-nr_polyline(nr, x, y, colour = "black", op = 2L, close = FALSE)
+nr_polyline(nr, x, y, colour = "black", close = FALSE)
 }
 \arguments{
 \item{nr}{\code{nativeRaster} image}
@@ -12,9 +12,7 @@ nr_polyline(nr, x, y, colour = "black", op = 2L, close = FALSE)
 \item{x, y}{Integer vectors of point/vertex coordinates}
 
 \item{colour}{Color as a character string. Either a standard R color
-or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}}
-
-\item{op}{Drawing mode. Default: 2.  Possible values: 0, 1, 2
+       or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
 \describe{
   \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
         is useful when you are using an indexed palette like many old school games

@@ -4,7 +4,7 @@
 \alias{nr_line}
 \title{Draw lines on a \code{nativeRaster} image}
 \usage{
-nr_line(nr, x0, y0, x1, y1, colour = "black", op = 2L)
+nr_line(nr, x0, y0, x1, y1, colour = "black")
 }
 \arguments{
 \item{nr}{\code{nativeRaster} image}
@@ -12,9 +12,7 @@ nr_line(nr, x0, y0, x1, y1, colour = "black", op = 2L)
 \item{x0, y0, x1, y1}{Coordinates of endpoints of line. [vector]}
 
 \item{colour}{Color as a character string. Either a standard R color
-or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}}
-
-\item{op}{Drawing mode. Default: 2.  Possible values: 0, 1, 2
+       or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
 \describe{
   \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
         is useful when you are using an indexed palette like many old school games

@@ -137,14 +137,14 @@ nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, colour = NA, fill = colo
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of dinos
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit(nr, dino[[1]], x = sample(300, 15), y = sample(200, 15))
+nr_blit(nr, x = sample(300, 15), y = sample(200, 15), dino[[1]])
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add an image read from file (with alpha transparency)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-nr_blit(nr, img, 1, 1)
+nr_blit(nr, 1, 1, img)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add a polygon
@@ -178,7 +178,7 @@ BubbleBobble video game - see `dino` data.
 library(grid)
 
 nr <- nr_new(100, 30, 'grey80')
-nr_blit(nr, dino[[1]], 2, 1)
+nr_blit(nr, 2, 1, dino[[1]])
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -215,7 +215,7 @@ nr <- nr_new(100, 30, 'grey80')
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit(nr, dino[[(i %% 16) + 1]], i, 1) # copy dino to nativeRaster
+  nr_blit(nr, i, 1, dino[[(i %% 16) + 1]]) # copy dino to nativeRaster
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
   Sys.sleep(0.02)                          # Stop animation running too fast.
 }
@@ -269,7 +269,7 @@ nr <- nr_new(w, h, 'grey80')
 for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the dinosaurs
   nr_fill(nr, 'grey80') 
-  nr_blit(nr, dino[[(frame) %% 16 + 1]], x, y)
+  nr_blit(nr, x, y, dino[[(frame) %% 16 + 1]])
   
   # Draw the nativeraster to screen
   dev.hold()
@@ -292,28 +292,6 @@ for (frame in 1:1000) {
 #### Live screen recording 
 
 <img src="man/figures/multiball.gif" />
-
-
-## Isocubes
-
-Pixel-based isocubes are now backed into this package.
-
-```{r}
-set.seed(1988)
-nr <- nr_new(400, 400)
-
-# Create a sparse RGB colour cube
-coords <- expand.grid(x=1:10, y=1:10, z=1:10) %>%
-  sample_frac(0.3) %>%
-  mutate(
-    col = rgb(x, y, z, maxColorValue = 10)
-  )
-
-
-nr_isocube3d(nr, coords = coords, fill = coords$col, ysize = 15)
-
-grid::grid.raster(nr, interpolate = FALSE)
-```
 
 
 
