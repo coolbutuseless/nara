@@ -7,13 +7,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 
 
 // rgb(t(col2rgb(colours()[1:10])), maxColorValue = 255)
 
 // Modified djb2 hash
- int djb2_hash(unsigned char *str) {
+ int djb2_hash(uint8_t *str) {
      int hash = 5381;
     int c;
 
@@ -25,12 +26,12 @@
 
 
 SEXP djb2_hash_(SEXP str_) {
-  return ScalarInteger( djb2_hash((unsigned char *)CHAR(asChar(str_))) );
+  return ScalarInteger( djb2_hash((uint8_t *)CHAR(asChar(str_))) );
 }
 
 
 int rcolour_to_int(const char *rcol) {
-  int hash = djb2_hash((unsigned char *)rcol);
+  int hash = djb2_hash((uint8_t *)rcol);
   long res = 0;
 
   switch(hash) {

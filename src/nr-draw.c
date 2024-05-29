@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -16,7 +17,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Draw a single point on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_point_c(int *nr, unsigned int height, unsigned int width, int colour, int x, int y) {
+void draw_point_c(int *nr, uint32_t height, uint32_t width, int colour, int x, int y) {
 
   // Check for transparent colour
   if (is_transparent(colour)) return;
@@ -35,15 +36,15 @@ void draw_point_c(int *nr, unsigned int height, unsigned int width, int colour, 
       } else {
         // Alpha blending
         int val = nr[y * width + x];
-        unsigned char r2 =  val        & 255;
-        unsigned char g2 = (val >>  8) & 255;
-        unsigned char b2 = (val >> 16) & 255;
-        // unsigned char a2 = (val >> 24) & 255;
+        uint8_t r2 =  val        & 255;
+        uint8_t g2 = (val >>  8) & 255;
+        uint8_t b2 = (val >> 16) & 255;
+        // uint8_t a2 = (val >> 24) & 255;
 
-        unsigned char r =  colour        & 255;
-        unsigned char g = (colour >>  8) & 255;
-        unsigned char b = (colour >> 16) & 255;
-        // unsigned char a = (colour >> 24) & 255;
+        uint8_t r =  colour        & 255;
+        uint8_t g = (colour >>  8) & 255;
+        uint8_t b = (colour >> 16) & 255;
+        // uint8_t a = (colour >> 24) & 255;
 
         r = (alpha * r + (255 - alpha) * r2) / 255;
         g = (alpha * g + (255 - alpha) * g2) / 255;
@@ -60,7 +61,7 @@ void draw_point_c(int *nr, unsigned int height, unsigned int width, int colour, 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw multiple points on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_points_c(int *nr, unsigned int height, unsigned int width, int colour, int *x, int *y, int npoints) {
+void draw_points_c(int *nr, uint32_t height, uint32_t width, int colour, int *x, int *y, int npoints) {
   for (int i = 0 ; i < npoints; i++) {
     draw_point_c(nr, height, width, colour, x[i], y[i]);
   }
@@ -81,8 +82,8 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
   int *nr = INTEGER(nr_);
 
   SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  uint32_t height = (uint32_t)INTEGER(dim)[0];
+  uint32_t width  = (uint32_t)INTEGER(dim)[1];
   UNPROTECT(1);
 
   // get an int* from a numeric from R
@@ -119,7 +120,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_line_c(int *nr, unsigned int height, unsigned int width, int colour, int x0, int y0, int x1, int y1) {
+void draw_line_c(int *nr, uint32_t height, uint32_t width, int colour, int x0, int y0, int x1, int y1) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
@@ -151,8 +152,8 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   int *nr = INTEGER(nr_);
 
   SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  uint32_t height = (uint32_t)INTEGER(dim)[0];
+  uint32_t width  = (uint32_t)INTEGER(dim)[1];
   UNPROTECT(1);
 
   int colour = colour_to_integer(colour_);
@@ -201,8 +202,8 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
   int *nr = INTEGER(nr_);
 
   SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  uint32_t height = (uint32_t)INTEGER(dim)[0];
+  uint32_t width  = (uint32_t)INTEGER(dim)[1];
   UNPROTECT(1);
 
   int colour = colour_to_integer(colour_);
@@ -264,7 +265,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = asInteger(fontsize_);
-  unsigned char *font = spleen5x8;
+  uint8_t *font = spleen5x8;
   int char_w = 5;
   int char_h = 8;
 
@@ -291,7 +292,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
       error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
     }
 
-    unsigned char *letter = &font[c * char_h];
+    uint8_t *letter = &font[c * char_h];
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
@@ -550,8 +551,8 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
   int *nr = INTEGER(nr_);
   
   SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  uint32_t height = (uint32_t)INTEGER(dim)[0];
+  uint32_t width  = (uint32_t)INTEGER(dim)[1];
   UNPROTECT(1);
   
   int colour = colour_to_integer(colour_);

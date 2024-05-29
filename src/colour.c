@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -119,7 +120,7 @@ SEXP integer_to_colour_(SEXP ints_) {
 
   SEXP res_ = PROTECT(allocVector(STRSXP, length(ints_)));
 
-  unsigned int *ints = (unsigned int *)INTEGER(ints_);
+  uint32_t *ints = (uint32_t *)INTEGER(ints_);
 
   for (int i=0; i<length(ints_); i++) {
     char buf[10];

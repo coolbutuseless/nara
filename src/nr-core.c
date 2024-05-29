@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -17,7 +18,7 @@
 // Copy the contents of one nativeraster into another. [C interface]
 // Sizes must match
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void copy_into_c(int *nr_dst, int *nr_src, unsigned int height, unsigned int width) {
+void copy_into_c(int *nr_dst, int *nr_src, uint32_t height, uint32_t width) {
   memcpy(nr_dst, nr_src, height * width * sizeof(int));
 }
 
@@ -33,13 +34,13 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
 
   // Check dims of src and dst
   SEXP src_dim_ = PROTECT(GET_DIM(nr_src_));
-  unsigned int  src_height = (unsigned int)INTEGER(src_dim_)[0];
-  unsigned int  src_width  = (unsigned int)INTEGER(src_dim_)[1];
+  uint32_t  src_height = (uint32_t)INTEGER(src_dim_)[0];
+  uint32_t  src_width  = (uint32_t)INTEGER(src_dim_)[1];
   UNPROTECT(1);
 
   SEXP dst_dim_ = PROTECT(GET_DIM(nr_dst_));
-  unsigned int  dst_height = (unsigned int)INTEGER(dst_dim_)[0];
-  unsigned int  dst_width  = (unsigned int)INTEGER(dst_dim_)[1];
+  uint32_t  dst_height = (uint32_t)INTEGER(dst_dim_)[0];
+  uint32_t  dst_width  = (uint32_t)INTEGER(dst_dim_)[1];
   UNPROTECT(1);
 
   if (src_height != dst_height || src_width != dst_width) {
@@ -66,8 +67,8 @@ SEXP duplicate_(SEXP nr_) {
 
   // Get dims of src
   SEXP dim_ = PROTECT(GET_DIM(nr_));
-  unsigned int  height = (unsigned int)INTEGER(dim_)[0];
-  unsigned int  width  = (unsigned int)INTEGER(dim_)[1];
+  uint32_t  height = (uint32_t)INTEGER(dim_)[0];
+  uint32_t  width  = (uint32_t)INTEGER(dim_)[1];
   UNPROTECT(1);
 
   // Create nativeraster and copy contents
@@ -87,7 +88,7 @@ SEXP duplicate_(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill nativeraster with value [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_c(int *nr, unsigned int height, unsigned int width, int colour) {
+void fill_c(int *nr, uint32_t height, uint32_t width, int colour) {
   int *nrp = nr;
   for (int i = 0; i < height * width; i++) {
     *nrp++ = colour;
@@ -106,8 +107,8 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
   int *nr = INTEGER(nr_);
 
   SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  uint32_t height = (uint32_t)INTEGER(dim)[0];
+  uint32_t width  = (uint32_t)INTEGER(dim)[1];
   UNPROTECT(1);
 
   int colour = colour_to_integer(colour_);
