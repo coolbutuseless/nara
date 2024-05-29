@@ -109,7 +109,7 @@ nr <- nr_new(w * 30, h * 30, fill = 'grey98')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 colours <- viridisLite::inferno(w * h)
 coords  <- expand.grid(y = seq(0, h-1) * 30 + 1, x = seq(0, w-1) * 30 + 1)
-nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, colour = NA, fill = colours)
+nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colours)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of dinos
@@ -129,12 +129,12 @@ nr_blit(nr, 1, 1, img)
 thetas <- seq(pi/6, 2*pi, pi/3)
 x <- 50 * cos(thetas) + 240
 y <- 50 * sin(thetas) + 180
-nr_polygon(nr, x = x, y = y, fill = '#556688c0', col = 'blue')
+nr_polygon(nr, x = x, y = y, fill = '#556688c0', colour = 'blue')
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add text to the image
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text(nr, "Hello #RStats", 180, 1, fontsize = 16)
+nr_text(nr, x = 180, y = 1, str = "Hello #RStats", fontsize = 16)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Copy image to the device

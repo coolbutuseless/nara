@@ -70,7 +70,7 @@ void draw_points_c(int *nr, unsigned int height, unsigned int width, int colour,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw points [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_points_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_) {
+SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 
   assert_nativeraster(nr_);
 
@@ -144,7 +144,7 @@ void draw_line_c(int *nr, unsigned int height, unsigned int width, int colour, i
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw lines. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_line_(SEXP nr_, SEXP colour_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_) {
+SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) {
 
   assert_nativeraster(nr_);
 
@@ -194,7 +194,7 @@ SEXP draw_line_(SEXP nr_, SEXP colour_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_) 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw polyline [R interace]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_polyline_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP close_) {
+SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
 
   assert_nativeraster(nr_);
 
@@ -236,124 +236,12 @@ SEXP draw_polyline_(SEXP nr_, SEXP colour_, SEXP x_, SEXP y_, SEXP close_) {
 
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw polygon [C interface]
-// public domain code from
-// https://www.alienryderflex.com/polygon_fill/
-// not as efficient as something with an active edge table but it
-// get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_polygon_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
-
-  int *nodeX = (int *)malloc(npoints * sizeof(int));
-  if (nodeX == NULL) {
-    error("nodeX alloc failure");
-  }
-
-  for (int pixelY = 1; pixelY <= height; pixelY++) {
-
-    //  Build a list of nodes.
-    int nodes = 0;
-    int j = npoints - 1;
-    for (int i=0; i<npoints; i++) {
-      if ( (y[i]< pixelY && y[j]>= pixelY) ||  (y[j] < pixelY && y[i] >= pixelY) ) {
-        nodeX[nodes++]=(int) (x[i] + (pixelY - y[i]) / (double)(y[j] - y[i]) * (x[j] - x[i]));
-      } else if (y[i] == pixelY && y[j] == pixelY) {
-        // If polygons aren't rendering correctly, this is where the issue is
-        // going to be.  There's an off-by-one error in how some horizontal
-        // lines are drawn, and I tried to fix it be adding this bit of code
-        // Mike.  2022-07-16
-        if (nodes == 0 || (nodeX[nodes-1] != x[i] && nodeX[nodes-1] != x[j])) {
-          // Rprintf("%i -  %i\n", x[i], x[j]);
-          nodeX[nodes++] = x[i];
-          nodeX[nodes++] = x[j];
-        }
-      }
-      j=i;
-    }
-
-    // Rprintf("Nodes: %i\n", nodes);
-
-    //  Sort the nodes, via a simple “Bubble” sort.
-    int i = 0;
-    while (i < nodes - 1) {
-      if (nodeX[i] > nodeX[i+1]) {
-        int swap=nodeX[i];
-        nodeX[i]=nodeX[i+1];
-        nodeX[i+1]=swap;
-        if (i) i--;
-      } else {
-        i++;
-      }
-    }
-
-    // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[0], nodeX[1]);
-
-    //  Fill the pixels between node pairs.
-    for (i=0; i<nodes; i+=2) {
-      if   (nodeX[i  ] > width) break;
-      if   (nodeX[i+1] >= 1 ) {
-        if (nodeX[i  ] <  1 ) nodeX[i  ] = 1 ;
-        if (nodeX[i+1]> width+1) nodeX[i+1]=width+1;
-        // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[i], nodeX[i+1]);
-        for (int pixelX = nodeX[i]; pixelX <= nodeX[i+1]; pixelX++) {
-          draw_point_c(nr, height, width,  colour, pixelX, pixelY);
-        }
-      }
-    }
-  }
-  free(nodeX);
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// R Polygon [R interface]
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
-
-  assert_nativeraster(nr_);
-
-  int *nr = INTEGER(nr_);
-
-  SEXP dim = PROTECT(GET_DIM(nr_));
-  unsigned int height = (unsigned int)INTEGER(dim)[0];
-  unsigned int width  = (unsigned int)INTEGER(dim)[1];
-  UNPROTECT(1);
-
-  int colour = colour_to_integer(colour_);
-  int fill   = colour_to_integer(fill_);
-
-  if (length(x_) != length(y_)) {
-    error("Arguments 'x' and 'y' must be same length.");
-  }
-
-  // get an int* from a numeric from R
-  int freex = 0, freey = 0;
-  int *x = dbl_to_int(x_, &freex);
-  int *y = dbl_to_int(y_, &freey);
-
-  // Rprintf("Polygon Fill: %i\n", fill);
-  fill_polygon_c(nr, height, width, fill, x, y, length(x_));
-
-  // outline
-  if (!is_transparent(colour)) {
-    // Rprintf("Polygon Colour: %i\n", colour);
-    draw_polyline_(nr_, colour_, x_, y_, ScalarLogical(1));
-  }
-
-  // free and return
-  if (freex) free(x);
-  if (freey) free(y);
-  return nr_;
-}
-
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Text [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
-SEXP draw_text_(SEXP nr_, SEXP str_, SEXP colour_, SEXP x_, SEXP y_, SEXP fontsize_) {
+SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsize_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -418,6 +306,89 @@ SEXP draw_text_(SEXP nr_, SEXP str_, SEXP colour_, SEXP x_, SEXP y_, SEXP fontsi
   return nr_;
 }
 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw Rect. Vectorised [R interface]
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
+                SEXP fill_, SEXP colour_) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Unpack args
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  assert_nativeraster(nr_);
+  int *nr = INTEGER(nr_);
+  
+  SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
+  int  nr_height = INTEGER(nr_dim_)[0];
+  int  nr_width  = INTEGER(nr_dim_)[1];
+  UNPROTECT(1);
+  
+  if (length(x_) != length(y_)) {
+    error("Arguments 'x' and 'y' must be same length.");
+  }
+  int N = length(x_);
+  if (!(length(h_) == N || length(h_) == 1)) {
+    error("'h' must be same length as 'x' or length=1");
+  }
+  if (!(length(w_) == N || length(w_) == 1)) {
+    error("'w' must be same length as 'x' or length=1");
+  }
+  int single_h = length(h_) == 1;
+  int single_w = length(w_) == 1;
+  
+  
+  int freex = 0, freey = 0, freew = 0, freeh = 0;
+  int *xs = dbl_to_int(x_, &freex);
+  int *ys = dbl_to_int(y_, &freey);
+  int *ws = dbl_to_int(w_, &freew);
+  int *hs = dbl_to_int(h_, &freeh);
+  
+  int w = ws[0] - 1;
+  int h = hs[0] - 1;
+  
+  
+  int colour = colour_to_integer(colour_);
+  int fill   = colour_to_integer(fill_);
+  int single_colour = length(colour_) == 1;
+  int single_fill   = length(fill_)   == 1;
+  
+  for (int i = 0; i < length(x_); i++) {
+    
+    int x = xs[i];
+    int y = ys[i];
+    w = single_w ? w : ws[i] - 1;
+    h = single_h ? h : hs[i] - 1;
+    
+    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, i));
+    fill   = single_fill   ? fill   : colour_to_integer(STRING_ELT(fill_  , i));
+    
+    // Draw Filled rect
+    if (!is_transparent(fill)) {
+      for (int row = y; row <= y + h; row++) {
+        for (int col = x; col <= x + w; col++) {
+          draw_point_c(nr, nr_height, nr_width,  fill, col, row);
+        }
+      }
+    }
+    
+    // Draw outline
+    if (!is_transparent(colour)) {
+      draw_line_c(nr, nr_height, nr_width, colour, x  , y  , x+w, y  );
+      draw_line_c(nr, nr_height, nr_width, colour, x+w, y  , x+w, y+h);
+      draw_line_c(nr, nr_height, nr_width, colour, x+w, y+h, x  , y+h);
+      draw_line_c(nr, nr_height, nr_width, colour, x  , y+h, x  , y  );
+    }
+  }
+  
+  
+  if (freex) free(xs);
+  if (freey) free(ys);
+  if (freew) free(ws);
+  if (freeh) free(hs);
+  return nr_;
+}
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -493,89 +464,120 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
 
 
 
+
+
+
+
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw Rect. Vectorised [R interface]
+// Draw polygon [C interface]
+// public domain code from
+// https://www.alienryderflex.com/polygon_fill/
+// not as efficient as something with an active edge table but it
+// get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP fill_, SEXP colour_) {
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Unpack args
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  assert_nativeraster(nr_);
-  int *nr = INTEGER(nr_);
-
-  SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
-  int  nr_height = INTEGER(nr_dim_)[0];
-  int  nr_width  = INTEGER(nr_dim_)[1];
-  UNPROTECT(1);
-
-  if (length(x_) != length(y_)) {
-    error("Arguments 'x' and 'y' must be same length.");
+void fill_polygon_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
+  
+  int *nodeX = (int *)malloc(npoints * sizeof(int));
+  if (nodeX == NULL) {
+    error("nodeX alloc failure");
   }
-  int N = length(x_);
-  if (!(length(h_) == N || length(h_) == 1)) {
-    error("'h' must be same length as 'x' or length=1");
-  }
-  if (!(length(w_) == N || length(w_) == 1)) {
-    error("'w' must be same length as 'x' or length=1");
-  }
-  int single_h = length(h_) == 1;
-  int single_w = length(w_) == 1;
-
-
-  int freex = 0, freey = 0, freew = 0, freeh = 0;
-  int *xs = dbl_to_int(x_, &freex);
-  int *ys = dbl_to_int(y_, &freey);
-  int *ws = dbl_to_int(w_, &freew);
-  int *hs = dbl_to_int(h_, &freeh);
-
-  int w = ws[0] - 1;
-  int h = hs[0] - 1;
-
-
-  int colour = colour_to_integer(colour_);
-  int fill   = colour_to_integer(fill_);
-  int single_colour = length(colour_) == 1;
-  int single_fill   = length(fill_)   == 1;
-
-  for (int i = 0; i < length(x_); i++) {
-
-    int x = xs[i];
-    int y = ys[i];
-    w = single_w ? w : ws[i] - 1;
-    h = single_h ? h : hs[i] - 1;
-
-    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, i));
-    fill   = single_fill   ? fill   : colour_to_integer(STRING_ELT(fill_  , i));
-
-    // Draw Filled rect
-    if (!is_transparent(fill)) {
-      for (int row = y; row <= y + h; row++) {
-        for (int col = x; col <= x + w; col++) {
-          draw_point_c(nr, nr_height, nr_width,  fill, col, row);
+  
+  for (int pixelY = 1; pixelY <= height; pixelY++) {
+    
+    //  Build a list of nodes.
+    int nodes = 0;
+    int j = npoints - 1;
+    for (int i=0; i<npoints; i++) {
+      if ( (y[i]< pixelY && y[j]>= pixelY) ||  (y[j] < pixelY && y[i] >= pixelY) ) {
+        nodeX[nodes++]=(int) (x[i] + (pixelY - y[i]) / (double)(y[j] - y[i]) * (x[j] - x[i]));
+      } else if (y[i] == pixelY && y[j] == pixelY) {
+        // If polygons aren't rendering correctly, this is where the issue is
+        // going to be.  There's an off-by-one error in how some horizontal
+        // lines are drawn, and I tried to fix it be adding this bit of code
+        // Mike.  2022-07-16
+        if (nodes == 0 || (nodeX[nodes-1] != x[i] && nodeX[nodes-1] != x[j])) {
+          // Rprintf("%i -  %i\n", x[i], x[j]);
+          nodeX[nodes++] = x[i];
+          nodeX[nodes++] = x[j];
+        }
+      }
+      j=i;
+    }
+    
+    // Rprintf("Nodes: %i\n", nodes);
+    
+    //  Sort the nodes, via a simple “Bubble” sort.
+    int i = 0;
+    while (i < nodes - 1) {
+      if (nodeX[i] > nodeX[i+1]) {
+        int swap=nodeX[i];
+        nodeX[i]=nodeX[i+1];
+        nodeX[i+1]=swap;
+        if (i) i--;
+      } else {
+        i++;
+      }
+    }
+    
+    // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[0], nodeX[1]);
+    
+    //  Fill the pixels between node pairs.
+    for (i=0; i<nodes; i+=2) {
+      if   (nodeX[i  ] > width) break;
+      if   (nodeX[i+1] >= 1 ) {
+        if (nodeX[i  ] <  1 ) nodeX[i  ] = 1 ;
+        if (nodeX[i+1]> width+1) nodeX[i+1]=width+1;
+        // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[i], nodeX[i+1]);
+        for (int pixelX = nodeX[i]; pixelX <= nodeX[i+1]; pixelX++) {
+          draw_point_c(nr, height, width,  colour, pixelX, pixelY);
         }
       }
     }
-
-    // Draw outline
-    if (!is_transparent(colour)) {
-      draw_line_c(nr, nr_height, nr_width, colour, x  , y  , x+w, y  );
-      draw_line_c(nr, nr_height, nr_width, colour, x+w, y  , x+w, y+h);
-      draw_line_c(nr, nr_height, nr_width, colour, x+w, y+h, x  , y+h);
-      draw_line_c(nr, nr_height, nr_width, colour, x  , y+h, x  , y  );
-    }
   }
-
-
-  if (freex) free(xs);
-  if (freey) free(ys);
-  if (freew) free(ws);
-  if (freeh) free(hs);
-  return nr_;
+  free(nodeX);
 }
 
 
-
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// R Polygon [R interface]
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
+  
+  assert_nativeraster(nr_);
+  
+  int *nr = INTEGER(nr_);
+  
+  SEXP dim = PROTECT(GET_DIM(nr_));
+  unsigned int height = (unsigned int)INTEGER(dim)[0];
+  unsigned int width  = (unsigned int)INTEGER(dim)[1];
+  UNPROTECT(1);
+  
+  int colour = colour_to_integer(colour_);
+  int fill   = colour_to_integer(fill_);
+  
+  if (length(x_) != length(y_)) {
+    error("Arguments 'x' and 'y' must be same length.");
+  }
+  
+  // get an int* from a numeric from R
+  int freex = 0, freey = 0;
+  int *x = dbl_to_int(x_, &freex);
+  int *y = dbl_to_int(y_, &freey);
+  
+  // Rprintf("Polygon Fill: %i\n", fill);
+  fill_polygon_c(nr, height, width, fill, x, y, length(x_));
+  
+  // outline
+  if (!is_transparent(colour)) {
+    // Rprintf("Polygon Colour: %i\n", colour);
+    draw_polyline_(nr_, x_, y_, colour_, ScalarLogical(1));
+  }
+  
+  // free and return
+  if (freex) free(x);
+  if (freey) free(y);
+  return nr_;
+}
 
