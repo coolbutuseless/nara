@@ -1,0 +1,68 @@
+<!--
+	
+	Quick example of a procedurally generated map.	
+	Check IndieSquid.com for updates and additional tiles!
+	
+-->
+
+<html>
+	<head>
+		<title>IndieSquid Tiles - Quick (and dirty) example</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	</head>
+	<body>	
+		
+		<div id="main">
+			
+		</div>
+		
+		<style type="text/css">
+			#main
+			{
+				position: absolute;
+				width: 800px;
+				height: 500px;
+			}
+		</style>
+		
+		<script type="text/javascript">			
+			var offset_y = 300;
+			var offset_x = 0;
+			
+			// Our grid - 30px / 15px
+			var size_x = 30;
+			var size_y = 15;
+			
+			var main_element = $("#main");
+			
+			
+			
+			/* ---------- */			
+			var x=0;
+			var y=0;
+			
+			var z_index = 0;
+						
+			var position_top = 0;
+			var position_left = 0;
+			
+			var tree_number = 0;
+			
+			for(x=0; x<20; x++)
+			{
+				for(y = 0; y<20; y++)
+				{
+					position_top = x*size_y - y*size_y + offset_y;
+					position_left = x*size_x + y*size_x + offset_x; 
+					
+					z_index = 1000 - 2*y;
+					
+					tree_number = Math.floor((Math.random()*18)+1);
+					
+					main_element.append('<img src="../trees'+tree_number+'.png" style="top: '+position_top+'px; left: '+position_left+'px; position: absolute; z-index: '+z_index+';" />');
+				}
+			}
+		</script>
+		
+	</body>
+</html>

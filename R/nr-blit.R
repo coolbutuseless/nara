@@ -25,10 +25,22 @@ nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Blit2
+#' 
+#' @inheritParams nr_blit
+#' @param loc a 4 element numeric vector (or list) with the following values 
+#'        in this exact order: (x0, y0, w, h) corresponding to the 
+#'        separate arguments to \code{nr_blit()}
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_blit2 <- function(nr, x, y, src, loc) {
+  .Call(blit_, nr, x, y, src, loc[[1]], loc[[2]], loc[[3]], loc[[4]])
+  invisible(nr)
+}
 
 
 if (FALSE) {
-
   library(grid)
 
   x11(type = 'dbcairo', width = 7, height = 3)
@@ -54,6 +66,14 @@ if (FALSE) {
     # Sys.sleep(0.06)
   }
   Sys.time() - start
-  
-  
 }
+
+
+
+
+
+
+
+
+
+

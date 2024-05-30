@@ -376,10 +376,10 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
     
     // Draw outline
     if (!is_transparent(colour)) {
-      draw_line_c(nr, nr_height, nr_width, colour, x  , y  , x+w, y  );
-      draw_line_c(nr, nr_height, nr_width, colour, x+w, y  , x+w, y+h);
-      draw_line_c(nr, nr_height, nr_width, colour, x+w, y+h, x  , y+h);
-      draw_line_c(nr, nr_height, nr_width, colour, x  , y+h, x  , y  );
+      draw_line_c(nr, nr_height, nr_width, colour, x    , y  , x+w, y  );
+      draw_line_c(nr, nr_height, nr_width, colour, x+w  , y+1, x+w, y+h);
+      draw_line_c(nr, nr_height, nr_width, colour, x+w-1, y+h, x+1, y+h);
+      draw_line_c(nr, nr_height, nr_width, colour, x    , y+h, x  , y+1);
     }
   }
   

@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9000
+Version: 0.1.1.9001
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
     )
@@ -15,10 +15,11 @@ LazyData: true
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 2.10)
+Imports:
+    png
 Suggests: 
     testthat (>= 3.0.0),
     jpeg,
-    png,
     purrr,
     stringr,
     knitr,

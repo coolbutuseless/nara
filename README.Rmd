@@ -135,9 +135,9 @@ coords  <- expand.grid(y = seq(0, h-1) * 30 + 1, x = seq(0, w-1) * 30 + 1)
 nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colours)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Draw a bunch of dinos
+# Draw a bunch of kings
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit(nr, x = sample(300, 15), y = sample(200, 15), dino[[1]])
+nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), king, king_locs[[1]])
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,20 +169,22 @@ grid.raster(nr, interpolate = FALSE)
 
 ## Static Rendering: Displaying Sprites
 
-Included with `{nara}` are 16 frames of cartoon dinosaur animation from the
-BubbleBobble video game - see `dino` data.
+Included with `{nara}` are 16 frames of an animated king character - see `king` data.
 
-#### Blit the first dino frame onto a native raster canvas.
+These frames are consolidated into a single image called a *spritesheet* and `king_locs` 
+contains the coordiates of 16 sprites within that image.
+
+#### Blit the first `king` frame onto a native raster canvas.
 
 ```{r fig.height = 2}
 library(grid)
 
 nr <- nr_new(100, 30, 'grey80')
-nr_blit(nr, 2, 1, dino[[1]])
+nr_blit2(nr, 2, 1, king, king_locs[[1]])
 grid.raster(nr, interpolate = FALSE)
 ```
 
-#### Dynamic (realtime) Rendering: Walking Dino
+#### Dynamic (realtime) Rendering: Animated King
 
 The reason to use `{nara}` is that operations are fast enough that `nativeRaster`
 can be used as an *in-memory* buffer for a double-bufferred rendering system.
@@ -191,10 +193,10 @@ can be used as an *in-memory* buffer for a double-bufferred rendering system.
 one buffer being shown to the user, and the other existing in memory as a 
 place to render.
 
-In this example, the `dino` sprite is renderd to a `nativeRaster` image.  This
+In this example, the `king` sprite is rendered to a `nativeRaster` image.  This
 *in-memory* buffer is then displayed to the user using `grid.raster()`.  
 
-By altering the position and animation frame every time the dino is shown,
+By altering the position and animation frame every time the kind is shown,
 smooth animation is possible.
 
 This simple code runs at well over 100 frames-per-second.
@@ -215,23 +217,23 @@ nr <- nr_new(100, 30, 'grey80')
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit(nr, i, 1, dino[[(i %% 16) + 1]]) # copy dino to nativeRaster
+  nr_blit2(nr, i, 1, king, king_locs[[((i/2) %% 8) + 1]]) # copy king to nativeRaster
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
-  Sys.sleep(0.02)                          # Stop animation running too fast.
+  Sys.sleep(0.03)                          # Stop animation running too fast.
 }
 ```
 
 #### Live screen recording
 
-<img src="man/figures/dino.gif" />
+<img src="man/figures/king.gif" />
 
 
 
 
-## Dino Multi-Ball
+## Multi-Ball
 
 You can quickly *blit* (i.e. copy) a sprite into multiple locations on the nativeraster with 
-`nr_blit()`.
+`nr_blit()` and `nr_blit2()`
 
 In this example 100 random positions and velocities are first created.  A 
 character sprite is then blitted to each of these 100 locations.
@@ -267,17 +269,17 @@ nr <- nr_new(w, h, 'grey80')
 
 
 for (frame in 1:1000) {
-  # Clear the nativeraster and blit in all the dinosaurs
+  # Clear the nativeraster and blit in all the kings
   nr_fill(nr, 'grey80') 
-  nr_blit(nr, x, y, dino[[(frame) %% 16 + 1]])
+  nr_blit2(nr, x, y, king, king_locs[[(frame) %% 16 + 1]])
   
   # Draw the nativeraster to screen
   dev.hold()
   grid.raster(nr, interpolate = FALSE)
   dev.flush()
 
-  # Update the position and velocity of each dino
-  # Dinos move at constant velocity and bounce off the sides of the image
+  # Update the position and velocity of each king
+  # Kings move at constant velocity and bounce off the sides of the image
   x  <- x + vx
   y  <- y + vy
   vx <- ifelse(x > (w - 25)| x < 1, -vx, vx)
@@ -292,6 +294,46 @@ for (frame in 1:1000) {
 #### Live screen recording 
 
 <img src="man/figures/multiball.gif" />
+
+
+## Isometric tiling
+
+This package includes `isometric_landscape` which is a collection of 36
+isometric tiles.
+
+```{r}
+library(grid)
+set.seed(1)
+
+# Set up staggered x coordinates for even/odd rows
+even <-  1 + (0:5) * 64
+odd  <- 33 + (0:5) * 64
+
+# Sample from just the tree/house tiles.
+# Weight the 'basic' tile to occur much more often
+tile_idxs <- grep("basic|house|tree", names(isometric_landscape))
+probs <- rep(1, length(tile_idxs))
+probs[1] <- 30
+
+# A blank cvanas
+nr <- nr_new(420, 420, 'white')
+
+# generate isometric tiles from the top down
+for (y in seq(340, 0, -32)) {
+  select <- sample(tile_idxs, length(even), T, prob = probs)
+  for (i in seq_along(even)) {
+    nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
+  }
+  
+  select <- sample(tile_idxs, length(odd), T, prob = probs)
+  for (i in seq_along(odd)) {
+    nr_blit(nr,  odd[i], y - 16, isometric_landscape[[select[[i]]]])
+  }
+}
+
+grid.raster(nr, interpolate = FALSE)
+```
+
 
 
 
