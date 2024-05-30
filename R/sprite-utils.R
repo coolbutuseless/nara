@@ -28,7 +28,7 @@ if (FALSE) {
   w <- 100
   h <- 100
   
-  w_sprite <- 27
+  w_sprite <- 30
   h_sprite <- 25
   
   plot.new()
@@ -63,13 +63,13 @@ if (FALSE) {
       # Stamp it
       cat(sprintf("c(%i, %i, %i, %i)\n", x - xoff + 1, y - yoff + 1, w_sprite, h_sprite))
     } else if (loc$x <= -0.4 && loc$y >= -0.05 && loc$y <= 0.05) {
-      xoff <- xoff + 20
+      xoff <- xoff + 30
     } else if (loc$x >= 0.4 && loc$y >= -0.05 && loc$y <= 0.05) {
-      xoff <- xoff - 20
+      xoff <- xoff - 30
     } else if (loc$y <= -0.4 && loc$x >= -0.05 && loc$x <= 0.05) {
-      yoff <- yoff + 20
+      yoff <- yoff + 30
     } else if (loc$y >= 0.4 && loc$x >= -0.05 && loc$x <= 0.05) {
-      yoff <- yoff - 20
+      yoff <- yoff - 30
     } else if (loc$x > 0) {
       if (loc$x > abs(loc$y)) {
         x <- x + 1
@@ -93,21 +93,64 @@ if (FALSE) {
 
 
 if (FALSE) {
-  # nr_rect(nr, 1, 1, 30, 24)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(  7, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c( 40, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c( 74, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(107, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(141, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(174, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(204, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(238, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(270, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(301, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(333, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(365, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(398, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(429, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(461, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
+  top_row <- list(
+    c(  3, 65, 30, 25),
+    c( 32, 65, 30, 25),
+    c( 62, 65, 30, 25),
+    c( 92, 65, 30, 25),
+    c(118, 65, 30, 25),
+    c(145, 65, 30, 25),
+    c(171, 65, 30, 25),
+    c(200, 65, 30, 25),
+    c(229, 65, 30, 25),
+    c(257, 65, 30, 25),
+    c(286, 65, 30, 25),
+    c(314, 65, 30, 25),
+    c(342, 65, 30, 25),
+    c(370, 65, 30, 25),
+    c(398, 65, 30, 25),
+    c(427, 65, 30, 25),
+    c(460, 65, 30, 25),
+    c(493, 65, 30, 25),
+    c(526, 65, 30, 25),
+    c(558, 65, 30, 25),
+    c(588, 65, 30, 25),
+    c(616, 65, 30, 25),
+    c(644, 65, 30, 25),
+    c(675, 65, 30, 25),
+    c(710, 65, 30, 25),
+    c(744, 65, 30, 25),
+    c(779, 65, 30, 25),
+    c(811, 66, 30, 25),
+    c(839, 66, 30, 25),
+    c(867, 66, 30, 25),
+    c(896, 65, 30, 25),
+    c(925, 65, 30, 25)
+  )
   
+  library(grid)
+  
+  x11(type = 'dbcairo', width = 7, height = 3)
+  dev.control('inhibit')
+  
+  
+  nr <- nr_new(100, 30, 'grey80')
+  nr_text(nr, "Hello #RStats", 0, 20, 'black')
+  nr_blit(nr, 2, 1, src = dino[[1]])
+  dev.hold()
+  grid.raster(nr, interpolate = FALSE)
+  dev.flush()
+  
+  start <- Sys.time()
+  for (i in -30:110) {
+    cat('.')
+    nr_fill(nr, 'grey80')
+    # nr_text(nr, "Hello #RStats", 0, 20, 'black')
+    nr_blit2(nr, i, 1, ss, top_row[[(i %% 32) + 1]])
+    dev.hold()
+    grid.raster(nr, interpolate = FALSE)
+    dev.flush()
+    Sys.sleep(0.06)
+  }
+  Sys.time() - start
 }
