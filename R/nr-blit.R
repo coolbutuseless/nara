@@ -98,8 +98,16 @@ if (FALSE) {
   nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(398, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
   nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(429, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
   nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(461, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  
-  
-  
-  
 }
+
+
+
+
+
+
+
+
+
+
+
+
