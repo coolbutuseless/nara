@@ -70,40 +70,6 @@ if (FALSE) {
 
 
 
-if (FALSE) {
-  source <- "working/dino-spritesheet.png"
-  ss <- read_png(source, transparent = list(-1594494))
-  if (FALSE) {
-    grid.newpage(); grid.raster(ss)
-  }
-  
-  nr <- nr_new(100, 100, 'grey90') 
-  nr_rect(nr, 1, 1, 28, 25)
-  nr_blit(nr, 1, 1, ss, 7, 5, 26, 25)
-  grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  
-   # nr_rect(nr, 1, 1, 30, 24)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(  7, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c( 40, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c( 74, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(107, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(141, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(174, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(204, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(238, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(270, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(301, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(333, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(365, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(398, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(429, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  nr <- nr_new(100, 100, 'grey90'); nr_blit2(nr, 1, 1, ss, c(461, 5, 27, 24)); grid.newpage(); grid.raster(nr, interpolate = FALSE)
-}
-
-
-
-
-
 
 
 

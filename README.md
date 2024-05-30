@@ -272,6 +272,46 @@ for (frame in 1:1000) {
 
 <img src="man/figures/multiball.gif" />
 
+## Isometric tiling
+
+This package includes `isometric_landscape` which is a collection of 36
+isometric tiles.
+
+``` r
+library(grid)
+set.seed(1)
+
+# Set up staggered x coordinates for even/odd rows
+even <-  1 + (0:5) * 64
+odd  <- 33 + (0:5) * 64
+
+# Sample from just the tree/house tiles.
+# Weight the 'basic' tile to occur much more often
+tile_idxs <- grep("basic|house|tree", names(isometric_landscape))
+probs <- rep(1, length(tile_idxs))
+probs[1] <- 30
+
+# A blank cvanas
+nr <- nr_new(420, 420, 'white')
+
+# generate isometric tiles from the top down
+for (y in seq(340, 0, -32)) {
+  select <- sample(tile_idxs, length(even), T, prob = probs)
+  for (i in seq_along(even)) {
+    nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
+  }
+  
+  select <- sample(tile_idxs, length(odd), T, prob = probs)
+  for (i in seq_along(odd)) {
+    nr_blit(nr,  odd[i], y - 16, isometric_landscape[[select[[i]]]])
+  }
+}
+
+grid.raster(nr, interpolate = FALSE)
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
 ## Coordinate System
 
 The coordinate system for `nara` nativeRaster objects has its origins at
