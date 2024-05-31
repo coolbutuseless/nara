@@ -66,3 +66,17 @@ integer_to_colour <- function(ints) {
   .Call(integer_to_colour_, ints)
 }
 
+
+if (FALSE) {
+  
+  colour_to_integer("#FFFFFF00") |> integer_to_colour()
+  colour_to_integer("transparent") |> integer_to_colour()
+  colour_to_integer(NA_character_) |> integer_to_colour()
+  
+  col2rgb(c("transparent", "#FFFFFF00", NA_character_, "white"), alpha = T)
+  colour_to_integer(c("transparent", "#FFFFFF00", NA_character_, "white"))
+  
+}
+
+
+

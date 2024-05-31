@@ -31,11 +31,11 @@ int colour_to_integer(SEXP colour_) {
   const char *colour;
 
   if ((isLogical(colour_) && asInteger(colour_) == NA_LOGICAL)) {
-    return(0);  //  '#00000000'
+    return(16777215);  //  '#ffffff00'
   } else if (isString(colour_) && asChar(colour_) == NA_STRING) {
-    return(0);
+    return(16777215);
   } else if (colour_ == NA_STRING) {
-    return(0);
+    return(16777215);
   } else if (isInteger(colour_)) {
     return(asInteger(colour_));
   } else if (isReal(colour_)) {
@@ -65,7 +65,7 @@ int colour_to_integer(SEXP colour_) {
 
     return (int)reverse_bytes_32(res);
   } else {
-    // Rprintf("Unknown colour: %s\n", colour);
+    // Rprintf(">>>>>>>>>>>>>>> %s\n", colour);
     return rcolour_to_int(colour) ;
   }
 }
@@ -78,9 +78,9 @@ SEXP colour_to_integer_(SEXP colour_) {
 
   if (length(colour_) == 1) {
     if ((isLogical(colour_) && asInteger(colour_) == NA_LOGICAL)) {
-      return(ScalarInteger(0));  //  '#00000000'
+      return(ScalarInteger(16777215));  //  '#ffffff00'
     } else if (isString(colour_) && asChar(colour_) == NA_STRING) {
-      return(ScalarInteger(0));  //  '#00000000'
+      return(ScalarInteger(16777215));  //  '#ffffff00'
     }
   }
 

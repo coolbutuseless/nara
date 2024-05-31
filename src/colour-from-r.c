@@ -2006,10 +2006,12 @@ int rcolour_to_int(const char *rcol) {
   case -632650318:
     res = -13447782;
     break;
-
+  case 1851223447:  // "transparent"
+    res = 16777215; // #ffffff00
+    break;
   default:
-    Rprintf("Unknown colour: %s\n", rcol);
-    res = -1; // white
+    // Rprintf("Unknown colour: %s\n", rcol);
+    res = 16777215; // #ffffff00
   }
   return res;
 }
