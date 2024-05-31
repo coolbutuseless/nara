@@ -110,6 +110,55 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Flip vertically
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP flipv_(SEXP nr_) {
+  
+  assert_nativeraster(nr_);
+  int *nr = INTEGER(nr_);
+  uint32_t height = Rf_nrows(nr_);
+  uint32_t width  = Rf_ncols(nr_);
+  
+  int *tmp = (int *)malloc(width * sizeof(int));
+  if (tmp == NULL) {
+    error("flipv_(): malloc() failure");
+  }
+  
+  for (int row = 0; row < height/2; row++) {
+    memcpy(tmp                            , nr +                row * width, width * sizeof(int));
+    memcpy(nr + row * width               , nr + (height - row - 1) * width, width * sizeof(int));
+    memcpy(nr + (height - row - 1) * width,                             tmp, width * sizeof(int));
+  }
+  
+  
+  return nr_;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Flip horizontally
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP fliph_(SEXP nr_) {
+  
+  assert_nativeraster(nr_);
+  int *nr = INTEGER(nr_);
+  uint32_t height = Rf_nrows(nr_);
+  uint32_t width  = Rf_ncols(nr_);
+  
+  for (int row = 0; row < height; row++) {
+    int *lo = nr +  row * width;
+    int *hi = lo + width - 1;
+    while (lo < hi) {
+      int tmp = *lo;
+      *lo++ = *hi;
+      *hi-- = tmp;
+    }
+  }
+  
+  return nr_;
+}
+
 
 
 

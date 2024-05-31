@@ -81,6 +81,46 @@ nr_duplicate <- function(nr) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Crop a section out of a nativeRaster
+#' 
+#' @param nr nativeRaster
+#' @param x,y,w,h dimensions of cropped section
+#' 
+#' @return new nativeRaster
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_crop <- function(nr, x, y, w, h) {
+  dst <- nr_new(w, h)
+  nr_blit(dst, 1, 1, nr, x, y, w, h)
+  dst
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Flip a raster vertically
+#' 
+#' @param nr nativeRaster
+#' 
+#' @return original nativeRaster flipped in place
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_flipv <- function(nr) {
+  invisible(.Call(flipv_, nr))
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Flip a raster horizontally
+#' 
+#' @param nr nativeRaster
+#' 
+#' @return original nativeRaster flipped in place
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_fliph <- function(nr) {
+  invisible(.Call(fliph_, nr))
+}
 
 
 
@@ -111,6 +151,17 @@ if (FALSE) {
   # nr_fill(nr, 2L)
   nr_polygon(nr, c(20, 80, 80, 20), c(20, 20, 80, 80), fill = 2, colour = 1)
   table(nr)
+  
+  
+  library(grid)
+  zz <- nr_crop(deer, 1, 128, 32, 32)
+  yy <- nr_duplicate(zz)
+  grid.newpage(); grid.raster(zz, interpolate = F)
+  nr_flipv(zz)
+  grid.newpage(); grid.raster(zz, interpolate = F)
+  nr_fliph(zz)
+  grid.newpage(); grid.raster(zz, interpolate = F)
+  
 }
 
 

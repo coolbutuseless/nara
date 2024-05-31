@@ -14,4 +14,8 @@ deer_loc
 List of 15 numeric vectors. Each vector consistes of (x, y, width, height)
 location of a sprite within the spritesheet.
 }
+\details{
+This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  
+See 'inst/LICENSE-deer.txt' for more details.
+}
 \keyword{datasets}
