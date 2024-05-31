@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# nara <img src="man/figures/logo-nara.png" align="right" width="300" />
+# nara <img src="man/figures/logo.gif" align="right" width="300" />
 
 <!-- badges: start -->
 
@@ -9,7 +9,7 @@
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-`{nara}` provides tools for working with R’s `nativeRaster` image format
+`{nara}` provides tools for wordeer with R’s `nativeRaster` image format
 to enable fast double-buffered graphics rendering.
 
 ### Why?
@@ -17,14 +17,6 @@ to enable fast double-buffered graphics rendering.
 `nativeRaster` buffers are fast enough to use for rendering at speed
 \>30 frames-per-second.  
 This makes them useful for games and other interactive applications.
-
-### Example
-
-An example graphics demo is this non-playable version of pacman created
-and running in R in realtime [(see the
-vignette)](https://coolbutuseless.github.io/package/nara/articles/pacman.html):
-
-<img src="man/figures/pacman.png" width="50%" />
 
 # Details
 
@@ -112,9 +104,9 @@ coords  <- expand.grid(y = seq(0, h-1) * 30 + 1, x = seq(0, w-1) * 30 + 1)
 nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colours)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Draw a bunch of kings
+# Draw a bunch of deers
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), king, king_locs[[1]])
+nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[[1]])
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,29 +134,29 @@ nr_text(nr, x = 180, y = 1, str = "Hello #RStats", fontsize = 16)
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 ## Static Rendering: Displaying Sprites
 
-Included with `{nara}` are 16 frames of an animated king character - see
-`king` data.
+Included with `{nara}` are 16 frames of an animated deer character - see
+`deer` data.
 
 These frames are consolidated into a single image called a *spritesheet*
-and `king_locs` contains the coordiates of 16 sprites within that image.
+and `deer_loc` contains the coordiates of 16 sprites within that image.
 
-#### Blit the first `king` frame onto a native raster canvas.
+#### Blit the first `deer` frame onto a native raster canvas.
 
 ``` r
 library(grid)
 
 nr <- nr_new(100, 30, 'grey80')
-nr_blit2(nr, 2, 1, king, king_locs[[1]])
+nr_blit2(nr, 2, 1, deer, deer_loc[[1]])
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
 
-#### Dynamic (realtime) Rendering: Animated King
+#### Dynamic (realtime) Rendering: Animated deer
 
 The reason to use `{nara}` is that operations are fast enough that
 `nativeRaster` can be used as an *in-memory* buffer for a
@@ -174,7 +166,7 @@ double-bufferred rendering system.
 with one buffer being shown to the user, and the other existing in
 memory as a place to render.
 
-In this example, the `king` sprite is rendered to a `nativeRaster`
+In this example, the `deer` sprite is rendered to a `nativeRaster`
 image. This *in-memory* buffer is then displayed to the user using
 `grid.raster()`.
 
@@ -200,7 +192,7 @@ nr <- nr_new(100, 30, 'grey80')
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit2(nr, i, 1, king, king_locs[[((i/2) %% 8) + 1]]) # copy king to nativeRaster
+  nr_blit2(nr, i, 1, deer, deer_loc[[((i/3) %% 5) + 11]]) # copy deer to nativeRaster
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
@@ -208,7 +200,7 @@ for (i in -30:110) {
 
 #### Live screen recording
 
-<img src="man/figures/king.gif" />
+<img src="man/figures/deer.gif" />
 
 ## Multi-Ball
 
@@ -243,21 +235,21 @@ vx <- sample(seq(-5, 5), N, replace = TRUE)
 vy <- sample(seq(-5, 5)[-6], N, replace = TRUE)
 
 # Create an empty nativeraster with a grey background
-nr <- nr_new(w, h, 'grey80')
+nr <- nr_new(w, h, 'white')
 
 
 for (frame in 1:1000) {
-  # Clear the nativeraster and blit in all the kings
-  nr_fill(nr, 'grey80') 
-  nr_blit2(nr, x, y, king, king_locs[[(frame) %% 16 + 1]])
+  # Clear the nativeraster and blit in all the deers
+  nr_fill(nr, 'white') 
+  nr_blit2(nr, x, y, deer, deer_loc[[(frame) %% 5 + 11]])
   
   # Draw the nativeraster to screen
   dev.hold()
   grid.raster(nr, interpolate = FALSE)
   dev.flush()
 
-  # Update the position and velocity of each king
-  # Kings move at constant velocity and bounce off the sides of the image
+  # Update the position and velocity of each deer
+  # deers move at constant velocity and bounce off the sides of the image
   x  <- x + vx
   y  <- y + vy
   vx <- ifelse(x > (w - 25)| x < 1, -vx, vx)
@@ -310,7 +302,7 @@ for (y in seq(350, 0, -30)) {
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 ## Coordinate System
 
@@ -342,7 +334,7 @@ nr_rect(
 )
 
 ras <- nr_to_raster(nr)
-ras[] <- 'yellow'  # looking up named colours at render time is SLOOOOOW
+ras[] <- 'yellow'  # loodeer up named colours at render time is SLOOOOOW
 
 x11(type = 'dbcairo', antialias = 'none')
 dev.control('inhibit')

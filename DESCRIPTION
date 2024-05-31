@@ -25,4 +25,6 @@ Suggests:
     knitr,
     rmarkdown
 Config/testthat/edition: 3
+Copyright: The included 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  See 'inst/LICENSE-deer.txt'
+   for more details.
 VignetteBuilder: knitr

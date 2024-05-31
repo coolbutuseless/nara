@@ -1,19 +1,22 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Sprite sheet for some animated characters
+#' Sprite sheet for an animated deer
 #' 
 #' A sprite sheet for animated characters.  This spritesheet is in the
 #' public domain.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"king"
+"deer"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Locations of 16 sprites within the \code{king} spritesheet
+#' Locations of 15 sprites within the \code{deer} spritesheet
 #' 
-#' List of 16 numeric vectors. Each vector consistes of (x, y, width, height)
+#' List of 15 numeric vectors. Each vector consistes of (x, y, width, height)
 #' location of a sprite within the spritesheet.
+#' 
+#' This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  
+#' See 'inst/LICENSE-deer.txt' for more details.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"king_locs"
+"deer_loc"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' A list of 36 isometric tiles in nativeRaster format
