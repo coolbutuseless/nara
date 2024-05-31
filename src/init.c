@@ -18,6 +18,11 @@ extern SEXP fliph_(SEXP nr_);
 extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Converstion
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extern SEXP matrix_to_nr_(SEXP nr_, SEXP palette_, SEXP dst_);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP draw_points_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP colour_);
@@ -44,6 +49,8 @@ static const R_CallMethodDef CEntries[] = {
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
 
   {"blit_"     , (DL_FUNC) &blit_     , 8},
+  
+  {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 3},
 
   {"draw_points_"  , (DL_FUNC) &draw_points_  , 4},
   {"draw_line_"    , (DL_FUNC) &draw_line_    , 6},
