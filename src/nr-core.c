@@ -33,20 +33,15 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
   assert_nativeraster(nr_dst_);
 
   // Check dims of src and dst
-  SEXP src_dim_ = PROTECT(GET_DIM(nr_src_));
-  uint32_t  src_height = (uint32_t)INTEGER(src_dim_)[0];
-  uint32_t  src_width  = (uint32_t)INTEGER(src_dim_)[1];
-  UNPROTECT(1);
+  uint32_t  src_height = Rf_nrows(nr_src_);
+  uint32_t  src_width  = Rf_ncols(nr_src_);
 
-  SEXP dst_dim_ = PROTECT(GET_DIM(nr_dst_));
-  uint32_t  dst_height = (uint32_t)INTEGER(dst_dim_)[0];
-  uint32_t  dst_width  = (uint32_t)INTEGER(dst_dim_)[1];
-  UNPROTECT(1);
+  uint32_t  dst_height = Rf_nrows(nr_dst_);
+  uint32_t  dst_width  = Rf_ncols(nr_dst_);
 
   if (src_height != dst_height || src_width != dst_width) {
     error("src and dst nativeRaster objects must be the same dimensions");
   }
-
 
   int *nr_src = INTEGER(nr_src_);
   int *nr_dst = INTEGER(nr_dst_);
@@ -66,10 +61,8 @@ SEXP duplicate_(SEXP nr_) {
   assert_nativeraster(nr_);
 
   // Get dims of src
-  SEXP dim_ = PROTECT(GET_DIM(nr_));
-  uint32_t  height = (uint32_t)INTEGER(dim_)[0];
-  uint32_t  width  = (uint32_t)INTEGER(dim_)[1];
-  UNPROTECT(1);
+  uint32_t  height = Rf_nrows(nr_);
+  uint32_t  width  = Rf_ncols(nr_);
 
   // Create nativeraster and copy contents
   SEXP nr_new_ = PROTECT(allocVector(INTSXP, width * height));
@@ -78,7 +71,7 @@ SEXP duplicate_(SEXP nr_) {
   // Assign correct classes
   SET_CLASS(nr_new_, mkString("nativeRaster"));
   SET_ATTR(nr_new_, mkString("channels"), ScalarInteger(4));
-  SET_DIM(nr_new_, dim_);
+  SET_DIM(nr_new_, GET_DIM(nr_));
 
   UNPROTECT(1);
   return nr_new_;
@@ -106,10 +99,8 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
 
   int *nr = INTEGER(nr_);
 
-  SEXP dim = PROTECT(GET_DIM(nr_));
-  uint32_t height = (uint32_t)INTEGER(dim)[0];
-  uint32_t width  = (uint32_t)INTEGER(dim)[1];
-  UNPROTECT(1);
+  uint32_t height = Rf_nrows(nr_);
+  uint32_t width  = Rf_ncols(nr_);
 
   int colour = colour_to_integer(colour_);
 

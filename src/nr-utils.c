@@ -20,40 +20,120 @@ void assert_nativeraster(SEXP nr_) {
   if (!inherits(nr_, "nativeRaster")) {
     error("Object is not a nativeRaster");
   }
+  
+  SEXP nchannels = GET_ATTR(nr_, mkString("channels"));
+  if (!isInteger(nchannels) || length(nchannels) != 1 || asInteger(nchannels) != 4) {
+    error("Object is not a nativeRaster with 4 channels");
+  }
+  
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Convert an R INTEGER or REAL to a C  "int *"
-// Set "do_free = 1" if memory was allocated (so the parent can free() it"
+// 
+// @param vec_ R SEXP
+// @param N Expected length
+// @param do_Free was new memory allocat in this function (the caller should free())
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int *dbl_to_int(SEXP vec_, int *do_free) {
-
-  if (isInteger(vec_)) return INTEGER(vec_);
-
-  if (!isReal(vec_)) {
-    error("Expecting numeric but got %s\n", type2char(TYPEOF(vec_)));
+int *as_int32_vec(SEXP vec_, int N, int *do_free) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Must be REALSXP or INTSXP
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (!isInteger(vec_) && !isReal(vec_)) {
+    error("as_int32_vec(): Expecting numeric but got %s\n", type2char(TYPEOF(vec_)));
   }
-
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Must be length 1 or N
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (length(vec_) != 1 && length(vec_) != N) {
+    error("as_int32_vec(): Input vector must be length 1 or N, not %i", length(vec_));
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Do we have an integer vector of the correct length?
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (isInteger(vec_) && length(vec_) == N) {
+    return INTEGER(vec_);
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // If we got here:
+  //   - need to allocate memory for an integer vector
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   *do_free = 1;
-  double *vdbl = REAL(vec_);
-  int *vint = malloc(length(vec_) * sizeof(int));
-
-  for (int i=0; i<length(vec_); i++) {
-    vint[i] = (int)vdbl[i];
+  int *int_vec = malloc(N * sizeof(int));
+  if (int_vec == NULL) {
+    error("as_int32_vec(): out of memory");
   }
-
-  return vint;
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // If given INTSXP
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (isInteger(vec_)) {
+    // Can only be an INTSXP of length=1
+      int value = asInteger(vec_);
+      for (int i = 0; i < N; i++) {
+        int_vec[i] = value;
+      }
+  } else {
+    // REALSXP
+    double *dbl_vec = REAL(vec_);
+    if (length(vec_) == N) {
+      for (int i = 0; i < N; i++) {
+        int_vec[i] = (int)dbl_vec[i];
+      }
+    } else {
+      // length == 1
+      int value = (int)dbl_vec[0];
+      for (int i = 0; i < N; i++) {
+        int_vec[i] = value;
+      }
+    }
+  }
+  
+  return int_vec;
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Extract dimensions
+// Calculate group N
+//
+// Calculate the maximum length out of a number of SEXP objects
+//
+// @param ... multiple numeric SEXP variables
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_dim(SEXP nr_, int *w, int *h) {
-  SEXP nr_dim_ = PROTECT(GET_DIM(nr_));
-  *h = INTEGER(nr_dim_)[0];
-  *w = INTEGER(nr_dim_)[1];
-  UNPROTECT(1);
+int calc_max_length(int count, ...) {
+  va_list ap;
+  va_start(ap, count);
+  
+  int N = -1;
+  
+  for (int i = 0; i < count; i++) {
+    SEXP x = va_arg(ap, SEXP);
+    int this_N = length(x);
+    N = this_N > N ? this_N : N;
+  }
+  
+  if (N < 0) {
+    error("calc_ma_length(): -1");
+  }
+  
+  return N;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

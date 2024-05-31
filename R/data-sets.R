@@ -27,11 +27,8 @@ if (FALSE) {
   
   library(grid)
   
-  x11(type = 'dbcairo', width = 7, height = 7)
-  dev.control('inhibit')
-  
-  even <-  1 + (0:5) * 64
-  odd  <- 33 + (0:5) * 64
+  even <-  1 + (0:5) * 60
+  odd  <- 31 + (0:5) * 60
   
   tile_idxs <- grep("basic|house|tree", names(isometric_landscape))
   probs <- rep(1, length(tile_idxs))
@@ -40,26 +37,31 @@ if (FALSE) {
   grid.newpage();
   nr <- nr_new(420, 420, 'white')
   
-  start <- Sys.time()
-  for (i in 1:300) {
-    nr_fill(nr, 'white')
-    for (y in seq(340, 0, -32)) {
-      select <- sample(tile_idxs, length(even), T, prob = probs)
-      for (i in seq_along(even)) {
-        nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
-      }
-      
-      select <- sample(tile_idxs, length(odd), T, prob = probs)
-      for (i in seq_along(odd)) {
-        nr_blit(nr,  odd[i], y - 16, isometric_landscape[[select[[i]]]])
-      }
+  nr_fill(nr, 'white')
+  for (y in seq(340, 0, -30)) {
+    select <- sample(tile_idxs, length(even), T, prob = probs)
+    for (i in seq_along(even)) {
+      nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
     }
     
-    dev.hold()
-    grid.raster(nr, interpolate = FALSE)
-    dev.flush()
-    # Sys.sleep(0.01)
+    select <- sample(tile_idxs, length(odd), T, prob = probs)
+    for (i in seq_along(odd)) {
+      nr_blit(nr,  odd[i], y - 15, isometric_landscape[[select[[i]]]])
+    }
   }
-  Sys.time() - start
+  
+  grid.raster(nr, interpolate = FALSE)
+  
+}
+
+
+if (FALSE) {
+  
+  nr <- nr_new(130, 130)
+  nr_blit(nr, 1 + 32, 21 + 16, isometric_landscape$basic1)
+  nr_blit(nr, 1 + 64, 21     , isometric_landscape$basic1)
+  nr_blit(nr, 1 +  2, 21 +  1, isometric_landscape$basic1)
+  nr_blit(nr, 1 + 34, 21 - 15, isometric_landscape$basic1)
+  grid.newpage(); grid.raster(nr, interpolate = FALSE)
   
 }

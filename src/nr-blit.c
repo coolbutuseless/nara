@@ -52,15 +52,16 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Destination deimensions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nr_width, nr_height;
-  nr_dim(nr_, &nr_width, &nr_height);
+  int nr_width  = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Ensure the coordinates are integers
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int freex = 0, freey = 0;
-  int *x = dbl_to_int(x_, &freex);
-  int *y = dbl_to_int(y_, &freey);
+  int N = calc_max_length(2, x_, y_);
+  int *x = as_int32_vec(x_, N, &freex);
+  int *y = as_int32_vec(y_, N, &freey);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check the sprite dimensions
@@ -68,9 +69,9 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   int x0 = asInteger(x0_);
   int y0 = asInteger(y0_);
   
-  int src_width, src_height;
-  nr_dim(src_, &src_width, &src_height);
-  
+  int src_width  = Rf_ncols(src_);
+  int src_height = Rf_nrows(src_);
+
   int w = isNull(w_) ? src_width : asInteger(w_);
   int h = isNull(h_) ? src_height : asInteger(h_);
   

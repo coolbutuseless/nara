@@ -306,8 +306,8 @@ library(grid)
 set.seed(1)
 
 # Set up staggered x coordinates for even/odd rows
-even <-  1 + (0:5) * 64
-odd  <- 33 + (0:5) * 64
+even <-  1 + (0:5) * 60
+odd  <- 31 + (0:5) * 60
 
 # Sample from just the tree/house tiles.
 # Weight the 'basic' tile to occur much more often
@@ -319,7 +319,7 @@ probs[1] <- 30
 nr <- nr_new(420, 420, 'white')
 
 # generate isometric tiles from the top down
-for (y in seq(340, 0, -32)) {
+for (y in seq(350, 0, -30)) {
   select <- sample(tile_idxs, length(even), T, prob = probs)
   for (i in seq_along(even)) {
     nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
@@ -327,7 +327,7 @@ for (y in seq(340, 0, -32)) {
   
   select <- sample(tile_idxs, length(odd), T, prob = probs)
   for (i in seq_along(odd)) {
-    nr_blit(nr,  odd[i], y - 16, isometric_landscape[[select[[i]]]])
+    nr_blit(nr,  odd[i], y - 15, isometric_landscape[[select[[i]]]])
   }
 }
 
@@ -348,16 +348,30 @@ at the bottom left corner of the image with coordinates `(1,1)`.
 
 ## Benchmark `raster` vs `nativeRaster`
 
+**This benchmark is outdated**
+
 A pretty naive benchmark showing that drawing a `nativeRaster` 
 
 * is approx **5x faster** than drawing a `raster`
 * allocates **only one quarter of the memory** compared to `raster`
 
 ```{r eval = FALSE}
-nr  <- nr_new(800, 600)
-ras <- nr_to_raster(nr)
+nr  <- nr_new(400, 300)
 
-x11(type = 'dbcairo')
+N <- 1000
+nr_rect(
+  nr,
+  x = sample(400, N, T), 
+  y = sample(400, N, T), 
+  w = sample(40, N, T), 
+  h = sample(40, N, T), 
+  fill = sample(colours(), N, T)
+)
+
+ras <- nr_to_raster(nr)
+ras[] <- 'yellow'  # looking up named colours at render time is SLOOOOOW
+
+x11(type = 'dbcairo', antialias = 'none')
 dev.control('inhibit')
 
 draw_nr <- function() {
