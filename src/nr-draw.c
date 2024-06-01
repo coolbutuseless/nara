@@ -314,12 +314,6 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *colour = col_to_int_ptr(colour_, N, &freecol);
   int *fill   = col_to_int_ptr(fill_  , N, &freefill);
   
-  // Rprintf(">>>>>> ");
-  // for (int i = 0; i < N; i++) {
-  //   Rprintf("%i ", fill[i]);
-  // }
-  // Rprintf("\n");
-  
   for (int i = 0; i < N; i++) {
     
     int x = xs[i];
@@ -388,19 +382,33 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
     int ym = yms[idx];
     int  r =  rs[idx];
 
+    int *ydone = (int *)calloc(r, sizeof(int));
+    if (ydone == NULL) {
+      error("error allocating 'ydone'");
+    }
+    
     int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
     do {
-
-      for (int i = xm + x; i <= xm - x; i++) {
-        draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym + y);
-        draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym - y);
+      
+      if (!is_transparent(fill[idx]) && !ydone[y]) {
+        for (int i = xm + x; i <= xm - x; i++) {
+          draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym + y);
+          if (y != 0) {
+            draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym - y);
+          }
+          ydone[y] = 1;
+        }
       }
-
-      draw_point_c(nr, nr_height, nr_width, colour[idx], xm-x, ym+y); /*   I. Quadrant */
-      draw_point_c(nr, nr_height, nr_width, colour[idx], xm+x, ym+y); /*  II. Quadrant */
-      draw_point_c(nr, nr_height, nr_width, colour[idx], xm-x, ym-y); /* III. Quadrant */
-      draw_point_c(nr, nr_height, nr_width, colour[idx], xm+x, ym-y); /*  IV. Quadrant */
-
+      
+      if (!is_transparent(colour[idx])) {
+        draw_point_c(nr, nr_height, nr_width, colour[idx], xm-x, ym+y); /*   I. Quadrant */
+        draw_point_c(nr, nr_height, nr_width, colour[idx], xm+x, ym+y); /*  II. Quadrant */
+        if (y != 0) {
+          draw_point_c(nr, nr_height, nr_width, colour[idx], xm-x, ym-y); /* III. Quadrant */
+          draw_point_c(nr, nr_height, nr_width, colour[idx], xm+x, ym-y); /*  IV. Quadrant */
+        }
+      }
+      
       r = err;
       if (r <= y) err += ++y*2+1;           /* e_xy+e_y < 0 */
       if (r > x || err > y) err += ++x*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
