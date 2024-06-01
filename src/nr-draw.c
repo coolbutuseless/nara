@@ -382,7 +382,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
     int ym = yms[idx];
     int  r =  rs[idx];
 
-    int *ydone = (int *)calloc(r, sizeof(int));
+    int *ydone = (int *)calloc(r * 2, sizeof(int));
     if (ydone == NULL) {
       error("error allocating 'ydone'");
     }
@@ -413,6 +413,8 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
       if (r <= y) err += ++y*2+1;           /* e_xy+e_y < 0 */
       if (r > x || err > y) err += ++x*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
     } while (x < 0);
+    
+    free(ydone);
   }
 
 

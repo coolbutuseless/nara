@@ -131,7 +131,14 @@ if (FALSE) {
   
   N <- 20
   nr <- nr_new(400, 400)
-  nr_circle(nr, 200, 200, 100, '#ff000020', colour = '#0000ff20')
+  bench::mark(
+    nr_circle(nr, 200, 200, 100, '#ff000020', colour = '#0000ff20')
+  )
+
+  bench::mark(  
+    nr_blit2(nr, 1, 1, deer, deer_loc[[1]])
+  )
+  
   plot(nr, T)
   
 }
