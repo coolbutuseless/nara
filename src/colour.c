@@ -121,6 +121,67 @@ SEXP col_to_int_(SEXP colour_) {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// This is used from within C as a consistent interface for 
+// accessing colours passed in by the user
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int *col_to_int_ptr(SEXP colour_, int N, int *do_free) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Sanity check
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (length(colour_) != 1 && length(colour_) != N) {
+    error("col_to_int_ptr(): bad length %i/%i", length(colour_), N);
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Fast-path requiring no allocation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (isInteger(colour_) && length(colour_) == N) {
+    *do_free = 0;
+    return INTEGER(colour_);
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Allocate memory for an integer vector.
+  // Set *do_free = 1 to notify the caller that they must free() returned ptr
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  *do_free = 1;
+  int *ptr = (int *)malloc(N * sizeof(int));
+  if (ptr == NULL) {
+    error("col_to_int_ptr() malloc failed");
+  }
+  
+  if (isLogical(colour_) && asLogical(colour_) == NA_LOGICAL) {
+    int val = 16777215; // #ffffff00
+    for (int i = 0; i < N; i++) {
+      ptr[i] = val;
+    }
+  } else if (isInteger(colour_)) {
+    // Must be length = 1 if we got here
+    int val = asInteger(colour_);
+    for (int i = 0; i < N; i++) {
+      ptr[i] = val;
+    }
+  } else if (isString(colour_)) {
+    if (length(colour_) == 1) {
+      int val = single_str_col_to_int(CHAR(STRING_ELT(colour_, 0)));
+      for (int i = 0; i < N; i++) {
+        ptr[i] = val;
+      }
+    } else {
+      for (int i = 0; i < N; i++) {
+        ptr[i] = single_str_col_to_int(CHAR(STRING_ELT(colour_, i)));
+      }
+    }
+  } else {
+    error("col_to_int_ptr(): type fail '%s'", type2char(TYPEOF(colour_)));
+  }
+  
+  return ptr;
+}
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Bytes to hex
@@ -144,7 +205,9 @@ char *bytes_to_hex(uint8_t *buf) {
 
 
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP single_int_to_col_CHARSXP(int *packed_col) {
   
   static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
@@ -185,6 +248,13 @@ SEXP int_to_col_(SEXP ints_) {
   UNPROTECT(1);
   return cols_;
 }
+
+
+
+
+
+
+
 
 
 
