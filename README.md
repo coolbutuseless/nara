@@ -9,7 +9,7 @@
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-`{nara}` provides tools for wordeer with R’s `nativeRaster` image format
+`{nara}` provides tools for working with R’s `nativeRaster` image format
 to enable fast double-buffered graphics rendering.
 
 ### Why?
@@ -334,7 +334,7 @@ nr_rect(
 )
 
 ras <- nr_to_raster(nr)
-ras[] <- 'yellow'  # loodeer up named colours at render time is SLOOOOOW
+ras[] <- 'yellow'  # looking up named colours at render time is SLOOOOOW
 
 x11(type = 'dbcairo', antialias = 'none')
 dev.control('inhibit')
