@@ -56,7 +56,9 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int *nr = INTEGER(dst_);
   int *mat = INTEGER(mat_);
-  int *palette = INTEGER(palette_);
+  
+  int freepal = 0;
+  int *palette = col_to_int_ptr(palette_, N, &freepal);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -73,6 +75,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   }
   
   
+  if (freepal) free(palette);
   UNPROTECT(nprotect);
   return dst_;
 }
@@ -119,7 +122,6 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       const char *val = CHAR(STRING_ELT(ras_, col * height + row));
-      // *(nr + row * width + col) = colour_to_integer(val);
       *(nr + col * height + row) = single_str_col_to_int(val);
     }
   }

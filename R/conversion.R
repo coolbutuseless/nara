@@ -65,7 +65,7 @@ array_to_nr <- function(arr, dst = NULL) {
 #' plot(nr)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 matrix_to_nr <- function(mat, palette, dst = NULL) {
-  .Call(matrix_to_nr_, mat, colour_to_integer(palette), dst)
+  .Call(matrix_to_nr_, mat, palette, dst)
 }
 
 
