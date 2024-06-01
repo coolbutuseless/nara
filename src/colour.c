@@ -18,124 +18,166 @@
 
 
 int is_transparent(int colour) {
-  // return 1;
-  return ((((colour >> 24) & 255) == 0) && (colour < 0 || colour > 31)) || colour == NA_INTEGER;
-  // return ((((colour >> 24) & 255) == 0) && (colour < 0 || colour > 31)) || colour == NA_INTEGER;
+  return ((colour >> 24) & 255) == 0;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Convert a hex digit to a nibble. Return -1 if not a hexdigits
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+static unsigned int hex_to_nibble(int digit) {
+  if('0' <= digit && digit <= '9') return      digit - '0';
+  if('A' <= digit && digit <= 'F') return 10 + digit - 'A';
+  if('a' <= digit && digit <= 'f') return 10 + digit - 'a';
+  error("Invalid hex: '%c'", digit);
+  return (int)digit; // silence return warnings
 }
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int colour_to_integer(SEXP colour_) {
-
-  const char *colour;
-
-  if ((isLogical(colour_) && asInteger(colour_) == NA_LOGICAL)) {
-    return(16777215);  //  '#ffffff00'
-  } else if (isString(colour_) && asChar(colour_) == NA_STRING) {
-    return(16777215);
-  } else if (colour_ == NA_STRING) {
-    return(16777215);
-  } else if (isInteger(colour_)) {
-    return(asInteger(colour_));
-  } else if (isReal(colour_)) {
-    return(asInteger(colour_));
-  } else if (TYPEOF(colour_) == STRSXP ) {
-    colour = CHAR(asChar(colour_));
-  } else if (TYPEOF(colour_) == CHARSXP) {
-    colour = CHAR(colour_);
-  } else {
-    error(">> Colour must be string or integer not %s", type2char(TYPEOF(colour_)));
-  }
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Single character colour to packed-integer-colour
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int single_str_col_to_int(const char *colour) {
   if (colour[0] == '#') {
-    // Rprintf("Hex colour\n");
-    int n = strlen(colour);
-
-    if (n != 7 && n != 9) {
-      error("This doesn't seem like a colour: %s", colour);
+    switch (strlen(colour)) {
+    case 3:
+      return
+        (hex_to_nibble(colour[3]) << 20) +
+        (hex_to_nibble(colour[3]) << 16) +
+        (hex_to_nibble(colour[2]) << 12) +
+        (hex_to_nibble(colour[2]) <<  8) +
+        (hex_to_nibble(colour[1]) <<  4) +
+        (hex_to_nibble(colour[1]) <<  0);
+    case 4:
+      return
+        (hex_to_nibble(colour[4]) << 28) +
+        (hex_to_nibble(colour[4]) << 24) +
+        (hex_to_nibble(colour[3]) << 20) +
+        (hex_to_nibble(colour[3]) << 16) +
+        (hex_to_nibble(colour[2]) << 12) +
+        (hex_to_nibble(colour[2]) <<  8) +
+        (hex_to_nibble(colour[1]) <<  4) +
+        (hex_to_nibble(colour[1]) <<  0);
+    case 7:
+      return
+        (hex_to_nibble(colour[5]) << 20) +
+        (hex_to_nibble(colour[6]) << 16) +
+        (hex_to_nibble(colour[3]) << 12) +
+        (hex_to_nibble(colour[4]) <<  8) +
+        (hex_to_nibble(colour[1]) <<  4) +
+        (hex_to_nibble(colour[2]) <<  0);
+    case 9:
+      return
+        (hex_to_nibble(colour[7]) << 28) +
+        (hex_to_nibble(colour[8]) << 24) +
+        (hex_to_nibble(colour[5]) << 20) +
+        (hex_to_nibble(colour[6]) << 16) +
+        (hex_to_nibble(colour[3]) << 12) +
+        (hex_to_nibble(colour[4]) <<  8) +
+        (hex_to_nibble(colour[1]) <<  4) +
+        (hex_to_nibble(colour[2]) <<  0);
+    default:
+      error("Unknown hex colour: '%s'", colour);
     }
-
-    unsigned long res = strtoul(colour+1,  NULL, 16);
-
-    if (n == 7) {
-      res <<= 8;
-      res += 255;
-    }
-
-    return (int)reverse_bytes_32(res);
   } else {
-    // Rprintf(">>>>>>>>>>>>>>> %s\n", colour);
     return rcolour_to_int(colour) ;
   }
 }
 
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP colour_to_integer_(SEXP colour_) {
-
-  if (length(colour_) == 1) {
-    if ((isLogical(colour_) && asInteger(colour_) == NA_LOGICAL)) {
-      return(ScalarInteger(16777215));  //  '#ffffff00'
-    } else if (isString(colour_) && asChar(colour_) == NA_STRING) {
-      return(ScalarInteger(16777215));  //  '#ffffff00'
-    }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Single SEXP colour to packed-integer-colour
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int single_sexp_col_to_int(SEXP colour_) {
+  if (isInteger(colour_)) {
+    return asInteger(colour_);
+  } else if (isString(colour_)) {
+    return single_str_col_to_int(CHAR(asChar(colour_)));
+  } else if (isLogical(colour_) && asLogical(colour_) == NA_LOGICAL) {
+    return 16777215; // #ffffff00 transparent white
+  } else if (TYPEOF(colour_) == CHARSXP) {
+    return single_str_col_to_int(CHAR(colour_));
+  } else {
+    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colour_)));
   }
+}
 
-  if (isReal(colour_)) {
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// SEXP vector of colours to packed-integer-colour
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP col_to_int_(SEXP colour_) {
+  
+  if (isInteger(colour_)) {
+    return colour_;
+  } else if (isString(colour_)) {
     SEXP res_ = PROTECT(allocVector(INTSXP, length(colour_)));
-
+    int *ptr = INTEGER(res_);
     for (int i = 0; i < length(colour_); i++) {
-      INTEGER(res_)[i] = (int)REAL(colour_)[i];
+      ptr[i] = single_str_col_to_int(CHAR(STRING_ELT(colour_, i)));
     }
-
     UNPROTECT(1);
     return res_;
-  } else if (isInteger(colour_)) {
-    return(colour_);
-  } else if (TYPEOF(colour_) != STRSXP) {
-    error("Colours must be type '%s' or '%s' not '%s'", type2char(STRSXP), type2char(INTSXP), type2char(TYPEOF(colour_)));
+  } else {
+    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colour_)));
   }
-
-  SEXP res_ = PROTECT(allocVector(INTSXP, length(colour_)));
-
-  for (int i = 0; i < length(colour_); i++) {
-    INTEGER(res_)[i] = colour_to_integer(STRING_ELT(colour_, i));
-  }
-
-  UNPROTECT(1);
-  return res_;
 }
 
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP integer_to_colour_(SEXP ints_) {
-  if (!isInteger(ints_)) {
-    error("Input must be integers not '%s'", type2char(TYPEOF(ints_)));
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Bytes to hex
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+char *bytes_to_hex(uint8_t *buf) {
+  static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+  
+  char *str = (char *)calloc(10, 1);
+  str[0] = '#';
+  str[9] = '\0';
+  
+  
+  for (size_t i = 0; i < 4; i++) {
+    str[2 * i + 1] = hexmap[(buf[i] & 0xF0) >> 4];
+    str[2 * i + 2] = hexmap[ buf[i] & 0x0F];
   }
+  
+  return str;
+}
 
-  SEXP res_ = PROTECT(allocVector(STRSXP, length(ints_)));
-
-  uint32_t *ints = (uint32_t *)INTEGER(ints_);
-
-  for (int i=0; i<length(ints_); i++) {
-    char buf[10];
-    snprintf(buf, 10, "#%02x%02x%02x%02x",
-            ints[i]       & 255,
-            ints[i] >> 8  & 255,
-            ints[i] >> 16 & 255,
-            ints[i] >> 24 & 255);
-
-    SET_STRING_ELT(res_, i, mkChar(buf));
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP int_to_col_(SEXP ints_) {
+  
+  static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+  
+  SEXP cols_ = PROTECT(allocVector(STRSXP, length(ints_)));
+  
+  int *iptr = INTEGER(ints_);
+  char buf[10];
+  buf[0] = '#';
+  buf[9] = '\0';
+  
+  for (int i = 0; i < length(ints_); i++) {
+    uint8_t *bptr = (uint8_t *)(iptr + i);
+    buf[1] = hexmap[(bptr[0] & 0xF0) >> 4];
+    buf[2] = hexmap[(bptr[0] & 0x0F)     ];
+    buf[3] = hexmap[(bptr[1] & 0xF0) >> 4];
+    buf[4] = hexmap[(bptr[1] & 0x0F)     ];
+    buf[5] = hexmap[(bptr[2] & 0xF0) >> 4];
+    buf[6] = hexmap[(bptr[2] & 0x0F)     ];
+    buf[7] = hexmap[(bptr[3] & 0xF0) >> 4];
+    buf[8] = hexmap[(bptr[3] & 0x0F)     ];
+    
+    SET_STRING_ELT(cols_, i, mkChar(buf));
   }
+  
 
   UNPROTECT(1);
-  return res_;
+  return cols_;
 }
+
 
 
 

@@ -1,3 +1,2 @@
-
-int colour_to_integer(SEXP col_);
+int single_sexp_col_to_int(SEXP colour_);
 int is_transparent(int colour);

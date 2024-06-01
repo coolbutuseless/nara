@@ -49,9 +49,8 @@ if (FALSE) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 colour_to_integer <- function(colour) {
-  .Call(colour_to_integer_, colour)
+  .Call(col_to_int_, colour)
 }
-
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,7 +62,7 @@ colour_to_integer <- function(colour) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 integer_to_colour <- function(ints) {
-  .Call(integer_to_colour_, ints)
+  .Call(int_to_col_, ints)
 }
 
 
@@ -77,6 +76,40 @@ if (FALSE) {
   colour_to_integer(c("transparent", "#FFFFFF00", NA_character_, "white"))
   
 }
+
+if (FALSE) {
+  
+  nr <- nr_new(500, 500)
+  nr_rect(nr, x = c(10, 50), y = 20, w = 20, h = 20, fill = c('red', 'blue'))
+  plot(nr, T)
+
+  bench::mark(  
+    farver::encode_native(colours()),
+    colour_to_integer(colours())
+  )
+  
+  bench::mark(  
+    farver::encode_native(colour_hex),
+    colour_to_integer(colour_hex)
+  )
+  
+  
+  res <- farver::decode_native(colour_ints)
+  res <- ifelse(nchar(res) == 7, paste0(res, "FF"), res)
+  identical(res, int_to_col(colour_ints))
+  
+  bench::mark(  
+    farver::decode_native(colour_ints),
+    integer_to_colour(colour_ints),
+    int_to_col(colour_ints),
+    check = FALSE
+  )
+  
+  
+  
+}
+
+
 
 
 

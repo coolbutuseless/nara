@@ -33,8 +33,13 @@ extern SEXP draw_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP 
 extern SEXP draw_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP colour_, SEXP close_);
 extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP colour_);
 
-extern SEXP colour_to_integer_(SEXP colour_);
-extern SEXP integer_to_colour_(SEXP ints_);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Colour
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extern SEXP col_to_int_(SEXP colour_);
+extern SEXP int_to_col_(SEXP ints_);
+
+
 
 extern SEXP djb2_hash_(SEXP str_);
 
@@ -59,10 +64,12 @@ static const R_CallMethodDef CEntries[] = {
   {"draw_circle_"  , (DL_FUNC) &draw_circle_  , 6},
   {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
   {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},
-
-  {"colour_to_integer_"  , (DL_FUNC) &colour_to_integer_  , 1},
-  {"integer_to_colour_"  , (DL_FUNC) &integer_to_colour_  , 1},
-
+  
+  {"col_to_int_"  , (DL_FUNC) &col_to_int_  , 1},
+  {"int_to_col_"  , (DL_FUNC) &int_to_col_  , 1},
+  
+  
+  
   {"djb2_hash_"    , (DL_FUNC) &djb2_hash_    , 1},
 
 

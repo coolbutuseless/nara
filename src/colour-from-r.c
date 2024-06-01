@@ -35,6 +35,9 @@ int rcolour_to_int(const char *rcol) {
   long res = 0;
 
   switch(hash) {
+  case 5862548: // NA_character
+    res = 16777215;
+    break;
   case 279132550:
     res = -1;
     break;
@@ -2010,7 +2013,7 @@ int rcolour_to_int(const char *rcol) {
     res = 16777215; // #ffffff00
     break;
   default:
-    // Rprintf("Unknown colour: %s\n", rcol);
+    Rprintf("Unknown colour: %s\n", rcol);
     res = 16777215; // #ffffff00
   }
   return res;

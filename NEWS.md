@@ -13,6 +13,7 @@
     * `nr_flipv()`
     * `nr_fliph()`
     * `matrix_to_nr()`
+* Refactored colour conversion routines. 
 
 # nara 0.1.1 2022-07-30
 

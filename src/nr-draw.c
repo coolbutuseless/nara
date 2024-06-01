@@ -97,10 +97,10 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
   }
 
   int single_colour = length(colour_) == 1;
-  int colour = colour_to_integer(colour_);
+  int colour = single_sexp_col_to_int(colour_);
 
   for (int i = 0 ; i < npoints; i++) {
-    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, i));
+    colour = single_colour ? colour : single_sexp_col_to_int(STRING_ELT(colour_, i));
     draw_point_c(nr, height, width, colour, x[i], y[i]);
   }
 
@@ -153,7 +153,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   uint32_t height = (uint32_t)Rf_nrows(nr_);
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
-  int colour = colour_to_integer(colour_);
+  int colour = single_sexp_col_to_int(colour_);
 
   if (!(length(x0_) == length(x1_) &&
     length(x0_) == length(y0_) &&
@@ -175,7 +175,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   }
 
   for (int i = 0; i < length(x0_); i++) {
-    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, i));
+    colour = single_colour ? colour : single_sexp_col_to_int(STRING_ELT(colour_, i));
     draw_line_c(nr, height, width, colour, x0[i], y0[i], x1[i], y1[i]);
   }
 
@@ -202,7 +202,7 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
   uint32_t height = (uint32_t)Rf_nrows(nr_);
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
-  int colour = colour_to_integer(colour_);
+  int colour = single_sexp_col_to_int(colour_);
 
   // get an int* from a numeric from R
   int freex = 0, freey = 0;
@@ -249,7 +249,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
 
-  int colour = colour_to_integer(colour_);
+  int colour = single_sexp_col_to_int(colour_);
   int x = asInteger(x_);
   int y = asInteger(y_);
 
@@ -333,8 +333,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int h = hs[0] - 1;
   
   
-  int colour = colour_to_integer(colour_);
-  int fill   = colour_to_integer(fill_);
+  int colour = single_sexp_col_to_int(colour_);
+  int fill   = single_sexp_col_to_int(fill_);
   int single_colour = length(colour_) == 1;
   int single_fill   = length(fill_)   == 1;
   
@@ -345,8 +345,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
     w = single_w ? w : ws[i] - 1;
     h = single_h ? h : hs[i] - 1;
     
-    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, i));
-    fill   = single_fill   ? fill   : colour_to_integer(STRING_ELT(fill_  , i));
+    colour = single_colour ? colour : single_sexp_col_to_int(STRING_ELT(colour_, i));
+    fill   = single_fill   ? fill   : single_sexp_col_to_int(STRING_ELT(fill_  , i));
     
     // Draw Filled rect
     if (!is_transparent(fill)) {
@@ -407,8 +407,8 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   int r = rs[0];
   int single_r = length(r_) == 1;
 
-  int colour = colour_to_integer(colour_);
-  int fill   = colour_to_integer(fill_);
+  int colour = single_sexp_col_to_int(colour_);
+  int fill   = single_sexp_col_to_int(fill_);
   int single_colour = length(colour_) == 1;
   int single_fill   = length(fill_)   == 1;
 
@@ -417,8 +417,8 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
     int xm = xms[idx];
     int ym = yms[idx];
     r = single_r ? rs[0] : rs[idx];
-    colour = single_colour ? colour : colour_to_integer(STRING_ELT(colour_, idx));
-    fill   = single_fill   ? fill   : colour_to_integer(STRING_ELT(fill_  , idx));
+    colour = single_colour ? colour : single_sexp_col_to_int(STRING_ELT(colour_, idx));
+    fill   = single_fill   ? fill   : single_sexp_col_to_int(STRING_ELT(fill_  , idx));
 
     int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
     do {
@@ -536,8 +536,8 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
   uint32_t height = (uint32_t)Rf_nrows(nr_);
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
-  int colour = colour_to_integer(colour_);
-  int fill   = colour_to_integer(fill_);
+  int colour = single_sexp_col_to_int(colour_);
+  int fill   = single_sexp_col_to_int(fill_);
   
   if (length(x_) != length(y_)) {
     error("Arguments 'x' and 'y' must be same length.");

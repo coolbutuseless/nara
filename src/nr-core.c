@@ -102,7 +102,7 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
   uint32_t height = Rf_nrows(nr_);
   uint32_t width  = Rf_ncols(nr_);
 
-  int colour = colour_to_integer(colour_);
+  int colour = single_sexp_col_to_int(colour_);
 
   fill_c(nr, height, width, colour);
 
