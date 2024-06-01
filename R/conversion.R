@@ -7,6 +7,8 @@
 #' @param ras standard R raster i.e. a character matrix of hex colour values
 #' @param arr 3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 #'        [nrow, ncol, 3]. Each value is in range [0,1].
+#' @param dst destination nativeRaster. If NULL (the default) a new nativeRaster
+#'        will be created.
 #'
 #' @return raster, array or nativeRaster
 #' @import grDevices
@@ -14,9 +16,8 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_raster <- function(nr) {
   ras <- integer_to_colour((nr))
-  dim(ras) <- rev(dim(nr))
-  ras <- t(ras)
-
+  dim(ras) <- dim(nr)
+  class(ras) <- 'raster'
   ras
 }
 
@@ -25,11 +26,16 @@ nr_to_raster <- function(nr) {
 #' @rdname nr_to_raster
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-raster_to_nr <- function(ras) {
-  nr <- matrix(colour_to_integer(t(ras)), nrow = nrow(ras), ncol = ncol(ras))
-  class(nr) <- 'nativeRaster'
-  attr(nr, 'channels') <- 4L
-  nr
+raster_to_nr <- function(ras, dst = NULL) {
+  
+  if (FALSE) {
+    nr <- matrix(colour_to_integer(t(ras)), nrow = nrow(ras), ncol = ncol(ras))
+    class(nr) <- 'nativeRaster'
+    attr(nr, 'channels') <- 4L
+    nr
+  }
+  
+  .Call(raster_to_nr_, ras, dst)
 }
 
 

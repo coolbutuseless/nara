@@ -76,3 +76,56 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   UNPROTECT(nprotect);
   return dst_;
 }
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Convert matrix to native raster with palette
+//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Sanity check
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (!isMatrix(ras_) || TYPEOF(ras_) != STRSXP) {
+    error("'raster' must be an character matrix");
+  }
+  
+  int height = Rf_nrows(ras_);
+  int width  = Rf_ncols(ras_);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Prep native raster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nprotect = 0;
+  
+  if (isNull(dst_)) {
+    dst_ = PROTECT(allocVector(INTSXP, length(ras_))); nprotect++;
+    SET_CLASS(dst_, mkString("nativeRaster"));
+    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
+    SET_DIM(dst_, GET_DIM(ras_));
+  } else {
+    assert_nativeraster(dst_);
+    if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
+      error("Supplied 'dst' nativeRaster dimenions (%i, %i) do not match source matrix (%i, %i)", 
+            Rf_ncols(dst_), Rf_nrows(dst_), height, width);
+    }
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Copy the data - from column major matrix to row major nativeRaster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int *nr = INTEGER(dst_);
+
+  for (int col = 0; col < width; col++) {
+    for (int row = 0; row < height; row++) {
+      const char *val = CHAR(STRING_ELT(ras_, col * height + row));
+      // *(nr + row * width + col) = colour_to_integer(val);
+      *(nr + col * height + row) = single_str_col_to_int(val);
+    }
+  }
+  
+  
+  UNPROTECT(nprotect);
+  return dst_;
+}

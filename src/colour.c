@@ -41,6 +41,7 @@ int single_str_col_to_int(const char *colour) {
     switch (strlen(colour)) {
     case 3:
       return
+        (0xff << 24) + 
         (hex_to_nibble(colour[3]) << 20) +
         (hex_to_nibble(colour[3]) << 16) +
         (hex_to_nibble(colour[2]) << 12) +
@@ -59,6 +60,7 @@ int single_str_col_to_int(const char *colour) {
         (hex_to_nibble(colour[1]) <<  0);
     case 7:
       return
+        (0xff << 24) + 
         (hex_to_nibble(colour[5]) << 20) +
         (hex_to_nibble(colour[6]) << 16) +
         (hex_to_nibble(colour[3]) << 12) +

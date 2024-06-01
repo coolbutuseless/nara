@@ -9,7 +9,7 @@
 \usage{
 nr_to_raster(nr)
 
-raster_to_nr(ras)
+raster_to_nr(ras, dst = NULL)
 
 nr_to_array(nr)
 
@@ -19,6 +19,9 @@ array_to_nr(arr)
 \item{nr}{nativeRaster object}
 
 \item{ras}{standard R raster i.e. a character matrix of hex colour values}
+
+\item{dst}{destination nativeRaster. If NULL (the default) a new nativeRaster
+will be created.}
 
 \item{arr}{3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 [nrow, ncol, 3]. Each value is in range [0,1].}
