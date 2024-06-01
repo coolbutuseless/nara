@@ -69,7 +69,7 @@ nr
 grid.raster(nr, interpolate = FALSE)
 ```
 
-## Convert a regular R `array` iamge to/from `nativeRaster`
+## Convert a regular R `array` image to/from `nativeRaster`
 
 ```{r}
 arr <- array(c(
