@@ -22,14 +22,10 @@ int is_transparent(int colour) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Convert a hex digit to a nibble. Return -1 if not a hexdigits
+// Convert a hex digit to a nibble. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static unsigned int hex_to_nibble(int digit) {
-  if('0' <= digit && digit <= '9') return      digit - '0';
-  if('A' <= digit && digit <= 'F') return 10 + digit - 'A';
-  if('a' <= digit && digit <= 'f') return 10 + digit - 'a';
-  error("Invalid hex: '%c'", digit);
-  return (int)digit; // silence return warnings
+static unsigned int hex_to_nibble(int x) {
+  return (x & 0xf) + (x >> 6) + ((x >> 6) << 3);
 }
 
 
@@ -39,7 +35,7 @@ static unsigned int hex_to_nibble(int digit) {
 int single_str_col_to_int(const char *colour) {
   if (colour[0] == '#') {
     switch (strlen(colour)) {
-    case 3:
+    case 4:  // #123 == #112233
       return
         (0xff << 24) + 
         (hex_to_nibble(colour[3]) << 20) +
@@ -48,7 +44,7 @@ int single_str_col_to_int(const char *colour) {
         (hex_to_nibble(colour[2]) <<  8) +
         (hex_to_nibble(colour[1]) <<  4) +
         (hex_to_nibble(colour[1]) <<  0);
-    case 4:
+    case 5: // #1234 = #11223344
       return
         (hex_to_nibble(colour[4]) << 28) +
         (hex_to_nibble(colour[4]) << 24) +
@@ -58,7 +54,7 @@ int single_str_col_to_int(const char *colour) {
         (hex_to_nibble(colour[2]) <<  8) +
         (hex_to_nibble(colour[1]) <<  4) +
         (hex_to_nibble(colour[1]) <<  0);
-    case 7:
+    case 7: // #rrggbb
       return
         (0xff << 24) + 
         (hex_to_nibble(colour[5]) << 20) +
@@ -67,7 +63,7 @@ int single_str_col_to_int(const char *colour) {
         (hex_to_nibble(colour[4]) <<  8) +
         (hex_to_nibble(colour[1]) <<  4) +
         (hex_to_nibble(colour[2]) <<  0);
-    case 9:
+    case 9: // #rrggbbaa
       return
         (hex_to_nibble(colour[7]) << 28) +
         (hex_to_nibble(colour[8]) << 24) +
