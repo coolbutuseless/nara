@@ -13,7 +13,7 @@ raster_to_nr(ras, dst = NULL)
 
 nr_to_array(nr)
 
-array_to_nr(arr)
+array_to_nr(arr, dst = NULL)
 }
 \arguments{
 \item{nr}{nativeRaster object}

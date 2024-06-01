@@ -146,33 +146,43 @@ char *bytes_to_hex(uint8_t *buf) {
   return str;
 }
 
+
+
+
+SEXP single_int_to_col_CHARSXP(int *packed_col) {
+  
+  static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+  
+  char buf[10];
+  buf[0] = '#';
+  buf[9] = '\0';
+  
+  uint8_t *bptr = (uint8_t *)packed_col;
+  buf[1] = hexmap[(bptr[0] & 0xF0) >> 4];
+  buf[2] = hexmap[(bptr[0] & 0x0F)     ];
+  buf[3] = hexmap[(bptr[1] & 0xF0) >> 4];
+  buf[4] = hexmap[(bptr[1] & 0x0F)     ];
+  buf[5] = hexmap[(bptr[2] & 0xF0) >> 4];
+  buf[6] = hexmap[(bptr[2] & 0x0F)     ];
+  buf[7] = hexmap[(bptr[3] & 0xF0) >> 4];
+  buf[8] = hexmap[(bptr[3] & 0x0F)     ];
+  
+  return mkChar(buf);
+}
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP int_to_col_(SEXP ints_) {
   
-  static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-  
   SEXP cols_ = PROTECT(allocVector(STRSXP, length(ints_)));
   
   int *iptr = INTEGER(ints_);
-  char buf[10];
-  buf[0] = '#';
-  buf[9] = '\0';
   
   for (int i = 0; i < length(ints_); i++) {
-    uint8_t *bptr = (uint8_t *)(iptr + i);
-    buf[1] = hexmap[(bptr[0] & 0xF0) >> 4];
-    buf[2] = hexmap[(bptr[0] & 0x0F)     ];
-    buf[3] = hexmap[(bptr[1] & 0xF0) >> 4];
-    buf[4] = hexmap[(bptr[1] & 0x0F)     ];
-    buf[5] = hexmap[(bptr[2] & 0xF0) >> 4];
-    buf[6] = hexmap[(bptr[2] & 0x0F)     ];
-    buf[7] = hexmap[(bptr[3] & 0xF0) >> 4];
-    buf[8] = hexmap[(bptr[3] & 0x0F)     ];
-    
-    SET_STRING_ELT(cols_, i, mkChar(buf));
+    SET_STRING_ELT(cols_, i, single_int_to_col_CHARSXP(iptr + i));
   }
   
 

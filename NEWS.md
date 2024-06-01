@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9002 2024-05-29
+# nara 0.1.1.9003 2024-05-29
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -14,6 +14,11 @@
     * `nr_fliph()`
     * `matrix_to_nr()`
 * Refactored colour conversion routines. 
+* Fast conversions in C
+    * `array_to_nr()`
+    * `nr_to_array()`
+    * `raster_to_nr()`
+    * `nr_to_raster()`
 
 # nara 0.1.1 2022-07-30
 
