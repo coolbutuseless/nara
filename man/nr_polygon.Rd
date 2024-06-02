@@ -18,6 +18,9 @@ nr_polygon(nr, x, y, fill = "black", colour = NA)
 or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
+\value{
+Original \code{nativeRaster} modified in-place
+}
 \description{
 Draw polygon on a \code{nativeRaster} image
 }

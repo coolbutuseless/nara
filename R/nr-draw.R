@@ -29,6 +29,8 @@ nr_point <- function(nr, x, y, colour = 'black') {
 #' @inheritParams nr_fill
 #' @param x0,y0,x1,y1 Vectors of coordinates of endpoints of line
 #'
+#' @return Original \code{nativeRaster} modified in-place
+#' 
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
@@ -39,8 +41,7 @@ nr_point <- function(nr, x, y, colour = 'black') {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
-  .Call(draw_line_, nr, x0, y0, x1, y1, colour)
-  invisible(nr)
+  invisible(.Call(draw_line_, nr, x0, y0, x1, y1, colour))
 }
 
 
@@ -55,16 +56,17 @@ nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
-#' @param str character string [scalar]
-#' @param x,y coordinates of lower-left corner of text. [scalar]
+#' @param str character string
+#' @param x,y coordinates of lower-left corner of text
 #' @param fontsize height of font in pizels.  Only valid values are 8, 12 and 16.
 #'        Default: 8.
+#'
+#' @return Original \code{nativeRaster} modified in-place
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
-  .Call(draw_text_, nr, x, y, str, colour, fontsize)
-  invisible(nr)
+  invisible(.Call(draw_text_, nr, x, y, str, colour, fontsize))
 }
 
 
@@ -78,6 +80,8 @@ nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
 #' @param colour outline colour. Default: NA. [vector]
 #' @param fill interior fill colour [vector]
 #'
+#' @return Original \code{nativeRaster} modified in-place
+#' 
 #' @examples
 #' nr <- nr_new(400, 400)
 #' nr_rect(nr, 20, 20, 100, 10)
@@ -86,8 +90,7 @@ nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
-  .Call(draw_rect_, nr,  x, y, w, h, fill, colour)
-  invisible(nr)
+  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, colour))
 }
 
 
@@ -100,12 +103,13 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
 #' @param r radius [vector]
 #' @param colour outline colour. Default: NA. [vector]
 #' @param fill interior fill colour [vector]
+#' 
+#' @return Original \code{nativeRaster} modified in-place
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
-  .Call(draw_circle_, nr, x, y, r, fill, colour)
-  invisible(nr)
+  invisible(.Call(draw_circle_, nr, x, y, r, fill, colour))
 }
 
 
@@ -116,12 +120,13 @@ nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
 #' @inheritParams nr_point
 #' @param close Should the polyline be closed? I.e. should a line be drawn between
 #'        the last point and the first point?   Default: FALSE
+#'        
+#' @return Original \code{nativeRaster} modified in-place
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
-  .Call(draw_polyline_, nr, x, y, colour, close)
-  invisible(nr)
+  invisible(.Call(draw_polyline_, nr, x, y, colour, close))
 }
 
 
@@ -131,12 +136,13 @@ nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
 #' @param fill fill colour [scalar]
+#' 
+#' @return Original \code{nativeRaster} modified in-place
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polygon <- function(nr, x, y, fill = 'black', colour = NA) {
-  .Call(draw_polygon_, nr, x, y, fill, colour)
-  invisible(nr)
+  invisible(.Call(draw_polygon_, nr, x, y, fill, colour))
 }
 
 

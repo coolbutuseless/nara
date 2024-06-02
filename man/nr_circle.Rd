@@ -17,6 +17,9 @@ nr_circle(nr, x, y, r, fill = "black", colour = NA)
 
 \item{colour}{outline colour. Default: NA. [vector]}
 }
+\value{
+Original \code{nativeRaster} modified in-place
+}
 \description{
 Draw circles on a \code{nativeRaster} image
 }

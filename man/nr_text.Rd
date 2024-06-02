@@ -9,9 +9,9 @@ nr_text(nr, x, y, str, colour = "black", fontsize = 8L)
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{x, y}{coordinates of lower-left corner of text. [scalar]}
+\item{x, y}{coordinates of lower-left corner of text}
 
-\item{str}{character string [scalar]}
+\item{str}{character string}
 
 \item{colour}{Color as a character string. Either a standard R colour
 (e.g. 'blue', 'white')
@@ -20,6 +20,9 @@ or \code{#rgb}}
 
 \item{fontsize}{height of font in pizels.  Only valid values are 8, 12 and 16.
 Default: 8.}
+}
+\value{
+Original \code{nativeRaster} modified in-place
 }
 \description{
 The only font currently available is 'spleen' - a monospace

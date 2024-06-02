@@ -16,6 +16,9 @@ nr_line(nr, x0, y0, x1, y1, colour = "black")
 or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
+\value{
+Original \code{nativeRaster} modified in-place
+}
 \description{
 Uses Bresenham's algorithm to draw lines. No antialiasing.
 }

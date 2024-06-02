@@ -19,6 +19,9 @@ or \code{#rgb}}
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
 the last point and the first point?   Default: FALSE}
 }
+\value{
+Original \code{nativeRaster} modified in-place
+}
 \description{
 Draw polyline on a \code{nativeRaster} image
 }

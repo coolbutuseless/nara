@@ -17,6 +17,9 @@ nr_rect(nr, x, y, w, h, fill = "black", colour = NA)
 
 \item{colour}{outline colour. Default: NA. [vector]}
 }
+\value{
+Original \code{nativeRaster} modified in-place
+}
 \description{
 Draw rectangles on a \code{nativeRaster} image
 }
