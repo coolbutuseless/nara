@@ -132,7 +132,7 @@ SEXP flipv_(SEXP nr_) {
     memcpy(nr + (height - row - 1) * width,                             tmp, (size_t)width * sizeof(int));
   }
   
-  
+  free(tmp);
   return nr_;
 }
 
