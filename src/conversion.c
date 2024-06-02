@@ -222,11 +222,11 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
   if (has_alpha) {
     for (int col = 0; col < width; col++) {
       for (int row = 0; row < height; row++) {
-        *(nr + row * width + col) = 
+        *(nr + row * width + col) = (int)(
           ((uint8_t)(*(a + col * height + row) * 255) << 24) +
           ((uint8_t)(*(b + col * height + row) * 255) << 16) + 
           ((uint8_t)(*(g + col * height + row) * 255) <<  8) +
-          ((uint8_t)(*(r + col * height + row) * 255)      );
+          ((uint8_t)(*(r + col * height + row) * 255)      ));
       }
     }
   } else {
