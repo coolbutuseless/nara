@@ -1,6 +1,5 @@
 
 
-
 set.seed(2022)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -10,7 +9,7 @@ test_that("round trip from raster works", {
   w <- 15
   h <- 10
   mat <- matrix(rainbow(w*h), h, w)
-  mat[] <- tolower(paste0(mat, "ff"))
+  mat[] <- paste0(mat, "FF")
   ras <- as.raster(mat)
   
   nr   <- raster_to_nr(ras)
@@ -19,6 +18,9 @@ test_that("round trip from raster works", {
 })
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Round trip to raster (with alpha)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 test_that("round trip from array works (with alpha)", {
   
   im <- testthat::test_path("image/Rlogo-tiny.png")
@@ -37,8 +39,9 @@ test_that("round trip from array works (with alpha)", {
 })
 
 
-
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Round trip to raster (without alpha)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 test_that("round trip from array works (without alpha)", {
   
   im <- testthat::test_path("image/Rlogo-tiny.png")

@@ -5,7 +5,7 @@
 \alias{raster_to_nr}
 \alias{nr_to_array}
 \alias{array_to_nr}
-\title{Convert nativeRaster images to/from other R objects}
+\title{Convert \code{nativeRaster} images to/from other R objects}
 \usage{
 nr_to_raster(nr)
 
@@ -16,19 +16,24 @@ nr_to_array(nr)
 array_to_nr(arr, dst = NULL)
 }
 \arguments{
-\item{nr}{nativeRaster object}
+\item{nr}{\code{nativeRaster} object}
 
 \item{ras}{standard R raster i.e. a character matrix of hex colour values}
 
-\item{dst}{destination nativeRaster. If NULL (the default) a new nativeRaster
+\item{dst}{destination \code{nativeRaster} If NULL (the default) a new \code{nativeRaster}
 will be created.}
 
 \item{arr}{3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 [nrow, ncol, 3]. Each value is in range [0,1].}
 }
 \value{
-raster, array or nativeRaster
+raster, array or \code{nativeRaster}
 }
 \description{
-Convert nativeRaster images to/from other R objects
+Convert \code{nativeRaster} images to/from other R objects
+}
+\examples{
+nr <- nr_new(12, 8, 'hotpink')
+nr_to_raster(nr)
+
 }

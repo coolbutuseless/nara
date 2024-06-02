@@ -16,12 +16,17 @@
 #' @param x0,y0 start coordiates within src
 #' @param w,h size within src
 #'
-#' @return Native raster
+#' @return \code{nativeRaster}
+#' 
+#' @examples
+#' nr <- nr_new(50, 50, 'grey80')
+#' nr_blit(nr, x = 1, y = 1, src = deer, x0 = 1, y0 = 129, w = 32, h = 32)
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL) {
-  .Call(blit_, nr, x, y, src, x0, y0, w, h)
-  invisible(nr)
+  invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h))
 }
 
 
@@ -32,11 +37,18 @@ nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL) {
 #' @param loc a 4 element numeric vector (or list) with the following values 
 #'        in this exact order: (x0, y0, w, h) corresponding to the 
 #'        separate arguments to \code{nr_blit()}
+#'
+#' @return \code{nativeRaster}
+#' 
+#' @examples
+#' nr <- nr_new(50, 50, 'grey80')
+#' nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[[1]])
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit2 <- function(nr, x, y, src, loc) {
-  .Call(blit_, nr, x, y, src, loc[[1]], loc[[2]], loc[[3]], loc[[4]])
-  invisible(nr)
+  invisible(.Call(blit_, nr, x, y, src, loc[[1]], loc[[2]], loc[[3]], loc[[4]]))
 }
 
 

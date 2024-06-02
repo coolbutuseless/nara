@@ -23,8 +23,14 @@ where the coordinates are (1, 1).}
 \item{w, h}{size within src}
 }
 \value{
-Native raster
+\code{nativeRaster}
 }
 \description{
 This is useful as a way of positioning sprites or icons in an image.
+}
+\examples{
+nr <- nr_new(50, 50, 'grey80')
+nr_blit(nr, x = 1, y = 1, src = deer, x0 = 1, y0 = 129, w = 32, h = 32)
+plot(nr)
+
 }

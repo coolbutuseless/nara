@@ -22,6 +22,15 @@ where the coordinates are (1, 1).}
 in this exact order: (x0, y0, w, h) corresponding to the 
 separate arguments to \code{nr_blit()}}
 }
+\value{
+\code{nativeRaster}
+}
 \description{
 Blit2
+}
+\examples{
+nr <- nr_new(50, 50, 'grey80')
+nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[[1]])
+plot(nr)
+
 }

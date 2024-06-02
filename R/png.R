@@ -17,7 +17,7 @@ read_png <- function(source, make_transparent = NULL) {
   
   for (col in make_transparent) {
     col <- str_cols_to_packed_cols(col)
-    nr[nr == col] <- transparent
+    nr[nr == col] <- transparent_white
   }
   
   nr

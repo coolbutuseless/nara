@@ -15,3 +15,8 @@ character vector of hex colours
 \description{
 Convert packed colours (integer values containing RGBA bytes) to hex colours
 }
+\examples{
+packed_cols_to_hex_cols(c(-16776961L, -1L, -65536L, 16777215L, 16777215L))
+
+
+}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/conversion.R
 \name{matrix_to_nr}
 \alias{matrix_to_nr}
-\title{Matrix to nativeRaster}
+\title{Matrix to \code{nativeRaster}}
 \usage{
 matrix_to_nr(mat, palette, dst = NULL)
 }
@@ -12,19 +12,20 @@ matrix_to_nr(mat, palette, dst = NULL)
 \item{palette}{vector of colours.  This palette must contain at least as 
 many colours as the maximum integer value in \code{mat}.}
 
-\item{dst}{destination natriveRaster object. If NULL (the default) a 
-new one will be allocated.  If a ntiveRaster is supplied here, it 
-must have the exact dimensions to match the matrix}
+\item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
+new \code{nativeRaster} will be created  If a \code{nativeRaster} 
+is supplied here, it must have the exact dimensions to match the matrix}
 }
 \value{
-nativeRaster
+\code{nativeRaster}
 }
 \description{
-Matrix to nativeRaster
+Matrix to \code{nativeRaster}
 }
 \examples{
 m <- matrix(1:12, 3, 4)
 palette <- str_cols_to_packed_cols(rainbow(12))
 nr <- matrix_to_nr(m, palette) 
 plot(nr)
+
 }

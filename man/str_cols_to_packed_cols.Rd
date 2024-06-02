@@ -12,9 +12,13 @@ str_cols_to_packed_cols(colours)
 \code{c('red', 'white', NA, 'transparent', '#12345678')}}
 }
 \value{
-Integer vector. Each integer value contains RGBA bytes.
+Integer vector. Each integer value contains a packed colour i.e. RGBA bytes.
 }
 \description{
 Convert colours (R colours and hex colours) into packed colours 
 (integer values containing RGBA bytes)
+}
+\examples{
+str_cols_to_packed_cols(c('red', 'white', 'blue', NA, 'transparent'))
+
 }

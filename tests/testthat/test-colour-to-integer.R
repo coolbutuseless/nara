@@ -3,7 +3,7 @@
 colour_names <- c(NA_character_, 'transparent', colours())
 
 rgb <- col2rgb(colour_names, alpha = TRUE)
-colour_hex <- sprintf("#%02x%02x%02x%02x", rgb[1,], rgb[2,], rgb[3,], rgb[4,])
+colour_hex <- sprintf("#%02X%02X%02X%02X", rgb[1,], rgb[2,], rgb[3,], rgb[4,])
 
 colour_ints <- c(
   16777215L, 16777215L, -1L, -1808L, -2626566L, -2363393L, -3350546L, -5193523L, 

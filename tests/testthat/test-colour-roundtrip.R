@@ -1,5 +1,5 @@
 
-alphabet <- c(0:9, letters[1:5])
+alphabet <- c(0:9, LETTERS[1:5])
 
 
 make_color <- function(...) {

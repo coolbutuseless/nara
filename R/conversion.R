@@ -1,15 +1,20 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Convert nativeRaster images to/from other R objects
+#' Convert \code{nativeRaster} images to/from other R objects
 #'
-#' @param nr nativeRaster object
+#' @param nr \code{nativeRaster} object
 #' @param ras standard R raster i.e. a character matrix of hex colour values
 #' @param arr 3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 #'        [nrow, ncol, 3]. Each value is in range [0,1].
-#' @param dst destination nativeRaster. If NULL (the default) a new nativeRaster
+#' @param dst destination \code{nativeRaster} If NULL (the default) a new \code{nativeRaster}
 #'        will be created.
 #'
-#' @return raster, array or nativeRaster
+#' @return raster, array or \code{nativeRaster}
+#' 
+#' @examples
+#' nr <- nr_new(12, 8, 'hotpink')
+#' nr_to_raster(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_raster <- function(nr) {
@@ -45,23 +50,24 @@ array_to_nr <- function(arr, dst = NULL) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Matrix to nativeRaster
+#' Matrix to \code{nativeRaster}
 #' 
 #' @param mat integer matrix
 #' @param palette vector of colours.  This palette must contain at least as 
 #'        many colours as the maximum integer value in \code{mat}.
-#' @param dst destination natriveRaster object. If NULL (the default) a 
-#'        new one will be allocated.  If a ntiveRaster is supplied here, it 
-#'        must have the exact dimensions to match the matrix        
+#' @param dst destination \code{nativeRaster} object. If NULL (the default) a 
+#'        new \code{nativeRaster} will be created  If a \code{nativeRaster} 
+#'        is supplied here, it must have the exact dimensions to match the matrix        
 #'        
-#' @return nativeRaster
-#' @export
+#' @return \code{nativeRaster}
 #'
 #' @examples
 #' m <- matrix(1:12, 3, 4)
 #' palette <- str_cols_to_packed_cols(rainbow(12))
 #' nr <- matrix_to_nr(m, palette) 
 #' plot(nr)
+#' 
+#' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 matrix_to_nr <- function(mat, palette, dst = NULL) {
   .Call(matrix_to_nr_, mat, palette, dst)
