@@ -18,7 +18,7 @@
 // Check if the colour is fully transparent (so we can skip drawing)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bool is_transparent(int colour) {
-  return (colour & (0xff << 24)) == 0;
+  return (colour & (unsigned int)(0xff000000)) == 0;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -22,7 +22,7 @@ void assert_nativeraster(SEXP nr_) {
     error("Object is not a nativeRaster");
   }
   
-  SEXP nchannels = GET_ATTR(nr_, mkString("channels"));
+  SEXP nchannels = GET_ATTR(nr_, Rf_install("channels"));
   if (!isInteger(nchannels) || length(nchannels) != 1 || asInteger(nchannels) != 4) {
     error("Object is not a nativeRaster with 4 channels");
   }
