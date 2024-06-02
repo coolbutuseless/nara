@@ -127,5 +127,14 @@ test_that("integer-to-colour conversion works", {
 })
 
 
+if (FALSE) {
+  
+  # identical(
+  #   farver::encode_native(colours()),
+  #   str_cols_to_packed_cols(colours())
+  # )
+  
+}
+
 
 

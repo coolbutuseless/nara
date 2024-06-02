@@ -17,8 +17,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Check if the colour is fully transparent (so we can skip drawing)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-bool is_transparent(int colour) {
-  return (colour & (unsigned int)(0xff000000)) == 0;
+bool is_transparent(uint32_t colour) {
+  return (colour & 0xff000000u) == 0;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,21 +36,23 @@ static unsigned int hex_to_nibble(unsigned int x) {
 // @param colour R colour name or hex colour
 // @return packed RGBA colour (integer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int colour_char_to_packed_col(const char *colour) {
+uint32_t colour_char_to_packed_col(const char *colour) {
+  uint32_t packed_col = 0;
   if (colour[0] == '#') {
     uint8_t *col = (uint8_t *)colour;
     switch (strlen(colour)) {
     case 4:  // #123 == #112233
-      return (int)(
-        ((unsigned int)0xff << 24) + 
+      packed_col =
+        0xFF000000u + 
         (hex_to_nibble(col[3]) << 20) +
         (hex_to_nibble(col[3]) << 16) +
         (hex_to_nibble(col[2]) << 12) +
         (hex_to_nibble(col[2]) <<  8) +
         (hex_to_nibble(col[1]) <<  4) +
-        (hex_to_nibble(col[1]) <<  0));
+        (hex_to_nibble(col[1]) <<  0);
+      break;
     case 5: // #1234 = #11223344
-      return (int)(
+      packed_col =
         (hex_to_nibble(col[4]) << 28) +
         (hex_to_nibble(col[4]) << 24) +
         (hex_to_nibble(col[3]) << 20) +
@@ -58,18 +60,20 @@ int colour_char_to_packed_col(const char *colour) {
         (hex_to_nibble(col[2]) << 12) +
         (hex_to_nibble(col[2]) <<  8) +
         (hex_to_nibble(col[1]) <<  4) +
-        (hex_to_nibble(col[1]) <<  0));
+        (hex_to_nibble(col[1]) <<  0);
+      break;
     case 7: // #rrggbb
-      return (int)(
-        ((unsigned int)0xff << 24) + 
+      packed_col =
+        0xFF000000u + 
         (hex_to_nibble(col[5]) << 20) +
         (hex_to_nibble(col[6]) << 16) +
         (hex_to_nibble(col[3]) << 12) +
         (hex_to_nibble(col[4]) <<  8) +
         (hex_to_nibble(col[1]) <<  4) +
-        (hex_to_nibble(col[2]) <<  0));
+        (hex_to_nibble(col[2]) <<  0);
+      break;
     case 9: // #rrggbbaa
-      return (int)(
+      packed_col =
         (hex_to_nibble(col[7]) << 28) +
         (hex_to_nibble(col[8]) << 24) +
         (hex_to_nibble(col[5]) << 20) +
@@ -77,13 +81,16 @@ int colour_char_to_packed_col(const char *colour) {
         (hex_to_nibble(col[3]) << 12) +
         (hex_to_nibble(col[4]) <<  8) +
         (hex_to_nibble(col[1]) <<  4) +
-        (hex_to_nibble(col[2]) <<  0));
+        (hex_to_nibble(col[2]) <<  0);
+      break;
     default:
       error("Unknown hex colour: '%s'", colour);
     }
   } else {
-    return rcolour_to_int(colour) ;
+    packed_col = rcolour_to_int(colour) ;
   }
+  
+  return packed_col;
 }
 
 
@@ -94,13 +101,13 @@ int colour_char_to_packed_col(const char *colour) {
 // @param colour Integer, CHARSXP, R colour name or hex colour
 // @return packed RGBA colour (integer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int colour_sexp_to_packed_col(SEXP colour_) {
+uint32_t colour_sexp_to_packed_col(SEXP colour_) {
   if (isInteger(colour_)) {
-    return asInteger(colour_);
+    return (uint32_t)asInteger(colour_);
   } else if (isString(colour_)) {
     return colour_char_to_packed_col(CHAR(asChar(colour_)));
   } else if (isLogical(colour_) && asLogical(colour_) == NA_LOGICAL) {
-    return 16777215; // #ffffff00 transparent white
+    return 0x00FFFFFF; // transparent white 0xAABBGGRR
   } else if (TYPEOF(colour_) == CHARSXP) {
     return colour_char_to_packed_col(CHAR(colour_));
   } else {
@@ -116,7 +123,7 @@ int colour_sexp_to_packed_col(SEXP colour_) {
 // @param N the required length of colours
 // @param do_free will be set to 'true' if the caller has to free the returned memory
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
+uint32_t *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -130,7 +137,7 @@ int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (isInteger(colours_) && length(colours_) == N) {
     *do_free = false;
-    return INTEGER(colours_);
+    return (uint32_t *)INTEGER(colours_);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,26 +145,26 @@ int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
   // Set *do_free = 1 to notify the caller that they must free() returned ptr
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   *do_free = true;
-  int *packed_cols = (int *)malloc((size_t)N * sizeof(int));
+  uint32_t *packed_cols = (uint32_t *)malloc((size_t)N * sizeof(uint32_t));
   if (packed_cols == NULL) {
     error("colours_to_packed_cols() malloc failed");
   }
   
   if (isLogical(colours_) && asLogical(colours_) == NA_LOGICAL) {
-    int packed_col = 16777215; // #ffffff00
+    uint32_t packed_col = 0x00FFFFFF; // transparent white 0xAABBGGRR
     for (int i = 0; i < N; i++) {
       packed_cols[i] = packed_col;
     }
   } else if (isInteger(colours_)) {
     // Must be length = 1 if we got here
     // Replicate same colour N times
-    int packed_col = asInteger(colours_);
+    uint32_t packed_col = (uint32_t)asInteger(colours_);
     for (int i = 0; i < N; i++) {
       packed_cols[i] = packed_col;
     }
   } else if (isString(colours_)) {
     if (length(colours_) == 1) {
-      int packed_col = colour_char_to_packed_col(CHAR(STRING_ELT(colours_, 0)));
+      uint32_t packed_col = colour_char_to_packed_col(CHAR(STRING_ELT(colours_, 0)));
       for (int i = 0; i < N; i++) {
         packed_cols[i] = packed_col;
       }
@@ -178,7 +185,7 @@ int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
 // Convert single packed_col (integer) to a hexadecimal string in CHARSXP format
 // Called from C
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP packed_col_to_CHARSXP_colour(int *packed_col) {
+SEXP packed_col_to_CHARSXP_colour(uint32_t *packed_col) {
   
   static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
@@ -207,7 +214,7 @@ SEXP packed_col_to_CHARSXP_colour(int *packed_col) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP packed_cols_to_hexcolours_(SEXP packed_cols_) {
   
-  int *packed_col_ptr = INTEGER(packed_cols_);
+  uint32_t *packed_col_ptr = (uint32_t *)INTEGER(packed_cols_);
   SEXP cols_ = PROTECT(allocVector(STRSXP, length(packed_cols_)));
   
   for (int i = 0; i < length(packed_cols_); i++) {
@@ -231,7 +238,7 @@ SEXP colours_to_packed_cols_(SEXP colours_) {
   } 
   
   SEXP packed_cols_ = PROTECT(allocVector(INTSXP, length(colours_)));
-  int *packed_cols = INTEGER(packed_cols_);
+  uint32_t *packed_cols = (uint32_t *)INTEGER(packed_cols_);
   
   if (isString(colours_)) {
     for (int i = 0; i < length(colours_); i++) {
@@ -240,7 +247,7 @@ SEXP colours_to_packed_cols_(SEXP colours_) {
   } else if (isLogical(colours_)) {
     // For when the user passes in logical NA
     for (int i = 0; i < length(colours_); i++) {
-      packed_cols[i] = 16777215; // #ffffff00
+      packed_cols[i] = 0x00FFFFFF; // transparent white 0xAABBGGRR
     }
   } else {
     error("Colour must be integer or character vector not '%s'", type2char((SEXPTYPE)TYPEOF(colours_)));

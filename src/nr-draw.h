@@ -1,3 +1,3 @@
 
 
-void draw_point_c(int *nr, int height, int width, int colour, int x, int y);
+void draw_point_c(uint32_t *nr, int height, int width, uint32_t colour, int x, int y);

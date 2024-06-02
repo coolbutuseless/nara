@@ -20,14 +20,14 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(int *nr, int x, int y, int nr_width, int nr_height, int *src, int x0, int y0, int w, int h, int src_width, int src_height) {
+void blit_core_(uint32_t *nr, int x, int y, int nr_width, int nr_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
 
 
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - y0 - yoff;
     for (int xoff = 0; xoff < w; xoff++) {
 
-      int src_col = src[y1 * src_width + x0 + xoff - 1];
+      uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
 
       draw_point_c(nr, nr_height, nr_width, src_col, x + xoff, y + yoff);
     }
@@ -83,8 +83,8 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr  = INTEGER(nr_);
-  int *src = INTEGER(src_);
+  uint32_t *nr  = (uint32_t *)INTEGER(nr_);
+  uint32_t *src = (uint32_t *)INTEGER(src_);
   for (int i = 0; i < length(x_); i++) {
     blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height);
   }

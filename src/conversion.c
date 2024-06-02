@@ -55,11 +55,11 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr = INTEGER(dst_);
+  uint32_t *nr = (uint32_t *)INTEGER(dst_);
   int *mat = INTEGER(mat_);
   
   bool freepal = false;
-  int *palette = colours_to_packed_cols(palette_, N, &freepal);
+  uint32_t *palette = colours_to_packed_cols(palette_, N, &freepal);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -68,7 +68,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
         error("not enough colours in palette. Need at least %i but have only %i", val, N);
       }
       if (val <= 0) {
-        *(nr + row * width + col) = 16777215;  // #ffffff00
+        *(nr + row * width + col) = 0x00FFFFFF;  // transparent white 0xAABBGGRR
       } else {
         *(nr + row * width + col) = palette[val - 1];
       }
@@ -118,7 +118,7 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr = INTEGER(dst_);
+  uint32_t *nr = (uint32_t *)INTEGER(dst_);
 
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -147,7 +147,7 @@ SEXP nr_to_raster_(SEXP nr_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -213,7 +213,7 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr = INTEGER(dst_);
+  uint32_t *nr = (uint32_t *)INTEGER(dst_);
   double *r = REAL(arr_) + width * height * 0;
   double *g = REAL(arr_) + width * height * 1;
   double *b = REAL(arr_) + width * height * 2;
@@ -222,21 +222,21 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
   if (has_alpha) {
     for (int col = 0; col < width; col++) {
       for (int row = 0; row < height; row++) {
-        *(nr + row * width + col) = (int)(
-          ((uint8_t)(*(a + col * height + row) * 255) << 24) +
-          ((uint8_t)(*(b + col * height + row) * 255) << 16) + 
-          ((uint8_t)(*(g + col * height + row) * 255) <<  8) +
-          ((uint8_t)(*(r + col * height + row) * 255)      ));
+        *(nr + row * width + col) = 
+          ((uint32_t)(*(a + col * height + row) * 255) << 24) +
+          ((uint32_t)(*(b + col * height + row) * 255) << 16) + 
+          ((uint32_t)(*(g + col * height + row) * 255) <<  8) +
+          ((uint32_t)(*(r + col * height + row) * 255)      );
       }
     }
   } else {
     for (int col = 0; col < width; col++) {
       for (int row = 0; row < height; row++) {
         *(nr + row * width + col) = 
-          ((unsigned int)0xff << 24) +
-          ((uint8_t)(*(b + col * height + row) * 255) << 16) + 
-          ((uint8_t)(*(g + col * height + row) * 255) <<  8) +
-          ((uint8_t)(*(r + col * height + row) * 255)      );
+          ((uint32_t)0xff << 24) +
+          ((uint32_t)(*(b + col * height + row) * 255) << 16) + 
+          ((uint32_t)(*(g + col * height + row) * 255) <<  8) +
+          ((uint32_t)(*(r + col * height + row) * 255)      );
       }
     }
   }
@@ -268,7 +268,7 @@ SEXP nr_to_array_(SEXP nr_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   double *r = REAL(arr_) + width * height * 0;
   double *g = REAL(arr_) + width * height * 1;
   double *b = REAL(arr_) + width * height * 2;
@@ -276,7 +276,7 @@ SEXP nr_to_array_(SEXP nr_) {
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
-      int val = *(nr + row * width + col);
+      uint32_t val = *(nr + row * width + col);
       a[col * height + row] = (double)( (val >> 24) & 0xff ) / 255;
       b[col * height + row] = (double)( (val >> 16) & 0xff ) / 255;
       g[col * height + row] = (double)( (val >>  8) & 0xff ) / 255;

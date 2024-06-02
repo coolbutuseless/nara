@@ -18,7 +18,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Draw a single point on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_point_c(int *nr, int height, int width, int colour, int x, int y) {
+void draw_point_c(uint32_t *nr, int height, int width, uint32_t colour, int x, int y) {
 
   // Check for transparent colour
   if (is_transparent(colour)) return;
@@ -36,7 +36,7 @@ void draw_point_c(int *nr, int height, int width, int colour, int x, int y) {
         nr[y * width + x] = colour;
       } else {
         // Alpha blending
-        int val = nr[y * width + x];
+        uint32_t val = nr[y * width + x];
         uint8_t r2 =  val        & 255;
         uint8_t g2 = (val >>  8) & 255;
         uint8_t b2 = (val >> 16) & 255;
@@ -52,7 +52,7 @@ void draw_point_c(int *nr, int height, int width, int colour, int x, int y) {
         b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
         // a = (alpha * a + (255 - alpha) * a2) / 255;
 
-        nr[y * width + x] = (r) | (g << 8) | (b << 16) | (255 << 24);
+        nr[y * width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
       }
   }
 }
@@ -62,7 +62,7 @@ void draw_point_c(int *nr, int height, int width, int colour, int x, int y) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw multiple points on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_points_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
+void draw_points_c(uint32_t *nr, int height, int width, uint32_t colour, int *x, int *y, int npoints) {
   for (int i = 0 ; i < npoints; i++) {
     draw_point_c(nr, height, width, colour, x[i], y[i]);
   }
@@ -80,7 +80,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
     error("x and y must be same length");
   }
 
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
@@ -93,7 +93,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
   
   // Colours
   bool freecol = false;
-  int *colour = colours_to_packed_cols(colour_, N, &freecol);
+  uint32_t *colour = colours_to_packed_cols(colour_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
     draw_point_c(nr, height, width, colour[i], x[i], y[i]);
@@ -114,7 +114,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_line_c(int *nr, int height, int width, int colour, int x0, int y0, int x1, int y1) {
+void draw_line_c(uint32_t *nr, int height, int width, uint32_t colour, int x0, int y0, int x1, int y1) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
@@ -143,7 +143,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
 
   assert_nativeraster(nr_);
 
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
@@ -158,7 +158,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   
   // Colours
   bool freecol = false;
-  int *colour = colours_to_packed_cols(colour_, N, &freecol);
+  uint32_t *colour = colours_to_packed_cols(colour_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
     draw_line_c(nr, height, width, colour[i], x0[i], y0[i], x1[i], y1[i]);
@@ -183,12 +183,12 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
 
   assert_nativeraster(nr_);
 
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
 
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
 
-  int colour = colour_sexp_to_packed_col(colour_);
+  uint32_t colour = colour_sexp_to_packed_col(colour_);
   
   if (length(x_) != length(y_)) {
     error("Arguments 'x' and 'y' must be same length.");
@@ -230,11 +230,11 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
   // Unpack args
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   assert_nativeraster(nr_);
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
 
-  int colour = colour_sexp_to_packed_col(colour_);
+  uint32_t colour = colour_sexp_to_packed_col(colour_);
   int x = asInteger(x_);
   int y = asInteger(y_);
 
@@ -298,7 +298,7 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   // Unpack args
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   assert_nativeraster(nr_);
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
@@ -312,8 +312,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   // Colours
   bool freecol = false, freefill = false;
-  int *colour = colours_to_packed_cols(colour_, N, &freecol);
-  int *fill   = colours_to_packed_cols(fill_  , N, &freefill);
+  uint32_t *colour = colours_to_packed_cols(colour_, N, &freecol);
+  uint32_t *fill   = colours_to_packed_cols(fill_  , N, &freefill);
   
   for (int i = 0; i < N; i++) {
     
@@ -360,7 +360,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   // Unpack args
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   assert_nativeraster(nr_);
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
 
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
@@ -374,8 +374,8 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   
   // Colours
   bool freecol = false, freefill = false;
-  int *colour = colours_to_packed_cols(colour_, N, &freecol);
-  int *fill   = colours_to_packed_cols(fill_  , N, &freefill);
+  uint32_t *colour = colours_to_packed_cols(colour_, N, &freecol);
+  uint32_t *fill   = colours_to_packed_cols(fill_  , N, &freefill);
 
   for (int idx = 0; idx < length(x_); idx++) {
     // Rprintf("idx: %i\n", idx);
@@ -442,7 +442,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
 // not as efficient as something with an active edge table but it
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_polygon_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
+void fill_polygon_c(uint32_t *nr, int height, int width, uint32_t colour, int *x, int *y, int npoints) {
   
   int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
   if (nodeX == NULL) {
@@ -516,13 +516,13 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
     error("Arguments 'x' and 'y' must be same length.");
   }
   
-  int *nr = INTEGER(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
 
-  int colour = colour_sexp_to_packed_col(colour_);
-  int fill   = colour_sexp_to_packed_col(fill_);
+  uint32_t colour = colour_sexp_to_packed_col(colour_);
+  uint32_t fill   = colour_sexp_to_packed_col(fill_);
   
   // get an int* from a numeric from R
   bool freex = false, freey = false;

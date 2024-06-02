@@ -14,10 +14,23 @@ normalize_colour <- function(colour) {
   rgb(res[,1], res[, 2], res[,3], res[,4], maxColorValue = 255)
 }
 
+col2hex <- function(colour) {
+  
+  colour <- normalize_colour(colour)
+  paste0(
+    "0x",
+    substr(colour, 8, 9),
+    substr(colour, 6, 7),
+    substr(colour, 4, 5),
+    substr(colour, 2, 3)
+  )
+}
 
 
-sink("col.txt")
-for (colour in colours()) {
-  cat('  case ', djb2_hash(colour), ':\n    res = ', str_cols_to_packed_cols(normalize_colour(colour)), ';\n    break;\n', sep="")
+cols <- c(NA_character_, 'transparent', colours())
+
+sink("working/col.txt")
+for (colour in cols) {
+  cat('  case ', djb2_hash(colour), ':\n    res = ', col2hex(colour), '; // ', colour, '\n    break;\n', sep="")
 }
 sink()
