@@ -15,6 +15,11 @@
 #'        where the coordinates are (1, 1).
 #' @param x0,y0 start coordiates within src
 #' @param w,h size within src
+#' @param respect_alpha Should the alpha channel be respected when blitting?
+#'        Default: TRUE.  If FALSE, then contents will be blindly overwritten
+#'        which can be much much faster.  If the \code{src} has an 
+#'        any transparent pixels, \code{respect_alpha = TRUE} is 
+#'        probably the correct setting.
 #'
 #' @return \code{nativeRaster}
 #' 
@@ -25,8 +30,8 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL) {
-  invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h))
+nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect_alpha = FALSE) {
+  invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, respect_alpha))
 }
 
 
@@ -47,8 +52,8 @@ nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2 <- function(nr, x, y, src, loc) {
-  invisible(.Call(blit_, nr, x, y, src, loc[[1]], loc[[2]], loc[[3]], loc[[4]]))
+nr_blit2 <- function(nr, x, y, src, loc, respect_alpha = TRUE) {
+  invisible(.Call(blit_, nr, x, y, src, loc[[1]], loc[[2]], loc[[3]], loc[[4]], respect_alpha))
 }
 
 
@@ -108,11 +113,12 @@ if (FALSE) {
   plot(nr, T)
   
   
-  
-  nr <- nr_new(40, 40, 'grey80'); 
+  # 500
+  nr <- nr_new(1200, 800, 'grey80'); 
   nr2 <- png::readPNG(system.file("img/Rlogo.png", package = "png"), native = TRUE)
+  nr2 <- png::readPNG("~/Desktop/Screenshot 2024-05-31 at 1.23.16.PM.png", native = TRUE)
   bench::mark(
-    nr_blit(nr, -20, -10, nr2) 
+    nr_blit(nr, -30, -10, nr2, respect_alpha = FALSE) 
   )
   plot(nr, T)
   

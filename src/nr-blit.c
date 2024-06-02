@@ -20,7 +20,9 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
+void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, 
+                uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height,
+                bool respect_alpha) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Check if src doesn't overlap with dst **AT ALL**
@@ -64,11 +66,23 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint
   
   if (w == 0 || h == 0) return;
   
-  for (int yoff = 0; yoff < h; yoff++) {
-    int y1 = src_height - y0 - yoff;
-    for (int xoff = 0; xoff < w; xoff++) {
-      uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
-      draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // If 'respect_alpha', then copy pixel by pixel
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (respect_alpha) {
+    for (int yoff = 0; yoff < h; yoff++) {
+      int y1 = src_height - y0 - yoff;
+      for (int xoff = 0; xoff < w; xoff++) {
+        uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
+        draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
+      }
+    }
+  } else {
+    // Blit it via 'memcpy()' trashing any contents
+    // Flip y axis. matrices are (1, 1) at top left, 
+    for (int yoff = 0; yoff < h; yoff++) {
+      int y1 = src_height - y0 - yoff;
+      memcpy(dst + (dst_height - y - yoff) * dst_width + x - 1, src + y1 * src_width + x0, w * sizeof(int32_t));
     }
   }
 }
@@ -93,7 +107,8 @@ void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_) {
+SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_,
+           SEXP respect_alpha_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -140,8 +155,9 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr  = (uint32_t *)INTEGER(nr_);
   uint32_t *src = (uint32_t *)INTEGER(src_);
+  bool respect_alpha = asLogical(respect_alpha_);
   for (int i = 0; i < length(x_); i++) {
-    blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height);
+    blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

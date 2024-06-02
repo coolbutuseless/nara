@@ -4,7 +4,17 @@
 \alias{nr_blit}
 \title{Copy one \code{nativeRaster} image into another at an arbitrary location.}
 \usage{
-nr_blit(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL)
+nr_blit(
+  nr,
+  x,
+  y,
+  src,
+  x0 = 1L,
+  y0 = 1L,
+  w = NULL,
+  h = NULL,
+  respect_alpha = FALSE
+)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -21,6 +31,12 @@ where the coordinates are (1, 1).}
 \item{x0, y0}{start coordiates within src}
 
 \item{w, h}{size within src}
+
+\item{respect_alpha}{Should the alpha channel be respected when blitting?
+Default: TRUE.  If FALSE, then contents will be blindly overwritten
+which can be much much faster.  If the \code{src} has an 
+any transparent pixels, \code{respect_alpha = TRUE} is 
+probably the correct setting.}
 }
 \value{
 \code{nativeRaster}

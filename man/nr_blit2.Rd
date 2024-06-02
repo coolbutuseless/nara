@@ -4,7 +4,7 @@
 \alias{nr_blit2}
 \title{Blit2}
 \usage{
-nr_blit2(nr, x, y, src, loc)
+nr_blit2(nr, x, y, src, loc, respect_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -21,6 +21,12 @@ where the coordinates are (1, 1).}
 \item{loc}{a 4 element numeric vector (or list) with the following values 
 in this exact order: (x0, y0, w, h) corresponding to the 
 separate arguments to \code{nr_blit()}}
+
+\item{respect_alpha}{Should the alpha channel be respected when blitting?
+Default: TRUE.  If FALSE, then contents will be blindly overwritten
+which can be much much faster.  If the \code{src} has an 
+any transparent pixels, \code{respect_alpha = TRUE} is 
+probably the correct setting.}
 }
 \value{
 \code{nativeRaster}

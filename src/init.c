@@ -15,7 +15,7 @@ extern SEXP fliph_(SEXP nr_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_);
+extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, SEXP respect_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
@@ -59,7 +59,7 @@ static const R_CallMethodDef CEntries[] = {
   {"flipv_"    , (DL_FUNC) &flipv_    , 1},
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
 
-  {"blit_"     , (DL_FUNC) &blit_     , 8},
+  {"blit_"     , (DL_FUNC) &blit_     , 9},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 3},
   
