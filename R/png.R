@@ -1,41 +1,25 @@
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Read a PNG with a transparent colour into a native raster
+#' Read PNG as \code{nativeRaster} converting specified colours to transparent
 #' 
 #' @param source Either name of the file to read from or a raw vector 
 #'        representing the PNG file content.
-#' @param transparent List or vector of colours which should be considered transporent
-#'        R colour names, integer values, hex colours
+#' @param make_transparent List or vector of colours which should be considered transporent.
+#'        R colour names, hex colours, or packed colours (integers)
 #'                
-#' @return nativeRaster
+#' @return \code{nativeRaster}
+#' 
 #' @import png
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-read_png <- function(source, transparent = NULL) {
+read_png <- function(source, make_transparent = NULL) {
   nr <- png::readPNG(source, native = TRUE)
   
-  col_transparent <- str_cols_to_packed_cols('#ffffff00')
-  
-  for (col in transparent) {
+  for (col in make_transparent) {
     col <- str_cols_to_packed_cols(col)
-    nr[nr == col] <- col_transparent
+    nr[nr == col] <- transparent
   }
   
   nr
 }
 
-
-if (FALSE) {
-  ss <- read_png(source, transparent = list(-1594494))
-  # grid.newpage(); grid.raster(ss)
-  
-  nr <- nr_new(100, 100, 'grey90') 
-  nr_rect(nr, 1, 1, 28, 25)
-  nr_blit(nr, 1, 1, ss, 7, 5, 26, 25)
-  grid.newpage(); grid.raster(nr, interpolate = FALSE)
-  
-  nr_blit2(nr, 1, 1, ss, loc)  
-  
-  
-}

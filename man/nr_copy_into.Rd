@@ -24,4 +24,5 @@ nr1 <- nr_new(200, 100, 'hotpink')
 nr2 <- nr_new(200, 100, 'green')
 nr_copy_into(nr1, nr2)
 plot(nr1)
+
 }

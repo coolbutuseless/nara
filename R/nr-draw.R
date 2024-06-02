@@ -3,15 +3,21 @@
 #' Draw points on a \code{nativeRaster} image
 #'
 #' @inheritParams nr_fill
-#' @param x,y Integer vectors of point/vertex coordinates
-#' @param colour Single colour or character vector of colours the same length
-#'        as \code{x} and \code{y}
+#' @param x,y Vectors of point coordinates
+#' @param colour Vector of colours
 #'
+#' @return Original \code{nativeRaster} modified in-place
+#'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_point(nr, x = seq(N), y = seq(N), colour = rainbow(N)) 
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_point <- function(nr, x, y, colour = 'black') {
-  .Call(draw_points_, nr, x, y, colour)
-  invisible(nr)
+  invisible(.Call(draw_points_, nr, x, y, colour))
 }
 
 
@@ -21,7 +27,14 @@ nr_point <- function(nr, x, y, colour = 'black') {
 #' Uses Bresenham's algorithm to draw lines. No antialiasing.
 #'
 #' @inheritParams nr_fill
-#' @param x0,y0,x1,y1 Coordinates of endpoints of line. [vector]
+#' @param x0,y0,x1,y1 Vectors of coordinates of endpoints of line
+#'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_line(nr, x0 = c(1, N), y0 = c(1, 1), x1 = c(N, 1), y1 = c(N, N), 
+#'         colour = c('red', 'black'))
+#' plot(nr)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

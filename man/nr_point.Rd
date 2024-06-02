@@ -9,11 +9,20 @@ nr_point(nr, x, y, colour = "black")
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{x, y}{Integer vectors of point/vertex coordinates}
+\item{x, y}{Vectors of point coordinates}
 
-\item{colour}{Single colour or character vector of colours the same length
-as \code{x} and \code{y}}
+\item{colour}{Vector of colours}
+}
+\value{
+Original \code{nativeRaster} modified in-place
 }
 \description{
 Draw points on a \code{nativeRaster} image
+}
+\examples{
+N <- 20
+nr <- nr_new(N, N, 'grey80')
+nr_point(nr, x = seq(N), y = seq(N), colour = rainbow(N)) 
+plot(nr)
+
 }

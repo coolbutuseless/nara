@@ -2,20 +2,20 @@
 % Please edit documentation in R/png.R
 \name{read_png}
 \alias{read_png}
-\title{Read a PNG with a transparent colour into a native raster}
+\title{Read PNG as \code{nativeRaster} converting specified colours to transparent}
 \usage{
-read_png(source, transparent = NULL)
+read_png(source, make_transparent = NULL)
 }
 \arguments{
 \item{source}{Either name of the file to read from or a raw vector 
 representing the PNG file content.}
 
-\item{transparent}{List or vector of colours which should be considered transporent
-R colour names, integer values, hex colours}
+\item{make_transparent}{List or vector of colours which should be considered transporent.
+R colour names, hex colours, or packed colours (integers)}
 }
 \value{
-nativeRaster
+\code{nativeRaster}
 }
 \description{
-Read a PNG with a transparent colour into a native raster
+Read PNG as \code{nativeRaster} converting specified colours to transparent
 }

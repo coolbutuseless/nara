@@ -24,4 +24,5 @@ Fill a \code{nativeRaster} image with the given colour
 nr <- nr_new(400, 300, 'hotpink')
 nr_fill(nr, 'blue')
 plot(nr)
+
 }

@@ -20,4 +20,5 @@ Scale up a \code{nativeRaster} by an integer factor
 \examples{
 nr1 <- nr_new(200, 100, 'white')
 nr2 <- nr_scale(nr1, 2)
+
 }

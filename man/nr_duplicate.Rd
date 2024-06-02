@@ -21,4 +21,5 @@ contents from an existing image
 nr1 <- nr_new(200, 200, 'hotpink')
 nr2 <- nr_duplicate(nr1)
 plot(nr2)
+
 }

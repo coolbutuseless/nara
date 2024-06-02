@@ -31,4 +31,5 @@ differently by graphics devices:
 \examples{
 nr <- nr_new(400, 300, 'hotpink')
 plot(nr)
+
 }

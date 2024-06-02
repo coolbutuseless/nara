@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_nativeraster}
 \alias{is_nativeraster}
-\title{Check if object is nativeRaster}
+\title{Check if object is \code{nativeRaster}}
 \usage{
 is_nativeraster(x)
 }
@@ -10,10 +10,10 @@ is_nativeraster(x)
 \item{x}{object to check}
 }
 \value{
-logical
+logical. TRUE if object is a \code{nativeRaster}
 }
 \description{
-Check if object is nativeRaster
+Check if object is \code{nativeRaster}
 }
 \examples{
 is_nativeraster(mtcars)

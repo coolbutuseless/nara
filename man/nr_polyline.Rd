@@ -9,7 +9,7 @@ nr_polyline(nr, x, y, colour = "black", close = FALSE)
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{x, y}{Integer vectors of point/vertex coordinates}
+\item{x, y}{Vectors of point coordinates}
 
 \item{colour}{Color as a character string. Either a standard R colour
 (e.g. 'blue', 'white')

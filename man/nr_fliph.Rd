@@ -21,4 +21,5 @@ nr_rect(nr, 1, 1, 30, 15)
 plot(nr)
 nr_fliph(nr)
 plot(nr)
+
 }

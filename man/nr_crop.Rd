@@ -27,4 +27,5 @@ Crop a section out of a nativeRaster into a new nativeRaster
 nr <- nr_new(400, 400, 'hotpink')
 nr2 <- nr_crop(nr, 1, 1, 10, 10)
 plot(nr2)
+
 }

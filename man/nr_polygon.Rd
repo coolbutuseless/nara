@@ -9,7 +9,7 @@ nr_polygon(nr, x, y, fill = "black", colour = NA)
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{x, y}{Integer vectors of point/vertex coordinates}
+\item{x, y}{Vectors of point coordinates}
 
 \item{fill}{fill colour [scalar]}
 

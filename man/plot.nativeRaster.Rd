@@ -2,15 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{plot.nativeRaster}
 \alias{plot.nativeRaster}
-\title{Plot a native raster as an image}
+\title{Plot a \code{nativeRaster} as an image}
 \usage{
 \method{plot}{nativeRaster}(x, y, ...)
 }
 \arguments{
-\item{x}{native raster}
+\item{x}{\code{nativeRaster}}
 
-\item{y}{any argument here will cause the page to be called using a call
-to \code{grid::grid.newpage()}}
+\item{y}{any argument here will cause \code{grid::grid.newpage()} to 
+be called prior to drawing the \code{nativeRaster}}
 
 \item{...}{other arguments passed to \code{grid::grid.raster()}}
 }
@@ -18,5 +18,10 @@ to \code{grid::grid.newpage()}}
 None.
 }
 \description{
-Plot a native raster as an image
+Plot a \code{nativeRaster} as an image
+}
+\examples{
+nr <- nr_new(200, 100, 'hotpink')
+plot(nr)
+
 }
