@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -102,7 +103,7 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
   uint32_t height = Rf_nrows(nr_);
   uint32_t width  = Rf_ncols(nr_);
 
-  int colour = single_sexp_col_to_int(colour_);
+  int colour = colour_sexp_to_packed_col(colour_);
 
   fill_c(nr, height, width, colour);
 

@@ -1,6 +1,6 @@
 
-int single_str_col_to_int(const char *colour);
-int single_sexp_col_to_int(SEXP colour_);
-SEXP single_int_to_col_CHARSXP(int *packed_col);
-int *col_to_int_ptr(SEXP colour_, int N, int *do_free);
-int is_transparent(int colour);
+int colour_char_to_packed_col(const char *colour);
+int colour_sexp_to_packed_col(SEXP colour_);
+SEXP packed_col_to_CHARSXP_colour(int *packed_col);
+int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free);
+bool is_transparent(int colour);

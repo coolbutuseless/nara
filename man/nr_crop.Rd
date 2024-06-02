@@ -2,18 +2,29 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_crop}
 \alias{nr_crop}
-\title{Crop a section out of a nativeRaster}
+\alias{nr_crop2}
+\title{Crop a section out of a nativeRaster into a new nativeRaster}
 \usage{
 nr_crop(nr, x, y, w, h)
+
+nr_crop2(nr, loc)
 }
 \arguments{
-\item{nr}{nativeRaster}
+\item{nr}{\code{nativeRaster}}
 
 \item{x, y, w, h}{dimensions of cropped section}
+
+\item{loc}{dimensions of cropped section. A vector of 4 values 
+i.e. \code{c(x, y, w, h)}}
 }
 \value{
-new nativeRaster
+New \code{nativeRaster}
 }
 \description{
-Crop a section out of a nativeRaster
+Crop a section out of a nativeRaster into a new nativeRaster
+}
+\examples{
+nr <- nr_new(400, 400, 'hotpink')
+nr2 <- nr_crop(nr, 1, 1, 10, 10)
+plot(nr2)
 }

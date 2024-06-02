@@ -1,18 +1,19 @@
 
-# nara 0.1.1.9003 2024-05-29
+# nara 0.1.1.9004 2024-06-02
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
 * Standardise argument ordering
 * Remove 'dino' sprites
 * Add 'deer' spritesheet and isometric landscape tiles
-* `colour_to_integer()` for `transparent` and `NA_character` now returns value
+* `str_cols_to_packed_cols()` for `transparent` and `NA_character` now returns value
   equivalent to `#ffffff00`
 * Add
     * `nr_crop()`
     * `nr_flipv()`
     * `nr_fliph()`
     * `matrix_to_nr()`
+    * `nr_scale()`
 * Refactored colour conversion routines. 
 * Fast conversions in C
     * `array_to_nr()`

@@ -7,7 +7,7 @@
 nr_point(nr, x, y, colour = "black")
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
 
 \item{x, y}{Integer vectors of point/vertex coordinates}
 

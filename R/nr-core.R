@@ -4,7 +4,7 @@
 #' Create a \code{nativeRaster} image
 #'
 #' A \code{nativeRaster} in R looks like an integer matrix, but is interpreted
-#' different by graphics devices:
+#' differently by graphics devices:
 #'
 #' \itemize{
 #'   \item{The data should be treated as RGBA pixels in row-major ordering}
@@ -13,13 +13,21 @@
 #' }
 #'
 #' @param width,height Image dimensions in pixels
-#' @param fill Background fill color as a character string. Either a standard R color
-#'        or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
+#' @param fill Background fill color as a character string. Either a standard R colour
+#'        (e.g. 'blue', 'white')
+#'        or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+#'        or \code{#rgb}
 #'
+#' @return \code{nativeRaster}
+#' 
+#' @examples
+#' nr <- nr_new(400, 300, 'hotpink')
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
-  res <- matrix(colour_to_integer(fill), nrow = height, ncol = width)
+  res <- matrix(str_cols_to_packed_cols(fill), nrow = height, ncol = width)
   class(res) <- 'nativeRaster'
   attr(res, 'channels') <- 4L
   res
@@ -29,24 +37,23 @@ nr_new <- function(width, height, fill = 'white') {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Fill a \code{nativeRaster} image with the given colour
 #'
-#' @param nr \code{nativeRaster} image
-#' @param colour Color as a character string. Either a standard R color
-#'        or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
-#' \describe{
-#'   \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
-#'         is useful when you are using an indexed palette like many old school games
-#'         (like AnotherWorld) and do not want the value interpreted as a colour and
-#'         alpha blended when drawing etc}
-#'   \item{\code{1}}{ This operation performs
-#'        a bitwise logical-or with the current value.  This is needed for
-#'        rendering in the \code{AnotherWorld} game engine.}
-#'   \item{\code{2 (default)}}{Regular colour handing for standard pixel handling}
-#'   }
+#' @param nr \code{nativeRaster}
+#' @param colour Color as a character string. Either a standard R colour
+#'        (e.g. 'blue', 'white')
+#'        or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+#'        or \code{#rgb}
+#'        
+#' @return The original \code{nativeRaster} modified in-place.        
+#' 
+#' @examples
+#' nr <- nr_new(400, 300, 'hotpink')
+#' nr_fill(nr, 'blue')
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fill <- function(nr, colour) {
-  .Call(fill_, nr, colour)
-  invisible(nr)
+  invisible(.Call(fill_, nr, colour))
 }
 
 
@@ -58,13 +65,20 @@ nr_fill <- function(nr, colour) {
 #' If the \code{nativeRaster} images are of different sizes, use the
 #' \code{nr_blit()} function.
 #'
-#' @param nr_src,nr_dst Source and destination \code{nativeRaster} images
+#' @param src,dst Source and destination \code{nativeRaster} images
 #'
+#' @return The 'dst' \code{nativeRaster}
+#' 
+#' @examples
+#' nr1 <- nr_new(200, 100, 'hotpink')
+#' nr2 <- nr_new(200, 100, 'green')
+#' nr_copy_into(nr1, nr2)
+#' plot(nr1)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_copy_into <- function(nr_dst, nr_src) {
-  .Call(copy_into_, nr_dst, nr_src)
-  invisible(nr_dst)
+nr_copy_into <- function(dst, src) {
+  invisible(.Call(copy_into_, dst, src))
 }
 
 
@@ -73,7 +87,14 @@ nr_copy_into <- function(nr_dst, nr_src) {
 #' contents from an existing image
 #'
 #' @inheritParams nr_fill
-#'
+#' 
+#' @return New \code{nativeRaster}
+#' 
+#' @examples
+#' nr1 <- nr_new(200, 200, 'hotpink')
+#' nr2 <- nr_duplicate(nr1)
+#' plot(nr2)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_duplicate <- function(nr) {
@@ -82,12 +103,20 @@ nr_duplicate <- function(nr) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Crop a section out of a nativeRaster
+#' Crop a section out of a nativeRaster into a new nativeRaster
 #' 
-#' @param nr nativeRaster
+#' @inheritParams nr_fill
 #' @param x,y,w,h dimensions of cropped section
+#' @param loc dimensions of cropped section. A vector of 4 values 
+#'        i.e. \code{c(x, y, w, h)}
 #' 
-#' @return new nativeRaster
+#' @return New \code{nativeRaster}
+#' 
+#' @examples
+#' nr <- nr_new(400, 400, 'hotpink')
+#' nr2 <- nr_crop(nr, 1, 1, 10, 10)
+#' plot(nr2)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_crop <- function(nr, x, y, w, h) {
@@ -96,13 +125,29 @@ nr_crop <- function(nr, x, y, w, h) {
   dst
 }
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @rdname nr_crop
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_crop2 <- function(nr, loc) {
+  nr_crop(nr, loc[[1]], loc[[2]], loc[[3]], loc[[4]])
+}
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Flip a raster vertically
+#' Flip a \code{nativeRaster} vertically
 #' 
-#' @param nr nativeRaster
+#' @inheritParams nr_fill
 #' 
-#' @return original nativeRaster flipped in place
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(400, 200, 'white')
+#' nr_rect(nr, 1, 1, 30, 15)
+#' plot(nr)
+#' nr_flipv(nr)
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_flipv <- function(nr) {
@@ -111,11 +156,19 @@ nr_flipv <- function(nr) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Flip a raster horizontally
+#' Flip a \code{nativeRaster} horizontally
 #' 
-#' @param nr nativeRaster
+#' @inheritParams nr_fill
 #' 
-#' @return original nativeRaster flipped in place
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(400, 200, 'white')
+#' nr_rect(nr, 1, 1, 30, 15)
+#' plot(nr)
+#' nr_fliph(nr)
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fliph <- function(nr) {
@@ -123,60 +176,33 @@ nr_fliph <- function(nr) {
 }
 
 
-
-if (FALSE) {
-  N <- 400
-  nr <- nr_new(N*2, N, 'grey90')
-  cat("\n\n")
-  nr_rect(nr, 1, 1, 5, 5, fill = 'blue')
-
-  NC <- 300
-  nr_circle(nr,
-            x = sample(N*2, NC),
-            y = sample(N, NC),
-            r = sample(10:20, NC, TRUE),
-            fill = rainbow(NC))
-
-  # nr_rect(nr, 3, 3, 5, 5, fill = '#ff000080')
-  grid::grid.newpage()
-  grid::grid.raster(nr, interpolate = FALSE)
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Scale up a \code{nativeRaster} by an integer factor
+#' 
+#' @inheritParams nr_fill
+#' @param scale integer value >= 1
+#' 
+#' @return New \code{nativeRaster}
+#' 
+#' @examples
+#' nr1 <- nr_new(200, 100, 'white')
+#' nr2 <- nr_scale(nr1, 2)
+#' 
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_scale <- function(nr, scale) {
+  scale <- as.integer(scale)
+  if (length(scale) != 1L || scale < 1L) {
+    stop("Invalid 'scale' value: ", scale)
+  }
+  
+  m <- matrix(1L, scale, scale)
+  res <- base::kronecker(nr, m)
+  mode(res) <- 'integer'
+  
+  class(res) <- 'nativeRaster'
+  attr(res, 'channels') <- 4L
+  res
 }
-
-
-
-if (FALSE) {
-
-  nr <- nr_new(100, 100, fill = 0)
-  # nr_fill(nr, 2L)
-  nr_polygon(nr, c(20, 80, 80, 20), c(20, 20, 80, 80), fill = 2, colour = 1)
-  table(nr)
-  
-  
-  library(grid)
-  zz <- nr_crop(deer, 1, 128, 32, 32)
-  yy <- nr_duplicate(zz)
-  grid.newpage(); grid.raster(zz, interpolate = F)
-  nr_flipv(zz)
-  grid.newpage(); grid.raster(zz, interpolate = F)
-  nr_fliph(zz)
-  grid.newpage(); grid.raster(zz, interpolate = F)
-  
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

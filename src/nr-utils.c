@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -36,7 +37,7 @@ void assert_nativeraster(SEXP nr_) {
 // @param N Expected length
 // @param do_Free was new memory allocat in this function (the caller should free())
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int *as_int32_vec(SEXP vec_, int N, int *do_free) {
+int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be REALSXP or INTSXP

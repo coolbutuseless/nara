@@ -1,9 +1,11 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Check if object is nativeRaster
+#' Check if object is \code{nativeRaster}
 #' 
 #' @param x object to check
-#' @return logical
+#' 
+#' @return logical. TRUE if object is a \code{nativeRaster}
+#' 
 #' @examples
 #' is_nativeraster(mtcars)
 #' 
@@ -15,14 +17,19 @@ is_nativeraster <- function(x) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Plot a native raster as an image
+#' Plot a \code{nativeRaster} as an image
 #' 
-#' @param x native raster
-#' @param y any argument here will cause the page to be called using a call
-#'        to \code{grid::grid.newpage()}
+#' @param x \code{nativeRaster}
+#' @param y any argument here will cause \code{grid::grid.newpage()} to 
+#'        be called prior to drawing the \code{nativeRaster} 
 #' @param ... other arguments passed to \code{grid::grid.raster()}
 #'
 #' @return None.
+#' 
+#' @examples
+#' nr <- nr_new(200, 100, 'hotpink')
+#' plot(nr)
+#' 
 #' @import grid
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

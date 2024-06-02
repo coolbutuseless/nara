@@ -42,8 +42,8 @@ extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Colour
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP col_to_int_(SEXP colour_);
-extern SEXP int_to_col_(SEXP ints_);
+extern SEXP colours_to_packed_cols_(SEXP colour_);
+extern SEXP packed_cols_to_hexcolours_(SEXP ints_);
 
 
 
@@ -78,8 +78,8 @@ static const R_CallMethodDef CEntries[] = {
   {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
   {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},
   
-  {"col_to_int_"  , (DL_FUNC) &col_to_int_  , 1},
-  {"int_to_col_"  , (DL_FUNC) &int_to_col_  , 1},
+  {"colours_to_packed_cols_"  , (DL_FUNC) &colours_to_packed_cols_  , 1},
+  {"packed_cols_to_hexcolours_"  , (DL_FUNC) &packed_cols_to_hexcolours_  , 1},
   
   {"djb2_hash_"    , (DL_FUNC) &djb2_hash_    , 1},
 

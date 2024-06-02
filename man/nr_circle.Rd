@@ -7,7 +7,7 @@
 nr_circle(nr, x, y, r, fill = "black", colour = NA)
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
 
 \item{x, y}{coordinates of centre of circle.  [vector]}
 

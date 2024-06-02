@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -57,8 +58,8 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   int *nr = INTEGER(dst_);
   int *mat = INTEGER(mat_);
   
-  int freepal = 0;
-  int *palette = col_to_int_ptr(palette_, N, &freepal);
+  bool freepal = false;
+  int *palette = colours_to_packed_cols(palette_, N, &freepal);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -122,7 +123,7 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       const char *val = CHAR(STRING_ELT(ras_, col * height + row));
-      *(nr + col * height + row) = single_str_col_to_int(val);
+      *(nr + col * height + row) = colour_char_to_packed_col(val);
     }
   }
   
@@ -150,7 +151,7 @@ SEXP nr_to_raster_(SEXP nr_) {
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
-      SET_STRING_ELT(ras_, col * height + row, single_int_to_col_CHARSXP(nr + col * height + row));
+      SET_STRING_ELT(ras_, col * height + row, packed_col_to_CHARSXP_colour(nr + col * height + row));
     }
   }
   

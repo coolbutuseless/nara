@@ -8,17 +8,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "colour.h"
 #include "colour-from-r.h"
 
-// Reverse byte ordering in an int
-#define reverse_bytes_32(num) ( ((num & 0xFF000000) >> 24) | ((num & 0x00FF0000) >> 8) | ((num & 0x0000FF00) << 8) | ((num & 0x000000FF) << 24) )
-
-
-int is_transparent(int colour) {
-  return ((colour >> 24) & 255) == 0;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Check if the colour is fully transparent (so we can skip drawing)
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bool is_transparent(int colour) {
+  return (colour & (0xff << 24)) == 0;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,9 +30,13 @@ static unsigned int hex_to_nibble(int x) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Single character colour to packed-integer-colour
+// Single colour as char * converted to packed colour
+// Called from C
+//
+// @param colour R colour name or hex colour
+// @return packed RGBA colour (integer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int single_str_col_to_int(const char *colour) {
+int colour_char_to_packed_col(const char *colour) {
   if (colour[0] == '#') {
     switch (strlen(colour)) {
     case 4:  // #123 == #112233
@@ -83,17 +87,21 @@ int single_str_col_to_int(const char *colour) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Single SEXP colour to packed-integer-colour
+// Single colour as SEXP converted to packed colour
+// Called from C
+//
+// @param colour Integer, CHARSXP, R colour name or hex colour
+// @return packed RGBA colour (integer)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int single_sexp_col_to_int(SEXP colour_) {
+int colour_sexp_to_packed_col(SEXP colour_) {
   if (isInteger(colour_)) {
     return asInteger(colour_);
   } else if (isString(colour_)) {
-    return single_str_col_to_int(CHAR(asChar(colour_)));
+    return colour_char_to_packed_col(CHAR(asChar(colour_)));
   } else if (isLogical(colour_) && asLogical(colour_) == NA_LOGICAL) {
     return 16777215; // #ffffff00 transparent white
   } else if (TYPEOF(colour_) == CHARSXP) {
-    return single_str_col_to_int(CHAR(colour_));
+    return colour_char_to_packed_col(CHAR(colour_));
   } else {
     error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colour_)));
   }
@@ -101,114 +109,75 @@ int single_sexp_col_to_int(SEXP colour_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// SEXP vector of colours to packed-integer-colour
+// SEXP vector of colours to a vector of packed colours
+//
+// @param colours_ Integer, logical or character vector of colours
+// @param N the required length of colours
+// @param do_free will be set to 'true' if the caller has to free the returned memory
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP col_to_int_(SEXP colour_) {
-  
-  if (isInteger(colour_)) {
-    return colour_;
-  } else if (isString(colour_)) {
-    SEXP res_ = PROTECT(allocVector(INTSXP, length(colour_)));
-    int *ptr = INTEGER(res_);
-    for (int i = 0; i < length(colour_); i++) {
-      ptr[i] = single_str_col_to_int(CHAR(STRING_ELT(colour_, i)));
-    }
-    UNPROTECT(1);
-    return res_;
-  } else {
-    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colour_)));
-  }
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// This is used from within C as a consistent interface for 
-// accessing colours passed in by the user
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-int *col_to_int_ptr(SEXP colour_, int N, int *do_free) {
+int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (length(colour_) != 1 && length(colour_) != N) {
-    error("col_to_int_ptr(): bad length %i/%i", length(colour_), N);
+  if (length(colours_) != 1 && length(colours_) != N) {
+    error("colours_to_packed_cols(): bad length %i/%i", length(colours_), N);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Fast-path requiring no allocation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isInteger(colour_) && length(colour_) == N) {
-    *do_free = 0;
-    return INTEGER(colour_);
+  if (isInteger(colours_) && length(colours_) == N) {
+    *do_free = false;
+    return INTEGER(colours_);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Allocate memory for an integer vector.
   // Set *do_free = 1 to notify the caller that they must free() returned ptr
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *do_free = 1;
-  int *ptr = (int *)malloc(N * sizeof(int));
-  if (ptr == NULL) {
-    error("col_to_int_ptr() malloc failed");
+  *do_free = true;
+  int *packed_cols = (int *)malloc(N * sizeof(int));
+  if (packed_cols == NULL) {
+    error("colours_to_packed_cols() malloc failed");
   }
   
-  if (isLogical(colour_) && asLogical(colour_) == NA_LOGICAL) {
-    int val = 16777215; // #ffffff00
+  if (isLogical(colours_) && asLogical(colours_) == NA_LOGICAL) {
+    int packed_col = 16777215; // #ffffff00
     for (int i = 0; i < N; i++) {
-      ptr[i] = val;
+      packed_cols[i] = packed_col;
     }
-  } else if (isInteger(colour_)) {
+  } else if (isInteger(colours_)) {
     // Must be length = 1 if we got here
-    int val = asInteger(colour_);
+    // Replicate same colour N times
+    int packed_col = asInteger(colours_);
     for (int i = 0; i < N; i++) {
-      ptr[i] = val;
+      packed_cols[i] = packed_col;
     }
-  } else if (isString(colour_)) {
-    if (length(colour_) == 1) {
-      int val = single_str_col_to_int(CHAR(STRING_ELT(colour_, 0)));
+  } else if (isString(colours_)) {
+    if (length(colours_) == 1) {
+      int packed_col = colour_char_to_packed_col(CHAR(STRING_ELT(colours_, 0)));
       for (int i = 0; i < N; i++) {
-        ptr[i] = val;
+        packed_cols[i] = packed_col;
       }
     } else {
       for (int i = 0; i < N; i++) {
-        ptr[i] = single_str_col_to_int(CHAR(STRING_ELT(colour_, i)));
+        packed_cols[i] = colour_char_to_packed_col(CHAR(STRING_ELT(colours_, i)));
       }
     }
   } else {
-    error("col_to_int_ptr(): type fail '%s'", type2char(TYPEOF(colour_)));
+    error("colours_to_packed_cols(): type fail '%s'", type2char(TYPEOF(colours_)));
   }
   
-  return ptr;
+  return packed_cols;
 }
 
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Bytes to hex
+// Convert single packed_col (integer) to a hexadecimal string in CHARSXP format
+// Called from C
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-char *bytes_to_hex(uint8_t *buf) {
-  static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-  
-  char *str = (char *)calloc(10, 1);
-  str[0] = '#';
-  str[9] = '\0';
-  
-  
-  for (size_t i = 0; i < 4; i++) {
-    str[2 * i + 1] = hexmap[(buf[i] & 0xF0) >> 4];
-    str[2 * i + 2] = hexmap[ buf[i] & 0x0F];
-  }
-  
-  return str;
-}
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP single_int_to_col_CHARSXP(int *packed_col) {
+SEXP packed_col_to_CHARSXP_colour(int *packed_col) {
   
   static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -232,35 +201,51 @@ SEXP single_int_to_col_CHARSXP(int *packed_col) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 
+// Convert vector of packed colours into character vector of hex colours
+// Called from R
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP int_to_col_(SEXP ints_) {
+SEXP packed_cols_to_hexcolours_(SEXP packed_cols_) {
   
-  SEXP cols_ = PROTECT(allocVector(STRSXP, length(ints_)));
+  int *packed_col_ptr = INTEGER(packed_cols_);
+  SEXP cols_ = PROTECT(allocVector(STRSXP, length(packed_cols_)));
   
-  int *iptr = INTEGER(ints_);
-  
-  for (int i = 0; i < length(ints_); i++) {
-    SET_STRING_ELT(cols_, i, single_int_to_col_CHARSXP(iptr + i));
+  for (int i = 0; i < length(packed_cols_); i++) {
+    SET_STRING_ELT(cols_, i, packed_col_to_CHARSXP_colour(packed_col_ptr + i));
   }
   
-
   UNPROTECT(1);
   return cols_;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Convert colour names to packed colours
+// Called from R
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP colours_to_packed_cols_(SEXP colours_) {
+  
+  if (isInteger(colours_)) {
+    // Already integer. Do nothing
+    return colours_;
+  } 
+  
+  SEXP packed_cols_ = PROTECT(allocVector(INTSXP, length(colours_)));
+  int *packed_cols = INTEGER(packed_cols_);
+  
+  if (isString(colours_)) {
+    for (int i = 0; i < length(colours_); i++) {
+      packed_cols[i] = colour_char_to_packed_col(CHAR(STRING_ELT(colours_, i)));
+    }
+  } else if (isLogical(colours_)) {
+    // For when the user passes in logical NA
+    for (int i = 0; i < length(colours_); i++) {
+      packed_cols[i] = 16777215; // #ffffff00
+    }
+  } else {
+    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colours_)));
+  }
+  
+  UNPROTECT(1);
+  return packed_cols_;
+}
 

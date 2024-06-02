@@ -4,10 +4,13 @@
 \alias{nr_copy_into}
 \title{Copy the contents of one \code{nativeRaster} into another.}
 \usage{
-nr_copy_into(nr_dst, nr_src)
+nr_copy_into(dst, src)
 }
 \arguments{
-\item{nr_src, nr_dst}{Source and destination \code{nativeRaster} images}
+\item{src, dst}{Source and destination \code{nativeRaster} images}
+}
+\value{
+The 'dst' \code{nativeRaster}
 }
 \description{
 The source and destination \code{nativeRaster} images must have the same dimensions.
@@ -15,4 +18,10 @@ The source and destination \code{nativeRaster} images must have the same dimensi
 \details{
 If the \code{nativeRaster} images are of different sizes, use the
 \code{nr_blit()} function.
+}
+\examples{
+nr1 <- nr_new(200, 100, 'hotpink')
+nr2 <- nr_new(200, 100, 'green')
+nr_copy_into(nr1, nr2)
+plot(nr1)
 }

@@ -7,24 +7,16 @@
 nr_text(nr, x, y, str, colour = "black", fontsize = 8L)
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
 
 \item{x, y}{coordinates of lower-left corner of text. [scalar]}
 
 \item{str}{character string [scalar]}
 
-\item{colour}{Color as a character string. Either a standard R color
-       or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
-\describe{
-  \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
-        is useful when you are using an indexed palette like many old school games
-        (like AnotherWorld) and do not want the value interpreted as a colour and
-        alpha blended when drawing etc}
-  \item{\code{1}}{ This operation performs
-       a bitwise logical-or with the current value.  This is needed for
-       rendering in the \code{AnotherWorld} game engine.}
-  \item{\code{2 (default)}}{Regular colour handing for standard pixel handling}
-  }}
+\item{colour}{Color as a character string. Either a standard R colour
+(e.g. 'blue', 'white')
+or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or \code{#rgb}}
 
 \item{fontsize}{height of font in pizels.  Only valid values are 8, 12 and 16.
 Default: 8.}

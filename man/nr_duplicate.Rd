@@ -8,9 +8,17 @@ contents from an existing image}
 nr_duplicate(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
+}
+\value{
+New \code{nativeRaster}
 }
 \description{
 Create a new \code{nativeRaster} image and copy the dimensions and
 contents from an existing image
+}
+\examples{
+nr1 <- nr_new(200, 200, 'hotpink')
+nr2 <- nr_duplicate(nr1)
+plot(nr2)
 }

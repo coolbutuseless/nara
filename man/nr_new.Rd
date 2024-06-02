@@ -9,12 +9,17 @@ nr_new(width, height, fill = "white")
 \arguments{
 \item{width, height}{Image dimensions in pixels}
 
-\item{fill}{Background fill color as a character string. Either a standard R color
-or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}}
+\item{fill}{Background fill color as a character string. Either a standard R colour
+(e.g. 'blue', 'white')
+or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or \code{#rgb}}
+}
+\value{
+\code{nativeRaster}
 }
 \description{
 A \code{nativeRaster} in R looks like an integer matrix, but is interpreted
-different by graphics devices:
+differently by graphics devices:
 }
 \details{
 \itemize{
@@ -22,4 +27,8 @@ different by graphics devices:
   \item{Each 32-bit integer should be interpreted as 4-bytes - one for each
         of the R, G, B and A colour channels}
 }
+}
+\examples{
+nr <- nr_new(400, 300, 'hotpink')
+plot(nr)
 }

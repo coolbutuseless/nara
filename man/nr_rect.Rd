@@ -7,7 +7,7 @@
 nr_rect(nr, x, y, w, h, fill = "black", colour = NA)
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
 
 \item{x, y}{coordinates of lower left corner of rectangle.  [vector]}
 

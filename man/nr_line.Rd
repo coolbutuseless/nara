@@ -7,22 +7,14 @@
 nr_line(nr, x0, y0, x1, y1, colour = "black")
 }
 \arguments{
-\item{nr}{\code{nativeRaster} image}
+\item{nr}{\code{nativeRaster}}
 
 \item{x0, y0, x1, y1}{Coordinates of endpoints of line. [vector]}
 
-\item{colour}{Color as a character string. Either a standard R color
-       or a hex colour of the form \code{#rrggbbaa} or \code{#rrggbb}
-\describe{
-  \item{\code{0}}{Draw the integer value \emph{as-is} into the nativeRaster. This mode
-        is useful when you are using an indexed palette like many old school games
-        (like AnotherWorld) and do not want the value interpreted as a colour and
-        alpha blended when drawing etc}
-  \item{\code{1}}{ This operation performs
-       a bitwise logical-or with the current value.  This is needed for
-       rendering in the \code{AnotherWorld} game engine.}
-  \item{\code{2 (default)}}{Regular colour handing for standard pixel handling}
-  }}
+\item{colour}{Color as a character string. Either a standard R colour
+(e.g. 'blue', 'white')
+or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or \code{#rgb}}
 }
 \description{
 Uses Bresenham's algorithm to draw lines. No antialiasing.

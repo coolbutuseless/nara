@@ -15,8 +15,8 @@ test_that("colour roundtrip to ints works", {
   set.seed(2022)
   N <- 1000
   orig <- vapply(1:N, make_color, character(1))
-  ints <- colour_to_integer(orig)
-  final <- integer_to_colour(ints)
+  ints <- str_cols_to_packed_cols(orig)
+  final <- packed_cols_to_hex_cols(ints)
 
   expect_identical(orig, final)
 })

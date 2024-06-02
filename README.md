@@ -142,7 +142,7 @@ Included with `{nara}` are 16 frames of an animated deer character - see
 `deer` data.
 
 These frames are consolidated into a single image called a *spritesheet*
-and `deer_loc` contains the coordiates of 16 sprites within that image.
+and `deer_loc` contains the coordinates of 16 sprites within that image.
 
 #### Blit the first `deer` frame onto a native raster canvas.
 
@@ -224,15 +224,15 @@ dev.control('inhibit')
 # Number of sprites
 N <- 100
 
-# Window size
+# Canvas size
 w <- 400 
 h <- 300 
 
 # location and movement vector of all the sprites
-x  <- sample(w -25, N, replace = TRUE)
+x  <- sample(w     , N, replace = TRUE)
 y  <- sample(h - 25, N, replace = TRUE)
-vx <- sample(seq(-5, 5), N, replace = TRUE)
-vy <- sample(seq(-5, 5)[-6], N, replace = TRUE)
+vx <- runif(N, 1, 5)
+
 
 # Create an empty nativeraster with a grey background
 nr <- nr_new(w, h, 'white')
@@ -241,21 +241,19 @@ nr <- nr_new(w, h, 'white')
 for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the deers
   nr_fill(nr, 'white') 
-  nr_blit2(nr, x, y, deer, deer_loc[[(frame) %% 5 + 11]])
+  nr_blit2(nr, x, y, deer, deer_loc[[ (frame/3) %% 5 + 11]])
   
   # Draw the nativeraster to screen
   dev.hold()
   grid.raster(nr, interpolate = FALSE)
   dev.flush()
 
-  # Update the position and velocity of each deer
-  # deers move at constant velocity and bounce off the sides of the image
-  x  <- x + vx
-  y  <- y + vy
-  vx <- ifelse(x > (w - 25)| x < 1, -vx, vx)
-  vy <- ifelse(y > (h - 25)| y < 1, -vy, vy)
-  
-  # slight pause to slow things down 
+  # Update the position of each deer. 
+  # Position wraps around
+  x <- x + vx
+  x <- ifelse(x > w , -32, x)
+
+  # slight pause. Otherwise everything runs too fast!
   Sys.sleep(0.03)
 }
 ```
@@ -267,7 +265,7 @@ for (frame in 1:1000) {
 ## Isometric tiling
 
 This package includes `isometric_landscape` which is a collection of 36
-isometric tiles.
+isometric tiles (as a list of nativeRasters)
 
 ``` r
 library(grid)

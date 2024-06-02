@@ -118,12 +118,12 @@ colour_ints <- c(
 
 
 test_that("colour-to-integer works", {
-  expect_identical(colour_to_integer(colour_names), colour_ints)
-  expect_identical(colour_to_integer(colour_hex  ), colour_ints)
+  expect_identical(str_cols_to_packed_cols(colour_names), colour_ints)
+  expect_identical(str_cols_to_packed_cols(colour_hex  ), colour_ints)
 })
 
 test_that("integer-to-colour conversion works", {
-  expect_identical(integer_to_colour(colour_ints), colour_hex)
+  expect_identical(packed_cols_to_hex_cols(colour_ints), colour_hex)
 })
 
 

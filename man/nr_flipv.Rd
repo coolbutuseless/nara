@@ -2,16 +2,23 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_flipv}
 \alias{nr_flipv}
-\title{Flip a raster vertically}
+\title{Flip a \code{nativeRaster} vertically}
 \usage{
 nr_flipv(nr)
 }
 \arguments{
-\item{nr}{nativeRaster}
+\item{nr}{\code{nativeRaster}}
 }
 \value{
-original nativeRaster flipped in place
+Original \code{nativeRaster} modified in-place
 }
 \description{
-Flip a raster vertically
+Flip a \code{nativeRaster} vertically
+}
+\examples{
+nr <- nr_new(400, 200, 'white')
+nr_rect(nr, 1, 1, 30, 15)
+plot(nr)
+nr_flipv(nr)
+plot(nr)
 }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <unistd.h>
 
 #include "colour.h"
@@ -85,14 +86,14 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
   // get an int* from a numeric from R
-  int freex = 0, freey = 0;
+  bool freex = false, freey = false;
   int N = calc_max_length(2, x_, y_);
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
   // Colours
-  int freecol = 0;
-  int *colour = col_to_int_ptr(colour_, N, &freecol);
+  bool freecol = false;
+  int *colour = colours_to_packed_cols(colour_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
     draw_point_c(nr, height, width, colour[i], x[i], y[i]);
@@ -148,7 +149,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
   // get an int* from a numeric from R
-  int freex0 = 0, freey0 = 0, freex1 = 0, freey1 = 0;
+  bool freex0 = false, freey0 = false, freex1 = false, freey1 = false;
   int N = calc_max_length(4, x0_, y0_, x1_, y1_);
   int *x0 = as_int32_vec(x0_, N, &freex0);
   int *y0 = as_int32_vec(y0_, N, &freey0);
@@ -156,8 +157,8 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
   int *y1 = as_int32_vec(y1_, N, &freey1);
   
   // Colours
-  int freecol = 0;
-  int *colour = col_to_int_ptr(colour_, N, &freecol);
+  bool freecol = false;
+  int *colour = colours_to_packed_cols(colour_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
     draw_line_c(nr, height, width, colour[i], x0[i], y0[i], x1[i], y1[i]);
@@ -187,14 +188,14 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
   uint32_t height = (uint32_t)Rf_nrows(nr_);
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
-  int colour = single_sexp_col_to_int(colour_);
+  int colour = colour_sexp_to_packed_col(colour_);
   
   if (length(x_) != length(y_)) {
     error("Arguments 'x' and 'y' must be same length.");
   }
   
   // get an int* from a numeric from R
-  int freex = 0, freey = 0;
+  bool freex = false, freey = false;
   int N = calc_max_length(2, x_, y_);
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
@@ -233,7 +234,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
 
-  int colour = single_sexp_col_to_int(colour_);
+  int colour = colour_sexp_to_packed_col(colour_);
   int x = asInteger(x_);
   int y = asInteger(y_);
 
@@ -302,7 +303,7 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
   
-  int freex = 0, freey = 0, freew = 0, freeh = 0;
+  bool freex = false, freey = false, freew = false, freeh = false;
   int N = calc_max_length(4, x_, y_, w_, h_);
   int *xs = as_int32_vec(x_, N, &freex);
   int *ys = as_int32_vec(y_, N, &freey);
@@ -310,9 +311,9 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *hs = as_int32_vec(h_, N, &freeh);
   
   // Colours
-  int freecol = 0, freefill = 0;
-  int *colour = col_to_int_ptr(colour_, N, &freecol);
-  int *fill   = col_to_int_ptr(fill_  , N, &freefill);
+  bool freecol = false, freefill = false;
+  int *colour = colours_to_packed_cols(colour_, N, &freecol);
+  int *fill   = colours_to_packed_cols(fill_  , N, &freefill);
   
   for (int i = 0; i < N; i++) {
     
@@ -364,7 +365,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
 
-  int freexms = 0, freeyms = 0, freers = 0;
+  bool freexms = false, freeyms = false, freers = false;
   
   int N = calc_max_length(3, x_, y_, r_);
   int *xms = as_int32_vec(x_, N, &freexms);
@@ -372,9 +373,9 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   int *rs  = as_int32_vec(r_, N, &freers );
   
   // Colours
-  int freecol = 0, freefill = 0;
-  int *colour = col_to_int_ptr(colour_, N, &freecol);
-  int *fill   = col_to_int_ptr(fill_  , N, &freefill);
+  bool freecol = false, freefill = false;
+  int *colour = colours_to_packed_cols(colour_, N, &freecol);
+  int *fill   = colours_to_packed_cols(fill_  , N, &freefill);
 
   for (int idx = 0; idx < length(x_); idx++) {
     // Rprintf("idx: %i\n", idx);
@@ -520,11 +521,11 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
   uint32_t height = (uint32_t)Rf_nrows(nr_);
   uint32_t width  = (uint32_t)Rf_ncols(nr_);
 
-  int colour = single_sexp_col_to_int(colour_);
-  int fill   = single_sexp_col_to_int(fill_);
+  int colour = colour_sexp_to_packed_col(colour_);
+  int fill   = colour_sexp_to_packed_col(fill_);
   
   // get an int* from a numeric from R
-  int freex = 0, freey = 0;
+  bool freex = false, freey = false;
   int N = calc_max_length(2, x_, y_);
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);

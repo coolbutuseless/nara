@@ -24,7 +24,7 @@ Matrix to nativeRaster
 }
 \examples{
 m <- matrix(1:12, 3, 4)
-palette <- colour_to_integer(rainbow(12))
+palette <- str_cols_to_packed_cols(rainbow(12))
 nr <- matrix_to_nr(m, palette) 
 plot(nr)
 }

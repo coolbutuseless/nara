@@ -15,10 +15,10 @@
 read_png <- function(source, transparent = NULL) {
   nr <- png::readPNG(source, native = TRUE)
   
-  col_transparent <- colour_to_integer('#ffffff00')
+  col_transparent <- str_cols_to_packed_cols('#ffffff00')
   
   for (col in transparent) {
-    col <- colour_to_integer(col)
+    col <- str_cols_to_packed_cols(col)
     nr[nr == col] <- col_transparent
   }
   

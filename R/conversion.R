@@ -10,7 +10,6 @@
 #'        will be created.
 #'
 #' @return raster, array or nativeRaster
-#' @import grDevices
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_raster <- function(nr) {
@@ -60,7 +59,7 @@ array_to_nr <- function(arr, dst = NULL) {
 #'
 #' @examples
 #' m <- matrix(1:12, 3, 4)
-#' palette <- colour_to_integer(rainbow(12))
+#' palette <- str_cols_to_packed_cols(rainbow(12))
 #' nr <- matrix_to_nr(m, palette) 
 #' plot(nr)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
