@@ -76,10 +76,6 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 
   assert_nativeraster(nr_);
 
-  if (length(x_) != length(y_)) {
-    error("x and y must be same length");
-  }
-
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
   int height = Rf_nrows(nr_);
@@ -377,7 +373,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
   uint32_t *colour = colours_to_packed_cols(colour_, N, &freecol);
   uint32_t *fill   = colours_to_packed_cols(fill_  , N, &freefill);
 
-  for (int idx = 0; idx < length(x_); idx++) {
+  for (int idx = 0; idx < N; idx++) {
     // Rprintf("idx: %i\n", idx);
     int xm = xms[idx];
     int ym = yms[idx];
