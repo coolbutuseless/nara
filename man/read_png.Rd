@@ -19,3 +19,9 @@ R colour names, hex colours, or packed colours (integers)}
 \description{
 Read PNG as \code{nativeRaster} converting specified colours to transparent
 }
+\examples{
+source <- system.file("img/Rlogo.png", package = "png", mustWork = TRUE)
+nr <- read_png(source, make_transparent = 'white')
+plot(nr)
+
+}
