@@ -32,7 +32,7 @@ SEXP djb2_hash_(SEXP str_) {
 
 int rcolour_to_int(const char *rcol) {
   int hash = djb2_hash((uint8_t *)rcol);
-  long res = 0;
+  int res = 0;
 
   switch(hash) {
   case 5862548: // NA_character

@@ -24,7 +24,7 @@ bool is_transparent(int colour) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Convert a hex digit to a nibble. 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static unsigned int hex_to_nibble(int x) {
+static unsigned int hex_to_nibble(unsigned int x) {
   return (x & 0xf) + (x >> 6) + ((x >> 6) << 3);
 }
 
@@ -38,45 +38,46 @@ static unsigned int hex_to_nibble(int x) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int colour_char_to_packed_col(const char *colour) {
   if (colour[0] == '#') {
+    uint8_t *col = (uint8_t *)colour;
     switch (strlen(colour)) {
     case 4:  // #123 == #112233
-      return
-        (0xff << 24) + 
-        (hex_to_nibble(colour[3]) << 20) +
-        (hex_to_nibble(colour[3]) << 16) +
-        (hex_to_nibble(colour[2]) << 12) +
-        (hex_to_nibble(colour[2]) <<  8) +
-        (hex_to_nibble(colour[1]) <<  4) +
-        (hex_to_nibble(colour[1]) <<  0);
+      return (int)(
+        ((unsigned int)0xff << 24) + 
+        (hex_to_nibble(col[3]) << 20) +
+        (hex_to_nibble(col[3]) << 16) +
+        (hex_to_nibble(col[2]) << 12) +
+        (hex_to_nibble(col[2]) <<  8) +
+        (hex_to_nibble(col[1]) <<  4) +
+        (hex_to_nibble(col[1]) <<  0));
     case 5: // #1234 = #11223344
-      return
-        (hex_to_nibble(colour[4]) << 28) +
-        (hex_to_nibble(colour[4]) << 24) +
-        (hex_to_nibble(colour[3]) << 20) +
-        (hex_to_nibble(colour[3]) << 16) +
-        (hex_to_nibble(colour[2]) << 12) +
-        (hex_to_nibble(colour[2]) <<  8) +
-        (hex_to_nibble(colour[1]) <<  4) +
-        (hex_to_nibble(colour[1]) <<  0);
+      return (int)(
+        (hex_to_nibble(col[4]) << 28) +
+        (hex_to_nibble(col[4]) << 24) +
+        (hex_to_nibble(col[3]) << 20) +
+        (hex_to_nibble(col[3]) << 16) +
+        (hex_to_nibble(col[2]) << 12) +
+        (hex_to_nibble(col[2]) <<  8) +
+        (hex_to_nibble(col[1]) <<  4) +
+        (hex_to_nibble(col[1]) <<  0));
     case 7: // #rrggbb
-      return
-        (0xff << 24) + 
-        (hex_to_nibble(colour[5]) << 20) +
-        (hex_to_nibble(colour[6]) << 16) +
-        (hex_to_nibble(colour[3]) << 12) +
-        (hex_to_nibble(colour[4]) <<  8) +
-        (hex_to_nibble(colour[1]) <<  4) +
-        (hex_to_nibble(colour[2]) <<  0);
+      return (int)(
+        ((unsigned int)0xff << 24) + 
+        (hex_to_nibble(col[5]) << 20) +
+        (hex_to_nibble(col[6]) << 16) +
+        (hex_to_nibble(col[3]) << 12) +
+        (hex_to_nibble(col[4]) <<  8) +
+        (hex_to_nibble(col[1]) <<  4) +
+        (hex_to_nibble(col[2]) <<  0));
     case 9: // #rrggbbaa
-      return
-        (hex_to_nibble(colour[7]) << 28) +
-        (hex_to_nibble(colour[8]) << 24) +
-        (hex_to_nibble(colour[5]) << 20) +
-        (hex_to_nibble(colour[6]) << 16) +
-        (hex_to_nibble(colour[3]) << 12) +
-        (hex_to_nibble(colour[4]) <<  8) +
-        (hex_to_nibble(colour[1]) <<  4) +
-        (hex_to_nibble(colour[2]) <<  0);
+      return (int)(
+        (hex_to_nibble(col[7]) << 28) +
+        (hex_to_nibble(col[8]) << 24) +
+        (hex_to_nibble(col[5]) << 20) +
+        (hex_to_nibble(col[6]) << 16) +
+        (hex_to_nibble(col[3]) << 12) +
+        (hex_to_nibble(col[4]) <<  8) +
+        (hex_to_nibble(col[1]) <<  4) +
+        (hex_to_nibble(col[2]) <<  0));
     default:
       error("Unknown hex colour: '%s'", colour);
     }
@@ -103,7 +104,7 @@ int colour_sexp_to_packed_col(SEXP colour_) {
   } else if (TYPEOF(colour_) == CHARSXP) {
     return colour_char_to_packed_col(CHAR(colour_));
   } else {
-    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colour_)));
+    error("Colour must be integer or character vector not '%s'", type2char((SEXPTYPE)TYPEOF(colour_)));
   }
 }
 
@@ -137,7 +138,7 @@ int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
   // Set *do_free = 1 to notify the caller that they must free() returned ptr
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   *do_free = true;
-  int *packed_cols = (int *)malloc(N * sizeof(int));
+  int *packed_cols = (int *)malloc((size_t)N * sizeof(int));
   if (packed_cols == NULL) {
     error("colours_to_packed_cols() malloc failed");
   }
@@ -166,7 +167,7 @@ int *colours_to_packed_cols(SEXP colours_, int N, bool *do_free) {
       }
     }
   } else {
-    error("colours_to_packed_cols(): type fail '%s'", type2char(TYPEOF(colours_)));
+    error("colours_to_packed_cols(): type fail '%s'", type2char((SEXPTYPE)TYPEOF(colours_)));
   }
   
   return packed_cols;
@@ -242,7 +243,7 @@ SEXP colours_to_packed_cols_(SEXP colours_) {
       packed_cols[i] = 16777215; // #ffffff00
     }
   } else {
-    error("Colour must be integer or character vector not '%s'", type2char(TYPEOF(colours_)));
+    error("Colour must be integer or character vector not '%s'", type2char((SEXPTYPE)TYPEOF(colours_)));
   }
   
   UNPROTECT(1);

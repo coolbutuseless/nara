@@ -43,7 +43,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   // Must be REALSXP or INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (!isInteger(vec_) && !isReal(vec_)) {
-    error("as_int32_vec(): Expecting numeric but got %s\n", type2char(TYPEOF(vec_)));
+    error("as_int32_vec(): Expecting numeric but got %s\n", type2char((SEXPTYPE)TYPEOF(vec_)));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //   - need to allocate memory for an integer vector
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   *do_free = 1;
-  int *int_vec = malloc(N * sizeof(int));
+  int *int_vec = malloc((size_t)N * sizeof(int));
   if (int_vec == NULL) {
     error("as_int32_vec(): out of memory");
   }

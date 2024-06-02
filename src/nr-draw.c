@@ -18,7 +18,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Draw a single point on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_point_c(int *nr, uint32_t height, uint32_t width, int colour, int x, int y) {
+void draw_point_c(int *nr, int height, int width, int colour, int x, int y) {
 
   // Check for transparent colour
   if (is_transparent(colour)) return;
@@ -47,9 +47,9 @@ void draw_point_c(int *nr, uint32_t height, uint32_t width, int colour, int x, i
         uint8_t b = (colour >> 16) & 255;
         // uint8_t a = (colour >> 24) & 255;
 
-        r = (alpha * r + (255 - alpha) * r2) / 255;
-        g = (alpha * g + (255 - alpha) * g2) / 255;
-        b = (alpha * b + (255 - alpha) * b2) / 255;
+        r = (uint8_t)((alpha * r + (255 - alpha) * r2) / 255);
+        g = (uint8_t)((alpha * g + (255 - alpha) * g2) / 255);
+        b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
         // a = (alpha * a + (255 - alpha) * a2) / 255;
 
         nr[y * width + x] = (r) | (g << 8) | (b << 16) | (255 << 24);
@@ -62,7 +62,7 @@ void draw_point_c(int *nr, uint32_t height, uint32_t width, int colour, int x, i
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw multiple points on the canvas [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_points_c(int *nr, uint32_t height, uint32_t width, int colour, int *x, int *y, int npoints) {
+void draw_points_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
   for (int i = 0 ; i < npoints; i++) {
     draw_point_c(nr, height, width, colour, x[i], y[i]);
   }
@@ -82,8 +82,8 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 
   int *nr = INTEGER(nr_);
   
-  uint32_t height = (uint32_t)Rf_nrows(nr_);
-  uint32_t width  = (uint32_t)Rf_ncols(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
 
   // get an int* from a numeric from R
   bool freex = false, freey = false;
@@ -114,7 +114,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_line_c(int *nr, uint32_t height, uint32_t width, int colour, int x0, int y0, int x1, int y1) {
+void draw_line_c(int *nr, int height, int width, int colour, int x0, int y0, int x1, int y1) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
@@ -145,8 +145,8 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP colour_) 
 
   int *nr = INTEGER(nr_);
   
-  uint32_t height = (uint32_t)Rf_nrows(nr_);
-  uint32_t width  = (uint32_t)Rf_ncols(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
 
   // get an int* from a numeric from R
   bool freex0 = false, freey0 = false, freex1 = false, freey1 = false;
@@ -185,8 +185,8 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP colour_, SEXP close_) {
 
   int *nr = INTEGER(nr_);
 
-  uint32_t height = (uint32_t)Rf_nrows(nr_);
-  uint32_t width  = (uint32_t)Rf_ncols(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
 
   int colour = colour_sexp_to_packed_col(colour_);
   
@@ -262,7 +262,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP colour_, SEXP fontsi
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over letters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nchars = strlen(str);
+  int nchars = (int)strlen(str);
   int col = 0;
 
   for (int char_idx = 0; char_idx < nchars; char_idx++) {
@@ -383,7 +383,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
     int ym = yms[idx];
     int  r =  rs[idx];
 
-    int *ydone = (int *)calloc(r * 2, sizeof(int));
+    int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
     if (ydone == NULL) {
       error("error allocating 'ydone'");
     }
@@ -444,7 +444,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP colour_)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void fill_polygon_c(int *nr, int height, int width, int colour, int *x, int *y, int npoints) {
   
-  int *nodeX = (int *)malloc(npoints * sizeof(int));
+  int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
   if (nodeX == NULL) {
     error("nodeX alloc failure");
   }
@@ -518,8 +518,8 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP colour_) {
   
   int *nr = INTEGER(nr_);
   
-  uint32_t height = (uint32_t)Rf_nrows(nr_);
-  uint32_t width  = (uint32_t)Rf_ncols(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
 
   int colour = colour_sexp_to_packed_col(colour_);
   int fill   = colour_sexp_to_packed_col(fill_);
