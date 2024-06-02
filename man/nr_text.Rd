@@ -32,3 +32,10 @@ bitmap font from: https://github.com/fcambus/spleen
 The 'spleen' font is licensed under BSD and the license is included in this
 package as "LICENSE-spleen.txt"
 }
+\examples{
+N <- 20
+nr <- nr_new(N, N, 'grey80')
+nr_text(nr, x = 1, y = N/3, str = "Hi!")
+plot(nr)
+
+}

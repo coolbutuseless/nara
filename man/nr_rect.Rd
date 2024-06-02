@@ -24,8 +24,10 @@ Original \code{nativeRaster} modified in-place
 Draw rectangles on a \code{nativeRaster} image
 }
 \examples{
-nr <- nr_new(400, 400)
-nr_rect(nr, 20, 20, 100, 10)
-
+N <- 20
+nr <- nr_new(N, N, 'grey80')
+nr_rect(nr, x = c(1, N/2 + 1), y = c(1, N/2 + 1), w = N/2, h = N/4, 
+        fill = 'blue', colour = c('red', 'green'))
+plot(nr)
 
 }

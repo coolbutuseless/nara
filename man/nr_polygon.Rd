@@ -24,3 +24,10 @@ Original \code{nativeRaster} modified in-place
 \description{
 Draw polygon on a \code{nativeRaster} image
 }
+\examples{
+N <- 20
+nr <- nr_new(N, N, 'grey80')
+nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', colour = 'red')
+plot(nr)
+
+}

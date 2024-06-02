@@ -63,6 +63,12 @@ nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_text(nr, x = 1, y = N/3, str = "Hi!")
+#' plot(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
@@ -83,10 +89,12 @@ nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
 #' @return Original \code{nativeRaster} modified in-place
 #' 
 #' @examples
-#' nr <- nr_new(400, 400)
-#' nr_rect(nr, 20, 20, 100, 10)
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_rect(nr, x = c(1, N/2 + 1), y = c(1, N/2 + 1), w = N/2, h = N/4, 
+#'         fill = 'blue', colour = c('red', 'green'))
+#' plot(nr)
 #' 
-#'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
@@ -106,6 +114,12 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_circle(nr, x = N/2, y = N/2, r = c(N/4, N/2), fill = c('red', 'black'))
+#' plot(nr)
+#'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
@@ -123,6 +137,12 @@ nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
 #'        
 #' @return Original \code{nativeRaster} modified in-place
 #'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), colour = 'red')
+#' plot(nr)
+#'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
@@ -139,11 +159,18 @@ nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', colour = 'red')
+#' plot(nr)
+#'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polygon <- function(nr, x, y, fill = 'black', colour = NA) {
   invisible(.Call(draw_polygon_, nr, x, y, fill, colour))
 }
+
 
 
 if (FALSE) {
