@@ -83,18 +83,40 @@ if (FALSE) {
 
 if (FALSE) {
   
-  N <- 400
-  nr <- nr_new(N, N, 'grey80')
+ 
+  
   
   # 902us
+  N <- 400
+  nr <- nr_new(N, N, 'grey80')
   bench::mark(
-    nr_blit2(nr, sample(N), sample(N), deer, deer_loc[[1]])
+    nr_blit2(nr, sample(seq(-16, N+16, length.out = N)), sample(N), deer, deer_loc[[1]])
   )
-  
-  
-  
-  
   plot(nr, T)
+  
+   
+  nr <- nr_new(5, 5, 'grey80'); 
+  nr2 <- nr_new(3, 1, 'black')
+  nr2[[1]] <- str_cols_to_packed_cols('red')
+  nr2[[3]] <- str_cols_to_packed_cols('blue')
+  nr_blit(nr, 3, -1, nr2); 
+  plot(nr, T)
+  
+  
+  nr <- nr_new(40, 40, 'grey80'); 
+  nr_blit2(nr, -5, 1, deer, deer_loc[[1]]); 
+  plot(nr, T)
+  
+  
+  
+  nr <- nr_new(40, 40, 'grey80'); 
+  nr2 <- png::readPNG(system.file("img/Rlogo.png", package = "png"), native = TRUE)
+  bench::mark(
+    nr_blit(nr, -20, -10, nr2) 
+  )
+  plot(nr, T)
+  
+  
 }
 
 

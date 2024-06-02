@@ -23,22 +23,67 @@
 void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // src doesn't overlap with dst
+  // Check if src doesn't overlap with dst **AT ALL**
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (
-    x + w < 1 ||
-    y + h < 1 ||
-    x > dst_width ||
-    y > dst_height
-  ) return;
+      x + w < 1 ||
+        y + h < 1 ||
+        x > dst_width ||
+        y > dst_height
+  ) {
+    // Rprintf(">>>>>>>> Bail\n");
+    return;
+  }
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Some of the src overlaps the dst
+  // Trim src boundaries if they're outside the image
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (x < 1) {
+    // Trim left of src
+    int diff = -x + 1;
+    x0 += diff;
+    w  -= diff ;
+    x   = 1;
+  }
+  if (y < 1) {
+    // Trim bottom of src
+    int diff = -y + 1;
+    y0 += diff;
+    h  -= diff ;
+    y   = 1;
+  }
+  if (x + w > dst_width) {
+    // Trim right of src
+    w = dst_width - x + 1;
+  }
+  if (y + h > dst_height) {
+    // Trim right of src
+    h = dst_height - y + 1;
+  }
+  
+  if (w == 0 || h == 0) return;
   
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - y0 - yoff;
     for (int xoff = 0; xoff < w; xoff++) {
-
       uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
+      draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
+    }
+  }
+}
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Blit sprite onto raster [C interface]
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
+  
+  for (int yoff = 0; yoff < h; yoff++) {
+    int y1 = src_height - y0 - yoff;
+    for (int xoff = 0; xoff < w; xoff++) {
+      
+      uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
+      
       draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
     }
   }
