@@ -20,16 +20,26 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(uint32_t *nr, int x, int y, int nr_width, int nr_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
-
-
+void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // src doesn't overlap with dst
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (
+    x + w < 1 ||
+    y + h < 1 ||
+    x > dst_width ||
+    y > dst_height
+  ) return;
+  
+  
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - y0 - yoff;
     for (int xoff = 0; xoff < w; xoff++) {
 
       uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
 
-      draw_point_c(nr, nr_height, nr_width, src_col, x + xoff, y + yoff);
+      draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
     }
   }
 }
@@ -96,9 +106,6 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   if (freey) free(y);
   return nr_;
 }
-
-
-
 
 
 

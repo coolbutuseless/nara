@@ -81,6 +81,22 @@ if (FALSE) {
 }
 
 
+if (FALSE) {
+  
+  N <- 400
+  nr <- nr_new(N, N, 'grey80')
+  
+  # 902us
+  bench::mark(
+    nr_blit2(nr, sample(N), sample(N), deer, deer_loc[[1]])
+  )
+  
+  
+  
+  
+  plot(nr, T)
+}
+
 
 
 
