@@ -16,6 +16,8 @@ location of a sprite within the spritesheet.
 }
 \details{
 This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  
-See 'inst/LICENSE-deer.txt' for more details.
+See 'inst/LICENSE-deer.txt' for more details. To view license information:
+
+\code{cat(readLines(system.file('LICENSE-deer.txt', package = 'nara')), sep = "\n")}
 }
 \keyword{datasets}

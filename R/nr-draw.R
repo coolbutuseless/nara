@@ -52,7 +52,11 @@ nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
 #' bitmap font from: https://github.com/fcambus/spleen
 #'
 #' The 'spleen' font is licensed under BSD and the license is included in this
-#' package as "LICENSE-spleen.txt"
+#' package as "LICENSE-spleen.txt". 
+#' To view LICENSE: 
+#' 
+#' \code{cat(readLines(system.file('LICENSE-spleen.txt', package = 'nara')), 
+#'  sep = "\n")}
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point

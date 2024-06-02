@@ -11,7 +11,10 @@ An object of class \code{nativeRaster} with 160 rows and 160 columns.
 deer
 }
 \description{
-A sprite sheet for animated characters.  This spritesheet is in the
-public domain.
+This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  
+See 'inst/LICENSE-deer.txt' for more details. To view license information:
+}
+\details{
+\code{cat(readLines(system.file('LICENSE-deer.txt', package = 'nara')), sep = "\n")}
 }
 \keyword{datasets}

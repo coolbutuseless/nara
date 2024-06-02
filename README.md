@@ -104,7 +104,7 @@ coords  <- expand.grid(y = seq(0, h-1) * 30 + 1, x = seq(0, w-1) * 30 + 1)
 nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colours)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Draw a bunch of deers
+# Draw a bunch of deer sprites
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[[1]])
 
@@ -239,7 +239,7 @@ nr <- nr_new(w, h, 'white')
 
 
 for (frame in 1:1000) {
-  # Clear the nativeraster and blit in all the deers
+  # Clear the nativeraster and blit in all the deer
   nr_fill(nr, 'white') 
   nr_blit2(nr, x, y, deer, deer_loc[[ (frame/3) %% 5 + 11]])
   
@@ -308,74 +308,3 @@ The coordinate system for `nara` nativeRaster objects has its origins at
 the bottom left corner of the image with coordinates `(1,1)`.
 
 <img src="man/figures/coords.png" width="50%" />
-
-## Benchmark `raster` vs `nativeRaster`
-
-**This benchmark is outdated**
-
-A pretty naive benchmark showing that drawing a `nativeRaster`
-
-- is approx **5x faster** than drawing a `raster`
-- allocates **only one quarter of the memory** compared to `raster`
-
-``` r
-nr  <- nr_new(400, 300)
-
-N <- 1000
-nr_rect(
-  nr,
-  x = sample(400, N, T), 
-  y = sample(400, N, T), 
-  w = sample(40, N, T), 
-  h = sample(40, N, T), 
-  fill = sample(colours(), N, T)
-)
-
-
-nr_circle(
-  nr,
-  x = sample(400, N, T), 
-  y = sample(400, N, T), 
-  r = sample(40, N, T), 
-  fill = sample(colours(), N, T)
-)
-
-ras <- nr_to_raster(nr)
-# ras[] <- 'yellow'  # looking up named colours at render time is SLOOOOOW
-
-x11(type = 'dbcairo', antialias = 'none')
-dev.control('inhibit')
-
-draw_nr <- function() {
-  dev.hold()
-  grid.raster(nr, interpolate = FALSE)
-  dev.flush()
-}
-
-
-draw_raster <- function() {
-  dev.hold()
-  grid.raster(ras, interpolate = FALSE)
-  dev.flush()
-}
-
-bench::mark(
-  draw_nr(),
-  draw_raster()
-)
-```
-
-| expression    |  itr/sec | mem_alloc |
-|:--------------|---------:|----------:|
-| draw_nr()     | 269.8799 |    1.83MB |
-| draw_raster() |  46.6820 |    7.32MB |
-
-## Future possibilities
-
-- More efficient polygon drawing with active edge lists.
-
-## Acknowledgements
-
-- R Core for developing and maintaining the language.
-- CRAN maintainers, for patiently shepherding packages onto CRAN and
-  maintaining the repository

@@ -25,6 +25,8 @@ Suggests:
     knitr,
     rmarkdown
 Config/testthat/edition: 3
-Copyright: The included 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  See 'inst/LICENSE-deer.txt'
-   for more details.
+Copyright: The included 'deer' spritesheet is by Calciumtrice and licensed under 
+   CC BY 3.0.  See 'inst/LICENSE-deer.txt' for more details. The included
+   bitmap font 'spleen' was created by Frederic Cambus (c) 2018-2024. See
+   'inst/LICENSE-spleen.txt' for full LICENSE
 VignetteBuilder: knitr
