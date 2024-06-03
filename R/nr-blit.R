@@ -116,8 +116,8 @@ if (FALSE) {
   
   # 500
   nr <- nr_new(1200, 800, 'grey80'); 
-  # nr2 <- png::readPNG(system.file("img/Rlogo.png", package = "png"), native = TRUE)
-  nr2 <- png::readPNG("~/Desktop/Screenshot 2024-05-31 at 1.23.16 PM.png", native = TRUE)
+  nr2 <- png::readPNG(system.file("img/Rlogo.png", package = "png"), native = TRUE)
+  # nr2 <- png::readPNG("~/Desktop/Screenshot 2024-05-31 at 1.23.16 PM.png", native = TRUE)
   dim(nr)
   dim(nr2)
   bench::mark(

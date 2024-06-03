@@ -30,7 +30,7 @@ if (FALSE) {
 ```{r echo=FALSE, eval=FALSE}
 
 grid.newpage()
-back <- read_png("man/figures/logo-nara-deer.png")
+back <- png::readPNG("man/figures/logo-nara-deer.png")
 
 N <- 100
 

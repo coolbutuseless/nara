@@ -15,11 +15,10 @@ LazyData: true
 RoxygenNote: 7.3.1
 Depends: 
     R (>= 2.10)
-Imports:
-    png
 Suggests: 
     testthat (>= 3.0.0),
     jpeg,
+    png,
     purrr,
     stringr,
     knitr,

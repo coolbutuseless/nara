@@ -1,8 +1,7 @@
 
 
 source <- "data-raw/deer female calciumtrice.png"
-deer <- read_png(source)
-# ss <- read_png(source, transparent = list(-1594494))
+deer <- png::readPNG(source)
 if (FALSE) {
   grid.newpage(); grid.raster(nr, interpolate = FALSE)
 }

@@ -1,8 +1,7 @@
 
 
 source <- "data-raw/oga-buch/characters_7.png"
-king <- read_png(source)
-# ss <- read_png(source, transparent = list(-1594494))
+king <- png::readPNG(source)
 if (FALSE) {
   grid.newpage(); grid.raster(ss)
 }
