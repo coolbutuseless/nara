@@ -211,4 +211,24 @@ if (FALSE) {
 }
 
 
+if (FALSE) {
+  
+  nr <- nr_new(3, 3, 'grey80')
+  nr_point(nr, 1.9, 1.50001)
+  plot(nr, T)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

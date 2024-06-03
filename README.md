@@ -106,7 +106,7 @@ nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colors)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of deer sprites
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[[1]])
+nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[1,])
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,7 +150,7 @@ and `deer_loc` contains the coordinates of 16 sprites within that image.
 library(grid)
 
 nr <- nr_new(100, 30, 'grey80')
-nr_blit2(nr, 2, 1, deer, deer_loc[[1]])
+nr_blit2(nr, 2, 1, deer, deer_loc[1,])
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -192,7 +192,7 @@ nr <- nr_new(100, 30, 'grey80')
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit2(nr, i, 1, deer, deer_loc[[((i/3) %% 5) + 11]]) # copy deer to nativeRaster
+  nr_blit2(nr, i, 1, deer, deer_loc[((i/3) %% 5) + 11, ]) # copy deer to nativeRaster
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
@@ -241,7 +241,7 @@ nr <- nr_new(w, h, 'white')
 for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the deer
   nr_fill(nr, 'white') 
-  nr_blit2(nr, x, y, deer, deer_loc[[ (frame/3) %% 5 + 11]])
+  nr_blit2(nr, x, y, deer, deer_loc[ (frame/3) %% 5 + 11, ])
   
   # Draw the nativeraster to screen
   dev.hold()

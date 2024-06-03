@@ -84,7 +84,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
     double *dbl_vec = REAL(vec_);
     if (length(vec_) == N) {
       for (int i = 0; i < N; i++) {
-        int_vec[i] = (int)dbl_vec[i];
+        int_vec[i] = (int) round(dbl_vec[i]);
       }
     } else {
       // length == 1
