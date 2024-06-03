@@ -4,18 +4,18 @@
 \alias{nr_polygon}
 \title{Draw polygon on a \code{nativeRaster} image}
 \usage{
-nr_polygon(nr, x, y, fill = "black", colour = NA)
+nr_polygon(nr, x, y, fill = "black", color = NA)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
 \item{x, y}{Vectors of point coordinates}
 
-\item{fill}{fill colour [scalar]}
+\item{fill}{fill color [scalar]}
 
-\item{colour}{Color as a character string. Either a standard R colour
+\item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
-or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
 \value{
@@ -27,7 +27,7 @@ Draw polygon on a \code{nativeRaster} image
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', colour = 'red')
+nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', color = 'red')
 plot(nr)
 
 }

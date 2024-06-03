@@ -71,7 +71,7 @@ yoff <-  -20
 while (TRUE) {
   nr <- nr_new(w, h, 'grey90')
   nr_blit(nr, xoff, yoff, ss)
-  nr_rect(nr, x-1, y-1, w_sprite+2, h_sprite+2, fill = NA, colour = '#00000020')
+  nr_rect(nr, x-1, y-1, w_sprite+2, h_sprite+2, fill = NA, color = '#00000020')
   grid.newpage(); 
   
   grid.raster(nr, interpolate = FALSE)

@@ -3,7 +3,7 @@
 #' Convert \code{nativeRaster} images to/from other R objects
 #'
 #' @param nr \code{nativeRaster} object
-#' @param ras standard R raster i.e. a character matrix of hex colour values
+#' @param ras standard R raster i.e. a character matrix of hex color values
 #' @param arr 3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 #'        [nrow, ncol, 3]. Each value is in range [0,1].
 #' @param dst destination \code{nativeRaster} If NULL (the default) a new \code{nativeRaster}
@@ -53,8 +53,8 @@ array_to_nr <- function(arr, dst = NULL) {
 #' Matrix to \code{nativeRaster}
 #' 
 #' @param mat integer matrix
-#' @param palette vector of colours.  This palette must contain at least as 
-#'        many colours as the maximum integer value in \code{mat}.
+#' @param palette vector of colors.  This palette must contain at least as 
+#'        many colors as the maximum integer value in \code{mat}.
 #' @param dst destination \code{nativeRaster} object. If NULL (the default) a 
 #'        new \code{nativeRaster} will be created  If a \code{nativeRaster} 
 #'        is supplied here, it must have the exact dimensions to match the matrix        

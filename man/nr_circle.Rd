@@ -4,7 +4,7 @@
 \alias{nr_circle}
 \title{Draw circles on a \code{nativeRaster} image}
 \usage{
-nr_circle(nr, x, y, r, fill = "black", colour = NA)
+nr_circle(nr, x, y, r, fill = "black", color = NA)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -13,9 +13,9 @@ nr_circle(nr, x, y, r, fill = "black", colour = NA)
 
 \item{r}{radius [vector]}
 
-\item{fill}{interior fill colour [vector]}
+\item{fill}{interior fill color [vector]}
 
-\item{colour}{outline colour. Default: NA. [vector]}
+\item{color}{outline color. Default: NA. [vector]}
 }
 \value{
 Original \code{nativeRaster} modified in-place

@@ -2,7 +2,7 @@
 % Please edit documentation in R/png.R
 \name{read_png}
 \alias{read_png}
-\title{Read PNG as \code{nativeRaster} converting specified colours to transparent}
+\title{Read PNG as \code{nativeRaster} converting specified colors to transparent}
 \usage{
 read_png(source, make_transparent = NULL)
 }
@@ -10,14 +10,14 @@ read_png(source, make_transparent = NULL)
 \item{source}{Either name of the file to read from or a raw vector 
 representing the PNG file content.}
 
-\item{make_transparent}{List or vector of colours which should be considered transporent.
-R colour names, hex colours, or packed colours (integers)}
+\item{make_transparent}{List or vector of colors which should be considered transporent.
+R color names, hex colors, or packed colors (integers)}
 }
 \value{
 \code{nativeRaster}
 }
 \description{
-Read PNG as \code{nativeRaster} converting specified colours to transparent
+Read PNG as \code{nativeRaster} converting specified colors to transparent
 }
 \examples{
 source <- system.file("img/Rlogo.png", package = "png", mustWork = TRUE)

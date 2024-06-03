@@ -4,14 +4,14 @@
 \alias{nr_point}
 \title{Draw points on a \code{nativeRaster} image}
 \usage{
-nr_point(nr, x, y, colour = "black")
+nr_point(nr, x, y, color = "black")
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
 \item{x, y}{Vectors of point coordinates}
 
-\item{colour}{Vector of colours}
+\item{color}{Vector of colors}
 }
 \value{
 Original \code{nativeRaster} modified in-place
@@ -22,7 +22,7 @@ Draw points on a \code{nativeRaster} image
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_point(nr, x = seq(N), y = seq(N), colour = rainbow(N)) 
+nr_point(nr, x = seq(N), y = seq(N), color = rainbow(N)) 
 plot(nr)
 
 }

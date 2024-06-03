@@ -14,7 +14,7 @@
     * `nr_fliph()`
     * `matrix_to_nr()`
     * `nr_scale()`
-* Refactored colour conversion routines. 
+* Refactored color conversion routines. 
 * Fast conversions in C
     * `array_to_nr()`
     * `nr_to_array()`

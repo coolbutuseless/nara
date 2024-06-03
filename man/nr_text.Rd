@@ -4,7 +4,7 @@
 \alias{nr_text}
 \title{Draw text on a \code{nativeRaster} image}
 \usage{
-nr_text(nr, x, y, str, colour = "black", fontsize = 8L)
+nr_text(nr, x, y, str, color = "black", fontsize = 8L)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -13,9 +13,9 @@ nr_text(nr, x, y, str, colour = "black", fontsize = 8L)
 
 \item{str}{character string}
 
-\item{colour}{Color as a character string. Either a standard R colour
+\item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
-or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 
 \item{fontsize}{height of font in pizels.  Only valid values are 8, 12 and 16.

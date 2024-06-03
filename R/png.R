@@ -1,11 +1,11 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Read PNG as \code{nativeRaster} converting specified colours to transparent
+#' Read PNG as \code{nativeRaster} converting specified colors to transparent
 #' 
 #' @param source Either name of the file to read from or a raw vector 
 #'        representing the PNG file content.
-#' @param make_transparent List or vector of colours which should be considered transporent.
-#'        R colour names, hex colours, or packed colours (integers)
+#' @param make_transparent List or vector of colors which should be considered transporent.
+#'        R color names, hex colors, or packed colors (integers)
 #'                
 #' @return \code{nativeRaster}
 #' 

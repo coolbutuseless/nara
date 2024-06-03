@@ -2,23 +2,23 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_fill}
 \alias{nr_fill}
-\title{Fill a \code{nativeRaster} image with the given colour}
+\title{Fill a \code{nativeRaster} image with the given color}
 \usage{
-nr_fill(nr, colour)
+nr_fill(nr, color)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{colour}{Color as a character string. Either a standard R colour
+\item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
-or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
 \value{
 The original \code{nativeRaster} modified in-place.
 }
 \description{
-Fill a \code{nativeRaster} image with the given colour
+Fill a \code{nativeRaster} image with the given color
 }
 \examples{
 nr <- nr_new(400, 300, 'hotpink')

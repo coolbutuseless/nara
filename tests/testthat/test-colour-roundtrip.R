@@ -11,7 +11,7 @@ make_color <- function(...) {
 
 
 
-test_that("colour roundtrip to ints works", {
+test_that("color roundtrip to ints works", {
   set.seed(2022)
   N <- 1000
   orig <- vapply(1:N, make_color, character(1))

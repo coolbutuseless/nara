@@ -9,13 +9,13 @@
 #' \itemize{
 #'   \item{The data should be treated as RGBA pixels in row-major ordering}
 #'   \item{Each 32-bit integer should be interpreted as 4-bytes - one for each
-#'         of the R, G, B and A colour channels}
+#'         of the R, G, B and A color channels}
 #' }
 #'
 #' @param width,height Image dimensions in pixels
-#' @param fill Background fill color as a character string. Either a standard R colour
+#' @param fill Background fill color as a character string. Either a standard R color
 #'        (e.g. 'blue', 'white')
-#'        or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+#'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 #'        or \code{#rgb}
 #'
 #' @return \code{nativeRaster}
@@ -35,12 +35,12 @@ nr_new <- function(width, height, fill = 'white') {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Fill a \code{nativeRaster} image with the given colour
+#' Fill a \code{nativeRaster} image with the given color
 #'
 #' @param nr \code{nativeRaster}
-#' @param colour Color as a character string. Either a standard R colour
+#' @param color Color as a character string. Either a standard R color
 #'        (e.g. 'blue', 'white')
-#'        or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+#'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 #'        or \code{#rgb}
 #'        
 #' @return The original \code{nativeRaster} modified in-place.        
@@ -52,8 +52,8 @@ nr_new <- function(width, height, fill = 'white') {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_fill <- function(nr, colour) {
-  invisible(.Call(fill_, nr, colour))
+nr_fill <- function(nr, color) {
+  invisible(.Call(fill_, nr, color))
 }
 
 

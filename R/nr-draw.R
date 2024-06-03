@@ -4,20 +4,20 @@
 #'
 #' @inheritParams nr_fill
 #' @param x,y Vectors of point coordinates
-#' @param colour Vector of colours
+#' @param color Vector of colors
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #'
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_point(nr, x = seq(N), y = seq(N), colour = rainbow(N)) 
+#' nr_point(nr, x = seq(N), y = seq(N), color = rainbow(N)) 
 #' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_point <- function(nr, x, y, colour = 'black') {
-  invisible(.Call(draw_points_, nr, x, y, colour))
+nr_point <- function(nr, x, y, color = 'black') {
+  invisible(.Call(draw_points_, nr, x, y, color))
 }
 
 
@@ -35,13 +35,13 @@ nr_point <- function(nr, x, y, colour = 'black') {
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_line(nr, x0 = c(1, N), y0 = c(1, 1), x1 = c(N, 1), y1 = c(N, N), 
-#'         colour = c('red', 'black'))
+#'         color = c('red', 'black'))
 #' plot(nr)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
-  invisible(.Call(draw_line_, nr, x0, y0, x1, y1, colour))
+nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
+  invisible(.Call(draw_line_, nr, x0, y0, x1, y1, color))
 }
 
 
@@ -75,8 +75,8 @@ nr_line <- function(nr, x0, y0, x1, y1, colour = 'black') {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
-  invisible(.Call(draw_text_, nr, x, y, str, colour, fontsize))
+nr_text <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
+  invisible(.Call(draw_text_, nr, x, y, str, color, fontsize))
 }
 
 
@@ -87,8 +87,8 @@ nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
 #' @inheritParams nr_point
 #' @param x,y coordinates of lower left corner of rectangle.  [vector]
 #' @param w,h width and height of rectangle. [vector]
-#' @param colour outline colour. Default: NA. [vector]
-#' @param fill interior fill colour [vector]
+#' @param color outline color. Default: NA. [vector]
+#' @param fill interior fill color [vector]
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #' 
@@ -96,13 +96,13 @@ nr_text <- function(nr, x, y, str, colour = 'black', fontsize = 8L) {
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_rect(nr, x = c(1, N/2 + 1), y = c(1, N/2 + 1), w = N/2, h = N/4, 
-#'         fill = 'blue', colour = c('red', 'green'))
+#'         fill = 'blue', color = c('red', 'green'))
 #' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
-  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, colour))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA) {
+  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, color))
 }
 
 
@@ -113,8 +113,8 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
 #' @inheritParams nr_point
 #' @param x,y coordinates of centre of circle.  [vector]
 #' @param r radius [vector]
-#' @param colour outline colour. Default: NA. [vector]
-#' @param fill interior fill colour [vector]
+#' @param color outline color. Default: NA. [vector]
+#' @param fill interior fill color [vector]
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #'
@@ -126,8 +126,8 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', colour = NA) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
-  invisible(.Call(draw_circle_, nr, x, y, r, fill, colour))
+nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
+  invisible(.Call(draw_circle_, nr, x, y, r, fill, color))
 }
 
 
@@ -144,13 +144,13 @@ nr_circle <- function(nr, x, y, r, fill = 'black', colour = NA) {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), colour = 'red')
+#' nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), color = 'red')
 #' plot(nr)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
-  invisible(.Call(draw_polyline_, nr, x, y, colour, close))
+nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
+  invisible(.Call(draw_polyline_, nr, x, y, color, close))
 }
 
 
@@ -159,20 +159,20 @@ nr_polyline <- function(nr, x, y, colour = 'black', close = FALSE) {
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
-#' @param fill fill colour [scalar]
+#' @param fill fill color [scalar]
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #'
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', colour = 'red')
+#' nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', color = 'red')
 #' plot(nr)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, fill = 'black', colour = NA) {
-  invisible(.Call(draw_polygon_, nr, x, y, fill, colour))
+nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
+  invisible(.Call(draw_polygon_, nr, x, y, fill, color))
 }
 
 
@@ -182,7 +182,7 @@ if (FALSE) {
   N <- 20
   nr <- nr_new(400, 400)
   bench::mark(
-    nr_circle(nr, 200, 200, 100, '#ff0000', colour = '#0000ff')
+    nr_circle(nr, 200, 200, 100, '#ff0000', color = '#0000ff')
   )
   # 20000
     

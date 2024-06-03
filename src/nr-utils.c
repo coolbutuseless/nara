@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "colour.h"
+#include "color.h"
 #include "nr-utils.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

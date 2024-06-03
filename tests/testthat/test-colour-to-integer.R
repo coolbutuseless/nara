@@ -1,11 +1,11 @@
 
 
-colour_names <- c(NA_character_, 'transparent', colours())
+color_names <- c(NA_character_, 'transparent', colors())
 
-rgb <- col2rgb(colour_names, alpha = TRUE)
-colour_hex <- sprintf("#%02X%02X%02X%02X", rgb[1,], rgb[2,], rgb[3,], rgb[4,])
+rgb <- col2rgb(color_names, alpha = TRUE)
+color_hex <- sprintf("#%02X%02X%02X%02X", rgb[1,], rgb[2,], rgb[3,], rgb[4,])
 
-colour_ints <- c(
+color_ints <- c(
   16777215L, 16777215L, -1L, -1808L, -2626566L, -2363393L, -3350546L, -5193523L, 
   -8879221L, -2818177L, -2818177L, -3740042L, -5583514L, -9139387L, 
   -16L, -16L, -1118496L, -3289663L, -7631997L, -2296331L, -3873537L, 
@@ -117,21 +117,21 @@ colour_ints <- c(
   -16716050L, -16724531L, -16741493L, -13447782L)
 
 
-test_that("colour-to-integer works", {
-  expect_identical(str_cols_to_packed_cols(colour_names), colour_ints)
-  expect_identical(str_cols_to_packed_cols(colour_hex  ), colour_ints)
+test_that("color-to-integer works", {
+  expect_identical(str_cols_to_packed_cols(color_names), color_ints)
+  expect_identical(str_cols_to_packed_cols(color_hex  ), color_ints)
 })
 
-test_that("integer-to-colour conversion works", {
-  expect_identical(packed_cols_to_hex_cols(colour_ints), colour_hex)
+test_that("integer-to-color conversion works", {
+  expect_identical(packed_cols_to_hex_cols(color_ints), color_hex)
 })
 
 
 if (FALSE) {
   
   # identical(
-  #   farver::encode_native(colours()),
-  #   str_cols_to_packed_cols(colours())
+  #   farver::encode_native(colors()),
+  #   str_cols_to_packed_cols(colors())
   # )
   
 }

@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "colour.h"
+#include "color.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
 
@@ -157,6 +157,7 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   uint32_t *src = (uint32_t *)INTEGER(src_);
   bool respect_alpha = asLogical(respect_alpha_);
   for (int i = 0; i < length(x_); i++) {
+    // blit_core_naive_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height);
     blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
   }
 

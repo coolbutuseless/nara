@@ -4,16 +4,16 @@
 \alias{nr_polyline}
 \title{Draw polyline on a \code{nativeRaster} image}
 \usage{
-nr_polyline(nr, x, y, colour = "black", close = FALSE)
+nr_polyline(nr, x, y, color = "black", close = FALSE)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
 \item{x, y}{Vectors of point coordinates}
 
-\item{colour}{Color as a character string. Either a standard R colour
+\item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
-or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
@@ -28,7 +28,7 @@ Draw polyline on a \code{nativeRaster} image
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), colour = 'red')
+nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), color = 'red')
 plot(nr)
 
 }

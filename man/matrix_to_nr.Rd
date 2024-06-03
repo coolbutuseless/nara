@@ -9,8 +9,8 @@ matrix_to_nr(mat, palette, dst = NULL)
 \arguments{
 \item{mat}{integer matrix}
 
-\item{palette}{vector of colours.  This palette must contain at least as 
-many colours as the maximum integer value in \code{mat}.}
+\item{palette}{vector of colors.  This palette must contain at least as 
+many colors as the maximum integer value in \code{mat}.}
 
 \item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
 new \code{nativeRaster} will be created  If a \code{nativeRaster} 

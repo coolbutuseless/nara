@@ -11,8 +11,8 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "colour.h"
-#include "colour-from-r.h"
+#include "color.h"
+#include "color-from-r.h"
 #include "nr-utils.h"
 
 
@@ -29,7 +29,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
     error("'mat' must be an integer matrix");
   }
   
-  int N = length(palette_); // Maximum palette colour
+  int N = length(palette_); // Maximum palette color
   
   int height = Rf_nrows(mat_);
   int width  = Rf_ncols(mat_);
@@ -59,13 +59,13 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   int *mat = INTEGER(mat_);
   
   bool freepal = false;
-  uint32_t *palette = colours_to_packed_cols(palette_, N, &freepal);
+  uint32_t *palette = colors_to_packed_cols(palette_, N, &freepal);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       int val = *(mat + col * height + row);
       if (val > N) {
-        error("not enough colours in palette. Need at least %i but have only %i", val, N);
+        error("not enough colors in palette. Need at least %i but have only %i", val, N);
       }
       if (val <= 0) {
         *(nr + row * width + col) = 0x00FFFFFF;  // transparent white 0xAABBGGRR
@@ -123,7 +123,7 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       const char *val = CHAR(STRING_ELT(ras_, col * height + row));
-      *(nr + col * height + row) = colour_char_to_packed_col(val);
+      *(nr + col * height + row) = color_char_to_packed_col(val);
     }
   }
   
@@ -151,7 +151,7 @@ SEXP nr_to_raster_(SEXP nr_) {
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
-      SET_STRING_ELT(ras_, col * height + row, packed_col_to_CHARSXP_colour(nr + col * height + row));
+      SET_STRING_ELT(ras_, col * height + row, packed_col_to_CHARSXP_color(nr + col * height + row));
     }
   }
   

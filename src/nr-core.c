@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "colour.h"
+#include "color.h"
 #include "nr-utils.h"
 
 
@@ -82,9 +82,9 @@ SEXP duplicate_(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill nativeraster with value [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_c(uint32_t *nr, int height, int width, uint32_t colour) {
+void fill_c(uint32_t *nr, int height, int width, uint32_t color) {
   for (int i = 0; i < height * width; i++) {
-    nr[i] = colour;
+    nr[i] = color;
   }
 }
 
@@ -93,7 +93,7 @@ void fill_c(uint32_t *nr, int height, int width, uint32_t colour) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill raster with value - R interface
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP fill_(SEXP nr_, SEXP colour_) {
+SEXP fill_(SEXP nr_, SEXP color_) {
 
   assert_nativeraster(nr_);
 
@@ -102,9 +102,9 @@ SEXP fill_(SEXP nr_, SEXP colour_) {
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
 
-  uint32_t colour = colour_sexp_to_packed_col(colour_);
+  uint32_t color = color_sexp_to_packed_col(color_);
 
-  fill_c(nr, height, width, colour);
+  fill_c(nr, height, width, color);
 
   return nr_;
 }

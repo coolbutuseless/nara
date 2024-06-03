@@ -9,9 +9,9 @@ nr_new(width, height, fill = "white")
 \arguments{
 \item{width, height}{Image dimensions in pixels}
 
-\item{fill}{Background fill color as a character string. Either a standard R colour
+\item{fill}{Background fill color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
-or a hex colour of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
 \value{
@@ -25,7 +25,7 @@ differently by graphics devices:
 \itemize{
   \item{The data should be treated as RGBA pixels in row-major ordering}
   \item{Each 32-bit integer should be interpreted as 4-bytes - one for each
-        of the R, G, B and A colour channels}
+        of the R, G, B and A color channels}
 }
 }
 \examples{

@@ -18,7 +18,7 @@ array_to_nr(arr, dst = NULL)
 \arguments{
 \item{nr}{\code{nativeRaster} object}
 
-\item{ras}{standard R raster i.e. a character matrix of hex colour values}
+\item{ras}{standard R raster i.e. a character matrix of hex color values}
 
 \item{dst}{destination \code{nativeRaster} If NULL (the default) a new \code{nativeRaster}
 will be created.}

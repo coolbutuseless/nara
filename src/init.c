@@ -8,7 +8,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_);
 extern SEXP duplicate_(SEXP nr_);
-extern SEXP fill_(SEXP nr_, SEXP colour_);
+extern SEXP fill_(SEXP nr_, SEXP color_);
 extern SEXP flipv_(SEXP nr_);
 extern SEXP fliph_(SEXP nr_);
 
@@ -31,19 +31,19 @@ extern SEXP nr_to_array_(SEXP nr_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP draw_points_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP colour_);
-extern SEXP draw_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP colour_);
-extern SEXP draw_text_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP colour_, SEXP fontsize_);
-extern SEXP draw_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP colour_);
-extern SEXP draw_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP colour_);
-extern SEXP draw_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP colour_, SEXP close_);
-extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP colour_);
+extern SEXP draw_points_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
+extern SEXP draw_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP color_);
+extern SEXP draw_text_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
+extern SEXP draw_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_);
+extern SEXP draw_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
+extern SEXP draw_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP close_);
+extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP color_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Colour
+// Color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP colours_to_packed_cols_(SEXP colour_);
-extern SEXP packed_cols_to_hexcolours_(SEXP ints_);
+extern SEXP colors_to_packed_cols_(SEXP color_);
+extern SEXP packed_cols_to_hexcolors_(SEXP ints_);
 
 
 
@@ -78,8 +78,8 @@ static const R_CallMethodDef CEntries[] = {
   {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
   {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},
   
-  {"colours_to_packed_cols_"  , (DL_FUNC) &colours_to_packed_cols_  , 1},
-  {"packed_cols_to_hexcolours_"  , (DL_FUNC) &packed_cols_to_hexcolours_  , 1},
+  {"colors_to_packed_cols_"  , (DL_FUNC) &colors_to_packed_cols_  , 1},
+  {"packed_cols_to_hexcolors_"  , (DL_FUNC) &packed_cols_to_hexcolors_  , 1},
   
   {"djb2_hash_"    , (DL_FUNC) &djb2_hash_    , 1},
 

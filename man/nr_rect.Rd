@@ -4,7 +4,7 @@
 \alias{nr_rect}
 \title{Draw rectangles on a \code{nativeRaster} image}
 \usage{
-nr_rect(nr, x, y, w, h, fill = "black", colour = NA)
+nr_rect(nr, x, y, w, h, fill = "black", color = NA)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -13,9 +13,9 @@ nr_rect(nr, x, y, w, h, fill = "black", colour = NA)
 
 \item{w, h}{width and height of rectangle. [vector]}
 
-\item{fill}{interior fill colour [vector]}
+\item{fill}{interior fill color [vector]}
 
-\item{colour}{outline colour. Default: NA. [vector]}
+\item{color}{outline color. Default: NA. [vector]}
 }
 \value{
 Original \code{nativeRaster} modified in-place
@@ -27,7 +27,7 @@ Draw rectangles on a \code{nativeRaster} image
 N <- 20
 nr <- nr_new(N, N, 'grey80')
 nr_rect(nr, x = c(1, N/2 + 1), y = c(1, N/2 + 1), w = N/2, h = N/4, 
-        fill = 'blue', colour = c('red', 'green'))
+        fill = 'blue', color = c('red', 'green'))
 plot(nr)
 
 }

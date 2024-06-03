@@ -86,11 +86,11 @@ This makes them useful for games and other interactive applications.
 
 A `nativeRaster` is a built-in datatype in R.
 
-It is an integer matrix where each integer represents the RGBA colour at 
+It is an integer matrix where each integer represents the RGBA color at 
 a single pixel.  The 32-bit integer at each location is interpreted within
-R to be four colour channels (RGBA) represented by 8 bits each.
+R to be four color channels (RGBA) represented by 8 bits each.
 
-This way of encoding colour information is closer to the internal representation
+This way of encoding color information is closer to the internal representation
 used by graphics devices, and therefore can be faster to render, save and load
 (as fewer data conversion steps are needed).
 
@@ -151,9 +151,9 @@ nr <- nr_new(w * 30, h * 30, fill = 'grey98')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a grid of squares
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-colours <- viridisLite::inferno(w * h)
+colors <- viridisLite::inferno(w * h)
 coords  <- expand.grid(y = seq(0, h-1) * 30 + 1, x = seq(0, w-1) * 30 + 1)
-nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colours)
+nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colors)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of deer sprites
@@ -173,7 +173,7 @@ nr_blit(nr, 1, 1, img)
 thetas <- seq(pi/6, 2*pi, pi/3)
 x <- 50 * cos(thetas) + 240
 y <- 50 * sin(thetas) + 180
-nr_polygon(nr, x = x, y = y, fill = '#556688c0', colour = 'blue')
+nr_polygon(nr, x = x, y = y, fill = '#556688c0', color = 'blue')
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add text to the image
