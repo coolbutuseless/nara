@@ -297,6 +297,7 @@ for (y in seq(350, 0, -30)) {
   }
 }
 
+grid.newpage()
 grid.raster(nr, interpolate = FALSE)
 ```
 

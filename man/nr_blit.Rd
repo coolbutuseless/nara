@@ -13,7 +13,7 @@ nr_blit(
   y0 = 1L,
   w = NULL,
   h = NULL,
-  respect_alpha = FALSE
+  respect_alpha = TRUE
 )
 }
 \arguments{

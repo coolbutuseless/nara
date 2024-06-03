@@ -79,7 +79,7 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
     }
   } else {
     // Blit it via 'memcpy()' trashing any contents
-    // Flip y axis. matrices are (1, 1) at top left, 
+    // Flip y axis. matrices are (1, 1) at top left,
     for (int yoff = 0; yoff < h; yoff++) {
       int y1 = src_height - y0 - yoff;
       memcpy(dst + (dst_height - y - yoff) * dst_width + x - 1, src + y1 * src_width + x0, w * sizeof(int32_t));

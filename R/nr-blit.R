@@ -30,7 +30,7 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect_alpha = FALSE) {
+nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect_alpha = TRUE) {
   invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, respect_alpha))
 }
 
