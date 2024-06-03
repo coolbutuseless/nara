@@ -5,16 +5,18 @@
 \alias{deer_loc}
 \title{Locations of 15 sprites within the \code{deer} spritesheet}
 \format{
-An object of class \code{list} of length 15.
+An object of class \code{matrix} (inherits from \code{array}) with 15 rows and 4 columns.
 }
 \usage{
 deer_loc
 }
 \description{
-List of 15 numeric vectors. Each vector consistes of (x, y, width, height)
-location of a sprite within the spritesheet.
+Matrix of 15 sprite positions within the \code{deer} spritesheet.
 }
 \details{
+Each row consists of (x, y, width, height)
+location of a sprite within the spritesheet.
+
 This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  
 See 'inst/LICENSE-deer.txt' for more details. To view license information:
 

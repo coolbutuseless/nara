@@ -47,7 +47,7 @@ nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[[1]])
+#' nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[1,])
 #' plot(nr)
 #' 
 #' @export
@@ -95,7 +95,7 @@ if (FALSE) {
   N <- 400
   nr <- nr_new(N, N, 'grey80')
   bench::mark(
-    nr_blit2(nr, sample(seq(-16, N+16, length.out = N)), sample(N), deer, deer_loc[[1]])
+    nr_blit2(nr, sample(seq(-16, N+16, length.out = N)), sample(N), deer, deer_loc[1,])
   )
   plot(nr, T)
   
@@ -109,7 +109,8 @@ if (FALSE) {
   
   
   nr <- nr_new(40, 40, 'grey80'); 
-  nr_blit2(nr, -5, 1, deer, deer_loc[[1]]); 
+  nr_blit2(nr, -5, 1, deer, deer_loc[1,]); 
+  nr_blit2(nr, -5, 1, deer, deer_loc[1,]); 
   plot(nr, T)
   
   

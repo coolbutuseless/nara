@@ -38,16 +38,26 @@ names(locs) <- c(
   'run1', 'run2', 'run3', 'run4', 'run5'
 )
 
+deer_loc <- do.call(rbind, locs)
+deer_loc[,2] <- 130 - deer_loc[,2]
+deer_loc
+colnames(deer_loc) <- c('x', 'y', 'w', 'h')
+
 if (FALSE) {
-  for (loc in locs) {
+  for (i in seq(nrow(deer_loc))) {
     nr <- nr_new(100, 100, 'grey90')
-    nr_blit2(nr, 1, 1, deer, loc)
+    nr_blit2(nr, 1, 1, deer, deer_loc[i,])
     grid.newpage(); grid.raster(nr, interpolate = FALSE)
     Sys.sleep(0.3)
   }
 }
 
-deer_loc <- locs
+plot(deer, T)
+deer2 <- nr_duplicate(deer)
+nr_rect(deer2, 1, 1, 32, 32, fill = NA, color = '#0000ff30')
+plot(deer2)
+
+
 usethis::use_data(deer, deer_loc, internal = FALSE, overwrite = TRUE, compress = 'xz')
 
 

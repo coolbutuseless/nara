@@ -13,7 +13,9 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Locations of 15 sprites within the \code{deer} spritesheet
 #' 
-#' List of 15 numeric vectors. Each vector consistes of (x, y, width, height)
+#' Matrix of 15 sprite positions within the \code{deer} spritesheet. 
+#' 
+#' Each row consists of (x, y, width, height)
 #' location of a sprite within the spritesheet.
 #' 
 #' This 'deer' spritesheet is by Calciumtrice and licensed under CC BY 3.0.  

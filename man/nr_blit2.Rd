@@ -36,7 +36,7 @@ Blit2
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[[1]])
+nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[1,])
 plot(nr)
 
 }
