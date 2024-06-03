@@ -161,5 +161,32 @@ SEXP fliph_(SEXP nr_) {
 
 
 
-
+SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
+  
+  assert_nativeraster(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
+  
+  int N = calc_max_length(2, old_cols_, new_cols_);
+  
+  bool freeold = false, freenew = false;
+  uint32_t *old_cols = colors_to_packed_cols(old_cols_, N, &freeold);
+  uint32_t *new_cols = colors_to_packed_cols(new_cols_, N, &freenew);
+  
+  for (int row = 0; row < height; row++) {
+    for (int col = 0; col < width; col++) {
+      for (int idx = 0; idx < N; idx++) {
+        if (*nr == old_cols[idx]) {
+          *nr = new_cols[idx];
+        }
+      }
+      nr++;
+    }
+  }
+  
+  if (freeold) free(old_cols);
+  if (freenew) free(new_cols);
+  return nr_;
+}
 

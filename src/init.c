@@ -11,6 +11,7 @@ extern SEXP duplicate_(SEXP nr_);
 extern SEXP fill_(SEXP nr_, SEXP color_);
 extern SEXP flipv_(SEXP nr_);
 extern SEXP fliph_(SEXP nr_);
+extern SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
@@ -58,6 +59,7 @@ static const R_CallMethodDef CEntries[] = {
   {"fill_"     , (DL_FUNC) &fill_     , 2},
   {"flipv_"    , (DL_FUNC) &flipv_    , 1},
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
+  {"replace_"  , (DL_FUNC) &replace_  , 3},
 
   {"blit_"     , (DL_FUNC) &blit_     , 9},
   

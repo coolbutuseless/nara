@@ -177,6 +177,26 @@ nr_fliph <- function(nr) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Replace colours in a native raster
+#' 
+#' @inheritParams nr_fill
+#' @param old Vector of old colours
+#' @param new Vector of replacement colours
+#' 
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(10, 10, 'hotpink')
+#' nr_replace(nr, 'hotpink', 'grey80')
+#' plot(nr)
+#' 
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_replace <- function(nr, old, new) {
+  invisible(.Call(replace_, nr, old, new))
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Scale up a \code{nativeRaster} by an integer factor
 #' 
 #' @inheritParams nr_fill
@@ -204,5 +224,6 @@ nr_scale <- function(nr, scale) {
   attr(res, 'channels') <- 4L
   res
 }
+
 
 
