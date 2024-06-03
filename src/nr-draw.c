@@ -21,43 +21,42 @@
 // Coordinate origin is (1, 1) at top-left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
-
-  // Check for transparent color
-  if (is_transparent(color)) return;
-
-  // Alpha channel for blending colors
-  int alpha = (color >> 24) & 255;
-
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Convert from R (1, 1) orogin to C (0, 0) origin
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   x--;
   y--;
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Out of bounds
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (y < 0 || y > height - 1 || x < 0 || x > width - 1) return;
   
-  if (y >= 0 && y < height && x >= 0 && x < width) {
-      if (alpha == 255) {
-        nr[y * width + x] = color;
-      } else {
-        // Alpha blending
-        uint32_t val = nr[y * width + x];
-        uint8_t r2 =  val        & 255;
-        uint8_t g2 = (val >>  8) & 255;
-        uint8_t b2 = (val >> 16) & 255;
-        // uint8_t a2 = (val >> 24) & 255;
+  // Check for transparent color
+  if (is_transparent(color)) return;
 
-        uint8_t r =  color        & 255;
-        uint8_t g = (color >>  8) & 255;
-        uint8_t b = (color >> 16) & 255;
-        // uint8_t a = (color >> 24) & 255;
-
-        r = (uint8_t)((alpha * r + (255 - alpha) * r2) / 255);
-        g = (uint8_t)((alpha * g + (255 - alpha) * g2) / 255);
-        b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
-        // a = (alpha * a + (255 - alpha) * a2) / 255;
-
-        nr[y * width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
-      }
+  // Alpha channel for blending colors
+  uint32_t alpha = (color >> 24) & 255;
+  
+  if (alpha == 255) {
+    nr[y * width + x] = color;
+  } else {
+    // Alpha blending
+    uint32_t val = nr[y * width + x];
+    uint8_t r2 =  val        & 255;
+    uint8_t g2 = (val >>  8) & 255;
+    uint8_t b2 = (val >> 16) & 255;
+    
+    uint8_t r =  color        & 255;
+    uint8_t g = (color >>  8) & 255;
+    uint8_t b = (color >> 16) & 255;
+    
+    r = (uint8_t)((alpha * r + (255 - alpha) * r2) / 255);
+    g = (uint8_t)((alpha * g + (255 - alpha) * g2) / 255);
+    b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
+    
+    nr[y * width + x] = (r) | (g << 8) | (b << 16) | (0xff << 24);
   }
 }
 
@@ -94,23 +93,25 @@ void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, 
       nr[y * width + x] = color;  
     }
   } else {
-    // translucent
-    int alpha = (color >> 24) & 255;
-    uint8_t r0 =  color        & 255;
-    uint8_t g0 = (color >>  8) & 255;
-    uint8_t b0 = (color >> 16) & 255;
+    // translucent alpha blend
+    // from: https://stackoverflow.com/questions/12011081/alpha-blending-2-rgba-colors-in-c
+    uint32_t alpha = ((color >> 24) & 255) + 1;
+    uint32_t inv_alpha = 256 - alpha + 1;
+    uint8_t fgr   =  color        & 255;
+    uint8_t fgg   = (color >>  8) & 255;
+    uint8_t fgb   = (color >> 16) & 255;
     
     for (int x = x1; x <= x2; x++) {
       
       // Alpha blending
-      uint32_t val = nr[y * width + x];
-      uint8_t r2 =  val        & 255;
-      uint8_t g2 = (val >>  8) & 255;
-      uint8_t b2 = (val >> 16) & 255;
+      uint32_t bg = nr[y * width + x];
+      uint8_t bgr =  bg        & 255;
+      uint8_t bgg = (bg >>  8) & 255;
+      uint8_t bgb = (bg >> 16) & 255;
       
-      uint8_t r = (uint8_t)((alpha * r0 + (255 - alpha) * r2) / 255);
-      uint8_t g = (uint8_t)((alpha * g0 + (255 - alpha) * g2) / 255);
-      uint8_t b = (uint8_t)((alpha * b0 + (255 - alpha) * b2) / 255);
+      uint8_t r = (uint8_t)((alpha * fgr + inv_alpha * bgr) >> 8);
+      uint8_t g = (uint8_t)((alpha * fgg + inv_alpha * bgg) >> 8);
+      uint8_t b = (uint8_t)((alpha * fgb + inv_alpha * bgb) >> 8);
       
       nr[y * width + x] = (r) | (g << 8) | (b << 16) | (0xff << 24);
     }

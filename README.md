@@ -307,6 +307,6 @@ grid.raster(nr, interpolate = FALSE)
 ## Coordinate System
 
 The coordinate system for `nara` nativeRaster objects has its origins at
-the bottom left corner of the image with coordinates `(1,1)`.
+the **top left corner** of the image with coordinates `(1,1)`.
 
-<img src="man/figures/coords.png" width="50%" />
+<!-- <img src="man/figures/coords.png" width="50%" /> -->

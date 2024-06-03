@@ -179,6 +179,7 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 
 if (FALSE) {
   
+  set.seed(1)
   N <- 400
   nr <- nr_new(N, N)
   
@@ -197,7 +198,7 @@ if (FALSE) {
   # 165/sec <- naive opaque
   # 1771    <- point squence opaque
   # 473 <- translucent with sequence
-    
+  # 673 with better alpha blend
 
   bench::mark(
     nr_rect(nr, x, y, w, h, cols)
@@ -205,6 +206,7 @@ if (FALSE) {
   # 750/sec  <- initial. naive. opqque
   # 7059/sec <- add plot_sequeuncye. opaque
   # 1804 <- translucent with sequence
+  # 2740  with better alpha blend
   
   plot(nr, T)
   
