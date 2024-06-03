@@ -17,20 +17,24 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Draw a single point on the canvas [C interface]
+// 
+// Coordinate origin is (1, 1) at top-left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
 
   // Check for transparent color
   if (is_transparent(color)) return;
 
-  // Flip y axis. matrices are (1, 1) at top left, we want nara plotted to be
-  // (1, 1) at bottom-left
-  y = height - y;
-  x = x - 1;
-
   // Alpha channel for blending colors
   int alpha = (color >> 24) & 255;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Convert from R (1, 1) orogin to C (0, 0) origin
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  x--;
+  y--;
+  
+  
   if (y >= 0 && y < height && x >= 0 && x < width) {
       if (alpha == 255) {
         nr[y * width + x] = color;
@@ -63,6 +67,11 @@ void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, in
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
   
+  // Convert from R (1, 1) orogin to C (0, 0) origin
+  x1--;
+  x2--;
+  y--;
+  
   if (is_transparent(color) || y < 1 || y > height) {
     return;
   }
@@ -75,12 +84,9 @@ void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, 
   }
   
   // trim to avoid out-of-bound writes
-  if (x1 > width || x2 < 1) return;
-  if (x1 < 1) x1 = 1;
-  if (x2 > width) x2 = width;
-  
-  // inverty 
-  y = height - y;
+  if (x1 >= width || x2 < 0) return;
+  if (x1 < 0) x1 = 0;
+  if (x2 >= width) x2 = width - 1;
   
   if (is_opaque(color)) {
     // draw direct. no need to consider alpha
@@ -316,7 +322,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          draw_point_c(nr, nr_height, nr_width, color, col + i + x, y + (char_h - 1) - row);
+          draw_point_c(nr, nr_height, nr_width, color, col + i + x, y + (char_h - 1) + row);
         }
       }
     }

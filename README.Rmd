@@ -338,15 +338,16 @@ probs[1] <- 30
 nr <- nr_new(420, 420, 'white')
 
 # generate isometric tiles from the top down
-for (y in seq(350, 0, -30)) {
-  select <- sample(tile_idxs, length(even), T, prob = probs)
-  for (i in seq_along(even)) {
-    nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
-  }
+for (y in seq(0, 350, 30)) {
   
   select <- sample(tile_idxs, length(odd), T, prob = probs)
   for (i in seq_along(odd)) {
     nr_blit(nr,  odd[i], y - 15, isometric_landscape[[select[[i]]]])
+  }
+  
+  select <- sample(tile_idxs, length(even), T, prob = probs)
+  for (i in seq_along(even)) {
+    nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
   }
 }
 

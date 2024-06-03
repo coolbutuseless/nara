@@ -71,7 +71,7 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (respect_alpha) {
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = src_height - y0 - yoff;
+      int y1 = y0 + yoff;
       for (int xoff = 0; xoff < w; xoff++) {
         uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
         draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
@@ -81,7 +81,7 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
     // Blit it via 'memcpy()' trashing any contents
     // Flip y axis. matrices are (1, 1) at top left,
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = src_height - y0 - yoff;
+      int y1 = y0 + yoff;
       memcpy(dst + (dst_height - y - yoff) * dst_width + x - 1, src + y1 * src_width + x0, w * sizeof(int32_t));
     }
   }
