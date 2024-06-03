@@ -179,21 +179,32 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 
 if (FALSE) {
   
-  N <- 20
-  nr <- nr_new(400, 400)
-  bench::mark(
-    nr_circle(nr, 200, 200, 100, '#ff0000', color = '#0000ff')
-  )
-  # 20000
-    
-  bench::mark(
-    nr_rect(nr, 10, 10, 350, 350, '#00ff0080')
-  )
+  N <- 400
+  nr <- nr_new(N, N)
   
-  bench::mark(  
-    nr_blit2(nr, 1, 1, deer, deer_loc[[1]])
+  set.seed(1)
+  x <- sample(400, N, T)
+  y <- sample(400, N, T)
+  r <- sample(100, N, T)
+  w <- sample(100, N, T)
+  h <- sample(100, N, T)
+  cols <- sample(colours(), N, T)
+  cols <- scales::alpha(cols, 0.5)
+  
+  bench::mark(
+    nr_circle(nr, x, y, r, cols)
   )
-  # 280000
+  # 165/sec <- naive opaque
+  # 1771    <- point squence opaque
+  # 473 <- translucent with sequence
+    
+
+  bench::mark(
+    nr_rect(nr, x, y, w, h, cols)
+  )
+  # 750/sec  <- initial. naive. opqque
+  # 7059/sec <- add plot_sequeuncye. opaque
+  # 1804 <- translucent with sequence
   
   plot(nr, T)
   

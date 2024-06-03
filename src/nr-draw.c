@@ -58,15 +58,60 @@ void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, in
 }
 
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw multiple points on the canvas [C interface]
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_points_c(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
-  for (int i = 0 ; i < npoints; i++) {
-    draw_point_c(nr, height, width, color, x[i], y[i]);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw a horizontal sequence of points
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
+  
+  if (is_transparent(color) || y < 1 || y > height) {
+    return;
   }
+  
+  // Guarantee ordering that x1 <= x2
+  if (x1 > x2) {
+    int tmp = x1;
+    x1 = x2;
+    x2 = tmp;
+  }
+  
+  // trim to avoid out-of-bound writes
+  if (x1 > width || x2 < 1) return;
+  if (x1 < 1) x1 = 1;
+  if (x2 > width) x2 = width;
+  
+  // inverty 
+  y = height - y;
+  
+  if (is_opaque(color)) {
+    // draw direct. no need to consider alpha
+    for (int x = x1; x <= x2; x++) {
+      nr[y * width + x] = color;  
+    }
+  } else {
+    // translucent
+    int alpha = (color >> 24) & 255;
+    uint8_t r0 =  color        & 255;
+    uint8_t g0 = (color >>  8) & 255;
+    uint8_t b0 = (color >> 16) & 255;
+    
+    for (int x = x1; x <= x2; x++) {
+      
+      // Alpha blending
+      uint32_t val = nr[y * width + x];
+      uint8_t r2 =  val        & 255;
+      uint8_t g2 = (val >>  8) & 255;
+      uint8_t b2 = (val >> 16) & 255;
+      
+      uint8_t r = (uint8_t)((alpha * r0 + (255 - alpha) * r2) / 255);
+      uint8_t g = (uint8_t)((alpha * g0 + (255 - alpha) * g2) / 255);
+      uint8_t b = (uint8_t)((alpha * b0 + (255 - alpha) * b2) / 255);
+      
+      nr[y * width + x] = (r) | (g << 8) | (b << 16) | (0xff << 24);
+    }
+  }
+  
 }
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -321,9 +366,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
     // Draw Filled rect
     if (!is_transparent(fill[i])) {
       for (int row = y; row <= y + h; row++) {
-        for (int col = x; col <= x + w; col++) {
-          draw_point_c(nr, nr_height, nr_width,  fill[i], col, row);
-        }
+        // void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
+        draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x, x + w, row);
       }
     }
     
@@ -388,13 +432,11 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) 
     do {
       
       if (!is_transparent(fill[idx]) && !ydone[y]) {
-        for (int i = xm + x; i <= xm - x; i++) {
-          draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym + y);
-          if (y != 0) {
-            draw_point_c(nr, nr_height, nr_width, fill[idx], i, ym - y);
-          }
-          ydone[y] = 1;
+        draw_point_sequence_c(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym + y);
+        if (y != 0) {
+          draw_point_sequence_c(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym - y);
         }
+        ydone[y] = 1;
       }
       
       if (!is_transparent(color[idx])) {
@@ -490,10 +532,11 @@ void fill_polygon_c(uint32_t *nr, int height, int width, uint32_t color, int *x,
       if   (nodeX[i+1] >= 1 ) {
         if (nodeX[i  ] <  1 ) nodeX[i  ] = 1 ;
         if (nodeX[i+1]> width+1) nodeX[i+1]=width+1;
-        // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[i], nodeX[i+1]);
-        for (int pixelX = nodeX[i]; pixelX <= nodeX[i+1]; pixelX++) {
-          draw_point_c(nr, height, width,  color, pixelX, pixelY);
-        }
+        // void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
+        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], pixelY);
+        // for (int pixelX = nodeX[i]; pixelX <= nodeX[i+1]; pixelX++) {
+          // draw_point_c(nr, height, width,  color, pixelX, pixelY);
+        // }
       }
     }
   }
