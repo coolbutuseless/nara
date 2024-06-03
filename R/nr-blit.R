@@ -57,84 +57,92 @@ nr_blit2 <- function(nr, x, y, src, loc, respect_alpha = TRUE) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Blit3
+#' 
+#' @inheritParams nr_blit
+#' @param loc_mat N x 4 matrix of multiple sprite locations within the \code{src}
+#'        spritesheet
+#' @param loc_idx integer vector of rows within the \code{locs} matrix to use
+#' 
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(400, 400, 'grey80')
+#' nr_blit3(nr, x = c(1, 100, 300), y = c(1, 100, 300), 
+#'          src = deer, loc_mat = deer_loc, loc_idx = c(1, 4, 8))
+#' plot(nr)
+#' 
+#' @export 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_blit3 <- function(nr, x, y, src, loc_mat, loc_idx, respect_alpha = TRUE) {
+  if (!length(loc_idx) %in% c(1, length(x))) {
+    stop("R limitation. loc_idx not currently recycled. Fix for 'C' implementation")
+  }
+  
+  for (i in seq_along(loc_idx)) {
+    nr_blit2(nr, x = x[i], y = y[i], src = src, loc = loc_mat[loc_idx[i],], respect_alpha = respect_alpha)
+  }
+  
+  invisible(nr)
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Blit4
+#' 
+#' @inheritParams nr_blit3
+#' @param idx_mat matrix of indices into \code{loc_mat}
+#' @param width,height tile width/height (constant across all tiles)
+#' 
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(400, 400, 'grey80')
+#' idx_mat <- matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
+#' nr_blit4(nr, x = 10, y = 20, 
+#'          src = deer, loc_mat = deer_loc, idx_mat = idx_mat, 
+#'          width = 32, height = 32)
+#' plot(nr)
+#' 
+#' @export 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_blit4 <- function(nr, x, y, src, loc_mat, idx_mat, width, height, respect_alpha = TRUE) {
+  
+  if (length(x) != 1 || length(y) != 1) {
+    stop("length 1 for (x,y) only")
+  }
+  
+  if (max(idx_mat, na.rm = TRUE) > nrow(loc_mat)) {
+    stop("loc idx is out of bounds")
+  }
+  
+  xoff <- (rep(seq(ncol(idx_mat)), each = nrow(idx_mat)) - 1) * width
+  yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
+  
+  nr_blit3(nr, x = x + xoff, y = y + yoff, src = src, loc_mat = loc_mat, loc_idx = as.vector(idx_mat))
+  
+  
+}
+
+
 if (FALSE) {
   library(grid)
-
-  x11(type = 'dbcairo', width = 7, height = 3)
-  dev.control('inhibit')
-
-
-  nr <- nr_new(100, 30, 'grey80')
-  nr_text(nr, "Hello #RStats", 0, 20, 'black')
-  nr_blit(nr, 2, 1, src = dino[[1]])
-  dev.hold()
-  grid.raster(nr, interpolate = FALSE)
-  dev.flush()
-
-  start <- Sys.time()
-  for (i in -30:110) {
-    cat('.')
-    nr_fill(nr, 'grey80')
-    nr_text(nr, "Hello #RStats", 0, 20, 'black')
-    nr_blit(nr, i, 1, dino[[(i %% 16) + 1]])
-    dev.hold()
-    grid.raster(nr, interpolate = FALSE)
-    dev.flush()
-    # Sys.sleep(0.06)
-  }
-  Sys.time() - start
-}
-
-
-if (FALSE) {
   
- 
+  nr <- nr_new(400, 400, 'grey80')
+  idx_mat <- matrix(c(1, 14, 3, 4, 5, 6), 3, 2)
+  xoff <- (rep(seq(ncol(idx_mat)), each = nrow(idx_mat)) - 1) * width
+  yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
   
+  x <- 1
+  y <- 1
   
-  # 902us
-  N <- 400
-  nr <- nr_new(N, N, 'grey80')
-  bench::mark(
-    nr_blit2(nr, sample(seq(-16, N+16, length.out = N)), sample(N), deer, deer_loc[1,])
-  )
-  plot(nr, T)
+  # nr_blit3(nr, x = x + xoff, y = y + yoff, src = deer, loc_mat = deer_loc, loc_idx = as.vector(idx_mat))
   
-   
-  nr <- nr_new(5, 5, 'grey80'); 
-  nr2 <- nr_new(3, 1, 'black')
-  nr2[[1]] <- str_cols_to_packed_cols('red')
-  nr2[[3]] <- str_cols_to_packed_cols('blue')
-  nr_blit(nr, 3, -1, nr2); 
-  plot(nr, T)
-  
-  
-  nr <- nr_new(40, 40, 'grey80'); 
-  nr_blit2(nr, -5, 1, deer, deer_loc[1,]); 
-  nr_blit2(nr, -5, 1, deer, deer_loc[1,]); 
-  plot(nr, T)
-  
-  
-  # 500
-  nr <- nr_new(1200, 800, 'grey80'); 
-  nr2 <- png::readPNG(system.file("img/Rlogo.png", package = "png"), native = TRUE)
-  # nr2 <- png::readPNG("~/Desktop/Screenshot 2024-05-31 at 1.23.16 PM.png", native = TRUE)
-  dim(nr)
-  dim(nr2)
-  bench::mark(
-    nr_blit(nr, -30, -10, nr2, respect_alpha = TRUE) 
-  )
-  plot(nr, T)
-  # 9752 respect alpha = FALSE
-  #  487 respect alpha = TRUE
+  nr_blit4(nr, x = 20, y = 90, src = deer, loc_mat = deer_loc, idx_mat = idx_mat, width = 32, height = 32)
+  plot(nr)
   
   
 }
-
-
-
-
-
-
-
 
 
