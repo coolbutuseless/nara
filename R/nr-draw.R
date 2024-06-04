@@ -46,7 +46,8 @@ nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw text on a \code{nativeRaster} image
+#' Draw text on a \code{nativeRaster} image using the built-in \code{spleen} 
+#' bitmapped font.
 #'
 #' The only font currently available is 'spleen' - a monospace
 #' bitmap font from: https://github.com/fcambus/spleen
@@ -70,12 +71,12 @@ nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_text(nr, x = 1, y = N/3, str = "Hi!")
+#' nr_text_spleen(nr, x = 1, y = N/3, str = "Hi!")
 #' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
+nr_text_spleen <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
   invisible(.Call(draw_text_, nr, x, y, str, color, fontsize))
 }
 
