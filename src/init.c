@@ -29,6 +29,9 @@ extern SEXP nr_to_raster_(SEXP nr_);
 extern SEXP array_to_nr_(SEXP ras_, SEXP dst_);
 extern SEXP nr_to_array_(SEXP nr_);
 
+extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,8 +73,9 @@ static const R_CallMethodDef CEntries[] = {
   
   {"array_to_nr_" , (DL_FUNC) &array_to_nr_   , 2},
   {"nr_to_array_" , (DL_FUNC) &nr_to_array_   , 1},
-
   
+  {"magick_to_nr_" , (DL_FUNC) &magick_to_nr_   , 2},
+
   {"draw_points_"  , (DL_FUNC) &draw_points_  , 4},
   {"draw_line_"    , (DL_FUNC) &draw_line_    , 6},
   {"draw_text_"    , (DL_FUNC) &draw_text_    , 6},

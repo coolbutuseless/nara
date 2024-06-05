@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9005 2024-06-05
+# nara 0.1.1.9006 2024-06-05
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -20,6 +20,7 @@
     * `nr_to_array()`
     * `raster_to_nr()`
     * `nr_to_raster()`
+    * `magick_to_nr()`, `nr_to_magick()`
 * Optimized blitting operations in C
 * Added `blit3()` and `blit4()` mega-blitters
 

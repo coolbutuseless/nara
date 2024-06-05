@@ -250,6 +250,59 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP magick_to_nr_(SEXP im_data_, SEXP dst_) {
+  
+  if (TYPEOF(im_data_) != RAWSXP) {
+    error("Must be a raw vector");
+  }
+  
+  SEXP dim_ = GET_DIM(im_data_);
+  if (length(dim_) != 3) {
+    error("Must be a 3D array");
+  }
+  
+  if (INTEGER(dim_)[0] != 4) {
+    error("Must be an RGBA image");
+  }
+  
+  int width  = INTEGER(dim_)[1];
+  int height = INTEGER(dim_)[2];
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Prep native raster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nprotect = 0;
+  
+  if (isNull(dst_)) {
+    dst_ = PROTECT(allocVector(INTSXP, width * height)); nprotect++;
+    SET_CLASS(dst_, mkString("nativeRaster"));
+    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
+    SEXP new_dim_ = PROTECT(allocVector(INTSXP, 2));
+    INTEGER(new_dim_)[0] = height;
+    INTEGER(new_dim_)[1] = width;
+    SET_DIM(dst_, new_dim_);
+    UNPROTECT(1);
+  } else {
+    assert_nativeraster(dst_);
+    if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
+      error("Supplied 'dst' nativeRaster dimenions (%i, %i) do not match source matrix (%i, %i)", 
+            Rf_ncols(dst_), Rf_nrows(dst_), height, width);
+    }
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Copy the RGBA bytes directly into the nativeRaster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  memcpy(INTEGER(dst_), RAW(im_data_), width * height * 4);
+  
+  UNPROTECT(nprotect);
+  return dst_;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // nativeRaster to array (depth = 4)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_to_array_(SEXP nr_) {

@@ -74,6 +74,42 @@ matrix_to_nr <- function(mat, palette, fill = 'transparent', dst = NULL) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert a 'magick' image to \code{nativeRaster}
+#' 
+#' @inheritParams matrix_to_nr
+#' @inheritParams array_to_nr
+#' @param im image from the \code{magick} package
+#' 
+#' @return \code{nativeRaster}
+#' 
+#' @examples
+#' im <- magick::image_read(system.file("img/Rlogo.png", package = "png"))
+#' 
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+magick_to_nr <- function(im, dst = NULL) {
+  if (requireNamespace('magick', quiety = TRUE)) {
+    .Call(magick_to_nr_, magick::image_data(im), dst)
+  } else {
+    message("Please install the 'magick' package in order to use this function");
+    NULL
+  }
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @rdname magick_to_nr
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_to_magick <- function(nr) {
+  if (requireNamespace('magick', quiety = TRUE)) {
+    magick::image_read(nr)
+  } else {
+    message("Please install the 'magick' package in order to use this function");
+    NULL
+  }
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Inline visual testing

@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9005
+Version: 0.1.1.9006
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
     )
@@ -22,7 +22,8 @@ Suggests:
     purrr,
     stringr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    magick
 Config/testthat/edition: 3
 Copyright: The included 'deer' spritesheet is by Calciumtrice and licensed under 
    CC BY 3.0.  See 'inst/LICENSE-deer.txt' for more details. The included
