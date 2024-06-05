@@ -21,7 +21,7 @@ extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEX
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_);
+extern SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP dst_);
 
 extern SEXP raster_to_nr_(SEXP ras_, SEXP dst_);
 extern SEXP nr_to_raster_(SEXP nr_);
@@ -63,7 +63,7 @@ static const R_CallMethodDef CEntries[] = {
 
   {"blit_"     , (DL_FUNC) &blit_     , 9},
   
-  {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 3},
+  {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 4},
   
   {"raster_to_nr_", (DL_FUNC) &raster_to_nr_  , 2},
   {"nr_to_raster_", (DL_FUNC) &nr_to_raster_  , 1},

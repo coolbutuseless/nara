@@ -4,13 +4,15 @@
 \alias{matrix_to_nr}
 \title{Matrix to \code{nativeRaster}}
 \usage{
-matrix_to_nr(mat, palette, dst = NULL)
+matrix_to_nr(mat, palette, fill = "transparent", dst = NULL)
 }
 \arguments{
 \item{mat}{integer matrix}
 
 \item{palette}{vector of colors.  This palette must contain at least as 
 many colors as the maximum integer value in \code{mat}.}
+
+\item{fill}{Color to be used for values < 1.  Default: 'transparent'}
 
 \item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
 new \code{nativeRaster} will be created  If a \code{nativeRaster} 

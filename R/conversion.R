@@ -54,11 +54,11 @@ array_to_nr <- function(arr, dst = NULL) {
 #' 
 #' @param mat integer matrix
 #' @param palette vector of colors.  This palette must contain at least as 
-#'        many colors as the maximum integer value in \code{mat}.
+#'        many colors as the maximum integer value in \code{mat}. 
 #' @param dst destination \code{nativeRaster} object. If NULL (the default) a 
 #'        new \code{nativeRaster} will be created  If a \code{nativeRaster} 
 #'        is supplied here, it must have the exact dimensions to match the matrix        
-#'        
+#' @param fill Color to be used for values < 1.  Default: 'transparent'        
 #' @return \code{nativeRaster}
 #'
 #' @examples
@@ -69,8 +69,8 @@ array_to_nr <- function(arr, dst = NULL) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-matrix_to_nr <- function(mat, palette, dst = NULL) {
-  .Call(matrix_to_nr_, mat, palette, dst)
+matrix_to_nr <- function(mat, palette, fill = 'transparent', dst = NULL) {
+  .Call(matrix_to_nr_, mat, palette, fill, dst)
 }
 
 

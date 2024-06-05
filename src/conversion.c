@@ -20,7 +20,7 @@
 // Convert matrix to native raster with palette
 //
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
+SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP dst_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -33,6 +33,8 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
   
   int height = Rf_nrows(mat_);
   int width  = Rf_ncols(mat_);
+  
+  uint32_t fill = color_sexp_to_packed_col(fill_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prep native raster
@@ -68,7 +70,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP dst_) {
         error("not enough colors in palette. Need at least %i but have only %i", val, N);
       }
       if (val <= 0) {
-        *(nr + row * width + col) = 0x00FFFFFF;  // transparent white 0xAABBGGRR
+        *(nr + row * width + col) = fill;  // transparent white 0xAABBGGRR
       } else {
         *(nr + row * width + col) = palette[val - 1];
       }
