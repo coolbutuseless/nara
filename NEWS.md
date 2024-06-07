@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9007 2024-06-06
+# nara 0.1.1.9008 2024-06-07
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -24,6 +24,7 @@
 * Optimized blitting operations in C
 * Added `blit3()` and `blit4()` mega-blitters
 * Fixed(?) off-by-one bug in blitter core
+* Allow 3-channel native rasters
 
 # nara 0.1.1 2022-07-30
 
