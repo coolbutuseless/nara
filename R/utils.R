@@ -12,7 +12,7 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 is_nativeraster <- function(x) {
-  inherits(x, 'nativeRaster') && attr(x, 'channels', exact = TRUE) == 4
+  inherits(x, 'nativeRaster') && attr(x, 'channels', exact = TRUE) %in% c(3L, 4L)
 }
 
 
