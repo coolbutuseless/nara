@@ -18,7 +18,7 @@
 // Assert object is a native raster
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void assert_nativeraster(SEXP nr_) {
-  if (!inherits(nr_, "nativeRaster")) {
+  if (isInteger(nr_) && !inherits(nr_, "nativeRaster")) {
     error("Object is not a nativeRaster");
   }
 }
