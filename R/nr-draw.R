@@ -34,7 +34,7 @@ nr_point <- function(nr, x, y, color = 'black') {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_line(nr, x0 = c(1, N), y0 = c(1, 1), x1 = c(N, 1), y1 = c(N, N), 
+#' nr_line(nr, x0 = c(0, N-1), y0 = c(0, 0), x1 = c(N-1, 0), y1 = c(N-1, N-1), 
 #'         color = c('red', 'black'))
 #' plot(nr)
 #'
@@ -71,7 +71,7 @@ nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_text_spleen(nr, x = 1, y = N/3, str = "Hi!")
+#' nr_text_spleen(nr, x = 0, y = N/2, str = "Hi!")
 #' plot(nr)
 #' 
 #' @export
@@ -96,7 +96,7 @@ nr_text_spleen <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_rect(nr, x = c(1, N/2 + 1), y = c(1, N/2 + 1), w = N/2, h = N/4, 
+#' nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
 #'         fill = 'blue', color = c('red', 'green'))
 #' plot(nr)
 #' 
@@ -120,9 +120,9 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA) {
 #' @return Original \code{nativeRaster} modified in-place
 #'
 #' @examples
-#' N <- 20
+#' N <- 21
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_circle(nr, x = N/2, y = N/2, r = c(N/4, N/2), fill = c('red', 'black'))
+#' nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
 #' plot(nr)
 #'
 #' @export
@@ -145,7 +145,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), color = 'red')
+#' nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
 #' plot(nr)
 #'
 #' @export
@@ -167,7 +167,7 @@ nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', color = 'red')
+#' nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
 #' plot(nr)
 #'
 #' @export
@@ -216,9 +216,10 @@ if (FALSE) {
 
 if (FALSE) {
   
-  nr <- nr_new(3, 3, 'grey80')
-  nr_point(nr, 1.9, 1.50001)
+  nr <- nr_new(11, 11, 'grey80')
+  nr_circle(nr, 5, 5, r = 4)
   plot(nr, T)
+  
 }
 
 

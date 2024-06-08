@@ -11,8 +11,8 @@
 #'        be vectors of the same length.  If the length is greater than 1, then
 #'        the \code{sprite} will be pasted into \code{nr} at multiple locations.
 #'        Note that the
-#'        origin of \code{nativeraster} images is the bottom-left
-#'        where the coordinates are (1, 1).
+#'        origin of \code{nativeraster} images is the top-left
+#'        where the coordinates are (0, 0).
 #' @param x0,y0 start coordiates within src
 #' @param w,h size within src
 #' @param respect_alpha Should the alpha channel be respected when blitting?
@@ -25,12 +25,12 @@
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit(nr, x = 1, y = 1, src = deer, x0 = 1, y0 = 129, w = 32, h = 32)
+#' nr_blit(nr, x = 0, y = 0, src = deer, x0 = 0, y0 = 0, w = 32, h = 32)
 #' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect_alpha = TRUE) {
+nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = NULL, h = NULL, respect_alpha = TRUE) {
   invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, respect_alpha))
 }
 
@@ -47,7 +47,7 @@ nr_blit <- function(nr, x, y, src, x0 = 1L, y0 = 1L, w = NULL, h = NULL, respect
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit2(nr, x = 1, y = 1, src = deer, loc = deer_loc[1,])
+#' nr_blit2(nr, x = 0, y = 0, src = deer, loc = deer_loc[1,])
 #' plot(nr)
 #' 
 #' @export
@@ -69,7 +69,7 @@ nr_blit2 <- function(nr, x, y, src, loc, respect_alpha = TRUE) {
 #' 
 #' @examples
 #' nr <- nr_new(400, 400, 'grey80')
-#' nr_blit3(nr, x = c(1, 100, 300), y = c(1, 100, 300), 
+#' nr_blit3(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
 #'          src = deer, loc_mat = deer_loc, loc_idx = c(1, 4, 8))
 #' plot(nr)
 #' 
@@ -141,8 +141,20 @@ if (FALSE) {
   
   nr_blit4(nr, x = 20, y = 90, src = deer, loc_mat = deer_loc, idx_mat = idx_mat, width = 32, height = 32)
   plot(nr)
+}
+
+if (FALSE) {
   
+  library(grid)
+  nr <- nr_new(30, 20, 'grey80')
+  sprite <- nr_new(10, 5, 'black')
+  nr_blit(nr, 0, 0, sprite)
+  plot(nr, T)
   
 }
+
+
+
+
 
 

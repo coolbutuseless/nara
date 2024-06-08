@@ -27,7 +27,7 @@ Draw polygon on a \code{nativeRaster} image
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_polygon(nr, x = c(1, N, 1), y = c(1, 1, N), fill = 'blue', color = 'red')
+nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
 plot(nr)
 
 }

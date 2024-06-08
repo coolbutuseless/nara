@@ -40,7 +40,7 @@ To view LICENSE:
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_text_spleen(nr, x = 1, y = N/3, str = "Hi!")
+nr_text_spleen(nr, x = 0, y = N/2, str = "Hi!")
 plot(nr)
 
 }

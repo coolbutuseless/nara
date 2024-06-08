@@ -18,15 +18,9 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Draw a single point on the canvas [C interface]
 // 
-// Coordinate origin is (1, 1) at top-left
+// Coordinate origin is (0, 0) at top-left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Convert from R (1, 1) orogin to C (0, 0) origin
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  x--;
-  y--;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
@@ -62,16 +56,11 @@ void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, in
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw a horizontal sequence of points
+// Draw a horizontal sequence of points from x1 to x2 INCLUSIVE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
   
-  // Convert from R (1, 1) orogin to C (0, 0) origin
-  x1--;
-  x2--;
-  y--;
-  
-  if (is_transparent(color) || y < 1 || y > height) {
+  if (is_transparent(color) || y < 0 || y >= height) {
     return;
   }
   
@@ -323,7 +312,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          draw_point_c(nr, nr_height, nr_width, color, col + i + x, y + (char_h - 1) + row);
+          draw_point_c(nr, nr_height, nr_width, color, col + i + x, y - char_h + row);
         }
       }
     }
@@ -361,29 +350,34 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   // Colors
   bool freecol = false, freefill = false;
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
-  uint32_t *fill   = colors_to_packed_cols(fill_  , N, &freefill);
+  uint32_t *fill  = colors_to_packed_cols(fill_ , N, &freefill);
   
   for (int i = 0; i < N; i++) {
     
     int x = xs[i];
     int y = ys[i];
-    int w = ws[i] - 1;
-    int h = hs[i] - 1;
+    int w = ws[i];
+    int h = hs[i];
     
     // Draw Filled rect
     if (!is_transparent(fill[i])) {
-      for (int row = y; row <= y + h; row++) {
-        // void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
-        draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x, x + w, row);
+      if (is_transparent(color[i])) {
+        for (int row = y; row < y + h; row++) {
+          draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x, x + w - 1, row);
+        }
+      } else {
+        for (int row = y + 1; row < y + h - 1; row++) {
+          draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x + 1, x + w - 1 - 1, row);
+        }
       }
     }
     
     // Draw outline
     if (!is_transparent(color[i])) {
-      draw_line_c(nr, nr_height, nr_width, color[i], x    , y  , x+w, y  );
-      draw_line_c(nr, nr_height, nr_width, color[i], x+w  , y+1, x+w, y+h);
-      draw_line_c(nr, nr_height, nr_width, color[i], x+w-1, y+h, x+1, y+h);
-      draw_line_c(nr, nr_height, nr_width, color[i], x    , y+h, x  , y+1);
+      draw_line_c(nr, nr_height, nr_width, color[i], x    , y  , x+w-1, y);
+      draw_line_c(nr, nr_height, nr_width, color[i], x+w-1, y+1, x+w-1, y+h-1);
+      draw_line_c(nr, nr_height, nr_width, color[i], x+w-2, y+h-1, x+1, y+h-1);
+      draw_line_c(nr, nr_height, nr_width, color[i], x    , y+h-1, x  , y+1);
     }
   }
   

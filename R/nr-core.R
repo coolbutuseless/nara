@@ -29,7 +29,6 @@
 nr_new <- function(width, height, fill = 'white') {
   res <- matrix(str_cols_to_packed_cols(fill), nrow = height, ncol = width)
   class(res) <- 'nativeRaster'
-  attr(res, 'channels') <- 4L
   res
 }
 
@@ -114,14 +113,15 @@ nr_duplicate <- function(nr) {
 #' 
 #' @examples
 #' nr <- nr_new(400, 400, 'hotpink')
-#' nr2 <- nr_crop(nr, 1, 1, 10, 10)
+#' nr2 <- nr_crop(nr, 0, 0, 10, 10)
+#' dim(nr2)
 #' plot(nr2)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_crop <- function(nr, x, y, w, h) {
   dst <- nr_new(w, h)
-  nr_blit(dst, 1, 1, nr, x, y, w, h)
+  nr_blit(dst, 0, 0, nr, x, y, w, h)
   dst
 }
 
@@ -143,7 +143,7 @@ nr_crop2 <- function(nr, loc) {
 #' 
 #' @examples
 #' nr <- nr_new(400, 200, 'white')
-#' nr_rect(nr, 1, 1, 30, 15)
+#' nr_rect(nr, 0, 0, 30, 15)
 #' plot(nr)
 #' nr_flipv(nr)
 #' plot(nr)
@@ -164,7 +164,7 @@ nr_flipv <- function(nr) {
 #' 
 #' @examples
 #' nr <- nr_new(400, 200, 'white')
-#' nr_rect(nr, 1, 1, 30, 15)
+#' nr_rect(nr, 0, 0, 30, 15)
 #' plot(nr)
 #' nr_fliph(nr)
 #' plot(nr)
@@ -221,9 +221,19 @@ nr_scale <- function(nr, scale) {
   mode(res) <- 'integer'
   
   class(res) <- 'nativeRaster'
-  attr(res, 'channels') <- 4L
   res
 }
 
 
 
+
+if (FALSE) {
+  
+  nr <- nr_new(400, 400, 'hotpink')
+  nr2 <- nr_crop(nr, 0, 0, 10, 10)
+  dim(nr2)
+  plot(nr2)
+  
+  
+  
+}

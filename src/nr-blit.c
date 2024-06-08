@@ -28,12 +28,11 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
   // Check if src doesn't overlap with dst **AT ALL**
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (
-      x + w < 1 ||
-        y + h < 1 ||
-        x > dst_width ||
-        y > dst_height
+      x + w < 0 ||
+        y + h < 0 ||
+        x >= dst_width ||
+        y >= dst_height
   ) {
-    // Rprintf(">>>>>>>> Bail\n");
     return;
   }
   
@@ -41,27 +40,27 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
   // Some of the src overlaps the dst
   // Trim src boundaries if they're outside the image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (x < 1) {
+  if (x < 0) {
     // Trim left of src
-    int diff = -x + 1;
+    int diff = -x;
     x0 += diff;
     w  -= diff ;
-    x   = 1;
+    x   = 0;
   }
-  if (y < 1) {
+  if (y < 0) {
     // Trim bottom of src
-    int diff = -y + 1;
+    int diff = -y ;
     y0 += diff;
     h  -= diff ;
-    y   = 1;
+    y   = 0;
   }
-  if (x + w > dst_width) {
+  if (x + w >= dst_width) {
     // Trim right of src
-    w = dst_width - x + 1;
+    w = dst_width - x;
   }
-  if (y + h > dst_height) {
+  if (y + h >= dst_height) {
     // Trim right of src
-    h = dst_height - y + 1;
+    h = dst_height - y;
   }
   
   if (w == 0 || h == 0) return;
@@ -71,20 +70,20 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (respect_alpha) {
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = y0 + yoff - 1;
+      int y1 = y0 + yoff ;
       for (int xoff = 0; xoff < w; xoff++) {
-        uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
+        uint32_t src_col = src[y1 * src_width + x0 + xoff];
         draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
       }
     }
   } else {
     // Blit it via 'memcpy()' trashing any contents
-    // Flip y axis. matrices are (1, 1) at top left,
+    // Flip y axis. matrices are (0, 0) at top left,
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = y0 + yoff - 1;
+      int y1 = y0 + yoff;
       memcpy(
-        dst + (y + yoff - 1) * dst_width + x - 1, 
-        src + y1 * src_width + x0 - 1, 
+        dst + (y + yoff) * dst_width + x, 
+        src + y1 * src_width + x0, 
         w * sizeof(int32_t)
       );
     }
@@ -149,11 +148,12 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   int src_width  = Rf_ncols(src_);
   int src_height = Rf_nrows(src_);
 
-  int w = isNull(w_) ? src_width : asInteger(w_);
+  int w = isNull(w_) ? src_width  : asInteger(w_);
   int h = isNull(h_) ? src_height : asInteger(h_);
   
-  if (x0 + w - 1 > src_width || y0 + h - 1 > src_height) {
-    error("Specified src [x0,y0] + [w,h] is outside bounds");
+  if (x0 + w - 1 >= src_width || y0 + h - 1 >= src_height) {
+    error("Specified src [x0 = %i, y0 = %i] + [w = %i, h = %i] is outside bounds [%i, %i]",
+          x0, y0, w, h, src_width, src_height);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

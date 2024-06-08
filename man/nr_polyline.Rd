@@ -28,7 +28,7 @@ Draw polyline on a \code{nativeRaster} image
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(1, N, 1), y = c(1, 1, N), color = 'red')
+nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
 plot(nr)
 
 }

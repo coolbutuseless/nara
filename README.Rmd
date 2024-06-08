@@ -78,9 +78,9 @@ This makes them useful for games and other interactive applications.
 * is an *off-screen* rendering buffer.
 * is fast to render.
 * uses *in-place* operations to avoid memory allocations.
-* is focussed on rendering discrete pixels, so 
-    * no anti-aliasing is done.
-    * all dimensions are rounded to integer values prior to rendering.
+* is focussed on rendering discrete pixels, so all dimensions are rounded to 
+    integer values prior to rendering.
+* some basic drawing primitives are included
 
 
 ### What is a `nativeRaster` and why is it fast?
@@ -167,7 +167,7 @@ nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[1,])
 # Add an image read from file (with alpha transparency)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-nr_blit(nr, 1, 1, img)
+nr_blit(nr, 0, 0, img)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add a polygon
@@ -180,7 +180,7 @@ nr_polygon(nr, x = x, y = y, fill = '#556688c0', color = 'blue')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add text to the image
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_spleen(nr, x = 180, y = 1, str = "Hello #RStats", fontsize = 16)
+nr_text_spleen(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Copy image to the device
@@ -202,8 +202,8 @@ contains the coordinates of 16 sprites within that image.
 ```{r fig.height = 2}
 library(grid)
 
-nr <- nr_new(100, 30, 'grey80')
-nr_blit2(nr, 2, 1, deer, deer_loc[1,])
+nr <- nr_new(100, 32, 'grey80')
+nr_blit2(nr, 2, 0, deer, deer_loc[1,])
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -235,12 +235,12 @@ x11(type = 'cairo', antialias = 'none')
 dev.control('inhibit')
 
 # Create the in-memory nativeRaster canvas
-nr <- nr_new(100, 30, 'grey80')
+nr <- nr_new(100, 32, 'grey80')
 
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit2(nr, i, 1, deer, deer_loc[((i/3) %% 5) + 11, ]) # copy deer to nativeRaster
+  nr_blit2(nr, i, 0, deer, deer_loc[((i/3) %% 5) + 11, ]) # copy deer to nativeRaster
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
@@ -282,8 +282,8 @@ w <- 400
 h <- 300 
 
 # location and movement vector of all the sprites
-x  <- sample(w     , N, replace = TRUE)
-y  <- sample(h - 25, N, replace = TRUE)
+x  <- sample(w, N, replace = TRUE)
+y  <- sample(h, N, replace = TRUE)
 vx <- runif(N, 1, 5)
 
 
@@ -327,7 +327,7 @@ library(grid)
 set.seed(1)
 
 # Set up staggered x coordinates for even/odd rows
-even <-  1 + (0:5) * 60
+even <-  0 + (0:5) * 60
 odd  <- 31 + (0:5) * 60
 
 # Sample from just the tree/house tiles.
@@ -363,7 +363,12 @@ grid.raster(nr, interpolate = FALSE)
 ## Coordinate System
 
 The coordinate system for `nara` nativeRaster objects has its origins
-at the **top left corner** of the image with coordinates `(1,1)`.
+at the **top left corner** of the image with coordinates `(0, 0)`.
+
+This is equivalent to `{grid}` graphics using `native` units.
+
+It is also how `{magick}` represents image coordinates, as well as the majority
+of C graphics libraries.
 
 
 <!-- <img src="man/figures/coords.png" width="50%" /> -->

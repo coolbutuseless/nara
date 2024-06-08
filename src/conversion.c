@@ -44,7 +44,6 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP dst_) {
   if (isNull(dst_)) {
     dst_ = PROTECT(allocVector(INTSXP, length(mat_))); nprotect++;
     SET_CLASS(dst_, mkString("nativeRaster"));
-    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
     SET_DIM(dst_, GET_DIM(mat_));
   } else {
     assert_nativeraster(dst_);
@@ -107,7 +106,6 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   if (isNull(dst_)) {
     dst_ = PROTECT(allocVector(INTSXP, length(ras_))); nprotect++;
     SET_CLASS(dst_, mkString("nativeRaster"));
-    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
     SET_DIM(dst_, GET_DIM(ras_));
   } else {
     assert_nativeraster(dst_);
@@ -198,7 +196,6 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
   if (isNull(dst_)) {
     dst_ = PROTECT(allocVector(INTSXP, height * width)); nprotect++;
     SET_CLASS(dst_, mkString("nativeRaster"));
-    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
     SEXP nr_dim = PROTECT(allocVector(INTSXP, 2));
     INTEGER(nr_dim)[0] = height;
     INTEGER(nr_dim)[1] = width;
@@ -278,7 +275,6 @@ SEXP magick_to_nr_(SEXP im_data_, SEXP dst_) {
   if (isNull(dst_)) {
     dst_ = PROTECT(allocVector(INTSXP, width * height)); nprotect++;
     SET_CLASS(dst_, mkString("nativeRaster"));
-    SET_ATTR(dst_, mkString("channels"), ScalarInteger(4));
     SEXP new_dim_ = PROTECT(allocVector(INTSXP, 2));
     INTEGER(new_dim_)[0] = height;
     INTEGER(new_dim_)[1] = width;

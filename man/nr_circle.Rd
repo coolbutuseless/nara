@@ -24,9 +24,9 @@ Original \code{nativeRaster} modified in-place
 Draw circles on a \code{nativeRaster} image
 }
 \examples{
-N <- 20
+N <- 21
 nr <- nr_new(N, N, 'grey80')
-nr_circle(nr, x = N/2, y = N/2, r = c(N/4, N/2), fill = c('red', 'black'))
+nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
 plot(nr)
 
 }

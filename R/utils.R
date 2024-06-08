@@ -12,7 +12,7 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 is_nativeraster <- function(x) {
-  inherits(x, 'nativeRaster') && attr(x, 'channels', exact = TRUE) %in% c(3L, 4L)
+  inherits(x, 'nativeRaster')
 }
 
 
@@ -36,4 +36,5 @@ is_nativeraster <- function(x) {
 plot.nativeRaster <- function(x, y, ...) {
   if (!missing(y)) grid::grid.newpage()
   grid::grid.raster(x, interpolate = FALSE, ...)
+  invisible(x)
 }

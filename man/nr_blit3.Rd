@@ -13,8 +13,8 @@ nr_blit3(nr, x, y, src, loc_mat, loc_idx, respect_alpha = TRUE)
 be vectors of the same length.  If the length is greater than 1, then
 the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
-origin of \code{nativeraster} images is the bottom-left
-where the coordinates are (1, 1).}
+origin of \code{nativeraster} images is the top-left
+where the coordinates are (0, 0).}
 
 \item{src}{native raster to copy from}
 
@@ -37,7 +37,7 @@ Blit3
 }
 \examples{
 nr <- nr_new(400, 400, 'grey80')
-nr_blit3(nr, x = c(1, 100, 300), y = c(1, 100, 300), 
+nr_blit3(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
          src = deer, loc_mat = deer_loc, loc_idx = c(1, 4, 8))
 plot(nr)
 

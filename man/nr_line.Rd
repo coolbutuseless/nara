@@ -25,7 +25,7 @@ Uses Bresenham's algorithm to draw lines. No antialiasing.
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_line(nr, x0 = c(1, N), y0 = c(1, 1), x1 = c(N, 1), y1 = c(N, N), 
+nr_line(nr, x0 = c(0, N-1), y0 = c(0, 0), x1 = c(N-1, 0), y1 = c(N-1, N-1), 
         color = c('red', 'black'))
 plot(nr)
 

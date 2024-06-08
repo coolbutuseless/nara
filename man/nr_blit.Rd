@@ -9,8 +9,8 @@ nr_blit(
   x,
   y,
   src,
-  x0 = 1L,
-  y0 = 1L,
+  x0 = 0L,
+  y0 = 0L,
   w = NULL,
   h = NULL,
   respect_alpha = TRUE
@@ -23,8 +23,8 @@ nr_blit(
 be vectors of the same length.  If the length is greater than 1, then
 the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
-origin of \code{nativeraster} images is the bottom-left
-where the coordinates are (1, 1).}
+origin of \code{nativeraster} images is the top-left
+where the coordinates are (0, 0).}
 
 \item{src}{native raster to copy from}
 
@@ -46,7 +46,7 @@ This is useful as a way of positioning sprites or icons in an image.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit(nr, x = 1, y = 1, src = deer, x0 = 1, y0 = 129, w = 32, h = 32)
+nr_blit(nr, x = 0, y = 0, src = deer, x0 = 0, y0 = 0, w = 32, h = 32)
 plot(nr)
 
 }

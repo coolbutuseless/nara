@@ -71,7 +71,6 @@ SEXP duplicate_(SEXP nr_) {
 
   // Assign correct classes
   SET_CLASS(nr_new_, mkString("nativeRaster"));
-  SET_ATTR(nr_new_, mkString("channels"), ScalarInteger(4));
   SET_DIM(nr_new_, GET_DIM(nr_));
 
   UNPROTECT(1);

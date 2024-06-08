@@ -17,7 +17,7 @@ Flip a \code{nativeRaster} vertically
 }
 \examples{
 nr <- nr_new(400, 200, 'white')
-nr_rect(nr, 1, 1, 30, 15)
+nr_rect(nr, 0, 0, 30, 15)
 plot(nr)
 nr_flipv(nr)
 plot(nr)
