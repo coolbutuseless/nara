@@ -84,12 +84,15 @@ matrix_to_nr <- function(mat, palette, fill = 'transparent', dst = NULL) {
 #' @return \code{nativeRaster}
 #' 
 #' @examples
-#' im <- magick::image_read(system.file("img/Rlogo.png", package = "png"))
-#' 
+#' if (requireNamespace('magick', quietly = TRUE)) {
+#'   im <- magick::image_read(system.file("img/Rlogo.png", package = "png"))
+#'   nr <- magick_to_nr(im)
+#'   plot(nr)
+#' }
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_to_nr <- function(im, dst = NULL) {
-  if (requireNamespace('magick', quiety = TRUE)) {
+  if (requireNamespace('magick', quietly = TRUE)) {
     .Call(magick_to_nr_, magick::image_data(im), dst)
   } else {
     message("Please install the 'magick' package in order to use this function");
@@ -103,7 +106,7 @@ magick_to_nr <- function(im, dst = NULL) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_magick <- function(nr) {
-  if (requireNamespace('magick', quiety = TRUE)) {
+  if (requireNamespace('magick', quietly = TRUE)) {
     magick::image_read(nr)
   } else {
     message("Please install the 'magick' package in order to use this function");
