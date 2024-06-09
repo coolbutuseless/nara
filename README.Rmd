@@ -96,6 +96,8 @@ This way of encoding color information is closer to the internal representation
 used by graphics devices, and therefore can be faster to render, save and load
 (as fewer data conversion steps are needed).
 
+Native rasters do **not** use pre-multiplied alpha.
+
 ### In-place operation
 
 `{nara}` is targeted at fast rendering (>30fps), and tries to minimise
