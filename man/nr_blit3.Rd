@@ -2,9 +2,9 @@
 % Please edit documentation in R/nr-blit.R
 \name{nr_blit3}
 \alias{nr_blit3}
-\title{Blit3}
+\title{Blit4}
 \usage{
-nr_blit3(nr, x, y, src, loc_mat, loc_idx, respect_alpha = TRUE)
+nr_blit3(nr, x, y, src, loc, idx_mat, width, height, respect_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -18,10 +18,12 @@ where the coordinates are (0, 0).}
 
 \item{src}{native raster to copy from}
 
-\item{loc_mat}{N x 4 matrix of multiple sprite locations within the \code{src}
+\item{loc}{N x 4 matrix of multiple sprite locations within the \code{src}
 spritesheet}
 
-\item{loc_idx}{integer vector of rows within the \code{locs} matrix to use}
+\item{idx_mat}{integer matrix of indices into \code{loc}}
+
+\item{width, height}{tile width/height (constant across all tiles)}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE.  If FALSE, then contents will be blindly overwritten
@@ -33,12 +35,14 @@ probably the correct setting.}
 Original \code{nativeRaster} modified in-place
 }
 \description{
-Blit3
+Blit4
 }
 \examples{
 nr <- nr_new(400, 400, 'grey80')
-nr_blit3(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
-         src = deer, loc_mat = deer_loc, loc_idx = c(1, 4, 8))
+idx_mat <- matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
+nr_blit3(nr, x = 10, y = 20, 
+         src = deer, loc = deer_loc, idx_mat = idx_mat, 
+         width = 32, height = 32)
 plot(nr)
 
 }

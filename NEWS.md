@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9009 2024-06-08
+# nara 0.1.1.9010 2024-06-10
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -28,6 +28,7 @@
 * As of 0.1.1.9009 2024-06-08 coordinate system is now (0, 0) at top-left
 * Fixed rendering of borders for rectangles when both colour and fill are 
   translucent.
+* Rationalize 'blit' methods (still need C implementations)
 
 # nara 0.1.1 2022-07-30
 

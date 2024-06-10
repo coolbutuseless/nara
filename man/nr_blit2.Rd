@@ -4,7 +4,7 @@
 \alias{nr_blit2}
 \title{Blit2}
 \usage{
-nr_blit2(nr, x, y, src, loc, respect_alpha = TRUE)
+nr_blit2(nr, x, y, src, loc, idx = 1L, respect_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -18,9 +18,10 @@ where the coordinates are (0, 0).}
 
 \item{src}{native raster to copy from}
 
-\item{loc}{a 4 element numeric vector (or list) with the following values 
-in this exact order: (x0, y0, w, h) corresponding to the 
-separate arguments to \code{nr_blit()}}
+\item{loc}{N x 4 matrix of multiple sprite locations within the \code{src}
+spritesheet}
+
+\item{idx}{integer vector of rows within the \code{locs} matrix to use}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE.  If FALSE, then contents will be blindly overwritten
@@ -35,8 +36,9 @@ probably the correct setting.}
 Blit2
 }
 \examples{
-nr <- nr_new(50, 50, 'grey80')
-nr_blit2(nr, x = 0, y = 0, src = deer, loc = deer_loc[1,])
+nr <- nr_new(400, 400, 'grey80')
+nr_blit2(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
+         src = deer, loc = deer_loc, idx = c(1, 4, 8))
 plot(nr)
 
 }
