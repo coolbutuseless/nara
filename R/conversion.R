@@ -53,12 +53,17 @@ array_to_nr <- function(arr, dst = NULL) {
 #' Matrix to \code{nativeRaster}
 #' 
 #' @param mat integer matrix
-#' @param palette vector of colors.  This palette must contain at least as 
-#'        many colors as the maximum integer value in \code{mat}. 
+#' @param palette vector of colors.  For an integer matrix, this palette must 
+#'        contain at least as many colors as the maximum integer value in \code{mat}. 
+#'        For a numeric matrix, any length palette is allowed.
 #' @param dst destination \code{nativeRaster} object. If NULL (the default) a 
 #'        new \code{nativeRaster} will be created  If a \code{nativeRaster} 
 #'        is supplied here, it must have the exact dimensions to match the matrix        
-#' @param fill Color to be used for values < 1.  Default: 'transparent'        
+#' @param fill Color to be used for values < 1 when input is an integer matrix.  
+#'        Default: 'transparent'.
+#' @param min,max assumed range for the numeric data.  values from the palette
+#'        will be interpolated using this range as the extents.  An error
+#'        will occur if a value lies outside this range. Default: (0, 1)
 #' @return \code{nativeRaster}
 #'
 #' @examples
@@ -69,8 +74,8 @@ array_to_nr <- function(arr, dst = NULL) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-matrix_to_nr <- function(mat, palette, fill = 'transparent', dst = NULL) {
-  .Call(matrix_to_nr_, mat, palette, fill, dst)
+matrix_to_nr <- function(mat, palette, fill = 'transparent', min = 0.0, max = 1.0, dst = NULL) {
+  .Call(matrix_to_nr_, mat, palette, fill, min, max, dst)
 }
 
 
@@ -117,4 +122,18 @@ if (FALSE) {
   identical(dim(ras), dim(ras2))
   identical(unclass(ras), toupper(unclass(ras2)))
 }
+
+
+if (FALSE) {
+  mat <- matrix(seq(0, 10, length.out = 10)/ 10, 2, 5)
+  
+  palette <- rainbow(100) |> str_cols_to_packed_cols()
+  matrix_to_nr(mat, palette = palette)
+  
+}
+
+
+
+
+
 

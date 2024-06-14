@@ -4,15 +4,21 @@
 \alias{matrix_to_nr}
 \title{Matrix to \code{nativeRaster}}
 \usage{
-matrix_to_nr(mat, palette, fill = "transparent", dst = NULL)
+matrix_to_nr(mat, palette, fill = "transparent", min = 0, max = 1, dst = NULL)
 }
 \arguments{
 \item{mat}{integer matrix}
 
-\item{palette}{vector of colors.  This palette must contain at least as 
-many colors as the maximum integer value in \code{mat}.}
+\item{palette}{vector of colors.  For an integer matrix, this palette must 
+contain at least as many colors as the maximum integer value in \code{mat}. 
+For a numeric matrix, any length palette is allowed.}
 
-\item{fill}{Color to be used for values < 1.  Default: 'transparent'}
+\item{fill}{Color to be used for values < 1 when input is an integer matrix.
+Default: 'transparent'.}
+
+\item{min, max}{assumed range for the numeric data.  values from the palette
+will be interpolated using this range as the extents.  An error
+will occur if a value lies outside this range. Default: (0, 1)}
 
 \item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
 new \code{nativeRaster} will be created  If a \code{nativeRaster} 

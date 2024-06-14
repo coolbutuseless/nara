@@ -16,18 +16,92 @@
 #include "nr-utils.h"
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Convert matrix to native raster with palette
-//
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP dst_) {
+SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP dst_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!isMatrix(mat_) || !isInteger(mat_)) {
+  if (!isMatrix(mat_) || !isReal(mat_)) {
+    error("'mat' must be an numeric matrix");
+  }
+  
+  int N = length(palette_); // Maximum palette color
+  
+  int height = Rf_nrows(mat_);
+  int width  = Rf_ncols(mat_);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Prep native raster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nprotect = 0;
+  
+  if (isNull(dst_)) {
+    dst_ = PROTECT(allocVector(INTSXP, length(mat_))); nprotect++;
+    SET_CLASS(dst_, mkString("nativeRaster"));
+    SET_DIM(dst_, GET_DIM(mat_));
+  } else {
+    assert_nativeraster(dst_);
+    if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
+      error("Supplied 'dst' nativeRaster dimenions (%i, %i) do not match source matrix (%i, %i)", 
+            Rf_ncols(dst_), Rf_nrows(dst_), height, width);
+    }
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Copy the data - from column major matrix to row major nativeRaster
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  double *mat = REAL(mat_);
+  
+  bool freepal = false;
+  uint32_t *palette = colors_to_packed_cols(palette_, N, &freepal);
+  
+  double min = asReal(min_);
+  double max = asReal(max_);
+  double range_scale = 1.0 / (max - min);
+  
+  int index = 0;
+  uint32_t *ptr = (uint32_t *)INTEGER(dst_);
+  
+  for (int col = 0; col < width; col++) {
+    for (int row = 0; row < height; row++) {
+      double val = *(mat + col * height + row);
+      if (val > max || val < min) {
+        error("Value in matrix out of range (%.1f, %.1f): %.3f", min, max, val);
+      }
+      size_t idx = (size_t)floor((val - min) * range_scale * N);
+      // Rprintf("idx: (%.1f, %.1f)  %.3f = %zu\n", min, max, val, idx);
+      ptr[index++] = palette[idx];
+    }
+  }
+  
+  
+  if (freepal) free(palette);
+  UNPROTECT(nprotect);
+  return dst_;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Convert matrix to native raster with palette
+//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, SEXP dst_) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Sanity check
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (!isMatrix(mat_)) {
+    error("'mat' must be an matrix");
+  }
+  
+  if (isReal(mat_)) {
+    return numeric_matrix_to_nr_(mat_, palette_, min_, max_, dst_);
+  } 
+  
+  if (!isInteger(mat_)) {
     error("'mat' must be an integer matrix");
   }
+  
   
   int N = length(palette_); // Maximum palette color
   
