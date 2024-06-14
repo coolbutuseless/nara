@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9010 2024-06-10
+# nara 0.1.1.9011 2024-06-14
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -29,6 +29,7 @@
 * Fixed rendering of borders for rectangles when both colour and fill are 
   translucent.
 * Rationalize 'blit' methods (still need C implementations)
+* Move all 'magick' related functions into single R file.  Include gif and mp4 output.
 
 # nara 0.1.1 2022-07-30
 

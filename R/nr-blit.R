@@ -119,6 +119,9 @@ nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, respect_alpha =
 }
 
 
+
+
+
 if (FALSE) {
   library(grid)
   
@@ -146,8 +149,8 @@ if (FALSE) {
   
   nr <- nr_new(400, 400, 'grey80')
   bench::mark(
-  nr_blit2(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
-           src = deer, loc = deer_loc, idx = c(1, 4, 8))
+    nr_blit2(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
+             src = deer, loc = deer_loc, idx = c(1, 4, 8))
   )
   plot(nr)
 }
@@ -158,14 +161,19 @@ if (FALSE) {
     sample(seq_len(nrow(deer_loc)), 100, T), 10, 10
   )
   
-  nr <- nr_new(320, 320, 'grey80')
-  bench::mark(
-  nr_blit3(nr, x = 0, y = 0, 
-           src = deer, loc = deer_loc, idx_mat = idx, width = 32, height = 32)
-  )
-  plot(nr)
+  nrs <- lapply(0:32, function(size) {
+    nr <- nr_new(320, 320, 'grey80')
+    nr_blit3(nr, x = 0, y = 0, 
+             src = deer, loc = deer_loc, idx_mat = idx, width = size, height = size)
+    nr 
+  })
+  
+  nrs_to_gif(nrs, "working/test2.gif")
+  nrs_to_mp4(nrs, "working/test2.mp4")  
   
 }
+
+
 
 
 
