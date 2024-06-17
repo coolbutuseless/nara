@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9012 2024-06-17
+# nara 0.1.1.9013 2024-06-18
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -31,6 +31,7 @@
 * Rationalize 'blit' methods (still need C implementations)
 * Move all 'magick' related functions into single R file.  Include gif and mp4 output.
 * Use fast hashed lookup for R color names like 'red', 'blue', etc
+* Handle logical NAs as transparent colour
 
 # nara 0.1.1 2022-07-30
 

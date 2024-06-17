@@ -416,7 +416,7 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) 
   // Colors
   bool freecol = false, freefill = false;
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
-  uint32_t *fill   = colors_to_packed_cols(fill_  , N, &freefill);
+  uint32_t *fill  = colors_to_packed_cols(fill_ , N, &freefill);
 
   for (int idx = 0; idx < N; idx++) {
     // Rprintf("idx: %i\n", idx);

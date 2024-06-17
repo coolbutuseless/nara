@@ -127,6 +127,36 @@ test_that("integer-to-color conversion works", {
 })
 
 
+test_that("colour to integer handles specials", {
+  
+  expect_identical(
+    str_cols_to_packed_cols('transparent'),
+    str_cols_to_packed_cols(NA_character_)
+  )
+  
+  expect_identical(
+    str_cols_to_packed_cols('transparent'),
+    str_cols_to_packed_cols(NA)
+  )
+  
+  expect_identical(
+    str_cols_to_packed_cols(c('transparent', 'transparent')),
+    str_cols_to_packed_cols(c(NA, NA))
+  )
+  
+  expect_error(
+    str_cols_to_packed_cols(TRUE)
+  )
+  
+  expect_error(
+    str_cols_to_packed_cols(c(TRUE, NA))
+  )
+  
+  
+})
+
+
+
 if (FALSE) {
   
   # identical(

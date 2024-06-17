@@ -157,10 +157,24 @@ uint32_t *colors_to_packed_cols(SEXP colors_, int N, bool *do_free) {
     error("colors_to_packed_cols() malloc failed");
   }
   
-  if (isLogical(colors_) && asLogical(colors_) == NA_LOGICAL) {
-    uint32_t packed_col = 0x00FFFFFF; // transparent white 0xAABBGGRR
-    for (int i = 0; i < N; i++) {
-      packed_cols[i] = packed_col;
+  if (isLogical(colors_)) {
+    if (length(colors_) == 1) {
+      if (asLogical(colors_) == NA_LOGICAL) {
+        for (int i = 0; i < N; i++) {
+          packed_cols[i] = 0x00FFFFFF;
+        }
+      } else {
+        error("colors_to_packed_cols(): Invalid use of logical value as color");
+      }
+    } else {
+      int *lgl = LOGICAL(colors_);
+      for (int i = 0; i < N; i++) {
+        if (lgl[i] == NA_LOGICAL) {
+          packed_cols[i] = 0x00FFFFFF; // transparent white 0xAABBGGRR
+        } else {
+          error("colors_to_packed_cols(): Invalid use of logical value as color '%i'", lgl[i]);
+        }
+      }
     }
   } else if (isInteger(colors_)) {
     // Must be length = 1 if we got here
@@ -253,8 +267,13 @@ SEXP colors_to_packed_cols_(SEXP colors_) {
     }
   } else if (isLogical(colors_)) {
     // For when the user passes in logical NA
+    int *lgl = INTEGER(colors_);
     for (int i = 0; i < length(colors_); i++) {
-      packed_cols[i] = 0x00FFFFFF; // transparent white 0xAABBGGRR
+      if (lgl[i] == NA_LOGICAL) {
+        packed_cols[i] = 0x00FFFFFF; // transparent white 0xAABBGGRR
+      } else {
+        error("colors_to_packed_cols_(): invalid use of logical value as color");
+      }
     }
   } else {
     error("Color must be integer or character vector not '%s'", type2char((SEXPTYPE)TYPEOF(colors_)));
