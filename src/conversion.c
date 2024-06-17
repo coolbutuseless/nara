@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #include "color.h"
-#include "color-from-r.h"
+#include "hash-color.h"
 #include "nr-utils.h"
 
 

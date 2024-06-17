@@ -50,11 +50,6 @@ extern SEXP colors_to_packed_cols_(SEXP color_);
 extern SEXP packed_cols_to_hexcolors_(SEXP ints_);
 
 
-
-extern SEXP djb2_hash_(SEXP str_);
-
-
-
 static const R_CallMethodDef CEntries[] = {
 
   {"copy_into_", (DL_FUNC) &copy_into_, 2},
@@ -86,8 +81,6 @@ static const R_CallMethodDef CEntries[] = {
   
   {"colors_to_packed_cols_"  , (DL_FUNC) &colors_to_packed_cols_  , 1},
   {"packed_cols_to_hexcolors_"  , (DL_FUNC) &packed_cols_to_hexcolors_  , 1},
-  
-  {"djb2_hash_"    , (DL_FUNC) &djb2_hash_    , 1},
 
 
   {NULL , NULL, 0}
