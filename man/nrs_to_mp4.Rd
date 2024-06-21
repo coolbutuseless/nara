@@ -4,7 +4,7 @@
 \alias{nrs_to_mp4}
 \title{Magick conversion - possible won't be in final version of 'nara' pkg}
 \usage{
-nrs_to_mp4(nr_list, mp4_name, verbose = FALSE)
+nrs_to_mp4(nr_list, mp4_name, verbose = FALSE, ...)
 }
 \arguments{
 \item{nr_list}{list of nativeRasters}
@@ -12,6 +12,8 @@ nrs_to_mp4(nr_list, mp4_name, verbose = FALSE)
 \item{mp4_name}{name of mp4 file to save}
 
 \item{verbose}{logical. default FALSE}
+
+\item{...}{other arguments passed to \code{magick::image_write_video()}}
 }
 \description{
 Magick conversion - possible won't be in final version of 'nara' pkg

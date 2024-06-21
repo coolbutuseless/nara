@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9013 2024-06-18
+# nara 0.1.1.9014 2024-06-21
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -32,6 +32,7 @@
 * Move all 'magick' related functions into single R file.  Include gif and mp4 output.
 * Use fast hashed lookup for R color names like 'red', 'blue', etc
 * Handle logical NAs as transparent colour
+* pass through more arguments for `nrs_to_gif()` and `nrs_to_mp4()`
 
 # nara 0.1.1 2022-07-30
 

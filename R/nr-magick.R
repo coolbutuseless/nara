@@ -47,14 +47,15 @@ nr_to_magick <- function(nr) {
 #' @param nr_list list of nativeRasters
 #' @param gif_name name of mp4 file to save
 #' @param verbose logical. default FALSE
+#' @param ... other arguments passed to \code{magick::image_write_gif()}
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE) {
+nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, ...) {
   if (requireNamespace('magick', quietly = TRUE)) {
     nr_list <- lapply(nr_list, nr_to_magick)
     ims <- do.call(magick::image_join, nr_list)
-    magick::image_write_gif(ims, path = gif_name, progress = verbose)
+    magick::image_write_gif(ims, path = gif_name, progress = verbose, ...)
   } else {
     stop("need to install {magick}")
   }
@@ -68,14 +69,15 @@ nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE) {
 #' @param nr_list list of nativeRasters
 #' @param mp4_name name of mp4 file to save
 #' @param verbose logical. default FALSE
+#' @param ... other arguments passed to \code{magick::image_write_video()}
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nrs_to_mp4 <- function(nr_list, mp4_name, verbose = FALSE) {
+nrs_to_mp4 <- function(nr_list, mp4_name, verbose = FALSE, ...) {
   if (requireNamespace('magick', quietly = TRUE)) {
     nr_list <- lapply(nr_list, nr_to_magick)
     ims <- do.call(magick::image_join, nr_list)
-    magick::image_write_video(ims, path = mp4_name, verbose = verbose)
+    magick::image_write_video(ims, path = mp4_name, verbose = verbose, ...)
   } else {
     stop("need to install {magick}")
   }
