@@ -121,7 +121,7 @@ nr_duplicate <- function(nr) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_crop <- function(nr, x, y, w, h) {
   dst <- nr_new(w, h)
-  nr_blit(dst, 0, 0, nr, x, y, w, h)
+  nr_blit(dst, 0, 0, nr, x, y, w, h, respect_alpha = FALSE)
   dst
 }
 
