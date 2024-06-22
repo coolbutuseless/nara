@@ -42,6 +42,26 @@ nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = -1L, h = -1L, hjust = 0
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Blit from a list of native rasters
+#' 
+#' @inheritParams nr_blit
+#' @param src_list list of native rasters
+#' @param src_idx indices into the list of the native raster
+#' 
+#' @examples
+#' nr <- nr_new(50, 50, 'grey80')
+#' src_list <- list(nr_new(10, 10, 'hotpink'), nr_new(10, 10, 'blue'))
+#' nr_blit_list(nr, x = c(0, 25), y = c(0, 25), src_list = src_list, src_idx = c(1, 2))
+#' plot(nr)
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_blit_list <- function(nr, x, y, src_list, src_idx, hjust = 0, vjust = 0, respect_alpha = TRUE) {
+  invisible(.Call(blit_list_, nr, x, y, src_list, src_idx, hjust, vjust, respect_alpha))
+}
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Blit2
 #' 
 #' @inheritParams nr_blit
@@ -150,15 +170,17 @@ if (FALSE) {
   
   sprites <- list(
     nr_duplicate(sprite),
-    nr_duplicate(sprite),
-    nr_duplicate(sprite),
-    nr_duplicate(sprite)
+    nr_new(20, 20, 'blue'),
+    nr_new(20, 20, 'green'),
+    nr_new(20, 20, 'red')
   )
   
-  nr_blit(screen, 
+  nr_blit_list(screen, 
           x = c(0.2, 0.4, 0.6, 0.8) * 400, 
           y = 400/2, 
-          sprites, vjust = c(0.25, 0.5, 0.75, 1), hjust = 0.5)
+          src_list = sprites, 
+          src_idx  = sample(4), 
+          vjust = c(0.25, 0.5, 0.75, 1), hjust = 0.5)
   plot(screen, T)
   
   
