@@ -14,7 +14,8 @@
 #'        origin of \code{nativeraster} images is the top-left
 #'        where the coordinates are (0, 0).
 #' @param x0,y0 start coordiates within src
-#' @param w,h size within src
+#' @param w,h size within src. If size is negative, then the actual width/height of
+#'        the src is used
 #' @param respect_alpha Should the alpha channel be respected when blitting?
 #'        Default: TRUE.  If FALSE, then contents will be blindly overwritten
 #'        which can be much much faster.  If the \code{src} has an 
@@ -35,7 +36,7 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = NULL, h = NULL, hjust = 0, vjust = 0, respect_alpha = TRUE) {
+nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = -1L, h = -1L, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, hjust, vjust, respect_alpha))
 }
 
@@ -135,6 +136,29 @@ if (FALSE) {
   sprite <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   
   nr_blit(screen, 130/2, 130/2, sprite, hjust = 0.5, vjust = 0.5)
+  plot(screen, T)
+  
+  
+}
+
+
+
+if (FALSE) {
+  
+  screen <- nr_new(400, 400, 'grey80')
+  sprite <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  
+  sprites <- list(
+    nr_duplicate(sprite),
+    nr_duplicate(sprite),
+    nr_duplicate(sprite),
+    nr_duplicate(sprite)
+  )
+  
+  nr_blit(screen, 
+          x = c(0.2, 0.4, 0.6, 0.8) * 400, 
+          y = 400/2, 
+          sprites, vjust = c(0.25, 0.5, 0.75, 1), hjust = 0.5)
   plot(screen, T)
   
   

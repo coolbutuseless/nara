@@ -11,8 +11,8 @@ nr_blit(
   src,
   x0 = 0L,
   y0 = 0L,
-  w = NULL,
-  h = NULL,
+  w = -1L,
+  h = -1L,
   hjust = 0,
   vjust = 0,
   respect_alpha = TRUE
@@ -32,7 +32,8 @@ where the coordinates are (0, 0).}
 
 \item{x0, y0}{start coordiates within src}
 
-\item{w, h}{size within src}
+\item{w, h}{size within src. If size is negative, then the actual width/height of
+the src is used}
 
 \item{hjust, vjust}{specify horizontal and vertical justification of the 
 \code{src} image.  e.g. \code{hjust = vjust = 0} the blitting

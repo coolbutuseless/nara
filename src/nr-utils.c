@@ -14,14 +14,22 @@
 #include "color.h"
 #include "nr-utils.h"
 
+
+int is_nativeraster(SEXP nr_) {
+  return isInteger(nr_) && inherits(nr_, "nativeRaster");
+}
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Assert object is a native raster
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void assert_nativeraster(SEXP nr_) {
-  if (isInteger(nr_) && !inherits(nr_, "nativeRaster")) {
+  if (!is_nativeraster(nr_)) {
     error("Object is not a nativeRaster");
   }
 }
+
+
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +44,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be REALSXP or INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!isInteger(vec_) && !isReal(vec_)) {
+  if (!isInteger(vec_) && !isReal(vec_) && !isLogical(vec_)) {
     error("as_int32_vec(): Expecting numeric but got %s\n", type2char((SEXPTYPE)TYPEOF(vec_)));
   }
   
@@ -50,7 +58,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do we have an integer vector of the correct length?
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isInteger(vec_) && length(vec_) == N) {
+  if ((isInteger(vec_) || isLogical(vec_)) && length(vec_) == N) {
     return INTEGER(vec_);
   }
   
@@ -67,7 +75,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If given INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isInteger(vec_)) {
+  if (isInteger(vec_) || isLogical(vec_)) {
     // Can only be an INTSXP of length=1
       int value = asInteger(vec_);
       for (int i = 0; i < N; i++) {
