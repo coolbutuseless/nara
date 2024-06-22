@@ -222,21 +222,22 @@ SEXP blit_list_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_list_, SEXP src_idx_, SEXP 
   
   for (int i = 0; i < N; i++) {
     int idx = indices[i] - 1;
-    if (idx > length(src_list_)) {
-      Rprintf("src_idx is out of bounds %i > %i\n", idx, length(src_list_));
+    if (idx >= length(src_list_) || idx < 0) {
+      Rprintf("nr_blit_list_(): 'src_idx' is out of bounds for given 'src_list'. %i is not in range [0, %i]\n", idx, length(src_list_) - 1);
+      continue;
     }
     SEXP src_ = VECTOR_ELT(src_list_, idx);
     assert_nativeraster(src_);
     uint32_t *src = (uint32_t *)INTEGER(src_);
-    
+
     int src_width  = Rf_ncols(src_);
     int src_height = Rf_nrows(src_);
-    
+
     int this_hjust = (int)round(hjust[i] * src_width);
     int this_vjust = (int)round(vjust[i] * src_height);
-    
-    blit_core_(nr, x[i] - this_hjust, y[i] - this_vjust, nr_width, nr_height, 
-               src, 0, 0, src_width, src_height, src_width, src_height, 
+
+    blit_core_(nr, x[i] - this_hjust, y[i] - this_vjust, nr_width, nr_height,
+               src, 0, 0, src_width, src_height, src_width, src_height,
                (bool)respect_alpha[i]);
     
     

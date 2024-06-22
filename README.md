@@ -43,6 +43,8 @@ This way of encoding color information is closer to the internal
 representation used by graphics devices, and therefore can be faster to
 render, save and load (as fewer data conversion steps are needed).
 
+Native rasters do **not** use pre-multiplied alpha.
+
 ### In-place operation
 
 `{nara}` is targeted at fast rendering (\>30fps), and tries to minimise
@@ -108,7 +110,7 @@ nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colors)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of deer sprites
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2(nr, x = sample(300, 15), y = sample(200, 15), deer, deer_loc[1,])
+nr_blit_list(nr, x = sample(300, 15), y = sample(200, 15), src_list = deer_sprites, src_idx = 1)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,10 +143,7 @@ grid.raster(nr, interpolate = FALSE)
 ## Static Rendering: Displaying Sprites
 
 Included with `{nara}` are 16 frames of an animated deer character - see
-`deer` data.
-
-These frames are consolidated into a single image called a *spritesheet*
-and `deer_loc` contains the coordinates of 16 sprites within that image.
+`deer_sprites` data.
 
 #### Blit the first `deer` frame onto a native raster canvas.
 
@@ -152,7 +151,7 @@ and `deer_loc` contains the coordinates of 16 sprites within that image.
 library(grid)
 
 nr <- nr_new(100, 32, 'grey80')
-nr_blit2(nr, 2, 0, deer, deer_loc[1,])
+nr_blit_list(nr, 2, 0, src_list = deer_sprites, src_idx = 1)
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -194,8 +193,11 @@ nr <- nr_new(100, 32, 'grey80')
 # Clear, blit and render => animation!
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
-  nr_blit2(nr, i, 0, deer, deer_loc[((i/3) %% 5) + 11, ]) # copy deer to nativeRaster
+  sprite_idx <- floor((i/3) %% 5) + 11
+  nr_blit_list(nr, i, 0, deer_sprites, sprite_idx) # copy deer to nativeRaster
+  dev.hold()
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
+  dev.flush()
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
 ```
@@ -207,7 +209,7 @@ for (i in -30:110) {
 ## Multi-Ball
 
 You can quickly *blit* (i.e. copy) a sprite into multiple locations on
-the nativeraster with `nr_blit()` and `nr_blit2()`
+the nativeraster with `nr_blit()` and `nr_blit_list()`
 
 In this example 100 random positions and velocities are first created. A
 character sprite is then blitted to each of these 100 locations.
@@ -243,7 +245,7 @@ nr <- nr_new(w, h, 'white')
 for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the deer
   nr_fill(nr, 'white') 
-  nr_blit2(nr, x, y, deer, deer_loc[ (frame/3) %% 5 + 11, ])
+  nr_blit_list(nr, x, y, deer_sprites, floor((frame/3) %% 5 + 11))
   
   # Draw the nativeraster to screen
   dev.hold()
@@ -263,48 +265,6 @@ for (frame in 1:1000) {
 #### Live screen recording
 
 <img src="man/figures/multiball.gif" />
-
-## Isometric tiling
-
-This package includes `isometric_landscape` which is a collection of 36
-isometric tiles (as a list of nativeRasters)
-
-``` r
-library(grid)
-set.seed(1)
-
-# Set up staggered x coordinates for even/odd rows
-even <-  0 + (0:5) * 60
-odd  <- 31 + (0:5) * 60
-
-# Sample from just the tree/house tiles.
-# Weight the 'basic' tile to occur much more often
-tile_idxs <- grep("basic|house|tree", names(isometric_landscape))
-probs <- rep(1, length(tile_idxs))
-probs[1] <- 30
-
-# A blank cvanas
-nr <- nr_new(420, 420, 'white')
-
-# generate isometric tiles from the top down
-for (y in seq(0, 350, 30)) {
-  
-  select <- sample(tile_idxs, length(odd), T, prob = probs)
-  for (i in seq_along(odd)) {
-    nr_blit(nr,  odd[i], y - 15, isometric_landscape[[select[[i]]]])
-  }
-  
-  select <- sample(tile_idxs, length(even), T, prob = probs)
-  for (i in seq_along(even)) {
-    nr_blit(nr, even[i], y, isometric_landscape[[select[i]]])
-  }
-}
-
-grid.newpage()
-grid.raster(nr, interpolate = FALSE)
-```
-
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 ## Coordinate System
 

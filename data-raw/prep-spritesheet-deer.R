@@ -55,6 +55,18 @@ nr_rect(deer2, 0, 0, 32, 32, fill = NA, color = '#0000ff30')
 plot(deer2)
 
 
-usethis::use_data(deer, deer_loc, internal = FALSE, overwrite = TRUE, compress = 'xz')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Cut out sprite sheet to just be a list of sprites
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+deer_loc <- as.data.frame(deer_loc)
+deer_sprites <- lapply(seq(nrow(deer_loc)), \(i) {
+  row <- deer_loc[i,]
+  nr_crop(deer, row$x, row$y, row$w, row$h)
+})
+
+names(deer_sprites) <- rownames(deer_loc)
+
+
+usethis::use_data(deer_sprites, internal = FALSE, overwrite = TRUE, compress = 'xz')
 
 

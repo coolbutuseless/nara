@@ -55,7 +55,7 @@ This is useful as a way of positioning sprites or icons in an image.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit(nr, x = 0, y = 0, src = deer, x0 = 0, y0 = 0, w = 32, h = 32)
+nr_blit(nr, x = 0, y = 0, src = deer_sprites[[1]])
 plot(nr)
 
 }

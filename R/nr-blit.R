@@ -31,7 +31,7 @@
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit(nr, x = 0, y = 0, src = deer, x0 = 0, y0 = 0, w = 32, h = 32)
+#' nr_blit(nr, x = 0, y = 0, src = deer_sprites[[1]])
 #' plot(nr)
 #' 
 #' @export
@@ -71,13 +71,7 @@ nr_blit_list <- function(nr, x, y, src_list, src_idx, hjust = 0, vjust = 0, resp
 #'
 #' @return \code{nativeRaster}
 #' 
-#' @examples
-#' nr <- nr_new(400, 400, 'grey80')
-#' nr_blit2(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
-#'          src = deer, loc = deer_loc, idx = c(1, 4, 8))
-#' plot(nr)
-#' 
-#' @export
+#' @noRd
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   
@@ -115,15 +109,8 @@ nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, hjust = 0, vjust = 0, respect
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #' 
-#' @examples
-#' nr <- nr_new(400, 400, 'grey80')
-#' idx_mat <- matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
-#' nr_blit3(nr, x = 10, y = 20, 
-#'          src = deer, loc = deer_loc, idx_mat = idx_mat, 
-#'          width = 32, height = 32)
-#' plot(nr)
 #' 
-#' @export 
+#' @noRd 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   
@@ -152,36 +139,7 @@ nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, hjust = 0, vjus
 
 if (FALSE) {
   
-  screen <- nr_new(130, 130, 'grey80')
-  sprite <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-  
-  nr_blit(screen, 130/2, 130/2, sprite, hjust = 0.5, vjust = 0.5)
-  plot(screen, T)
-  
-  
-}
-
-
-
-if (FALSE) {
-  
-  screen <- nr_new(400, 400, 'grey80')
-  sprite <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-  
-  sprites <- list(
-    nr_duplicate(sprite),
-    nr_new(20, 20, 'blue'),
-    nr_new(20, 20, 'green'),
-    nr_new(20, 20, 'red')
-  )
-  
-  nr_blit_list(screen, 
-          x = c(0.2, 0.4, 0.6, 0.8) * 400, 
-          y = 400/2, 
-          src_list = sprites, 
-          src_idx  = sample(4), 
-          vjust = c(0.25, 0.5, 0.75, 1), hjust = 0.5)
-  plot(screen, T)
+  logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   
   
 }
