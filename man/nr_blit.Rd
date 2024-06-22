@@ -13,6 +13,8 @@ nr_blit(
   y0 = 0L,
   w = NULL,
   h = NULL,
+  hjust = 0,
+  vjust = 0,
   respect_alpha = TRUE
 )
 }
@@ -31,6 +33,12 @@ where the coordinates are (0, 0).}
 \item{x0, y0}{start coordiates within src}
 
 \item{w, h}{size within src}
+
+\item{hjust, vjust}{specify horizontal and vertical justification of the 
+\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+to treat the centre of the \code{src_} as the blitting origin.
+Default (0, 0)}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE.  If FALSE, then contents will be blindly overwritten

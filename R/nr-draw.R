@@ -86,6 +86,7 @@ nr_text_spleen <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
+#' @inheritParams nr_blit
 #' @param x,y coordinates of lower left corner of rectangle.  [vector]
 #' @param w,h width and height of rectangle. [vector]
 #' @param color outline color. Default: NA. [vector]
@@ -102,8 +103,8 @@ nr_text_spleen <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA) {
-  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, color))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0) {
+  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, color, hjust, vjust))
 }
 
 

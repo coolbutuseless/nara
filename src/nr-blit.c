@@ -113,7 +113,7 @@ void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_,
-           SEXP respect_alpha_) {
+           SEXP hjust_, SEXP vjust_, SEXP respect_alpha_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -156,6 +156,9 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
           x0, y0, w, h, src_width, src_height);
   }
   
+  int hjust = (int)round(asReal(hjust_) * src_width);
+  int vjust = (int)round(asReal(vjust_) * src_height);
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,7 +167,7 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   bool respect_alpha = asLogical(respect_alpha_);
   for (int i = 0; i < length(x_); i++) {
     // blit_core_naive_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height);
-    blit_core_(nr, x[i], y[i], nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
+    blit_core_(nr, x[i] - hjust, y[i] - vjust, nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

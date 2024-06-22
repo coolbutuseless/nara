@@ -4,7 +4,17 @@
 \alias{nr_blit2}
 \title{Blit2}
 \usage{
-nr_blit2(nr, x, y, src, loc, idx = 1L, respect_alpha = TRUE)
+nr_blit2(
+  nr,
+  x,
+  y,
+  src,
+  loc,
+  idx = 1L,
+  hjust = 0,
+  vjust = 0,
+  respect_alpha = TRUE
+)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -22,6 +32,12 @@ where the coordinates are (0, 0).}
 spritesheet}
 
 \item{idx}{integer vector of rows within the \code{locs} matrix to use}
+
+\item{hjust, vjust}{specify horizontal and vertical justification of the 
+\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+to treat the centre of the \code{src_} as the blitting origin.
+Default (0, 0)}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE.  If FALSE, then contents will be blindly overwritten

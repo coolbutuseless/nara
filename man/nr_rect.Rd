@@ -4,7 +4,7 @@
 \alias{nr_rect}
 \title{Draw rectangles on a \code{nativeRaster} image}
 \usage{
-nr_rect(nr, x, y, w, h, fill = "black", color = NA)
+nr_rect(nr, x, y, w, h, fill = "black", color = NA, hjust = 0, vjust = 0)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -16,6 +16,12 @@ nr_rect(nr, x, y, w, h, fill = "black", color = NA)
 \item{fill}{interior fill color [vector]}
 
 \item{color}{outline color. Default: NA. [vector]}
+
+\item{hjust, vjust}{specify horizontal and vertical justification of the 
+\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+to treat the centre of the \code{src_} as the blitting origin.
+Default (0, 0)}
 }
 \value{
 Original \code{nativeRaster} modified in-place

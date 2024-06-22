@@ -329,7 +329,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
 // Draw Rect. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP fill_, SEXP color_) {
+                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -347,6 +347,9 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *ws = as_int32_vec(w_, N, &freew);
   int *hs = as_int32_vec(h_, N, &freeh);
   
+  double hjust = asReal(hjust_);
+  double vjust = asReal(vjust_);
+  
   // Colors
   bool freecol = false, freefill = false;
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
@@ -354,8 +357,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   for (int i = 0; i < N; i++) {
     
-    int x = xs[i];
-    int y = ys[i];
+    int x = xs[i] - round(hjust * ws[i]); // horizontal justification
+    int y = ys[i] - round(vjust * hs[i]); // vertical justification
     int w = ws[i];
     int h = hs[i];
     

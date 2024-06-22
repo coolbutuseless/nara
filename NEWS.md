@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9014 2024-06-21
+# nara 0.1.1.9015 2024-06-22
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -33,6 +33,9 @@
 * Use fast hashed lookup for R color names like 'red', 'blue', etc
 * Handle logical NAs as transparent colour
 * pass through more arguments for `nrs_to_gif()` and `nrs_to_mp4()`
+* `hjust` and `vjust` added for 
+    * `nr_blit()`
+    * `nr_rect()`
 
 # nara 0.1.1 2022-07-30
 

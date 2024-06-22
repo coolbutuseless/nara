@@ -16,7 +16,8 @@ extern SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, SEXP respect_alpha_);
+extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, 
+                  SEXP hjust_, SEXP vjust_, SEXP respect_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
@@ -38,7 +39,7 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 extern SEXP draw_points_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
 extern SEXP draw_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP color_);
 extern SEXP draw_text_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
-extern SEXP draw_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_);
+extern SEXP draw_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
 extern SEXP draw_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
 extern SEXP draw_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP close_);
 extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP color_);
@@ -59,7 +60,7 @@ static const R_CallMethodDef CEntries[] = {
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
   {"replace_"  , (DL_FUNC) &replace_  , 3},
 
-  {"blit_"     , (DL_FUNC) &blit_     , 9},
+  {"blit_"     , (DL_FUNC) &blit_     , 11},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 6},
   
@@ -74,7 +75,7 @@ static const R_CallMethodDef CEntries[] = {
   {"draw_points_"  , (DL_FUNC) &draw_points_  , 4},
   {"draw_line_"    , (DL_FUNC) &draw_line_    , 6},
   {"draw_text_"    , (DL_FUNC) &draw_text_    , 6},
-  {"draw_rect_"    , (DL_FUNC) &draw_rect_    , 7},
+  {"draw_rect_"    , (DL_FUNC) &draw_rect_    , 9},
   {"draw_circle_"  , (DL_FUNC) &draw_circle_  , 6},
   {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
   {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},

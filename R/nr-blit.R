@@ -20,6 +20,11 @@
 #'        which can be much much faster.  If the \code{src} has an 
 #'        any transparent pixels, \code{respect_alpha = TRUE} is 
 #'        probably the correct setting.
+#' @param hjust,vjust specify horizontal and vertical justification of the 
+#'        \code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+#'        starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+#'        to treat the centre of the \code{src_} as the blitting origin.
+#'        Default (0, 0)
 #'
 #' @return \code{nativeRaster}
 #' 
@@ -30,8 +35,8 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = NULL, h = NULL, respect_alpha = TRUE) {
-  invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, respect_alpha))
+nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = NULL, h = NULL, hjust = 0, vjust = 0, respect_alpha = TRUE) {
+  invisible(.Call(blit_, nr, x, y, src, x0, y0, w, h, hjust, vjust, respect_alpha))
 }
 
 
@@ -53,7 +58,7 @@ nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = NULL, h = NULL, respect
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, respect_alpha = TRUE) {
+nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   
   if (!length(idx) %in% c(1, length(x))) {
     stop("R limitation. idx not currently recycled. Fix for 'C' implementation")
@@ -73,6 +78,7 @@ nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, respect_alpha = TRUE) {
                     nr, x = x[i], y = y[i], 
                     src = src, 
                     x = loc[row, 1L], y = loc[row, 2L], w = loc[row, 3L], h = loc[row, 4L], 
+                    hjust = hjust, vjust = vjust,
                     respect_alpha = respect_alpha))
   }
 }
@@ -98,7 +104,7 @@ nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, respect_alpha = TRUE) {
 #' 
 #' @export 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, respect_alpha = TRUE) {
+nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   
   if (length(x) != 1 || length(y) != 1) {
     stop("only allow length 1 for x and y")
@@ -114,7 +120,8 @@ nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, respect_alpha =
   yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
   
   invisible(
-    nr_blit2(nr, x = x + xoff, y = y + yoff, src = src, loc = loc, idx = as.vector(idx_mat))
+    nr_blit2(nr, x = x + xoff, y = y + yoff, src = src, loc = loc, idx = as.vector(idx_mat), 
+             hjust = hjust, vjust = vjust, respect_alpha = respect_alpha)
   )
 }
 
@@ -123,57 +130,15 @@ nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, respect_alpha =
 
 
 if (FALSE) {
-  library(grid)
   
-  nr <- nr_new(400, 400, 'grey80')
-  idx_mat <- matrix(c(1, 14, 3, 4, 5, 6), 3, 2)
-  xoff <- (rep(seq(ncol(idx_mat)), each = nrow(idx_mat)) - 1) * width
-  yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
+  screen <- nr_new(130, 130, 'grey80')
+  sprite <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   
-  x <- 1
-  y <- 1
+  nr_blit(screen, 130/2, 130/2, sprite, hjust = 0.5, vjust = 0.5)
+  plot(screen, T)
   
-  # nr_blit3(nr, x = x + xoff, y = y + yoff, src = deer, loc_mat = deer_loc, loc_idx = as.vector(idx_mat))
-  
-  nr_blit4(nr, x = 20, y = 90, src = deer, loc_mat = deer_loc, idx_mat = idx_mat, width = 32, height = 32)
-  plot(nr)
-}
-
-if (FALSE) {
-  
-  x = c(0, 100, 300)
-  y = c(0, 100, 300)
-  src <- deer
-  loc <- deer_loc
-  idx <- c(1, 4, 8)
-  
-  nr <- nr_new(400, 400, 'grey80')
-  bench::mark(
-    nr_blit2(nr, x = c(0, 100, 300), y = c(0, 100, 300), 
-             src = deer, loc = deer_loc, idx = c(1, 4, 8))
-  )
-  plot(nr)
-}
-
-if (FALSE) {
-  
-  idx <- matrix(
-    sample(seq_len(nrow(deer_loc)), 100, T), 10, 10
-  )
-  
-  nrs <- lapply(0:32, function(size) {
-    nr <- nr_new(320, 320, 'grey80')
-    nr_blit3(nr, x = 0, y = 0, 
-             src = deer, loc = deer_loc, idx_mat = idx, width = size, height = size)
-    nr 
-  })
-  
-  nrs_to_gif(nrs, "working/test2.gif")
-  nrs_to_mp4(nrs, "working/test2.mp4")  
   
 }
-
-
 
 
 

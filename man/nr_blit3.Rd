@@ -4,7 +4,19 @@
 \alias{nr_blit3}
 \title{Blit4}
 \usage{
-nr_blit3(nr, x, y, src, loc, idx_mat, width, height, respect_alpha = TRUE)
+nr_blit3(
+  nr,
+  x,
+  y,
+  src,
+  loc,
+  idx_mat,
+  width,
+  height,
+  hjust = 0,
+  vjust = 0,
+  respect_alpha = TRUE
+)
 }
 \arguments{
 \item{nr}{native raster to copy into}
@@ -24,6 +36,12 @@ spritesheet}
 \item{idx_mat}{integer matrix of indices into \code{loc}}
 
 \item{width, height}{tile width/height (constant across all tiles)}
+
+\item{hjust, vjust}{specify horizontal and vertical justification of the 
+\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+to treat the centre of the \code{src_} as the blitting origin.
+Default (0, 0)}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE.  If FALSE, then contents will be blindly overwritten
