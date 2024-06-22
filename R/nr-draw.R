@@ -71,12 +71,12 @@ nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_text_spleen(nr, x = 0, y = N/2, str = "Hi!")
+#' nr_text_basic(nr, x = 0, y = N/2, str = "Hi!")
 #' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_spleen <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
+nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
   invisible(.Call(draw_text_, nr, x, y, str, color, fontsize))
 }
 
