@@ -2,6 +2,10 @@
 
 /* Copyright © 2019-2023 Hans Petter Jansson. See COPYING for details. */
 
+#include <R.h>
+#include <Rinternals.h>
+#include <Rdefines.h>
+
 #include <assert.h> /* assert */
 #include <stdlib.h> /* malloc, free, alloca */
 #include <string.h> /* memset */
@@ -777,7 +781,7 @@ get_implementations (SmolScaleCtx *scale_ctx)
                   &rmeta_in, &rmeta_out);
 
     if (!rmeta_in || !rmeta_out)
-        abort ();
+        error ("smolscale internal abort");
 
     scale_ctx->unpack_row_func = rmeta_in->repack_row_func;
     scale_ctx->pack_row_func = rmeta_out->repack_row_func;
@@ -810,7 +814,7 @@ get_implementations (SmolScaleCtx *scale_ctx)
     }
 
     if (!scale_ctx->hfilter_func || !scale_ctx->vfilter_func)
-        abort ();
+      error ("smolscale internal abort");
 }
 
 static void
