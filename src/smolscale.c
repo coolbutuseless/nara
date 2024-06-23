@@ -504,7 +504,7 @@ scale_outrow (const SmolScaleCtx *scale_ctx,
                              row_out);
 
     if (scale_ctx->post_row_func)
-        scale_ctx->post_row_func (row_out, scale_ctx->width_out, scale_ctx->user_data);
+        scale_ctx->post_row_func (row_out, (int)(scale_ctx->width_out), scale_ctx->user_data);
 }
 
 static void
@@ -642,7 +642,7 @@ do_reorder (const uint8_t *order_in, uint8_t *order_out, const uint8_t *reorder)
         {
             o = order_in [r - 1];
             if (o == 0)
-                o = i + 1;
+                o = (uint8_t)(i + 1);
         }
 
         order_out [i] = o;
@@ -664,9 +664,9 @@ find_repacks (const SmolImplementation **implementations,
     int reorder_dest_alpha_ch;
 
     sig_mask = SMOL_REPACK_SIGNATURE_ANY_ORDER_MASK (1, 1, 1, 1, 1, 1);
-    sig_in_to_mid = SMOL_MAKE_REPACK_SIGNATURE_ANY_ORDER (storage_in, alpha_in, gamma_in,
+    sig_in_to_mid = (uint16_t)SMOL_MAKE_REPACK_SIGNATURE_ANY_ORDER (storage_in, alpha_in, gamma_in,
                                                           storage_mid, alpha_mid, gamma_mid);
-    sig_mid_to_out = SMOL_MAKE_REPACK_SIGNATURE_ANY_ORDER (storage_mid, alpha_mid, gamma_mid,
+    sig_mid_to_out = (uint16_t)SMOL_MAKE_REPACK_SIGNATURE_ANY_ORDER (storage_mid, alpha_mid, gamma_mid,
                                                            storage_out, alpha_out, gamma_out);
 
     /* The initial conversion must always leave alpha in position #4, so further
