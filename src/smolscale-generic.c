@@ -1635,8 +1635,8 @@ scale_horizontal (const SmolScaleCtx *scale_ctx,
         row_in = (const char *) vertical_ctx->in_aligned;
     }
 
-    scale_ctx->unpack_row_func ((const uint32_t *) row_in,
-                                unpacked_in,
+    scale_ctx->unpack_row_func ((const void *) row_in,
+                                (void *)unpacked_in,
                                 scale_ctx->width_in);
     scale_ctx->hfilter_func (scale_ctx,
                              unpacked_in,
@@ -2316,7 +2316,7 @@ scale_outrow_copy (const SmolScaleCtx *scale_ctx,
                       inrow_ofs_to_pointer (scale_ctx, row_index),
                       vertical_ctx->parts_row [0]);
 
-    scale_ctx->pack_row_func (vertical_ctx->parts_row [0], row_out, scale_ctx->width_out);
+    scale_ctx->pack_row_func ((const void *)(vertical_ctx->parts_row [0]), (void *)row_out, scale_ctx->width_out);
 }
 
 /* --------------- *
