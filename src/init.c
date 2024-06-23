@@ -12,8 +12,6 @@ extern SEXP fill_(SEXP nr_, SEXP color_);
 extern SEXP flipv_(SEXP nr_);
 extern SEXP fliph_(SEXP nr_);
 extern SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
-extern SEXP resize_(SEXP nr_, SEXP width_, SEXP height_);
-extern SEXP swizzle_(SEXP nr_, SEXP order_, SEXP pm_alpha_, SEXP target_orig_, SEXP target_pm_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
@@ -63,8 +61,6 @@ static const R_CallMethodDef CEntries[] = {
   {"flipv_"    , (DL_FUNC) &flipv_    , 1},
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
   {"replace_"  , (DL_FUNC) &replace_  , 3},
-  {"resize_"   , (DL_FUNC) &resize_   , 3},
-  {"swizzle_"  , (DL_FUNC) &swizzle_  , 5},
   
   {"blit_"     , (DL_FUNC) &blit_     , 11},
   {"blit_list_", (DL_FUNC) &blit_list_,  8},

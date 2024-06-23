@@ -84,7 +84,7 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
       memcpy(
         dst + (y + yoff) * dst_width + x, 
         src + y1 * src_width + x0, 
-        (unsigned long)w * sizeof(int32_t)
+        w * sizeof(int32_t)
       );
     }
   }

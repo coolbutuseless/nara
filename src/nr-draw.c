@@ -50,7 +50,7 @@ void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, in
     g = (uint8_t)((alpha * g + (255 - alpha) * g2) / 255);
     b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
     
-    nr[y * width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
+    nr[y * width + x] = (r) | (g << 8) | (b << 16) | (0xff << 24);
   }
 }
 
@@ -102,7 +102,7 @@ void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, 
       uint8_t g = (uint8_t)((alpha * fgg + inv_alpha * bgg) >> 8);
       uint8_t b = (uint8_t)((alpha * fgb + inv_alpha * bgb) >> 8);
       
-      nr[y * width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
+      nr[y * width + x] = (r) | (g << 8) | (b << 16) | (0xff << 24);
     }
   }
   
@@ -357,8 +357,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   for (int i = 0; i < N; i++) {
     
-    int x = xs[i] - (int)round(hjust * ws[i]); // horizontal justification
-    int y = ys[i] - (int)round(vjust * hs[i]); // vertical justification
+    int x = xs[i] - round(hjust * ws[i]); // horizontal justification
+    int y = ys[i] - round(vjust * hs[i]); // vertical justification
     int w = ws[i];
     int h = hs[i];
     
