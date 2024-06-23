@@ -1625,10 +1625,12 @@ scale_horizontal (const SmolScaleCtx *scale_ctx,
         && scale_ctx->pixel_type_in != SMOL_PIXEL_RGB8
         && scale_ctx->pixel_type_in != SMOL_PIXEL_BGR8)
     {
-        if (!vertical_ctx->in_aligned)
+        if (!vertical_ctx->in_aligned) {
             vertical_ctx->in_aligned =
                 smol_alloc_aligned (scale_ctx->width_in * sizeof (uint32_t),
                                     &vertical_ctx->in_aligned_storage);
+            vertical_ctx->in_aligned_storage = vertical_ctx->in_aligned;
+        }
         memcpy (vertical_ctx->in_aligned, row_in, scale_ctx->width_in * sizeof (uint32_t));
         row_in = (const char *) vertical_ctx->in_aligned;
     }

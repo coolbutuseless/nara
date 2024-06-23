@@ -9,6 +9,7 @@
  * If, on the other hand, you're here to hack on Smolscale itself, this file
  * contains all the internal shared declarations. */
 
+#include <R.h>
 #include <stdint.h>
 #include "smolscale.h"
 
@@ -19,14 +20,24 @@
 extern "C" {
 #endif
 
-#ifdef SMOL_USE_ALLOCA
-# define _SMOL_ALLOC(n) alloca (n)
-# define _SMOL_FREE(p)
-#else
-# define _SMOL_ALLOC(n) malloc (n)
-# define _SMOL_FREE(p) free (p)
-#endif
+// #ifdef SMOL_USE_ALLOCA
+// # define _SMOL_ALLOC(n) alloca (n)
+// # define _SMOL_FREE(p)
+// #else
+// # define _SMOL_ALLOC(n) malloc (n)
+// # define _SMOL_FREE(p) free (p)
+// #endif
 
+// R's R_Calloc is 8-byte aligned
+static inline void *R_calloc2(size_t n){
+  char *tmp = R_Calloc(n, char); // 64 bit aligned
+  memset(tmp, 0, n);
+  return (void*) tmp;
+}
+  
+# define _SMOL_ALLOC(n) R_calloc2 (n)
+# define _SMOL_FREE(p) R_Free (p)
+  
 /* Enum switches must handle every value */
 #ifdef __GNUC__
 # pragma GCC diagnostic error "-Wswitch"
@@ -84,7 +95,9 @@ typedef unsigned int SmolBool;
 /* Pointer to beginning of storage is stored in *r. This must be passed to smol_free() later. */
 #define smol_alloc_aligned_to(s, a, r) \
   ({ void *p; *(r) = _SMOL_ALLOC ((s) + (a)); p = (void *) (((uintptr_t) (*(r)) + (a)) & ~((a) - 1)); (p); })
-#define smol_alloc_aligned(s, r) smol_alloc_aligned_to ((s), SMOL_ALIGNMENT, (r))
+// #define smol_alloc_aligned(s, r) smol_alloc_aligned_to ((s), SMOL_ALIGNMENT, (r))
+#define smol_alloc_aligned(s, r) R_calloc2((s))
+
 #define smol_free(p) _SMOL_FREE(p)
 
 typedef enum

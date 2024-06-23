@@ -61,12 +61,14 @@ if (FALSE) {
   
   l1 <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   l2 <- nr_duplicate(l1)
-  nr_swizzle(l2, target_order = 'BGRA') |> bench::mark()
+  # nr_swizzle(l2, target_order = 'BGRA') |> bench::mark()
+  nr_swizzle(l2, target_order = 'BGRA') 
   plot(l2, T)
   
   l3 <- nr_duplicate(l1)
   cr <- init_cairo(l3)
-  naracairo::begin_cairo(cr) |> bench::mark()
+  # naracairo::begin_cairo(cr) |> bench::mark()
+  naracairo::begin_cairo(cr) 
   plot(l3, T)
     
 }

@@ -531,6 +531,7 @@ do_rows (const SmolScaleCtx *scale_ctx,
             smol_alloc_aligned (MAX (scale_ctx->width_in, scale_ctx->width_out)
                                 * n_parts_per_pixel * sizeof (uint64_t),
                                 &vertical_ctx.row_storage [i]);
+        vertical_ctx.row_storage [i] = vertical_ctx.parts_row [i];
     }
 
     for (i = row_out_index; i < row_out_index + n_rows; i++)
@@ -868,6 +869,7 @@ smol_scale_init (SmolScaleCtx *scale_ctx,
     scale_ctx->precalc_x = smol_alloc_aligned (((scale_ctx->width_bilin_out + 1) * 2
                                                 + (scale_ctx->height_bilin_out + 1) * 2) * sizeof (uint16_t),
                                                &scale_ctx->precalc_x_storage);
+    scale_ctx->precalc_x_storage = scale_ctx->precalc_x; 
     scale_ctx->precalc_y = scale_ctx->precalc_x + (scale_ctx->width_bilin_out + 1) * 2;
 
     get_implementations (scale_ctx);
