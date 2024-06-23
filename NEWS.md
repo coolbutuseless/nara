@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9016 2024-06-22
+# nara 0.1.1.9017 2024-06-23
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -36,7 +36,7 @@
 * `hjust` and `vjust` added for 
     * `nr_blit()`
     * `nr_rect()`
-* added `nr_blit_list()`
+* added `nr_blit_list()` and `nr_blit_grid()`.
 
 # nara 0.1.1 2022-07-30
 

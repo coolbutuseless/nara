@@ -50,8 +50,7 @@ nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = -1L, h = -1L, hjust = 0
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' src_list <- list(nr_new(10, 10, 'hotpink'), nr_new(10, 10, 'blue'))
-#' nr_blit_list(nr, x = c(0, 25), y = c(0, 25), src_list = src_list, src_idx = c(1, 2))
+#' nr_blit_list(nr, x = c(0, 25), y = c(0, 25), src_list = deer_sprites, src_idx = c(1, 2))
 #' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,63 +61,31 @@ nr_blit_list <- function(nr, x, y, src_list, src_idx, hjust = 0, vjust = 0, resp
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Blit2
-#' 
-#' @inheritParams nr_blit
-#' @param loc N x 4 matrix of multiple sprite locations within the \code{src}
-#'        spritesheet
-#' @param idx integer vector of rows within the \code{locs} matrix to use
-#'
-#' @return \code{nativeRaster}
-#' 
-#' @noRd
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit2 <- function(nr, x, y, src, loc, idx = 1L, hjust = 0, vjust = 0, respect_alpha = TRUE) {
-  
-  if (!length(idx) %in% c(1, length(x))) {
-    stop("R limitation. idx not currently recycled. Fix for 'C' implementation")
-  }
-  
-  if (any(idx > nrow(loc))) {
-    stop("Some idx out of bound: ", deparse1(idx))
-  }
-  
-  if (length(idx) != length(x)) {
-    idx <- rep(idx, length(x))
-  }
-  
-  for (i in seq_along(idx)) {
-    row <- idx[i]
-    invisible(.Call(blit_, 
-                    nr, x = x[i], y = y[i], 
-                    src = src, 
-                    x = loc[row, 1L], y = loc[row, 2L], w = loc[row, 3L], h = loc[row, 4L], 
-                    hjust = hjust, vjust = vjust,
-                    respect_alpha = respect_alpha))
-  }
-}
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Blit4
 #' 
-#' @inheritParams nr_blit2
-#' @param idx_mat integer matrix of indices into \code{loc}
+#' @inheritParams nr_blit_list
+#' @param idx_mat integer matrix of indices into \code{src_list}
 #' @param width,height tile width/height (constant across all tiles)
 #' 
 #' @return Original \code{nativeRaster} modified in-place
+#' @examples
+#' nr <- nr_new(100, 100, 'grey80')
+#' idx_mat <- matrix(c(
+#'   1, 2, 3,
+#'   4, 5, 6,
+#'   7, 8, 9
+#' ), 3, 3, byrow = TRUE)
+#' nr_blit_grid(nr, 0, 0, src_list = deer_sprites, idx_mat = idx_mat, width = 32, height = 32)
 #' 
-#' 
-#' @noRd 
+#' @export 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, hjust = 0, vjust = 0, respect_alpha = TRUE) {
+nr_blit_grid <- function(nr, x, y, src_list, idx_mat, width, height, hjust = 0, vjust = 0, respect_alpha = TRUE) {
   
   if (length(x) != 1 || length(y) != 1) {
     stop("only allow length 1 for x and y")
   }
   
-  if (max(idx_mat, na.rm = TRUE) > nrow(loc)) {
+  if (max(idx_mat, na.rm = TRUE) > length(src_list)) {
     stop("loc idx is out of bounds")
   }
   
@@ -128,7 +95,7 @@ nr_blit3 <- function(nr, x, y, src, loc, idx_mat, width, height, hjust = 0, vjus
   yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
   
   invisible(
-    nr_blit2(nr, x = x + xoff, y = y + yoff, src = src, loc = loc, idx = as.vector(idx_mat), 
+    nr_blit_list(nr, x = x + xoff, y = y + yoff, src_list = src_list, src_idx = as.vector(idx_mat), 
              hjust = hjust, vjust = vjust, respect_alpha = respect_alpha)
   )
 }
@@ -141,6 +108,14 @@ if (FALSE) {
   
   logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   
+  nr <- nr_new(100, 100, 'grey80')
+  idx_mat <- matrix(c(
+    1, 2, 3,
+    4, 5, 6,
+    7, 8, 9
+  ), 3, 3, byrow = TRUE)
+  nr_blit_grid(nr, 0, 0, src_list = deer_sprites, idx_mat = idx_mat, width = 32, height = 32)
+  plot(nr, T)
   
 }
 
