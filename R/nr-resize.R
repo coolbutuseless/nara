@@ -52,7 +52,7 @@ if (FALSE) {
   
   library(magick)
   im <- nr_to_magick(logo)
-  image_resize(im, geometry = geometry_size_pixels(200, 50, preserve_aspect = FALSE))  |> bench::mark()
+  image_resize(im, geometry = geometry_size_pixels(1600, 500, preserve_aspect = FALSE))  |> bench::mark()
   
   
   library(nara)

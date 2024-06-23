@@ -279,13 +279,13 @@ unpremul_p8l_to_ul_128bpp (const uint64_t *in,
                >> INVERTED_DIV_SHIFT_P8L) & 0x000007ff000007ff;
 }
 
-static SMOL_INLINE void
-premul_u_to_p16_128bpp (uint64_t *inout,
-                        uint8_t alpha)
-{
-    inout [0] = inout [0] * alpha;
-    inout [1] = inout [1] * alpha;
-}
+// static SMOL_INLINE void
+// premul_u_to_p16_128bpp (uint64_t *inout,
+//                         uint8_t alpha)
+// {
+//     inout [0] = inout [0] * alpha;
+//     inout [1] = inout [1] * alpha;
+// }
 
 static SMOL_INLINE void
 unpremul_p16_to_u_128bpp (const uint64_t * SMOL_RESTRICT in,
@@ -298,13 +298,13 @@ unpremul_p16_to_u_128bpp (const uint64_t * SMOL_RESTRICT in,
                >> INVERTED_DIV_SHIFT_P16) & 0x000000ff000000ffULL;
 }
 
-static SMOL_INLINE void
-premul_ul_to_p16l_128bpp (uint64_t *inout,
-                          uint8_t alpha)
-{
-    inout [0] = inout [0] * alpha;
-    inout [1] = inout [1] * alpha;
-}
+// static SMOL_INLINE void
+// premul_ul_to_p16l_128bpp (uint64_t *inout,
+//                           uint8_t alpha)
+// {
+//     inout [0] = inout [0] * alpha;
+//     inout [1] = inout [1] * alpha;
+// }
 
 static SMOL_INLINE void
 unpremul_p16l_to_ul_128bpp (const uint64_t * SMOL_RESTRICT in,
@@ -2425,10 +2425,10 @@ static const SmolImplementation implementation =
     {
         /* Horizontal filters */
         {
-            /* 24bpp */
+            NULL /* 24bpp */
         },
         {
-            /* 32bpp */
+            NULL /* 32bpp */
         },
         {
             /* 64bpp */
@@ -2460,10 +2460,10 @@ static const SmolImplementation implementation =
     {
         /* Vertical filters */
         {
-            /* 24bpp */
+            NULL /* 24bpp */
         },
         {
-            /* 32bpp */
+            NULL /* 32bpp */
         },
         {
             /* 64bpp */
