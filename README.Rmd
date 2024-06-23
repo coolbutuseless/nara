@@ -252,6 +252,25 @@ for (i in -30:110) {
 }
 ```
 
+
+```{r echo = FALSE, eval = FALSE}
+nr <- nr_new(100, 32, 'grey80')
+
+frames <- vector('list', 141)
+
+for (idx in seq(141)) {
+  i <- (-30:110)[idx]
+  nr_fill(nr, 'grey80')                    
+  sprite_idx <- floor((i/3) %% 5) + 11
+  nr_blit_list(nr, i, 0, deer_sprites, sprite_idx) # copy deer to nativeRaster
+  frames[[idx]] <- nr_scale(nr, 8)
+}
+
+nrs_to_gif(frames, "man/figures/deer.gif")
+```
+
+
+
 #### Live screen recording
 
 <img src="man/figures/deer.gif" />
@@ -316,6 +335,54 @@ for (frame in 1:1000) {
   Sys.sleep(0.03)
 }
 ```
+
+
+```{r eval=FALSE, echo=FALSE}
+set.seed(1)
+library(grid)
+
+# Number of sprites
+N <- 100
+
+# Canvas size
+w <- 400 
+h <- 300 
+
+# location and movement vector of all the sprites
+x  <- sample(w, N, replace = TRUE)
+y  <- sample(h, N, replace = TRUE)
+vx <- runif(N, 1, 5)
+
+
+# Create an empty nativeraster with a grey background
+nr <- nr_new(w, h, 'white')
+
+Nframes <- 90
+frames <- vector('list', Nframes)
+
+for (frame in seq(Nframes)) {
+  # Clear the nativeraster and blit in all the deer
+  nr_fill(nr, 'white') 
+  nr_blit_list(nr, x, y, deer_sprites, floor((frame/3) %% 5 + 11))
+  
+  frames[[frame]] <- nr_scale(nr, 2)
+  
+  # Update the position of each deer. 
+  # Position wraps around
+  x <- x + vx
+  x <- ifelse(x > w , -32, x)
+
+  # slight pause. Otherwise everything runs too fast!
+  Sys.sleep(0.03)
+}
+
+
+nrs_to_gif(frames, "man/figures/multiball.gif")
+```
+
+
+
+
 
 
 #### Live screen recording 

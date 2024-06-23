@@ -47,15 +47,16 @@ nr_to_magick <- function(nr) {
 #' @param nr_list list of nativeRasters
 #' @param gif_name name of mp4 file to save
 #' @param verbose logical. default FALSE
+#' @param framerate frames per second
 #' @param ... other arguments passed to \code{magick::image_write_gif()}
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, ...) {
+nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, framerate = 30, ...) {
   if (requireNamespace('magick', quietly = TRUE)) {
     nr_list <- lapply(nr_list, nr_to_magick)
     ims <- do.call(magick::image_join, nr_list)
-    magick::image_write_gif(ims, path = gif_name, progress = verbose, ...)
+    magick::image_write_gif(ims, path = gif_name, progress = verbose, delay = 1/framerate, ...)
   } else {
     stop("need to install {magick}")
   }

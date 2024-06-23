@@ -217,10 +217,13 @@ nr_scale <- function(nr, scale) {
   }
   
   m <- matrix(1L, scale, scale)
-  res <- base::kronecker(nr, m)
+  mat <- as.matrix(nr)
+  dim(mat) <- rev(dim(mat))
+  res <- base::kronecker(mat, m)
   mode(res) <- 'integer'
   
   class(res) <- 'nativeRaster'
+  dim(res) <- rev(dim(res))
   res
 }
 
@@ -229,11 +232,24 @@ nr_scale <- function(nr, scale) {
 
 if (FALSE) {
   
-  nr <- nr_new(400, 400, 'hotpink')
-  nr2 <- nr_crop(nr, 0, 0, 10, 10)
-  dim(nr2)
-  plot(nr2)
+  
+  logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  plot(logo, T)
+
+  big <- nr_scale(logo, 2)
+  plot(big, T)
+  
+  
+  nr <- nr_new(3, 2, 'white')
+  nr_point(nr, c(0, 1, 2, 0, 1, 2), c(0, 0, 0, 1, 1, 1), c('red', 'blue', 'green', 'black', 'hotpink', 'grey50'))
+  plot(nr, T)
+  
+  big <- nr_scale(nr, 2)
+  plot(big, T)
   
   
   
+  
+  
+    
 }

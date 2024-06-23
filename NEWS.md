@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9017 2024-06-23
+# nara 0.1.1.9018 2024-06-23
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -37,6 +37,7 @@
     * `nr_blit()`
     * `nr_rect()`
 * added `nr_blit_list()` and `nr_blit_grid()`.
+* fix transpose bug in `nr_scale()`
 
 # nara 0.1.1 2022-07-30
 
