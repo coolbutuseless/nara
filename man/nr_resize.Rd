@@ -18,7 +18,6 @@ new nativeraster
 Resize with interpolation
 }
 \examples{
-nr <- nr_new(100, 100)
-nr2 <- nr_resize(nr, 200, 10)
-plot(nr2, TRUE)
+stretched_deer <- nr_resize(deer_sprites[[1]], 200, 32)
+plot(stretched_deer, TRUE)
 }

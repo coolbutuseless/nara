@@ -77,13 +77,14 @@ SEXP resize_(SEXP nr_, SEXP out_width_, SEXP out_height_) {
     SMOL_PIXEL_RGBA8_UNASSOCIATED,
     (uint32_t)width,
     (uint32_t)height,
-    (uint32_t)width,
+    (uint32_t)width * 4,
     (void *)INTEGER(dst_),
     SMOL_PIXEL_RGBA8_UNASSOCIATED,
     (uint32_t)out_width,
     (uint32_t)out_height,
-    (uint32_t)out_width,
+    (uint32_t)out_width * 4,
     SMOL_GAMMA_SRGB_COMPRESSED
+    // SMOL_GAMMA_SRGB_LINEAR
   );
   
   
