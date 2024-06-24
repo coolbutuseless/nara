@@ -36,7 +36,7 @@
     * `nr_blit()`
     * `nr_rect()`
 * added `nr_blit_list()` and `nr_blit_grid()`.
-* added `nr_resize_nn()` and `nr_resize_bilinear()`
+* added `nr_resize_nn()` and `nr_resize_bilinear()`. `nr_scale()` is now a wrapper around `nr_resize_nn()`
 
 # nara 0.1.1 2022-07-30
 
