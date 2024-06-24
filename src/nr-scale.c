@@ -41,8 +41,8 @@ SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *src_col = malloc(out_width  * sizeof(int));
-  int *src_row = malloc(out_height * sizeof(int));
+  int *src_col = malloc((unsigned long)out_width  * sizeof(int));
+  int *src_row = malloc((unsigned long)out_height * sizeof(int));
   
   for (int i = 0; i < out_width; i++) {
     src_col[i] = (int)floor(i * in_width / out_width);
@@ -97,10 +97,10 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
     const uint8_t s3 = (second >> 24) & 0xFF;
     
     uint32_t val = 
-      (f0 + (uint8_t)(frac * (s0 - f0))) <<  0 |
-      (f1 + (uint8_t)(frac * (s1 - f1))) <<  8 |
-      (f2 + (uint8_t)(frac * (s2 - f2))) << 16 |
-      (f3 + (uint8_t)(frac * (s3 - f3))) << 24;
+      (uint32_t)((1 - frac) * f0 + frac * s0) <<  0 |
+      (uint32_t)((1 - frac) * f1 + frac * s1) <<  8 |
+      (uint32_t)((1 - frac) * f2 + frac * s2) << 16 |
+      (uint32_t)((1 - frac) * f3 + frac * s3) << 24;
     
     return val;    
 }
@@ -120,9 +120,11 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void lerp_row(uint32_t *in_row, uint32_t *out_row, int out_width, int *left_col, float *frac_col) {
   
-  for (int i = 0; i < out_width; i++) {
+  int i = 0;
+  for (i = 0; i < out_width - 1; i++) {
     out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 1], frac_col[i]);
   }
+  out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 0], frac_col[i]);
   
 }
 
@@ -156,11 +158,11 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *left_col  = malloc(out_width  * sizeof(int));
-  int *upper_row = malloc(out_height * sizeof(int));
+  int *left_col  = malloc((unsigned long)out_width  * sizeof(int));
+  int *upper_row = malloc((unsigned long)out_height * sizeof(int));
   
-  float *frac_col = malloc(out_width  * sizeof(float));
-  float *frac_row = malloc(out_height * sizeof(float));
+  float *frac_col = malloc((unsigned long)out_width  * sizeof(float));
+  float *frac_row = malloc((unsigned long)out_height * sizeof(float));
   
   if (left_col == NULL || upper_row == NULL || frac_col == NULL || frac_row == NULL) {
     error("resize_bilinear_(): Memory allocation error");
@@ -169,13 +171,13 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   for (int i = 0; i < out_width; i++) {
     float col = (float)i * (float)in_width / (float)(out_width + 0);
     left_col[i] = (int)floor(col);
-    frac_col[i] = col - floor(col);
+    frac_col[i] = col - (float)floor(col);
   }
   
   for (int i = 0; i < out_height; i++) {
     float row = (float)i * (float)in_height/ (float)(out_height + 0);
     upper_row[i] = (int)floor(row);
-    frac_row[i]  = row - floor(row);
+    frac_row[i]  = row - (float)floor(row);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -184,8 +186,8 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   uint32_t *dst = (uint32_t *)INTEGER(dst_);
   uint32_t *src = (uint32_t *)INTEGER(nr_);
   
-  uint32_t *upper_row_cache = malloc(out_width * sizeof(uint32_t));
-  uint32_t *lower_row_cache = malloc(out_width * sizeof(uint32_t));
+  uint32_t *upper_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
+  uint32_t *lower_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
   if (lower_row_cache == NULL || upper_row_cache == NULL) {
     error("resize_bilinear_(): Memory allocation error for row cache");
   }
@@ -210,11 +212,11 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
       if (in_idx == in_height - 1) {
         // If this is the last row, ensure we don't go out of bounds
         // Make upper_row_cache and lower_row_cache point to the same row in the source
-        memcpy(upper_row_cache, lower_row_cache, out_width * sizeof(uint32_t));
+        memcpy(upper_row_cache, lower_row_cache, (unsigned long)out_width * sizeof(uint32_t));
       } else  if (in_idx == prior_in_idx + 1) {
         // Copy the lower row cache into the upper row cache and 
         // calculate a new lower_row_cache
-        memcpy(upper_row_cache, lower_row_cache, out_width * sizeof(uint32_t));
+        memcpy(upper_row_cache, lower_row_cache, (unsigned long)out_width * sizeof(uint32_t));
         lerp_row(src + (in_idx + 1) * in_width, lower_row_cache, out_width, left_col, frac_col);
       } else {
         // Recalculate new upper/lower row caches
