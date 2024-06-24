@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9018 2024-06-23
+# nara 0.1.1.9019 2024-06-24
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -13,7 +13,6 @@
     * `nr_flipv()`
     * `nr_fliph()`
     * `matrix_to_nr()`
-    * `nr_scale()`
 * Refactored color conversion routines. 
 * Fast conversions in C
     * `array_to_nr()`
@@ -37,7 +36,7 @@
     * `nr_blit()`
     * `nr_rect()`
 * added `nr_blit_list()` and `nr_blit_grid()`.
-* fix transpose bug in `nr_scale()`
+* added `nr_resize_nn()` and `nr_resize_bilinear()`
 
 # nara 0.1.1 2022-07-30
 

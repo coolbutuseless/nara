@@ -13,6 +13,9 @@ extern SEXP flipv_(SEXP nr_);
 extern SEXP fliph_(SEXP nr_);
 extern SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
 
+extern SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_);
+extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +64,9 @@ static const R_CallMethodDef CEntries[] = {
   {"flipv_"    , (DL_FUNC) &flipv_    , 1},
   {"fliph_"    , (DL_FUNC) &fliph_    , 1},
   {"replace_"  , (DL_FUNC) &replace_  , 3},
+  
+  {"resize_bilinear_", (DL_FUNC) &resize_bilinear_  , 3},
+  {"resize_nn_"      , (DL_FUNC) &resize_nn_        , 3},
   
   {"blit_"     , (DL_FUNC) &blit_     , 11},
   {"blit_list_", (DL_FUNC) &blit_list_,  8},

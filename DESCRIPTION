@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9018
+Version: 0.1.1.9019
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
     )
