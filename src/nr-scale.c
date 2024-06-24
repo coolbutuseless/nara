@@ -118,13 +118,16 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
 //
 // @return nothing.  out_row should be populated with interpolated pixels
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void lerp_row(uint32_t *in_row, uint32_t *out_row, int out_width, int *left_col, float *frac_col) {
+void lerp_row(uint32_t *in_row, int in_width, uint32_t *out_row, int out_width, int *left_col, float *frac_col) {
   
   int i = 0;
-  for (i = 0; i < out_width - 1; i++) {
-    out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 1], frac_col[i]);
+  for (i = 0; i < out_width; i++) {
+    if (left_col[i] == in_width - 1) {
+      out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 0], frac_col[i]);
+    } else {
+      out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 1], frac_col[i]);
+    }
   }
-  out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 0], frac_col[i]);
   
 }
 
@@ -195,8 +198,8 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prime the row caches
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  lerp_row(src + (upper_row[0] + 0) * in_width, upper_row_cache, out_width, left_col, frac_col);
-  lerp_row(src + (upper_row[0] + 1) * in_width, lower_row_cache, out_width, left_col, frac_col);
+  lerp_row(src + (upper_row[0] + 0) * in_width, in_width, upper_row_cache, out_width, left_col, frac_col);
+  lerp_row(src + (upper_row[0] + 1) * in_width, in_width, lower_row_cache, out_width, left_col, frac_col);
   int prior_in_idx = upper_row[0];
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,11 +220,11 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
         // Copy the lower row cache into the upper row cache and 
         // calculate a new lower_row_cache
         memcpy(upper_row_cache, lower_row_cache, (unsigned long)out_width * sizeof(uint32_t));
-        lerp_row(src + (in_idx + 1) * in_width, lower_row_cache, out_width, left_col, frac_col);
+        lerp_row(src + (in_idx + 1) * in_width, in_width, lower_row_cache, out_width, left_col, frac_col);
       } else {
         // Recalculate new upper/lower row caches
-        lerp_row(src + (in_idx + 0) * in_width, upper_row_cache, out_width, left_col, frac_col);
-        lerp_row(src + (in_idx + 1) * in_width, lower_row_cache, out_width, left_col, frac_col);
+        lerp_row(src + (in_idx + 0) * in_width, in_width, upper_row_cache, out_width, left_col, frac_col);
+        lerp_row(src + (in_idx + 1) * in_width, in_width, lower_row_cache, out_width, left_col, frac_col);
       }
     }
     for (int x = 0; x < out_width; x++) {
