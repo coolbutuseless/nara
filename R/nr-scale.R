@@ -74,10 +74,17 @@ if (FALSE) {
   nr_resize_bilinear(nr, 300, 150) |> plot(T)
   
   
-  nr_resize_nn      (nr, 300, 150) |> plot()
-  nr_resize_bilinear(nr, 300, 150) |> plot()
+  nr_resize_nn      (nr, 300, 150) |> plot(T)
+  nr_resize_bilinear(nr, 300, 150) |> plot(T)
   
   
+  nr_resize_bilinear(nr, 800, 800) |> plot(T)
+  nr_resize_bilinear(nr, 800, 800) |> bench::mark()
+  library(narascale)
+  nr_resize(nr, 800, 800) |> plot(T)
+  nr_resize(nr, 800, 800) |> bench::mark()
+  
+    
   library(magick)
   # plot(nr, T)
   im <- nr_to_magick(nr)

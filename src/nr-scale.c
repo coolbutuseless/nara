@@ -82,10 +82,9 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
     // uint8_t *vp = (uint8_t *)&val;
     // uint8_t *fp = (uint8_t *)&first;
     // uint8_t *sp = (uint8_t *)&second;
-    
     // for (int i = 0; i < 4; i++) {
     //   vp[i] = (uint8_t)((double)fp[i] + frac * (double)(sp[i] - fp[i]));
-    // }  
+    // }
     
     const uint8_t f0 = (first  >>  0) & 0xFF;
     const uint8_t f1 = (first  >>  8) & 0xFF;
@@ -95,12 +94,12 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
     const uint8_t s1 = (second >>  8) & 0xFF;
     const uint8_t s2 = (second >> 16) & 0xFF;
     const uint8_t s3 = (second >> 24) & 0xFF;
-    
-    uint32_t val = 
-      (uint32_t)((1 - frac) * f0 + frac * s0) <<  0 |
-      (uint32_t)((1 - frac) * f1 + frac * s1) <<  8 |
-      (uint32_t)((1 - frac) * f2 + frac * s2) << 16 |
-      (uint32_t)((1 - frac) * f3 + frac * s3) << 24;
+
+    uint32_t val =
+      (uint32_t)(f0 + frac * (s0 - f0)) <<  0 |
+      (uint32_t)(f1 + frac * (s1 - f1)) <<  8 |
+      (uint32_t)(f2 + frac * (s2 - f2)) << 16 |
+      (uint32_t)(f3 + frac * (s3 - f3)) << 24;
     
     return val;    
 }
@@ -120,13 +119,9 @@ uint32_t lerp(uint32_t first, uint32_t second, float frac) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void lerp_row(uint32_t *in_row, int in_width, uint32_t *out_row, int out_width, int *left_col, float *frac_col) {
   
-  int i = 0;
-  for (i = 0; i < out_width; i++) {
-    if (left_col[i] == in_width - 1) {
-      out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 0], frac_col[i]);
-    } else {
-      out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 1], frac_col[i]);
-    }
+  for (int i = 0; i < out_width; i++) {
+    // Rprintf(">>>> %i/%i [%.3f]\n", left_col[i], in_width, frac_col[i]);
+    out_row[i] = lerp(in_row[left_col[i]], in_row[left_col[i] + 1], frac_col[i]);
   }
   
 }
@@ -172,16 +167,28 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   }
   
   for (int i = 0; i < out_width; i++) {
-    float col = (float)i * (float)in_width / (float)(out_width + 0);
+    float col = (float)i * ((float)in_width - 1)/ (float)(out_width - 1);
     left_col[i] = (int)floor(col);
     frac_col[i] = col - (float)floor(col);
+    if (left_col[i] == in_width - 1) {
+      left_col[i] = in_width - 2;
+      frac_col[i] = 1;
+    }
   }
   
   for (int i = 0; i < out_height; i++) {
-    float row = (float)i * (float)in_height/ (float)(out_height + 0);
+    float row = (float)i * (float)(in_height - 1)/ (float)(out_height - 1);
     upper_row[i] = (int)floor(row);
     frac_row[i]  = row - (float)floor(row);
+    if (upper_row[i] == in_height - 1) {
+      upper_row[i] = in_height - 2;
+      frac_row[i] = 1;
+    }
   }
+  // Special case handling for last row in order to avoid a boundary check in 
+  // the innner lerp_row()
+  upper_row[out_height - 1] = in_height - 2;
+  frac_row [out_height - 1] = 1;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interpolate
@@ -212,11 +219,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
     
     if (in_idx != prior_in_idx) {
       // Upper row for interpolation has changed
-      if (in_idx == in_height - 1) {
-        // If this is the last row, ensure we don't go out of bounds
-        // Make upper_row_cache and lower_row_cache point to the same row in the source
-        memcpy(upper_row_cache, lower_row_cache, (unsigned long)out_width * sizeof(uint32_t));
-      } else  if (in_idx == prior_in_idx + 1) {
+      if (in_idx == prior_in_idx + 1) {
         // Copy the lower row cache into the upper row cache and 
         // calculate a new lower_row_cache
         memcpy(upper_row_cache, lower_row_cache, (unsigned long)out_width * sizeof(uint32_t));
