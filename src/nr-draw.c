@@ -547,6 +547,76 @@ void fill_polygon_c(uint32_t *nr, int height, int width, uint32_t color, int *x,
   free(nodeX);
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw polygon [C interface]
+// public domain code from
+// https://www.alienryderflex.com/polygon_fill/
+// not as efficient as something with an active edge table but it
+// get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
+  // int  nodes, pixelX, pixelY, i, j, swap ;
+  
+  int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
+  if (nodeX == NULL) {
+    error("fill_polygon_c(): memory allocation failed for 'nodeX'");
+  }
+  
+  int ymin = INT_MAX;
+  int ymax = INT_MIN;
+  for (int i = 0; i < npoints; i++) {
+    if (y[i] < ymin) {
+      ymin = y[i];
+    }
+    if (y[i] > ymax) {
+      ymax = y[i];
+    }
+  }
+  
+  //  Loop through the rows of the image.
+  for (int pixelY = 0; pixelY < height; pixelY++) {
+    
+    //  Build a list of nodes.
+    int nodes=0; 
+    int j = npoints - 1;
+    for (int i=0; i < npoints; i++) {
+      if (((y[i] < (double)pixelY) && (y[j] >= (double) pixelY)) ||  
+          ((y[j] < (double)pixelY) && (y[i] >= (double) pixelY))) {
+        nodeX[nodes++] = (int) (x[i] + (pixelY - y[i])/(double)(y[j] - y[i]) * (x[j] - x[i])); 
+      }
+      j = i; 
+    }
+    
+    //  Sort the nodes, via a simple “Bubble” sort.
+    int i = 0;
+    while (i < nodes - 1) {
+      if (nodeX[i] > nodeX[i + 1]) {
+        int swap     = nodeX[i]; 
+        nodeX[i]     = nodeX[i+1]; 
+        nodeX[i + 1] = swap; 
+        if (i) {
+          i--;
+        }
+      } else {
+        i++; 
+      }
+    }
+    
+    //  Fill the pixels between node pairs.
+    for (i = 0; i < nodes; i += 2) {
+      if (nodeX[i] >= width) break;
+      if (nodeX[i + 1] >  0 ) {
+        if (nodeX[i] < 0) nodeX[i] = 0;
+        if (nodeX[i + 1] >= width) nodeX[i + 1] = width - 1;
+        // for (pixelX=nodeX[i]; pixelX<nodeX[i+1]; pixelX++) fillPixel(pixelX,pixelY); }}} 
+        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], pixelY);
+      }
+    }
+  } // end for(pixelY)
+}
+
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
@@ -574,7 +644,7 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int *y = as_int32_vec(y_, N, &freey);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  fill_polygon_c(nr, height, width, fill, x, y, length(x_));
+  fill_polygon_c_new(nr, height, width, fill, x, y, length(x_));
   
   // outline
   if (!is_transparent(color)) {
