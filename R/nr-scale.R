@@ -6,94 +6,55 @@
 #' 
 #' @inheritParams nr_fill
 #' @param scale scale factor
+#' @param algo 'nn' for nearest neighbour (the default), or 'bilinear' for 
+#'        bilinear interpolation.
 #' 
 #' @return New \code{nativeRaster}
-#' 
 #' @examples
-#' nr1 <- nr_new(200, 100, 'white')
-#' nr2 <- nr_scale(nr1, 2)
-#' 
+#' big <- nr_scale(deer_sprites[[1]], 2)
+#' plot(big)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_scale <- function(nr, scale) {
-  nr_resize_nn(nr, scale * ncol(nr), scale * nrow(nr))
+nr_scale <- function(nr, scale, algo = 'nn') {
+  nr_resize(nr, width = scale * ncol(nr), height = scale * nrow(nr), algo = algo)
 }
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Scale a nativeRaster using nearest-neighbour interpolation
+#' Scale a nativeRaster 
 #' 
 #' @param nr native raster
+#' @param algo 'nn' for nearest neighbour (the default), or 'bilinear' for 
+#'        bilinear interpolation.
 #' @param width,height new dimensions
-#' @return new nativeRaster
+#' @return New \code{nativeRaster}
 #' @examples
-#' stretched <- nr_resize_nn(deer_sprites[[1]], 100, 40)
+#' stretched <- nr_resize(deer_sprites[[1]], 100, 40, algo = 'nn')
 #' plot(stretched)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_resize_nn <- function(nr, width, height) {
-  .Call(resize_nn_, nr, width, height)
-}
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Scale with bilinear interpolation
-#' 
-#' @param nr native raster
-#' @param width,height new dimensions
-#' @return new nativeRaster
-#' @examples
-#' stretched <- nr_resize_bilinear(deer_sprites[[1]], 100, 40)
-#' plot(stretched)
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_resize_bilinear <- function(nr, width, height) {
-  .Call(resize_bilinear_, nr, width, height)
+nr_resize <- function(nr, width, height, algo = 'nn') {
+  if (algo == 'nn') {
+    .Call(resize_nn_, nr, width, height)
+  } else {
+    .Call(resize_bilinear_, nr, width, height)
+  }
 }
 
 
 
 if (FALSE) {
 
-  
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  #  There's an off-by-one error in nr_resize_nn
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   nr <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)  
   dim(nr)
   
-  nr_scale     (nr, 7) |> plot(T)
-  nr_resize_nn      (nr, 7 * ncol(nr), 7 * nrow(nr)) |> plot(T)
+  nr_scale(nr, 7) |> plot(T)
+  nr_resize(nr, 7 * ncol(nr), 7 * nrow(nr)) |> plot(T)
   
-  nr_scale     (nr, 4) |> bench::mark()
-  nr_resize_nn      (nr, 4 * ncol(nr), 4 * nrow(nr)) |> bench::mark()
-  
-  
-  nr_resize_bilinear(nr, 300, 150) |> plot(T)
-  
-  
-  nr_resize_nn      (nr, 300, 150) |> plot(T)
-  nr_resize_bilinear(nr, 300, 150) |> plot(T)
-  
-  
-  nr_resize_bilinear(nr, 800, 800) |> plot(T)
-  nr_resize_bilinear(nr, 800, 800) |> bench::mark()
-  library(narascale)
-  nr_resize(nr, 800, 800) |> plot(T)
-  nr_resize(nr, 800, 800) |> bench::mark()
-  
-    
-  library(magick)
-  # plot(nr, T)
-  im <- nr_to_magick(nr)
-  im2 <- image_resize(im, geometry = geometry_size_pixels(300, 150, preserve_aspect = FALSE))
-  # image_resize(im, geometry = geometry_size_pixels(300, 150, preserve_aspect = FALSE)) |> bench::mark()
-  # im2  
-  nr2 <- magick_to_nr(im2)  
-  plot(nr2, T)  
-  
+  nr_scale (nr, 4) |> bench::mark()
+  nr_resize(nr, 4 * ncol(nr), 4 * nrow(nr)) |> bench::mark()
+  nr_resize(nr, 4 * ncol(nr), 4 * nrow(nr), algo = 'bilinear') |> bench::mark()
+
 }
 
 

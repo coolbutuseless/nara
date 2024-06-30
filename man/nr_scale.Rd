@@ -4,12 +4,15 @@
 \alias{nr_scale}
 \title{Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng}
 \usage{
-nr_scale(nr, scale)
+nr_scale(nr, scale, algo = "nn")
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
 \item{scale}{scale factor}
+
+\item{algo}{'nn' for nearest neighbour (the default), or 'bilinear' for 
+bilinear interpolation.}
 }
 \value{
 New \code{nativeRaster}
@@ -18,7 +21,6 @@ New \code{nativeRaster}
 Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng
 }
 \examples{
-nr1 <- nr_new(200, 100, 'white')
-nr2 <- nr_scale(nr1, 2)
-
+big <- nr_scale(deer_sprites[[1]], 2)
+plot(big)
 }

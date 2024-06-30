@@ -31,12 +31,13 @@ is_nativeraster <- function(x) {
 #' plot(nr)
 #' 
 #' @import grid
+#' @importFrom grDevices dev.flush dev.hold
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 plot.nativeRaster <- function(x, y, ...) {
   if (!missing(y)) grid::grid.newpage()
-  dev.hold()
+  grDevices::dev.hold()
   grid::grid.raster(x, interpolate = FALSE, ...)
-  dev.flush()
+  grDevices::dev.flush()
   invisible(x)
 }
