@@ -183,45 +183,31 @@ if (FALSE) {
   
   set.seed(1)
   N <- 400
-  nr <- nr_new(N, N)
+  nr <- nr_new(N, N, 'grey80')
   
   set.seed(1)
   x <- sample(400, N, T)
-  y <- sample(400, N, T)
+  y <- sample(200, N, T)
+  # x <- sample(400, 10, T)
+  # y <- sample( 20, 10, T)
   r <- sample(100, N, T)
   w <- sample(100, N, T)
   h <- sample(100, N, T)
   cols <- sample(colours(), N, T)
-  cols <- scales::alpha(cols, 0.5)
+  # cols <- scales::alpha(cols, 0.5)
   
-  bench::mark(
-    nr_circle(nr, x, y, r, cols)
-  )
-  # 165/sec <- naive opaque
-  # 1771    <- point squence opaque
-  # 473 <- translucent with sequence
-  # 673 with better alpha blend
-
-  bench::mark(
-    nr_rect(nr, x, y, w, h, cols)
-  )
-  # 750/sec  <- initial. naive. opqque
-  # 7059/sec <- add plot_sequeuncye. opaque
-  # 1804 <- translucent with sequence
-  # 2740  with better alpha blend
+  nr_polygon(nr, x, y, fill = 'black') 
+  if (FALSE) {
+    nr_polygon(nr, x, y, fill = 'black') |> bench::mark()
+  }
+  # unoptimised: 395 
+  # optimized 1000
   
   plot(nr, T)
   
 }
 
 
-if (FALSE) {
-  
-  nr <- nr_new(11, 11, 'grey80')
-  nr_circle(nr, 5, 5, r = 4)
-  plot(nr, T)
-  
-}
 
 
 

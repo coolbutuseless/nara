@@ -35,6 +35,8 @@ is_nativeraster <- function(x) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 plot.nativeRaster <- function(x, y, ...) {
   if (!missing(y)) grid::grid.newpage()
+  dev.hold()
   grid::grid.raster(x, interpolate = FALSE, ...)
+  dev.flush()
   invisible(x)
 }

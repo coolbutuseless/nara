@@ -470,82 +470,10 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) 
 }
 
 
-
-
-
-
-
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw polygon [C interface]
-// public domain code from
-// https://www.alienryderflex.com/polygon_fill/
-// not as efficient as something with an active edge table but it
-// get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_polygon_c(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
-  
-  int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
-  if (nodeX == NULL) {
-    error("nodeX alloc failure");
-  }
-  
-  for (int pixelY = 1; pixelY <= height; pixelY++) {
-    
-    //  Build a list of nodes.
-    int nodes = 0;
-    int j = npoints - 1;
-    for (int i=0; i<npoints; i++) {
-      if ( (y[i]< pixelY && y[j]>= pixelY) ||  (y[j] < pixelY && y[i] >= pixelY) ) {
-        nodeX[nodes++]=(int) (x[i] + (pixelY - y[i]) / (double)(y[j] - y[i]) * (x[j] - x[i]));
-      } else if (y[i] == pixelY && y[j] == pixelY) {
-        // If polygons aren't rendering correctly, this is where the issue is
-        // going to be.  There's an off-by-one error in how some horizontal
-        // lines are drawn, and I tried to fix it be adding this bit of code
-        // Mike.  2022-07-16
-        if (nodes == 0 || (nodeX[nodes-1] != x[i] && nodeX[nodes-1] != x[j])) {
-          // Rprintf("%i -  %i\n", x[i], x[j]);
-          nodeX[nodes++] = x[i];
-          nodeX[nodes++] = x[j];
-        }
-      }
-      j=i;
-    }
-    
-    // Rprintf("Nodes: %i\n", nodes);
-    
-    //  Sort the nodes, via a simple “Bubble” sort.
-    int i = 0;
-    while (i < nodes - 1) {
-      if (nodeX[i] > nodeX[i+1]) {
-        int swap=nodeX[i];
-        nodeX[i]=nodeX[i+1];
-        nodeX[i+1]=swap;
-        if (i) i--;
-      } else {
-        i++;
-      }
-    }
-    
-    // Rprintf("Y: %i,  node: %i - %i \n", pixelY, nodeX[0], nodeX[1]);
-    
-    //  Fill the pixels between node pairs.
-    for (i=0; i<nodes; i+=2) {
-      if   (nodeX[i  ] > width) break;
-      if   (nodeX[i+1] >= 1 ) {
-        if (nodeX[i  ] <  1 ) nodeX[i  ] = 1 ;
-        if (nodeX[i+1]> width+1) nodeX[i+1]=width+1;
-        // void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
-        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], pixelY);
-        // for (int pixelX = nodeX[i]; pixelX <= nodeX[i+1]; pixelX++) {
-          // draw_point_c(nr, height, width,  color, pixelX, pixelY);
-        // }
-      }
-    }
-  }
-  free(nodeX);
+static int scanline_sort_x(const void *a, const void *b) {
+  return *(int *)a - *(int *)b;
 }
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw polygon [C interface]
@@ -555,13 +483,19 @@ void fill_polygon_c(uint32_t *nr, int height, int width, uint32_t color, int *x,
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
-  // int  nodes, pixelX, pixelY, i, j, swap ;
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Pairs of values in 'nodeX' will have points drawn between them on 
+  // a scanline
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
   if (nodeX == NULL) {
     error("fill_polygon_c(): memory allocation failed for 'nodeX'");
   }
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Find vertical extents of all the polygons
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int ymin = INT_MAX;
   int ymax = INT_MIN;
   for (int i = 0; i < npoints; i++) {
@@ -573,46 +507,79 @@ void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int
     }
   }
   
-  //  Loop through the rows of the image.
-  for (int pixelY = 0; pixelY < height; pixelY++) {
-    
-    //  Build a list of nodes.
-    int nodes=0; 
-    int j = npoints - 1;
+  if (ymin < 0) ymin = 0;
+  if (ymax >= height) ymax = height - 1;
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Precalc the gradient
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  double *m = (double *)malloc((size_t)npoints * sizeof(double));
+  if (m == NULL) {
+    error("fill_polygon_c(): memory allocation failed for 'm'");
+  }
+  
+  {
+    int j = npoints - 1; // last point
     for (int i=0; i < npoints; i++) {
-      if (((y[i] < (double)pixelY) && (y[j] >= (double) pixelY)) ||  
-          ((y[j] < (double)pixelY) && (y[i] >= (double) pixelY))) {
-        nodeX[nodes++] = (int) (x[i] + (pixelY - y[i])/(double)(y[j] - y[i]) * (x[j] - x[i])); 
+      m[i] = (double)(x[j] - x[i]) / (double)(y[j] - y[i]); 
+      j = i; 
+    }
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Loop through all the scanlines in the image which contain polygons
+  // This would be faster if this used an Active Edge List
+  // i.e. 
+  //   - Sort lines by starting y, 
+  //   - ignore lines when scanline < ystart
+  //   - when scanline = ystart add to list of active edges
+  //   - loop to find possible lines which intersect scanline runs faster
+  //   - when scanline > yend, remove line from active edge list
+  //
+  // i.e. an active edge list would limit the search space for matching lines
+  //      to just those lines which actually cross the scanline, so the 
+  //      for loop would no longer be going through all 'npoints' to find intersects
+  //
+  // Further: no need to calculate 'nodeX' at each scanline.
+  //   nodeX at scanline + 1 = nodeX at scaneline + 'm'
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  for (int scanline = ymin; scanline <= ymax; scanline++) {
+    
+    //  Build a list of nodes whose line crosses the scanline
+    int nodes = 0; 
+    int j = npoints - 1; // last point
+    for (int i=0; i < npoints; i++) {
+      if (((y[i] < scanline) && (y[j] >= scanline)) ||  
+          ((y[j] < scanline) && (y[i] >= scanline))) {
+        nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
       }
       j = i; 
     }
     
-    //  Sort the nodes, via a simple “Bubble” sort.
-    int i = 0;
-    while (i < nodes - 1) {
-      if (nodeX[i] > nodeX[i + 1]) {
-        int swap     = nodeX[i]; 
-        nodeX[i]     = nodeX[i+1]; 
-        nodeX[i + 1] = swap; 
-        if (i) {
-          i--;
-        }
-      } else {
-        i++; 
-      }
-    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Sort the x-coordinates along the scanline
+    // void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    qsort(nodeX, nodes, sizeof(int), scanline_sort_x);
     
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Fill the pixels between node pairs.
-    for (i = 0; i < nodes; i += 2) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (int i = 0; i < nodes; i += 2) {
       if (nodeX[i] >= width) break;
       if (nodeX[i + 1] >  0 ) {
         if (nodeX[i] < 0) nodeX[i] = 0;
         if (nodeX[i + 1] >= width) nodeX[i + 1] = width - 1;
-        // for (pixelX=nodeX[i]; pixelX<nodeX[i+1]; pixelX++) fillPixel(pixelX,pixelY); }}} 
-        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], pixelY);
+        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], scanline);
       }
     }
-  } // end for(pixelY)
+  } // end for(scanline)
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Tidy
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  free(m);
+  free(nodeX);
 }
 
 

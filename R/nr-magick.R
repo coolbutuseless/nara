@@ -19,7 +19,15 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_to_nr <- function(im, dst = NULL) {
   if (requireNamespace('magick', quietly = TRUE)) {
-    .Call(magick_to_nr_, magick::image_data(im), dst)
+    # Force an alpha channel. Dodgy.
+    im <- magick::image_transparent(im, color = '#00000001') 
+    if (length(im) == 1) {
+      .Call(magick_to_nr_, magick::image_data(im), dst)
+    } else {
+      lapply(seq_along(im), function(i) {
+        .Call(magick_to_nr_, magick::image_data(im, frame = i), dst)
+      })
+    }
   } else {
     message("Please install the 'magick' package in order to use this function");
     NULL

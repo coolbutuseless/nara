@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9020 2024-06-26
+# nara 0.1.1.9021 2024-06-30
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -38,6 +38,7 @@
 * added `nr_blit_list()` and `nr_blit_grid()`.
 * added `nr_resize_nn()` and `nr_resize_bilinear()`. `nr_scale()` is now a wrapper around `nr_resize_nn()`
 * Fixed bug in polygon rendering
+* Parse image sequences from `magick` into nativeRaster
 
 # nara 0.1.1 2022-07-30
 
