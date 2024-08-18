@@ -426,6 +426,11 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) 
     int xm = xms[idx];
     int ym = yms[idx];
     int  r =  rs[idx];
+    
+    // Skip NAs
+    if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
+      continue;
+    }
 
     int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
     if (ydone == NULL) {

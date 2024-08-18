@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9021 2024-06-30
+# nara 0.1.1.9022 2024-08-18
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
