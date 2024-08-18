@@ -108,6 +108,7 @@ extern void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, in
 extern void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) ;
 extern void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
 extern void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color);
+extern void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
 
 void R_init_nara(DllInfo *info) {
   R_registerRoutines(
@@ -122,10 +123,11 @@ void R_init_nara(DllInfo *info) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Make the C code available to other packages
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  R_RegisterCCallable("nara", "nr_point" , (DL_FUNC) &draw_point_c);
-  R_RegisterCCallable("nara", "nr_line"  , (DL_FUNC) &draw_line_c);
-  R_RegisterCCallable("nara", "nr_hline" , (DL_FUNC) &draw_point_sequence_c);
-  R_RegisterCCallable("nara", "nr_circle", (DL_FUNC) &draw_circle_c);
+  R_RegisterCCallable("nara", "nr_point"  , (DL_FUNC) &draw_point_c);
+  R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &draw_line_c);
+  R_RegisterCCallable("nara", "nr_hline"  , (DL_FUNC) &draw_point_sequence_c);
+  R_RegisterCCallable("nara", "nr_circle" , (DL_FUNC) &draw_circle_c);
+  R_RegisterCCallable("nara", "nr_polygon", (DL_FUNC) &fill_polygon_c_new);
 }
 
 
