@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9022 2024-08-18
+# nara 0.1.1.9023 2024-08-18
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -39,6 +39,8 @@
 * added `nr_resize_nn()` and `nr_resize_bilinear()`. `nr_scale()` is now a wrapper around `nr_resize_nn()`
 * Fixed bug in polygon rendering
 * Parse image sequences from `magick` into nativeRaster
+* Export C functions for use in other packages via `LinkingTo`
+    * draw points
 
 # nara 0.1.1 2022-07-30
 

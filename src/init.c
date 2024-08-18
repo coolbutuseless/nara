@@ -97,6 +97,9 @@ static const R_CallMethodDef CEntries[] = {
 };
 
 
+// C funss for export via "LinkingTo"
+extern void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y);
+
 void R_init_nara(DllInfo *info) {
   R_registerRoutines(
     info,      // DllInfo
@@ -106,6 +109,11 @@ void R_init_nara(DllInfo *info) {
     NULL       // External
   );
   R_useDynamicSymbols(info, FALSE);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Make the C code available to other packages
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  R_RegisterCCallable("nara", "draw_point_c", (DL_FUNC) &draw_point_c);
 }
 
 
