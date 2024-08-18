@@ -395,6 +395,47 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
 }
 
 
+// void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
+void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
+  // Skip NAs
+  if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
+    return;
+  }
+  
+  int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
+  if (ydone == NULL) {
+    error("draw_circle_c(): error allocating 'ydone'");
+  }
+  
+  int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
+  do {
+    
+    if (!is_transparent(fill) && !ydone[y]) {
+      draw_point_sequence_c(nr, height, width, fill, xm + x, xm - x, ym + y);
+      if (y != 0) {
+        draw_point_sequence_c(nr, height, width, fill, xm + x, xm - x, ym - y);
+      }
+      ydone[y] = 1;
+    }
+    
+    if (!is_transparent(color)) {
+      draw_point_c(nr, height, width, color, xm-x, ym+y); /*   I. Quadrant */
+      draw_point_c(nr, height, width, color, xm+x, ym+y); /*  II. Quadrant */
+      if (y != 0) {
+        draw_point_c(nr, height, width, color, xm-x, ym-y); /* III. Quadrant */
+        draw_point_c(nr, height, width, color, xm+x, ym-y); /*  IV. Quadrant */
+      }
+    }
+    
+    r = err;
+    if (r <= y) err += ++y*2+1;           /* e_xy+e_y < 0 */
+    if (r > x || err > y) err += ++x*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
+  } while (x < 0);
+  
+  free(ydone);
+}
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Circle. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
