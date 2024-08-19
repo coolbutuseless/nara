@@ -17,15 +17,15 @@
 // @param color packed integer representing RGBA colour
 // @param x,y location of point
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static inline void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
-  static SEXP (*fun)(uint32_t *nr, int height, int width, uint32_t color, int x, int y) = NULL;
+static inline void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color) {
+  static SEXP (*fun)(uint32_t *nr, int height, int width, int x, int y, uint32_t color) = NULL;
   
   if (fun == NULL) {
     // void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y) 
-    fun = (SEXP (*)(uint32_t *nr, int height, int width, uint32_t color, int x, int y)) R_GetCCallable("nara", "nr_point");
+    fun = (SEXP (*)(uint32_t *nr, int height, int width, int x, int y, uint32_t color)) R_GetCCallable("nara", "nr_point");
   }
   
-  fun(nr, height, width, color, x, y);
+  fun(nr, height, width, x, y, color);
 }
 
 
@@ -36,14 +36,14 @@ static inline void nr_point(uint32_t *nr, int height, int width, uint32_t color,
 // @param color packed integer representing RGBA colour
 // @param x0,y0,x1,y1 locations of endpoints
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static inline void nr_line(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
-  static SEXP (*fun)(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) = NULL;
+static inline void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color) {
+  static SEXP (*fun)(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color) = NULL;
   
   if (fun == NULL) {
-    fun = (SEXP (*)(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1)) R_GetCCallable("nara", "nr_line");
+    fun = (SEXP (*)(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color)) R_GetCCallable("nara", "nr_line");
   }
   
-  fun(nr, height, width, color, x0, y0, x1, y1);
+  fun(nr, height, width, x0, y0, x1, y1, color);
 }
 
 
@@ -54,14 +54,14 @@ static inline void nr_line(uint32_t *nr, int height, int width, uint32_t color, 
 // @param color packed integer representing RGBA colour
 // @param x1,x2 inclusive endpoints
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static inline void nr_hline(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
-  static SEXP (*fun)(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) = NULL;
+static inline void nr_hline(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32_t color) {
+  static SEXP (*fun)(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32_t color) = NULL;
   
   if (fun == NULL) {
-    fun = (SEXP (*)(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y)) R_GetCCallable("nara", "nr_hline");
+    fun = (SEXP (*)(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32_t color)) R_GetCCallable("nara", "nr_hline");
   }
   
-  fun(nr, height, width, color, x1, x2, y);
+  fun(nr, height, width, x1, x2, y, color);
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,14 +96,14 @@ static inline void nr_circle(uint32_t *nr, int height, int width, int xm, int ym
 // @param x,y integer vectors of coordinates
 // @param npoints length of x and y vectors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-static inline void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
-  static SEXP (*fun)(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) = NULL;
+static inline void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints, uint32_t color) {
+  static SEXP (*fun)(uint32_t *nr, int height, int width, int *x, int *y, int npoints, uint32_t color) = NULL;
   
   if (fun == NULL) {
-    fun = (SEXP (*)(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints)) R_GetCCallable("nara", "nr_polygon");
+    fun = (SEXP (*)(uint32_t *nr, int height, int width, int *x, int *y, int npoints, uint32_t color)) R_GetCCallable("nara", "nr_polygon");
   }
   
-  fun(nr, height, width, color, x, y, npoints);
+  fun(nr, height, width, x, y, npoints, color);
 }
 
 

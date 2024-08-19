@@ -20,7 +20,7 @@
 // 
 // Coordinate origin is (0, 0) at top-left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
+void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
@@ -58,7 +58,7 @@ void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw a horizontal sequence of points from x1 to x2 INCLUSIVE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_hline(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
+void nr_hline(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32_t color) {
   
   if (is_transparent(color) || y < 0 || y >= height) {
     return;
@@ -133,7 +133,7 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
-    nr_point(nr, height, width, color[i], x[i], y[i]);
+    nr_point(nr, height, width, x[i], y[i], color[i]);
   }
 
   // free and return
@@ -151,14 +151,14 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_line(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
+void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
   int err = dx+dy, e2;                                  /* error value e_xy */
 
   for (;;) {                                                        /* loop */
-    nr_point(nr, height, width, color, x0, y0);
+    nr_point(nr, height, width, x0, y0, color);
 
     e2 = 2*err;
     if (e2 >= dy) {                                       /* e_xy+e_x > 0 */
@@ -198,7 +198,7 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
-    nr_line(nr, height, width, color[i], x0[i], y0[i], x1[i], y1[i]);
+    nr_line(nr, height, width, x0[i], y0[i], x1[i], y1[i], color[i]);
   }
 
   // free and return
@@ -239,12 +239,12 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
   
   // Draw lines between pairs of points
   for (int i = 0; i < N - 1; i++) {
-    nr_line(nr, height, width, color, x[i], y[i], x[i+1], y[i+1]);
+    nr_line(nr, height, width, x[i], y[i], x[i+1], y[i+1], color);
   }
 
   if (asInteger(close_)) {
     // Join last point and first point if requested
-    nr_line(nr, height, width, color, x[N - 1], y[N - 1], x[0], y[0]);
+    nr_line(nr, height, width, x[N - 1], y[N - 1], x[0], y[0], color);
   }
 
 
@@ -261,7 +261,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 // Draw Text [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
-SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_) {
+SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -312,7 +312,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          nr_point(nr, nr_height, nr_width, color, col + i + x, y - char_h + row);
+          nr_point(nr, nr_height, nr_width, col + i + x, y - char_h + row, color);
         }
       }
     }
@@ -366,21 +366,21 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
     if (!is_transparent(fill[i])) {
       if (is_transparent(color[i])) {
         for (int row = y; row < y + h; row++) {
-          nr_hline(nr, nr_height, nr_width, fill[i], x, x + w - 1, row);
+          nr_hline(nr, nr_height, nr_width, x, x + w - 1, row, fill[i]);
         }
       } else {
         for (int row = y + 1; row < y + h - 1; row++) {
-          nr_hline(nr, nr_height, nr_width, fill[i], x + 1, x + w - 1 - 1, row);
+          nr_hline(nr, nr_height, nr_width, x + 1, x + w - 1 - 1, row, fill[i]);
         }
       }
     }
     
     // Draw outline
     if (!is_transparent(color[i])) {
-      nr_line(nr, nr_height, nr_width, color[i], x    , y  , x+w-1, y);
-      nr_line(nr, nr_height, nr_width, color[i], x+w-1, y+1, x+w-1, y+h-1);
-      nr_line(nr, nr_height, nr_width, color[i], x+w-2, y+h-1, x+1, y+h-1);
-      nr_line(nr, nr_height, nr_width, color[i], x    , y+h-1, x  , y+1);
+      nr_line(nr, nr_height, nr_width, x    , y  , x+w-1, y    , color[i]);
+      nr_line(nr, nr_height, nr_width, x+w-1, y+1, x+w-1, y+h-1, color[i]);
+      nr_line(nr, nr_height, nr_width, x+w-2, y+h-1, x+1, y+h-1, color[i]);
+      nr_line(nr, nr_height, nr_width, x    , y+h-1, x  , y+1  , color[i]);
     }
   }
   
@@ -395,7 +395,7 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
 }
 
 
-// void nr_line(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
+
 void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
   // Skip NAs
   if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
@@ -411,19 +411,19 @@ void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint3
   do {
     
     if (!is_transparent(fill) && !ydone[y]) {
-      nr_hline(nr, height, width, fill, xm + x, xm - x, ym + y);
+      nr_hline(nr, height, width, xm + x, xm - x, ym + y, fill);
       if (y != 0) {
-        nr_hline(nr, height, width, fill, xm + x, xm - x, ym - y);
+        nr_hline(nr, height, width, xm + x, xm - x, ym - y, fill);
       }
       ydone[y] = 1;
     }
     
     if (!is_transparent(color)) {
-      nr_point(nr, height, width, color, xm-x, ym+y); /*   I. Quadrant */
-      nr_point(nr, height, width, color, xm+x, ym+y); /*  II. Quadrant */
+      nr_point(nr, height, width, xm-x, ym+y, color); /*   I. Quadrant */
+      nr_point(nr, height, width, xm+x, ym+y, color); /*  II. Quadrant */
       if (y != 0) {
-        nr_point(nr, height, width, color, xm-x, ym-y); /* III. Quadrant */
-        nr_point(nr, height, width, color, xm+x, ym-y); /*  IV. Quadrant */
+        nr_point(nr, height, width, xm-x, ym-y, color); /* III. Quadrant */
+        nr_point(nr, height, width, xm+x, ym-y, color); /*  IV. Quadrant */
       }
     }
     
@@ -482,19 +482,19 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
     do {
       
       if (!is_transparent(fill[idx]) && !ydone[y]) {
-        nr_hline(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym + y);
+        nr_hline(nr, nr_height, nr_width, xm + x, xm - x, ym + y, fill[idx]);
         if (y != 0) {
-          nr_hline(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym - y);
+          nr_hline(nr, nr_height, nr_width, xm + x, xm - x, ym - y, fill[idx]);
         }
         ydone[y] = 1;
       }
       
       if (!is_transparent(color[idx])) {
-        nr_point(nr, nr_height, nr_width, color[idx], xm-x, ym+y); /*   I. Quadrant */
-        nr_point(nr, nr_height, nr_width, color[idx], xm+x, ym+y); /*  II. Quadrant */
+        nr_point(nr, nr_height, nr_width, xm-x, ym+y, color[idx]); /*   I. Quadrant */
+        nr_point(nr, nr_height, nr_width, xm+x, ym+y, color[idx]); /*  II. Quadrant */
         if (y != 0) {
-          nr_point(nr, nr_height, nr_width, color[idx], xm-x, ym-y); /* III. Quadrant */
-          nr_point(nr, nr_height, nr_width, color[idx], xm+x, ym-y); /*  IV. Quadrant */
+          nr_point(nr, nr_height, nr_width, xm-x, ym-y, color[idx]); /* III. Quadrant */
+          nr_point(nr, nr_height, nr_width, xm+x, ym-y, color[idx]); /*  IV. Quadrant */
         }
       }
       
@@ -528,7 +528,7 @@ static int scanline_sort_x(const void *a, const void *b) {
 // not as efficient as something with an active edge table but it
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
+void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints, uint32_t color) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Pairs of values in 'nodeX' will have points drawn between them on 
@@ -616,7 +616,7 @@ void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int
       if (nodeX[i + 1] >  0 ) {
         if (nodeX[i] < 0) nodeX[i] = 0;
         if (nodeX[i + 1] >= width) nodeX[i + 1] = width - 1;
-        nr_hline(nr, height, width, color, nodeX[i], nodeX[i+1], scanline);
+        nr_hline(nr, height, width, nodeX[i], nodeX[i+1], scanline, color);
       }
     }
   } // end for(scanline)
@@ -657,7 +657,7 @@ SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int *y = as_int32_vec(y_, N, &freey);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, height, width, fill, x, y, length(x_));
+  nr_polygon(nr, height, width, x, y, length(x_), fill);
   
   // outline
   if (!is_transparent(color)) {

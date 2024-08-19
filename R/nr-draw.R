@@ -77,7 +77,7 @@ nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
-  invisible(.Call(draw_text_, nr, x, y, str, color, fontsize))
+  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize))
 }
 
 
