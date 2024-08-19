@@ -73,7 +73,7 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
       int y1 = y0 + yoff ;
       for (int xoff = 0; xoff < w; xoff++) {
         uint32_t src_col = src[y1 * src_width + x0 + xoff];
-        draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
+        nr_point(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
       }
     }
   } else {
@@ -103,7 +103,7 @@ void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height
       
       uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
       
-      draw_point_c(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
+      nr_point(dst, dst_height, dst_width, src_col, x + xoff, y + yoff);
     }
   }
 }

@@ -17,7 +17,7 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_point <- function(nr, x, y, color = 'black') {
-  invisible(.Call(draw_points_, nr, x, y, color))
+  invisible(.Call(nr_point_, nr, x, y, color))
 }
 
 
@@ -41,7 +41,7 @@ nr_point <- function(nr, x, y, color = 'black') {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
-  invisible(.Call(draw_line_, nr, x0, y0, x1, y1, color))
+  invisible(.Call(nr_line_, nr, x0, y0, x1, y1, color))
 }
 
 
@@ -104,7 +104,7 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0) {
-  invisible(.Call(draw_rect_, nr,  x, y, w, h, fill, color, hjust, vjust))
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust))
 }
 
 
@@ -129,7 +129,7 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
-  invisible(.Call(draw_circle_, nr, x, y, r, fill, color))
+  invisible(.Call(nr_circle_, nr, x, y, r, fill, color))
 }
 
 
@@ -152,7 +152,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
-  invisible(.Call(draw_polyline_, nr, x, y, color, close))
+  invisible(.Call(nr_polyline_, nr, x, y, color, close))
 }
 
 
@@ -174,7 +174,7 @@ nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
-  invisible(.Call(draw_polygon_, nr, x, y, fill, color))
+  invisible(.Call(nr_polygon_, nr, x, y, fill, color))
 }
 
 

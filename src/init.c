@@ -47,13 +47,13 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP draw_points_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
-extern SEXP draw_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP color_);
+extern SEXP nr_point_  (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
+extern SEXP nr_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP color_);
 extern SEXP draw_text_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
-extern SEXP draw_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
-extern SEXP draw_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
-extern SEXP draw_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP close_);
-extern SEXP draw_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP color_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
+extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
+extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP close_);
+extern SEXP nr_polygon_ (SEXP nr_, SEXP x_ , SEXP y_                   , SEXP fill_, SEXP color_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Color
@@ -87,13 +87,13 @@ static const R_CallMethodDef CEntries[] = {
   
   {"magick_to_nr_" , (DL_FUNC) &magick_to_nr_   , 2},
 
-  {"draw_points_"  , (DL_FUNC) &draw_points_  , 4},
-  {"draw_line_"    , (DL_FUNC) &draw_line_    , 6},
+  {"nr_point_"  , (DL_FUNC) &nr_point_  , 4},
+  {"nr_line_"    , (DL_FUNC) &nr_line_    , 6},
   {"draw_text_"    , (DL_FUNC) &draw_text_    , 6},
-  {"draw_rect_"    , (DL_FUNC) &draw_rect_    , 9},
-  {"draw_circle_"  , (DL_FUNC) &draw_circle_  , 6},
-  {"draw_polyline_", (DL_FUNC) &draw_polyline_, 5},
-  {"draw_polygon_" , (DL_FUNC) &draw_polygon_ , 5},
+  {"nr_rect_"    , (DL_FUNC) &nr_rect_    , 9},
+  {"nr_circle_"  , (DL_FUNC) &nr_circle_  , 6},
+  {"nr_polyline_", (DL_FUNC) &nr_polyline_, 5},
+  {"nr_polygon_" , (DL_FUNC) &nr_polygon_ , 5},
   
   {"colors_to_packed_cols_"  , (DL_FUNC) &colors_to_packed_cols_  , 1},
   {"packed_cols_to_hexcolors_"  , (DL_FUNC) &packed_cols_to_hexcolors_  , 1},
@@ -103,12 +103,12 @@ static const R_CallMethodDef CEntries[] = {
 };
 
 
-// C funss for export via "LinkingTo"
-extern void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y);
-extern void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) ;
-extern void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
-extern void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color);
-extern void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
+// C funcs for export via "LinkingTo"
+extern void nr_point  (uint32_t *nr, int height, int width, uint32_t color, int x, int y);
+extern void nr_line   (uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) ;
+extern void nr_hline  (uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y);
+extern void nr_circle (uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color);
+extern void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
 
 void R_init_nara(DllInfo *info) {
   R_registerRoutines(
@@ -123,11 +123,11 @@ void R_init_nara(DllInfo *info) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Make the C code available to other packages
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  R_RegisterCCallable("nara", "nr_point"  , (DL_FUNC) &draw_point_c);
-  R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &draw_line_c);
-  R_RegisterCCallable("nara", "nr_hline"  , (DL_FUNC) &draw_point_sequence_c);
-  R_RegisterCCallable("nara", "nr_circle" , (DL_FUNC) &draw_circle_c);
-  R_RegisterCCallable("nara", "nr_polygon", (DL_FUNC) &fill_polygon_c_new);
+  R_RegisterCCallable("nara", "nr_point"  , (DL_FUNC) &nr_point);
+  R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &nr_line);
+  R_RegisterCCallable("nara", "nr_hline"  , (DL_FUNC) &nr_hline);
+  R_RegisterCCallable("nara", "nr_circle" , (DL_FUNC) &nr_circle);
+  R_RegisterCCallable("nara", "nr_polygon", (DL_FUNC) &nr_polygon);
 }
 
 

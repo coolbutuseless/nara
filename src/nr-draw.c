@@ -20,7 +20,7 @@
 // 
 // Coordinate origin is (0, 0) at top-left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
+void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
@@ -58,7 +58,7 @@ void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, in
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw a horizontal sequence of points from x1 to x2 INCLUSIVE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
+void nr_hline(uint32_t *nr, int height, int width, uint32_t color, int x1, int x2, int y) {
   
   if (is_transparent(color) || y < 0 || y >= height) {
     return;
@@ -113,7 +113,7 @@ void draw_point_sequence_c(uint32_t *nr, int height, int width, uint32_t color, 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw points [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
+SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 
   assert_nativeraster(nr_);
 
@@ -133,7 +133,7 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
-    draw_point_c(nr, height, width, color[i], x[i], y[i]);
+    nr_point(nr, height, width, color[i], x[i], y[i]);
   }
 
   // free and return
@@ -151,14 +151,14 @@ SEXP draw_points_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
+void nr_line(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
   int err = dx+dy, e2;                                  /* error value e_xy */
 
   for (;;) {                                                        /* loop */
-    draw_point_c(nr, height, width, color, x0, y0);
+    nr_point(nr, height, width, color, x0, y0);
 
     e2 = 2*err;
     if (e2 >= dy) {                                       /* e_xy+e_x > 0 */
@@ -176,7 +176,7 @@ void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, in
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw lines. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
+SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 
   assert_nativeraster(nr_);
 
@@ -198,7 +198,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
   uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
-    draw_line_c(nr, height, width, color[i], x0[i], y0[i], x1[i], y1[i]);
+    nr_line(nr, height, width, color[i], x0[i], y0[i], x1[i], y1[i]);
   }
 
   // free and return
@@ -216,7 +216,7 @@ SEXP draw_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw polyline [R interace]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
+SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 
   assert_nativeraster(nr_);
 
@@ -239,12 +239,12 @@ SEXP draw_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
   
   // Draw lines between pairs of points
   for (int i = 0; i < N - 1; i++) {
-    draw_line_c(nr, height, width, color, x[i], y[i], x[i+1], y[i+1]);
+    nr_line(nr, height, width, color, x[i], y[i], x[i+1], y[i+1]);
   }
 
   if (asInteger(close_)) {
     // Join last point and first point if requested
-    draw_line_c(nr, height, width, color, x[N - 1], y[N - 1], x[0], y[0]);
+    nr_line(nr, height, width, color, x[N - 1], y[N - 1], x[0], y[0]);
   }
 
 
@@ -312,7 +312,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          draw_point_c(nr, nr_height, nr_width, color, col + i + x, y - char_h + row);
+          nr_point(nr, nr_height, nr_width, color, col + i + x, y - char_h + row);
         }
       }
     }
@@ -328,7 +328,7 @@ SEXP draw_text_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsiz
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Rect. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
+SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
                 SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -366,21 +366,21 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
     if (!is_transparent(fill[i])) {
       if (is_transparent(color[i])) {
         for (int row = y; row < y + h; row++) {
-          draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x, x + w - 1, row);
+          nr_hline(nr, nr_height, nr_width, fill[i], x, x + w - 1, row);
         }
       } else {
         for (int row = y + 1; row < y + h - 1; row++) {
-          draw_point_sequence_c(nr, nr_height, nr_width, fill[i], x + 1, x + w - 1 - 1, row);
+          nr_hline(nr, nr_height, nr_width, fill[i], x + 1, x + w - 1 - 1, row);
         }
       }
     }
     
     // Draw outline
     if (!is_transparent(color[i])) {
-      draw_line_c(nr, nr_height, nr_width, color[i], x    , y  , x+w-1, y);
-      draw_line_c(nr, nr_height, nr_width, color[i], x+w-1, y+1, x+w-1, y+h-1);
-      draw_line_c(nr, nr_height, nr_width, color[i], x+w-2, y+h-1, x+1, y+h-1);
-      draw_line_c(nr, nr_height, nr_width, color[i], x    , y+h-1, x  , y+1);
+      nr_line(nr, nr_height, nr_width, color[i], x    , y  , x+w-1, y);
+      nr_line(nr, nr_height, nr_width, color[i], x+w-1, y+1, x+w-1, y+h-1);
+      nr_line(nr, nr_height, nr_width, color[i], x+w-2, y+h-1, x+1, y+h-1);
+      nr_line(nr, nr_height, nr_width, color[i], x    , y+h-1, x  , y+1);
     }
   }
   
@@ -395,8 +395,8 @@ SEXP draw_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
 }
 
 
-// void draw_line_c(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
-void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
+// void nr_line(uint32_t *nr, int height, int width, uint32_t color, int x0, int y0, int x1, int y1) {
+void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
   // Skip NAs
   if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
     return;
@@ -404,26 +404,26 @@ void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, u
   
   int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
   if (ydone == NULL) {
-    error("draw_circle_c(): error allocating 'ydone'");
+    error("nr_circle(): error allocating 'ydone'");
   }
   
   int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
   do {
     
     if (!is_transparent(fill) && !ydone[y]) {
-      draw_point_sequence_c(nr, height, width, fill, xm + x, xm - x, ym + y);
+      nr_hline(nr, height, width, fill, xm + x, xm - x, ym + y);
       if (y != 0) {
-        draw_point_sequence_c(nr, height, width, fill, xm + x, xm - x, ym - y);
+        nr_hline(nr, height, width, fill, xm + x, xm - x, ym - y);
       }
       ydone[y] = 1;
     }
     
     if (!is_transparent(color)) {
-      draw_point_c(nr, height, width, color, xm-x, ym+y); /*   I. Quadrant */
-      draw_point_c(nr, height, width, color, xm+x, ym+y); /*  II. Quadrant */
+      nr_point(nr, height, width, color, xm-x, ym+y); /*   I. Quadrant */
+      nr_point(nr, height, width, color, xm+x, ym+y); /*  II. Quadrant */
       if (y != 0) {
-        draw_point_c(nr, height, width, color, xm-x, ym-y); /* III. Quadrant */
-        draw_point_c(nr, height, width, color, xm+x, ym-y); /*  IV. Quadrant */
+        nr_point(nr, height, width, color, xm-x, ym-y); /* III. Quadrant */
+        nr_point(nr, height, width, color, xm+x, ym-y); /*  IV. Quadrant */
       }
     }
     
@@ -439,7 +439,7 @@ void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, u
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Circle. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
+SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -482,19 +482,19 @@ SEXP draw_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) 
     do {
       
       if (!is_transparent(fill[idx]) && !ydone[y]) {
-        draw_point_sequence_c(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym + y);
+        nr_hline(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym + y);
         if (y != 0) {
-          draw_point_sequence_c(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym - y);
+          nr_hline(nr, nr_height, nr_width, fill[idx], xm + x, xm - x, ym - y);
         }
         ydone[y] = 1;
       }
       
       if (!is_transparent(color[idx])) {
-        draw_point_c(nr, nr_height, nr_width, color[idx], xm-x, ym+y); /*   I. Quadrant */
-        draw_point_c(nr, nr_height, nr_width, color[idx], xm+x, ym+y); /*  II. Quadrant */
+        nr_point(nr, nr_height, nr_width, color[idx], xm-x, ym+y); /*   I. Quadrant */
+        nr_point(nr, nr_height, nr_width, color[idx], xm+x, ym+y); /*  II. Quadrant */
         if (y != 0) {
-          draw_point_c(nr, nr_height, nr_width, color[idx], xm-x, ym-y); /* III. Quadrant */
-          draw_point_c(nr, nr_height, nr_width, color[idx], xm+x, ym-y); /*  IV. Quadrant */
+          nr_point(nr, nr_height, nr_width, color[idx], xm-x, ym-y); /* III. Quadrant */
+          nr_point(nr, nr_height, nr_width, color[idx], xm+x, ym-y); /*  IV. Quadrant */
         }
       }
       
@@ -528,7 +528,7 @@ static int scanline_sort_x(const void *a, const void *b) {
 // not as efficient as something with an active edge table but it
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
+void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Pairs of values in 'nodeX' will have points drawn between them on 
@@ -616,7 +616,7 @@ void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int
       if (nodeX[i + 1] >  0 ) {
         if (nodeX[i] < 0) nodeX[i] = 0;
         if (nodeX[i + 1] >= width) nodeX[i + 1] = width - 1;
-        draw_point_sequence_c(nr, height, width, color, nodeX[i], nodeX[i+1], scanline);
+        nr_hline(nr, height, width, color, nodeX[i], nodeX[i+1], scanline);
       }
     }
   } // end for(scanline)
@@ -634,7 +634,7 @@ void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
+SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   assert_nativeraster(nr_);
   
@@ -657,12 +657,12 @@ SEXP draw_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int *y = as_int32_vec(y_, N, &freey);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  fill_polygon_c_new(nr, height, width, fill, x, y, length(x_));
+  nr_polygon(nr, height, width, fill, x, y, length(x_));
   
   // outline
   if (!is_transparent(color)) {
     // Rprintf("Polygon Color: %i\n", color);
-    draw_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
+    nr_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
   }
   
   // free and return

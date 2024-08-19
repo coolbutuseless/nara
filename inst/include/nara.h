@@ -21,7 +21,7 @@ static inline void nr_point(uint32_t *nr, int height, int width, uint32_t color,
   static SEXP (*fun)(uint32_t *nr, int height, int width, uint32_t color, int x, int y) = NULL;
   
   if (fun == NULL) {
-    // void draw_point_c(uint32_t *nr, int height, int width, uint32_t color, int x, int y) 
+    // void nr_point(uint32_t *nr, int height, int width, uint32_t color, int x, int y) 
     fun = (SEXP (*)(uint32_t *nr, int height, int width, uint32_t color, int x, int y)) R_GetCCallable("nara", "nr_point");
   }
   
@@ -65,7 +65,7 @@ static inline void nr_hline(uint32_t *nr, int height, int width, uint32_t color,
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// void draw_circle_c(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color)
+// void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color)
 // @param nr pointer to the integer data of a native raster 
 // @param height,width dimensions of nativeRaster
 // @param color packed integer representing RGBA colour
@@ -85,10 +85,10 @@ static inline void nr_circle(uint32_t *nr, int height, int width, int xm, int ym
 
 
 
-// void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
+// void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// void fill_polygon_c_new(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
+// void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
 // @param nr pointer to the integer data of a native raster 
 // @param height,width dimensions of nativeRaster
 // @param color packed integer representing RGBA colour
