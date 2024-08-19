@@ -261,6 +261,54 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 // Draw Text [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
+void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize) {
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Choose font
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  uint8_t *font = spleen5x8;
+  int char_w = 5;
+  int char_h = 8;
+  
+  if (fontsize >= 16) {
+    font = spleen8x16;
+    char_w = 8;
+    char_h = 16;
+  } else if (fontsize >= 12) {
+    font = spleen6x12;
+    char_w = 6;
+    char_h = 12;
+  }
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Loop over letters
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nchars = (int)strlen(str);
+  int col = 0;
+  
+  for (int char_idx = 0; char_idx < nchars; char_idx++) {
+    int c = str[char_idx] - 32;
+    if (c < 0 || c > 94) {
+      error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
+    }
+    
+    uint8_t *letter = &font[c * char_h];
+    for (int row = 0; row < char_h; row ++) {
+      for (int i = 0; i < char_w; i++) {
+        if (letter[row] & (1 << (8 - i))) {
+          nr_point(nr, height, width, col + i + x, y - char_h + row, color);
+        }
+      }
+    }
+    
+    col += char_w;
+  }
+}
+
+
+
 SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,44 +329,45 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = asInteger(fontsize_);
-  uint8_t *font = spleen5x8;
-  int char_w = 5;
-  int char_h = 8;
+  // uint8_t *font = spleen5x8;
+  // int char_w = 5;
+  // int char_h = 8;
+  // 
+  // if (fontsize >= 16) {
+  //   font = spleen8x16;
+  //   char_w = 8;
+  //   char_h = 16;
+  // } else if (fontsize >= 12) {
+  //   font = spleen6x12;
+  //   char_w = 6;
+  //   char_h = 12;
+  // }
 
-  if (fontsize >= 16) {
-    font = spleen8x16;
-    char_w = 8;
-    char_h = 16;
-  } else if (fontsize >= 12) {
-    font = spleen6x12;
-    char_w = 6;
-    char_h = 12;
-  }
-
-
+  nr_text_basic(nr, nr_height, nr_width, x, y, str, color, fontsize);
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over letters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nchars = (int)strlen(str);
-  int col = 0;
-
-  for (int char_idx = 0; char_idx < nchars; char_idx++) {
-    int c = str[char_idx] - 32;
-    if (c < 0 || c > 94) {
-      error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
-    }
-
-    uint8_t *letter = &font[c * char_h];
-    for (int row = 0; row < char_h; row ++) {
-      for (int i = 0; i < char_w; i++) {
-        if (letter[row] & (1 << (8 - i))) {
-          nr_point(nr, nr_height, nr_width, col + i + x, y - char_h + row, color);
-        }
-      }
-    }
-
-    col += char_w;
-  }
+  // int nchars = (int)strlen(str);
+  // int col = 0;
+  // 
+  // for (int char_idx = 0; char_idx < nchars; char_idx++) {
+  //   int c = str[char_idx] - 32;
+  //   if (c < 0 || c > 94) {
+  //     error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
+  //   }
+  // 
+  //   uint8_t *letter = &font[c * char_h];
+  //   for (int row = 0; row < char_h; row ++) {
+  //     for (int i = 0; i < char_w; i++) {
+  //       if (letter[row] & (1 << (8 - i))) {
+  //         nr_point(nr, nr_height, nr_width, col + i + x, y - char_h + row, color);
+  //       }
+  //     }
+  //   }
+  // 
+  //   col += char_w;
+  // }
 
   return nr_;
 }

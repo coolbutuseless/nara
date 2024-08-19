@@ -84,9 +84,6 @@ static inline void nr_circle(uint32_t *nr, int height, int width, int xm, int ym
 }
 
 
-
-// void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // void nr_polygon(uint32_t *nr, int height, int width, uint32_t color, int *x, int *y, int npoints);
 // @param nr pointer to the integer data of a native raster 
@@ -106,4 +103,21 @@ static inline void nr_polygon(uint32_t *nr, int height, int width, int *x, int *
   fun(nr, height, width, x, y, npoints, color);
 }
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize)
+// @param nr pointer to the integer data of a native raster 
+// @param height,width dimensions of nativeRaster
+// @param color packed integer representing RGBA colour
+// @param fill packed integer representing RGBA fill
+// @param x,y integer vectors of coordinates
+// @param npoints length of x and y vectors
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+static inline void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize) {
+  static SEXP (*fun)(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize) = NULL;
+  
+  if (fun == NULL) {
+    fun = (SEXP (*)(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize)) R_GetCCallable("nara", "nr_text_basic");
+  }
+  
+  fun(nr, height, width, x, y, str, color, fontsize);
+}
