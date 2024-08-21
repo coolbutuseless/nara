@@ -121,3 +121,4 @@ static inline void nr_text_basic(uint32_t *nr, int height, int width, int x, int
   
   fun(nr, height, width, x, y, str, color, fontsize);
 }
+
