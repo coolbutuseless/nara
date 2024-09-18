@@ -728,8 +728,10 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
   
   // Can we just do single polygon handling?
   if (isNull(id_)) {
+    // Rprintf("Calling single\n");
     return nr_polygon_(nr_, x_, y_, fill_, color_);
   }
+  // Rprintf("Processing multiple\n");
   
   // Unpack native raster
   assert_nativeraster(nr_);
@@ -761,7 +763,7 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
     }
   }
   
-  Rprintf("Number of polygons defined: %i\n", npolys);
+  // Rprintf("Number of polygons defined: %i\n", npolys);
   
   // get an int* from a numeric from R
   bool freex = false, freey = false;
@@ -784,6 +786,7 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
     
     int len = poly_end - poly_start;
     
+    // Rprintf("Fill [%i] = %i\n", i, fill[i]);
     nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[i]);
     
     poly_start = poly_end;
@@ -793,6 +796,15 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
     //   nr_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
     // }
   }
+  
+  
+  // Final polygon
+  int len = N - poly_start;
+  // Rprintf("Final len: %i\n", len);
+  nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[npolys - 1]);
+  
+  
+  
   
   // free and return
   if (freex)    free(x);

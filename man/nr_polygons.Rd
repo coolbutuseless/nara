@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_polygons}
 \alias{nr_polygons}
-\title{Draw polygon on a \code{nativeRaster} image}
+\title{Draw multiple polygon on a \code{nativeRaster} image}
 \usage{
 nr_polygons(nr, x, y, id = NULL, fill = "black", color = NA)
 }
@@ -27,7 +27,7 @@ or \code{#rgb}}
 Original \code{nativeRaster} modified in-place
 }
 \description{
-Draw polygon on a \code{nativeRaster} image
+Draw multiple polygon on a \code{nativeRaster} image
 }
 \examples{
 N <- 20

@@ -179,7 +179,7 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw polygon on a \code{nativeRaster} image
+#' Draw multiple polygon on a \code{nativeRaster} image
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
@@ -200,7 +200,7 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polygons <- function(nr, x, y, id = NULL, fill = 'black', color = NA) {
-  invisible(.Call(nr_polygons_, nr, x, y, id = NULL, fill, color))
+  invisible(.Call(nr_polygons_, nr, x, y, id = id, fill, color))
 }
 
 
