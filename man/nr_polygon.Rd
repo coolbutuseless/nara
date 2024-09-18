@@ -2,16 +2,21 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_polygon}
 \alias{nr_polygon}
-\title{Draw polygon on a \code{nativeRaster} image}
+\title{Draw multiple polygon on a \code{nativeRaster} image}
 \usage{
-nr_polygon(nr, x, y, fill = "black", color = NA)
+nr_polygon(nr, x, y, id = NULL, fill = "black", color = NA)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
 \item{x, y}{Vectors of point coordinates}
 
-\item{fill}{fill color [scalar]}
+\item{id}{integer vector used to separate coordinates into 
+multiple polygons. Consecutive runs of the same \code{id}
+value belong to the same polygon.  If NULL (the default) then 
+all coordinates are assumed to be vertices of a single polygon.}
+
+\item{fill}{fill color}
 
 \item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
@@ -22,7 +27,7 @@ or \code{#rgb}}
 Original \code{nativeRaster} modified in-place
 }
 \description{
-Draw polygon on a \code{nativeRaster} image
+Draw multiple polygon on a \code{nativeRaster} image
 }
 \examples{
 N <- 20

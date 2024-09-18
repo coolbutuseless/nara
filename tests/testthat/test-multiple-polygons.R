@@ -8,7 +8,7 @@ test_that("multiple polygons work", {
   nr <- nr_new(100, 100)
   
   expect_no_error(
-    nr_polygons(nr, x = x, y = y)
+    nr_polygon(nr, x = x, y = y)
   )
   
   x <- c(0, 100, 100,   0,  0,  100,   25, 75, 75, 25)
@@ -18,6 +18,6 @@ test_that("multiple polygons work", {
   nr <- nr_new(100, 100)
   
   expect_no_error(
-    nr_polygons(nr, x = x, y = y, id = id, fill = c('grey20', 'blue', 'hotpink'))
+    nr_polygon(nr, x = x, y = y, id = id, fill = c('grey20', 'blue', 'hotpink'))
   )  
 })

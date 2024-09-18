@@ -157,28 +157,6 @@ nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw polygon on a \code{nativeRaster} image
-#'
-#' @inheritParams nr_fill
-#' @inheritParams nr_point
-#' @param fill fill color [scalar]
-#' 
-#' @return Original \code{nativeRaster} modified in-place
-#'
-#' @examples
-#' N <- 20
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
-#' plot(nr)
-#'
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
-  invisible(.Call(nr_polygon_, nr, x, y, fill, color))
-}
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Draw multiple polygon on a \code{nativeRaster} image
 #'
 #' @inheritParams nr_fill
@@ -199,38 +177,22 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygons <- function(nr, x, y, id = NULL, fill = 'black', color = NA) {
-  invisible(.Call(nr_polygons_, nr, x, y, id = id, fill, color))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color))
 }
 
 
 
 if (FALSE) {
   
-  set.seed(1)
-  N <- 400
-  nr <- nr_new(N, N, 'grey80')
+  x <- c(0, 100, 100,   0,  0,  100,   25, 75, 75, 25)
+  y <- c(0,   0, 100,   0, 100, 100,   25, 25, 75, 75)
+  id <- c(1, 1, 1, 2, 2, 2, 8, 8, 8, 8)
   
-  set.seed(1)
-  x <- sample(400, N, T)
-  y <- sample(200, N, T)
-  # x <- sample(400, 10, T)
-  # y <- sample( 20, 10, T)
-  r <- sample(100, N, T)
-  w <- sample(100, N, T)
-  h <- sample(100, N, T)
-  cols <- sample(colours(), N, T)
-  # cols <- scales::alpha(cols, 0.5)
+  nr <- nr_new(100, 100)
   
-  nr_polygon(nr, x, y, fill = 'black') 
-  if (FALSE) {
-    nr_polygon(nr, x, y, fill = 'black') |> bench::mark()
-  }
-  # unoptimised: 395 
-  # optimized 1000
-  
-  plot(nr, T)
-  
+  nr_polygon(nr, x = x, y = y, id = id, fill = c('grey20', 'blue', 'hotpink'), color = c('black', 'black', 'black'))
+  plot(nr)
 }
 
 

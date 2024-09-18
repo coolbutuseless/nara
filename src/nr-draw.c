@@ -211,6 +211,25 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void nr_polyline(uint32_t *nr, int height, int width, int *x, int *y, int N, uint32_t color, int close) {
+  
+  if (is_transparent(color)) return;
+  
+  // Draw lines between pairs of points
+  for (int i = 0; i < N - 1; i++) {
+    nr_line(nr, height, width, x[i], y[i], x[i+1], y[i+1], color);
+  }
+  
+  if (close) {
+    // Join last point and first point if requested
+    nr_line(nr, height, width, x[N - 1], y[N - 1], x[0], y[0], color);
+  }
+  
+}
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,16 +256,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
-  // Draw lines between pairs of points
-  for (int i = 0; i < N - 1; i++) {
-    nr_line(nr, height, width, x[i], y[i], x[i+1], y[i+1], color);
-  }
-
-  if (asInteger(close_)) {
-    // Join last point and first point if requested
-    nr_line(nr, height, width, x[N - 1], y[N - 1], x[0], y[0], color);
-  }
-
+  nr_polyline(nr, height, width, x, y, N, color, asInteger(close_));
 
   // free and return
   if (freex) free(x);
@@ -683,7 +693,7 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   assert_nativeraster(nr_);
   
@@ -724,12 +734,12 @@ SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_) {
   
   // Can we just do single polygon handling?
   if (isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygon_(nr_, x_, y_, fill_, color_);
+    return nr_polygons_single_(nr_, x_, y_, fill_, color_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -787,7 +797,8 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
     int len = poly_end - poly_start;
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
-    nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[i]);
+    nr_polygon (nr, height, width, x + poly_start, y + poly_start, len, fill [i]);
+    nr_polyline(nr, height, width, x + poly_start, y + poly_start, len, color[i], 1);
     
     poly_start = poly_end;
     poly_id    = id[poly_start];
@@ -801,7 +812,8 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
   // Final polygon
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
-  nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[npolys - 1]);
+  nr_polygon (nr, height, width, x + poly_start, y + poly_start, len, fill [npolys - 1]);
+  nr_polyline(nr, height, width, x + poly_start, y + poly_start, len, color[npolys - 1], 1);
   
   
   
