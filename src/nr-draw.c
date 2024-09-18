@@ -807,6 +807,7 @@ SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_)
   
   
   // free and return
+  if (freeid)   free(id);
   if (freex)    free(x);
   if (freey)    free(y);
   if (freecol)  free(color);
