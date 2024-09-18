@@ -695,7 +695,7 @@ SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
-
+  
   uint32_t color = color_sexp_to_packed_col(color_);
   uint32_t fill   = color_sexp_to_packed_col(fill_);
   
@@ -717,6 +717,100 @@ SEXP nr_polygon_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   // free and return
   if (freex) free(x);
   if (freey) free(y);
+  return nr_;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// R Polygon [R interface]
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_polygons_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_) {
+  
+  // Can we just do single polygon handling?
+  if (isNull(id_)) {
+    // Rprintf("Calling single\n");
+    return nr_polygon_(nr_, x_, y_, fill_, color_);
+  }
+  // Rprintf("Processing multiple\n");
+  
+  // Unpack native raster
+  assert_nativeraster(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
+  
+  // Sanity check
+  int N = length(x_);
+  if (length(y_) != N) {
+    error("Arguments 'x' and 'y' must be same length.");
+  }
+  
+  if (length(id_) != N) {
+    error("Must supply 'id' arguments for all coordinates");
+  }
+  
+  // Ensure 'id' is integer type for easier processing
+  bool freeid = false;
+  int *id = as_int32_vec(id_, N, &freeid);
+  
+  // How many polygons are defined by 'id'?
+  int npolys = 1;
+  int last_id = id[0];
+  for (int i = 2; i < N; i++) {
+    if (id[i] != last_id) {
+      last_id = id[i];
+      npolys++;
+    }
+  }
+  
+  // Rprintf("Number of polygons defined: %i\n", npolys);
+  
+  // get an int* from a numeric from R
+  bool freex = false, freey = false;
+  int *x = as_int32_vec(x_, N, &freex);
+  int *y = as_int32_vec(y_, N, &freey);
+  
+  // Colors
+  bool freecol = false, freefill = false;
+  uint32_t *color = colors_to_packed_cols(color_, npolys, &freecol);
+  uint32_t *fill  = colors_to_packed_cols(fill_ , npolys, &freefill);
+  
+  int poly_id = id[0];
+  int poly_start = 0;
+  int poly_end = 1;
+  for (int i = 0; i < npolys - 1; i++) {
+    
+    while ( id[poly_end] == poly_id ) {
+      poly_end++;
+    } 
+    
+    int len = poly_end - poly_start;
+    
+    // Rprintf("Fill [%i] = %i\n", i, fill[i]);
+    nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[i]);
+    
+    poly_start = poly_end;
+    poly_id    = id[poly_start];
+    poly_end++;
+    // if (!is_transparent(color)) {
+    //   nr_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
+    // }
+  }
+  
+  
+  // Final polygon
+  int len = N - poly_start;
+  // Rprintf("Final len: %i\n", len);
+  nr_polygon(nr, height, width, x + poly_start, y + poly_start, len, fill[npolys - 1]);
+  
+  
+  
+  
+  // free and return
+  if (freex)    free(x);
+  if (freey)    free(y);
+  if (freecol)  free(color);
+  if (freefill) free(fill);
   return nr_;
 }
 

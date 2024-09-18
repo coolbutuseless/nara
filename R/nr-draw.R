@@ -178,6 +178,32 @@ nr_polygon <- function(nr, x, y, fill = 'black', color = NA) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Draw multiple polygon on a \code{nativeRaster} image
+#'
+#' @inheritParams nr_fill
+#' @inheritParams nr_point
+#' @param fill fill color 
+#' @param id integer vector used to separate coordinates into 
+#'        multiple polygons. Consecutive runs of the same \code{id}
+#'        value belong to the same polygon.  If NULL (the default) then 
+#'        all coordinates are assumed to be vertices of a single polygon.
+#' 
+#' @return Original \code{nativeRaster} modified in-place
+#'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
+#' plot(nr)
+#'
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_polygons <- function(nr, x, y, id = NULL, fill = 'black', color = NA) {
+  invisible(.Call(nr_polygons_, nr, x, y, id = id, fill, color))
+}
+
+
 
 if (FALSE) {
   

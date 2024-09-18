@@ -1,5 +1,5 @@
 
-# nara 0.1.1.9023 2024-08-18
+# nara 0.1.1.9024 2024-08-18
 
 * Remove 'isocubes()'
 * Remove 'op' argument. 
@@ -41,6 +41,7 @@
 * Parse image sequences from `magick` into nativeRaster
 * Export C functions for use in other packages via `LinkingTo`
     * draw points
+* Added `nr_polygons()`
 
 # nara 0.1.1 2022-07-30
 
