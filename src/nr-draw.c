@@ -449,8 +449,8 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   for (int i = 0; i < N; i++) {
     
-    int x = xs[i] - (int)round(hjust * ws[i]); // horizontal justification
-    int y = ys[i] - (int)round(vjust * hs[i]); // vertical justification
+    int x = xs[i] - (int)round(hjust * (ws[i] - 1)); // horizontal justification
+    int y = ys[i] - (int)round(vjust * (hs[i] - 1)); // vertical justification
     int w = ws[i];
     int h = hs[i];
     

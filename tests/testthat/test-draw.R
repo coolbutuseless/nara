@@ -1,0 +1,195 @@
+
+test_that("nr-draw line works", {
+  
+  nr <- nr_new(5, 5, 'white')
+  
+  nr_line(nr, 0, 0, 4, 4)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      black, white, white, white, white,
+      white, black, white, white, white,
+      white, white, black, white, white,
+      white, white, white, black, white,
+      white, white, white, white, black
+    ), 5, 5, byrow = T)
+  )
+  
+})
+
+
+
+test_that("nr-draw rect works", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_rect(nr, 0, 0, 2, 2)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      black, black, white, white, white,
+      black, black, white, white, white,
+      white, white, white, white, white,
+      white, white, white, white, white,
+      white, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+  
+})
+
+
+test_that("nr-draw rect works - justify 0,0", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_rect(nr, 2, 2, 3, 3, hjust = 0, vjust = 0)
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, white, white, white, white,
+      white, white, white, white, white,
+      white, white, black, black, black,
+      white, white, black, black, black,
+      white, white, black, black, black
+    ), 5, 5, byrow = T)
+  )
+  
+})
+
+
+test_that("nr-draw rect works - justify 1,1", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_rect(nr, 2, 2, 3, 3, hjust = 1, vjust = 1)
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      black, black, black, white, white,
+      black, black, black, white, white,
+      black, black, black, white, white,
+      white, white, white, white, white,
+      white, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+  
+})
+
+
+test_that("nr-draw rect works - justify 0.5, 0.5", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_rect(nr, 2, 2, 3, 3, hjust = 0.5, vjust = 0.5)
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, white, white, white, white,
+      white, black, black, black, white,
+      white, black, black, black, white,
+      white, black, black, black, white,
+      white, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+  
+})
+
+
+test_that("nr-draw rect works - justify 0.5, 0.5 border", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_rect(nr, 2, 2, 3, 3, hjust = 0.5, vjust = 0.5, color = 'red')
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  red   <- colorfast::col_to_int('red')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, white, white, white, white,
+      white, red  , red  , red  , white,
+      white, red  , black, red  , white,
+      white, red  , red  , red  , white,
+      white, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+})
+
+
+
+
+test_that("nr-draw circle works", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_circle(nr, 2, 2, 2)
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  red   <- colorfast::col_to_int('red')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, black, black, black, white,
+      black, black, black, black, black,
+      black, black, black, black, black,
+      black, black, black, black, black,
+      white, black, black, black, white
+    ), 5, 5, byrow = T)
+  )
+})
+
+
+test_that("nr-draw circle works with border", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_circle(nr, 2, 2, 2, col = 'red')
+  # plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  red   <- colorfast::col_to_int('red')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, red  , red  , red  , white,
+      red  , black, black, black, red  ,
+      black, black, black, black, black,
+      red  , black, black, black, red  ,
+      white, red  , red  , red  , white
+    ), 5, 5, byrow = T)
+  )
+})
+
+
+
+
+
+
+
+
+
+
