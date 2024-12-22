@@ -4,12 +4,12 @@
 \alias{nrs_to_mp4}
 \title{Magick conversion - possible won't be in final version of 'nara' pkg}
 \usage{
-nrs_to_mp4(nr_list, mp4_name, verbose = FALSE, ...)
+nrs_to_mp4(nr_list, filename, verbose = FALSE, ...)
 }
 \arguments{
 \item{nr_list}{list of nativeRasters}
 
-\item{mp4_name}{name of mp4 file to save}
+\item{filename}{mp4 filename}
 
 \item{verbose}{logical. default FALSE}
 
@@ -26,6 +26,6 @@ Magick conversion - possible won't be in final version of 'nara' pkg
 im <- magick::logo
 nr1 <- magick_to_nr(im)
 nr2 <- nr_duplicate(nr1)
-nrs_to_gif(list(nr1, nr2), "nothing.gif")
+nrs_to_mp4(list(nr1, nr2), "nothing.mp4")
 \dontshow{\}) # examplesIf}
 }

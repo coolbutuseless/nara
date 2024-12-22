@@ -4,12 +4,12 @@
 \alias{nrs_to_gif}
 \title{Magick conversion - possibly won't be in final version of 'nara' pkg}
 \usage{
-nrs_to_gif(nr_list, gif_name, verbose = FALSE, framerate = 30, ...)
+nrs_to_gif(nr_list, filename, verbose = FALSE, framerate = 30, ...)
 }
 \arguments{
 \item{nr_list}{list of nativeRasters}
 
-\item{gif_name}{name of mp4 file to save}
+\item{filename}{filename of gif}
 
 \item{verbose}{logical. default FALSE}
 
