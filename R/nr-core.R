@@ -28,9 +28,9 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
-  res <- matrix(colorfast::col_to_int(fill), nrow = height, ncol = width)
-  class(res) <- 'nativeRaster'
-  res
+  nr <- .Call(nr_new_, height, width)
+  .Call(fill_, nr, fill)
+  nr
 }
 
 

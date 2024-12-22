@@ -1,4 +1,5 @@
 
+SEXP nr_new(int height, int width);
 int is_nativeraster(SEXP nr_);
 void assert_nativeraster(SEXP nr_) ;
 int *as_int32_vec(SEXP vec_, int N, bool *do_free);

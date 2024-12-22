@@ -1,5 +1,5 @@
 
-
+#define R_NO_REMAP
 
 #include <R.h>
 #include <Rinternals.h>
@@ -16,9 +16,12 @@
 #include "nr-draw.h"
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  Draw a single point on the canvas [C interface]
+// Draw a single point on the canvas [C interface]
 // 
-// Coordinate origin is (0, 0) at top-left
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y location
+// @param color colour
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color) {
   
@@ -57,6 +60,12 @@ void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color)
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw a horizontal sequence of points from x1 to x2 INCLUSIVE
+// 
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param y location
+// @param x1,x2 points to draw between
+// @param color colour
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_hline(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32_t color) {
   
@@ -112,6 +121,10 @@ void nr_hline(uint32_t *nr, int height, int width, int x1, int x2, int y, uint32
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw points [R interface]
+// 
+// @param nr native raster (modified in-place)
+// @param x,y locations
+// @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 
@@ -150,6 +163,11 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw line [C interface]
+// 
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x0,y0,x1,y1 endpoints of line
+// @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color) {
 
@@ -175,6 +193,11 @@ void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw lines. Vectorised [R interface]
+// 
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x0,y0,x1,y1 line endpoints
+// @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 
@@ -212,7 +235,14 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 
+// Draw a polyline
+//
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y vertices
+// @param N number of vertices
+// @param close should the polyline be closed?
+// @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_polyline(uint32_t *nr, int height, int width, int *x, int *y, int N, uint32_t color, int close) {
   
@@ -234,6 +264,12 @@ void nr_polyline(uint32_t *nr, int height, int width, int *x, int *y, int N, uin
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw polyline [R interace]
+// 
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y locations
+// @param color colour
+// @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 
@@ -246,8 +282,8 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 
   uint32_t color = single_rcolor_to_int(color_);
   
-  if (length(x_) != length(y_)) {
-    error("Arguments 'x' and 'y' must be same length.");
+  if (Rf_length(x_) != Rf_length(y_)) {
+    Rf_error("Arguments 'x' and 'y' must be same length.");
   }
   
   // get an int* from a numeric from R
@@ -256,7 +292,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
-  nr_polyline(nr, height, width, x, y, N, color, asInteger(close_));
+  nr_polyline(nr, height, width, x, y, N, color, Rf_asInteger(close_));
 
   // free and return
   if (freex) free(x);
@@ -268,7 +304,17 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Draw Text [R interface]
+// Draw Text
+// 
+// This is a simplified interface using builtin fonts. 
+// Use `naratext` and/or 'lofifonts' for more options
+//
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y location
+// @param str text to write
+// @param color color
+// @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
 void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize) {
@@ -301,7 +347,7 @@ void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char
   for (int char_idx = 0; char_idx < nchars; char_idx++) {
     int c = str[char_idx] - 32;
     if (c < 0 || c > 94) {
-      error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
+      Rf_error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
     }
     
     uint8_t *letter = &font[c * char_h];
@@ -319,6 +365,19 @@ void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char
 
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw Text [R interface]
+// 
+// This is a simplified interface using builtin fonts. 
+// Use `naratext` and/or 'lofifonts' for more options
+//
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y location
+// @param str text to write
+// @param color color
+// @param fontsize fontsize
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -330,55 +389,18 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
   int  nr_width  = Rf_ncols(nr_);
 
   uint32_t color = single_rcolor_to_int(color_);
-  int x = asInteger(x_);
-  int y = asInteger(y_);
+  int x = Rf_asInteger(x_);
+  int y = Rf_asInteger(y_);
 
-  const char *str = CHAR(asChar(str_));
+  const char *str = CHAR(Rf_asChar(str_));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int fontsize = asInteger(fontsize_);
-  // uint8_t *font = spleen5x8;
-  // int char_w = 5;
-  // int char_h = 8;
-  // 
-  // if (fontsize >= 16) {
-  //   font = spleen8x16;
-  //   char_w = 8;
-  //   char_h = 16;
-  // } else if (fontsize >= 12) {
-  //   font = spleen6x12;
-  //   char_w = 6;
-  //   char_h = 12;
-  // }
-
+  int fontsize = Rf_asInteger(fontsize_);
   nr_text_basic(nr, nr_height, nr_width, x, y, str, color, fontsize);
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Loop over letters
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // int nchars = (int)strlen(str);
-  // int col = 0;
-  // 
-  // for (int char_idx = 0; char_idx < nchars; char_idx++) {
-  //   int c = str[char_idx] - 32;
-  //   if (c < 0 || c > 94) {
-  //     error("draw_text() only accepts plain ASCII.  Char out of range: %i = %d", c, str[char_idx]);
-  //   }
-  // 
-  //   uint8_t *letter = &font[c * char_h];
-  //   for (int row = 0; row < char_h; row ++) {
-  //     for (int i = 0; i < char_w; i++) {
-  //       if (letter[row] & (1 << (8 - i))) {
-  //         nr_point(nr, nr_height, nr_width, col + i + x, y - char_h + row, color);
-  //       }
-  //     }
-  //   }
-  // 
-  //   col += char_w;
-  // }
 
+  
   return nr_;
 }
 
@@ -386,6 +408,17 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Rect. Vectorised [R interface]
+// 
+// This is a simplified interface using builtin fonts. 
+// Use `naratext` and/or 'lofifonts' for more options
+//
+// @param nr native raster (modified in-place)
+// @param height,width dimensions
+// @param x,y locations
+// @param w,h widths and heights
+// @param fill fill colour
+// @param color outline colour
+// @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
                 SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_) {
@@ -406,8 +439,8 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *ws = as_int32_vec(w_, N, &freew);
   int *hs = as_int32_vec(h_, N, &freeh);
   
-  double hjust = asReal(hjust_);
-  double vjust = asReal(vjust_);
+  double hjust = Rf_asReal(hjust_);
+  double vjust = Rf_asReal(vjust_);
   
   // Colors
   bool freecol = false, freefill = false;
@@ -454,7 +487,12 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
 }
 
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw circle [C interface]
+//
+// @param xm,ym centre of circle
+// @param r radius
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
   // Skip NAs
   if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
@@ -463,7 +501,7 @@ void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint3
   
   int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
   if (ydone == NULL) {
-    error("nr_circle(): error allocating 'ydone'");
+    Rf_error("nr_circle(): error allocating 'ydone'");
   }
   
   int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
@@ -534,7 +572,7 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
 
     int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
     if (ydone == NULL) {
-      error("error allocating 'ydone'");
+      Rf_error("error allocating 'ydone'");
     }
     
     int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
@@ -575,6 +613,9 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Sort an integer vector
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 static int scanline_sort_x(const void *a, const void *b) {
   return *(int *)a - *(int *)b;
 }
@@ -595,7 +636,7 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
   if (nodeX == NULL) {
-    error("fill_polygon_c(): memory allocation failed for 'nodeX'");
+    Rf_error("fill_polygon_c(): memory allocation failed for 'nodeX'");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -620,7 +661,7 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double *m = (double *)malloc((size_t)npoints * sizeof(double));
   if (m == NULL) {
-    error("fill_polygon_c(): memory allocation failed for 'm'");
+    Rf_error("fill_polygon_c(): memory allocation failed for 'm'");
   }
   
   {
@@ -697,8 +738,8 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   assert_nativeraster(nr_);
   
-  if (length(x_) != length(y_)) {
-    error("Arguments 'x' and 'y' must be same length.");
+  if (Rf_length(x_) != Rf_length(y_)) {
+    Rf_error("Arguments 'x' and 'y' must be same length.");
   }
   
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -716,12 +757,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int *y = as_int32_vec(y_, N, &freey);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, height, width, x, y, length(x_), fill);
+  nr_polygon(nr, height, width, x, y, Rf_length(x_), fill);
   
   // outline
   if (!is_transparent(color)) {
     // Rprintf("Polygon Color: %i\n", color);
-    nr_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
+    nr_polyline_(nr_, x_, y_, color_, Rf_ScalarLogical(1));
   }
   
   // free and return
@@ -737,7 +778,7 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
 SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_) {
   
   // Can we just do single polygon handling?
-  if (isNull(id_)) {
+  if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
     return nr_polygons_single_(nr_, x_, y_, fill_, color_);
   }
@@ -750,13 +791,13 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   int width  = Rf_ncols(nr_);
   
   // Sanity check
-  int N = length(x_);
-  if (length(y_) != N) {
-    error("Arguments 'x' and 'y' must be same length.");
+  int N = Rf_length(x_);
+  if (Rf_length(y_) != N) {
+    Rf_error("Arguments 'x' and 'y' must be same length.");
   }
   
-  if (length(id_) != N) {
-    error("Must supply 'id' arguments for all coordinates");
+  if (Rf_length(id_) != N) {
+    Rf_error("Must supply 'id' arguments for all coordinates");
   }
   
   // Ensure 'id' is integer type for easier processing

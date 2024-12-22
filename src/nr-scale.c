@@ -1,5 +1,5 @@
 
-
+#define R_NO_REMAP
 
 #include <R.h>
 #include <Rinternals.h>
@@ -16,7 +16,9 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 
+// Nearest neighbour resizing
+//
+// @param height,width desired output dimensions
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   
@@ -26,18 +28,12 @@ SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   int in_width  = Rf_ncols(nr_);
   int in_height = Rf_nrows(nr_);
   
-  int out_width  = asInteger(width_);
-  int out_height = asInteger(height_);
+  int out_width  = Rf_asInteger(width_);
+  int out_height = Rf_asInteger(height_);
   
   // Create nativeraster and copy contents
-  SEXP dst_ = PROTECT(allocVector(INTSXP, out_width * out_height));
-  SET_CLASS(dst_, mkString("nativeRaster"));
-  SEXP nr_dim = PROTECT(allocVector(INTSXP, 2));
-  INTEGER(nr_dim)[0] = out_height;
-  INTEGER(nr_dim)[1] = out_width;
-  SET_DIM(dst_, nr_dim);
-  UNPROTECT(1);
-  
+  SEXP dst_ = PROTECT(nr_new(out_height, out_width));
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,7 +123,8 @@ void lerp_row(uint32_t *in_row, int in_width, uint32_t *out_row, int out_width, 
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 
+// Resize with bilinear intepolation.
+// This interpolates in RGBA space - which isn't great.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   
@@ -137,21 +134,15 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   int in_width  = Rf_ncols(nr_);
   int in_height = Rf_nrows(nr_);
   
-  int out_width  = asInteger(width_);
-  int out_height = asInteger(height_);
+  int out_width  = Rf_asInteger(width_);
+  int out_height = Rf_asInteger(height_);
   
   if (out_width <= 2 || out_height <= 2) {
-    error("resize_bilinear_(): new height/width must be 2 pixels or greater");
+    Rf_error("resize_bilinear_(): new height/width must be 2 pixels or greater");
   }
   
   // Create nativeraster and copy contents
-  SEXP dst_ = PROTECT(allocVector(INTSXP, out_width * out_height));
-  SET_CLASS(dst_, mkString("nativeRaster"));
-  SEXP nr_dim = PROTECT(allocVector(INTSXP, 2));
-  INTEGER(nr_dim)[0] = out_height;
-  INTEGER(nr_dim)[1] = out_width;
-  SET_DIM(dst_, nr_dim);
-  UNPROTECT(1);
+  SEXP dst_ = PROTECT(nr_new(out_height, out_width));
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from
@@ -163,7 +154,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   float *frac_row = malloc((unsigned long)out_height * sizeof(float));
   
   if (left_col == NULL || upper_row == NULL || frac_col == NULL || frac_row == NULL) {
-    error("resize_bilinear_(): Memory allocation error");
+    Rf_error("resize_bilinear_(): Memory allocation error");
   }
   
   for (int i = 0; i < out_width; i++) {
@@ -199,7 +190,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   uint32_t *upper_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
   uint32_t *lower_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
   if (lower_row_cache == NULL || upper_row_cache == NULL) {
-    error("resize_bilinear_(): Memory allocation error for row cache");
+    Rf_error("resize_bilinear_(): Memory allocation error for row cache");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

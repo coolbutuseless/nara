@@ -1,5 +1,5 @@
 
-
+#define R_NO_REMAP
 
 #include <R.h>
 #include <Rinternals.h>
@@ -121,8 +121,8 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   assert_nativeraster(nr_);
   assert_nativeraster(src_);
   
-  if (!(length(x_) == 1 || length(y_) == 1 || length(x_) == length(y_))) {
-    error("'x' and 'y' must be the length 1 or N.  x = %i, y = %i", length(x_), length(y_));
+  if (!(Rf_length(x_) == 1 || Rf_length(y_) == 1 || Rf_length(x_) == Rf_length(y_))) {
+    Rf_error("'x' and 'y' must be the length 1 or N.  x = %i, y = %i", Rf_length(x_), Rf_length(y_));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,30 +142,30 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Single native raster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int x0 = asInteger(x0_);
-  int y0 = asInteger(y0_);
+  int x0 = Rf_asInteger(x0_);
+  int y0 = Rf_asInteger(y0_);
   
   int src_width  = Rf_ncols(src_);
   int src_height = Rf_nrows(src_);
   
-  int w = asInteger(w_) < 0 ? src_width  : asInteger(w_);
-  int h = asInteger(h_) < 0 ? src_height : asInteger(h_);
+  int w = Rf_asInteger(w_) < 0 ? src_width  : Rf_asInteger(w_);
+  int h = Rf_asInteger(h_) < 0 ? src_height : Rf_asInteger(h_);
   
   if (x0 + w - 1 >= src_width || y0 + h - 1 >= src_height) {
-    error("Specified src [x0 = %i, y0 = %i] + [w = %i, h = %i] is outside bounds [%i, %i]",
+    Rf_error("Specified src [x0 = %i, y0 = %i] + [w = %i, h = %i] is outside bounds [%i, %i]",
           x0, y0, w, h, src_width, src_height);
   }
   
-  int hjust = (int)round(asReal(hjust_) * src_width);
-  int vjust = (int)round(asReal(vjust_) * src_height);
+  int hjust = (int)round(Rf_asReal(hjust_) * src_width);
+  int vjust = (int)round(Rf_asReal(vjust_) * src_height);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr  = (uint32_t *)INTEGER(nr_);
   uint32_t *src = (uint32_t *)INTEGER(src_);
-  bool respect_alpha = asLogical(respect_alpha_);
-  for (int i = 0; i < length(x_); i++) {
+  bool respect_alpha = Rf_asLogical(respect_alpha_);
+  for (int i = 0; i < Rf_length(x_); i++) {
     blit_core_(nr, x[i] - hjust, y[i] - vjust, nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
   }
   
@@ -184,12 +184,12 @@ SEXP blit_list_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_list_, SEXP src_idx_, SEXP 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   assert_nativeraster(nr_);
   
-  if (!isNewList(src_list_)) {
-    error("nr_blit_list_(): src_list_ must be a list");
+  if (!Rf_isNewList(src_list_)) {
+    Rf_error("nr_blit_list_(): src_list_ must be a list");
   }
   
-  if (!(length(x_) == 1 || length(y_) == 1 || length(x_) == length(y_))) {
-    error("'x' and 'y' must be the length 1 or N.  x = %i, y = %i", length(x_), length(y_));
+  if (!(Rf_length(x_) == 1 || Rf_length(y_) == 1 || Rf_length(x_) == Rf_length(y_))) {
+    Rf_error("'x' and 'y' must be the length 1 or N.  x = %i, y = %i", Rf_length(x_), Rf_length(y_));
   }
   
   
@@ -222,8 +222,8 @@ SEXP blit_list_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_list_, SEXP src_idx_, SEXP 
   
   for (int i = 0; i < N; i++) {
     int idx = indices[i] - 1;
-    if (idx >= length(src_list_) || idx < 0) {
-      Rprintf("nr_blit_list_(): 'src_idx' is out of bounds for given 'src_list'. %i is not in range [0, %i]\n", idx, length(src_list_) - 1);
+    if (idx >= Rf_length(src_list_) || idx < 0) {
+      Rprintf("nr_blit_list_(): 'src_idx' is out of bounds for given 'src_list'. %i is not in range [0, %i]\n", idx, Rf_length(src_list_) - 1);
       continue;
     }
     SEXP src_ = VECTOR_ELT(src_list_, idx);

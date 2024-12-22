@@ -1,5 +1,5 @@
 
-
+#define R_NO_REMAP
 
 #include <R.h>
 #include <Rinternals.h>
@@ -13,6 +13,15 @@
 
 #include "color.h"
 #include "nr-utils.h"
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// R Interface
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_new_(SEXP height_, SEXP width_) {
+  return nr_new(Rf_asInteger(height_), Rf_asInteger(width_));
+}
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +50,7 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
   int  dst_width  = Rf_ncols(nr_dst_);
 
   if (src_height != dst_height || src_width != dst_width) {
-    error("src and dst nativeRaster objects must be the same dimensions");
+    Rf_error("src and dst nativeRaster objects must be the same dimensions");
   }
 
   uint32_t *nr_src = (uint32_t *)INTEGER(nr_src_);
@@ -58,23 +67,8 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
 // [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP duplicate_(SEXP nr_) {
-
   assert_nativeraster(nr_);
-
-  // Get dims of src
-  int  height = Rf_nrows(nr_);
-  int  width  = Rf_ncols(nr_);
-
-  // Create nativeraster and copy contents
-  SEXP nr_new_ = PROTECT(allocVector(INTSXP, width * height));
-  copy_into_c((uint32_t *)INTEGER(nr_new_), (uint32_t *)INTEGER(nr_), height, width);
-
-  // Assign correct classes
-  SET_CLASS(nr_new_, mkString("nativeRaster"));
-  SET_DIM(nr_new_, GET_DIM(nr_));
-
-  UNPROTECT(1);
-  return nr_new_;
+  return Rf_duplicate(nr_);
 }
 
 
@@ -121,7 +115,7 @@ SEXP flipv_(SEXP nr_) {
   
   int *tmp = (int *)malloc((size_t)width * sizeof(int));
   if (tmp == NULL) {
-    error("flipv_(): malloc() failure");
+    Rf_error("flipv_(): malloc() failure");
   }
   
   for (int row = 0; row < height/2; row++) {
@@ -136,7 +130,7 @@ SEXP flipv_(SEXP nr_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Flip horizontally
+// Flip horizontally (in-place)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP fliph_(SEXP nr_) {
   
@@ -159,7 +153,15 @@ SEXP fliph_(SEXP nr_) {
 }
 
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Replace old colours with new colours
+// 
+// @param nr modified in-place
+// @param old_cols vector of old colours
+// @param new_cols vector of new colours
+//
+// @return modified nr
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
   
   assert_nativeraster(nr_);
@@ -178,6 +180,7 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
       for (int idx = 0; idx < N; idx++) {
         if (*nr == old_cols[idx]) {
           *nr = new_cols[idx];
+          break;
         }
       }
       nr++;

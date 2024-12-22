@@ -1,5 +1,5 @@
 
-
+#define R_NO_REMAP
 
 #include <R.h>
 #include <Rinternals.h>
@@ -16,7 +16,7 @@
 
 
 int is_nativeraster(SEXP nr_) {
-  return isInteger(nr_) && inherits(nr_, "nativeRaster");
+  return Rf_isInteger(nr_) && Rf_inherits(nr_, "nativeRaster");
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,11 +24,25 @@ int is_nativeraster(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void assert_nativeraster(SEXP nr_) {
   if (!is_nativeraster(nr_)) {
-    error("Object is not a nativeRaster");
+    Rf_error("Object is not a nativeRaster");
   }
 }
 
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Create a new nativeRaster object
+//
+// @param height,width dimensions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_new(int height, int width) {
+  // SEXP Rf_allocMatrix(SEXPTYPE type, int nrow, int ncol);
+  SEXP nr_ = PROTECT(Rf_allocMatrix(INTSXP, height, width));
+  SEXP class_ = PROTECT(Rf_mkString("nativeRaster"));
+  SET_CLASS(nr_, class_);
+  
+  UNPROTECT(2);
+  return nr_;
+}
 
 
 
@@ -44,21 +58,21 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be REALSXP or INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!isInteger(vec_) && !isReal(vec_) && !isLogical(vec_)) {
-    error("as_int32_vec(): Expecting numeric but got %s\n", type2char((SEXPTYPE)TYPEOF(vec_)));
+  if (!Rf_isInteger(vec_) && !Rf_isReal(vec_) && !Rf_isLogical(vec_)) {
+    Rf_error("as_int32_vec(): Expecting numeric but got %s\n", Rf_type2char((SEXPTYPE)TYPEOF(vec_)));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be length 1 or N
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (length(vec_) != 1 && length(vec_) != N) {
-    error("as_int32_vec(): Input vector must be length 1 or N, not %i", length(vec_));
+  if (Rf_length(vec_) != 1 && Rf_length(vec_) != N) {
+    Rf_error("as_int32_vec(): Input vector must be length 1 or N, not %i", Rf_length(vec_));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do we have an integer vector of the correct length?
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if ((isInteger(vec_) || isLogical(vec_)) && length(vec_) == N) {
+  if ((Rf_isInteger(vec_) || Rf_isLogical(vec_)) && Rf_length(vec_) == N) {
     return INTEGER(vec_);
   }
   
@@ -69,22 +83,22 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   *do_free = 1;
   int *int_vec = malloc((size_t)N * sizeof(int));
   if (int_vec == NULL) {
-    error("as_int32_vec(): out of memory");
+    Rf_error("as_int32_vec(): out of memory");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If given INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isInteger(vec_) || isLogical(vec_)) {
+  if (Rf_isInteger(vec_) || Rf_isLogical(vec_)) {
     // Can only be an INTSXP of length=1
-      int value = asInteger(vec_);
+      int value = Rf_asInteger(vec_);
       for (int i = 0; i < N; i++) {
         int_vec[i] = value;
       }
   } else {
     // REALSXP
     double *dbl_vec = REAL(vec_);
-    if (length(vec_) == N) {
+    if (Rf_length(vec_) == N) {
       for (int i = 0; i < N; i++) {
         int_vec[i] = isnan(dbl_vec[i]) ? NA_INTEGER : (int) round(dbl_vec[i]);
       }
@@ -113,21 +127,21 @@ double *as_double_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be REALSXP or INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!isInteger(vec_) && !isReal(vec_)) {
-    error("as_double_vec(): Expecting numeric but got %s\n", type2char((SEXPTYPE)TYPEOF(vec_)));
+  if (!Rf_isInteger(vec_) && !Rf_isReal(vec_)) {
+    Rf_error("as_double_vec(): Expecting numeric but got %s\n", Rf_type2char((SEXPTYPE)TYPEOF(vec_)));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Must be length 1 or N
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (length(vec_) != 1 && length(vec_) != N) {
-    error("as_double_vec(): Input vector must be length 1 or N, not %i", length(vec_));
+  if (Rf_length(vec_) != 1 && Rf_length(vec_) != N) {
+    Rf_error("as_double_vec(): Input vector must be length 1 or N, not %i", Rf_length(vec_));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do we have an integer vector of the correct length?
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isReal(vec_) && length(vec_) == N) {
+  if (Rf_isReal(vec_) && Rf_length(vec_) == N) {
     return REAL(vec_);
   }
   
@@ -138,22 +152,22 @@ double *as_double_vec(SEXP vec_, int N, bool *do_free) {
   *do_free = 1;
   double *dbl_vec = malloc((size_t)N * sizeof(double));
   if (dbl_vec == NULL) {
-    error("as_double_vec(): out of memory");
+    Rf_error("as_double_vec(): out of memory");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If given INTSXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (isReal(vec_)) {
+  if (Rf_isReal(vec_)) {
     // Can only be an INTSXP of length=1
-    double value = asReal(vec_);
+    double value = Rf_asReal(vec_);
     for (int i = 0; i < N; i++) {
       dbl_vec[i] = value;
     }
   } else {
     // INTSXP
     int *int_vec = INTEGER(vec_);
-    if (length(vec_) == N) {
+    if (Rf_length(vec_) == N) {
       for (int i = 0; i < N; i++) {
         dbl_vec[i] = (double)(int_vec[i]);
       }
@@ -185,12 +199,12 @@ int calc_max_length(int count, ...) {
   
   for (int i = 0; i < count; i++) {
     SEXP x = va_arg(ap, SEXP);
-    int this_N = length(x);
+    int this_N = Rf_length(x);
     N = this_N > N ? this_N : N;
   }
   
   if (N < 0) {
-    error("calc_ma_length(): -1");
+    Rf_error("calc_ma_length(): -1");
   }
   
   return N;

@@ -12,6 +12,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Core
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extern SEXP nr_new_(SEXP height_, SEXP width_);
 extern SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_);
 extern SEXP duplicate_(SEXP nr_);
 extern SEXP fill_(SEXP nr_, SEXP color_);
@@ -57,7 +58,8 @@ extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , S
 
 
 static const R_CallMethodDef CEntries[] = {
-
+  
+  {"nr_new_"   , (DL_FUNC) &nr_new_   , 2},
   {"copy_into_", (DL_FUNC) &copy_into_, 2},
   {"duplicate_", (DL_FUNC) &duplicate_, 1},
   {"fill_"     , (DL_FUNC) &fill_     , 2},
