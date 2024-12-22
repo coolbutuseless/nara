@@ -705,7 +705,9 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
         nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
       } else if (y[i] == scanline && y[j] == scanline) {
         // Horizontal lines
-        nr_hline(nr, height, width, x[i], x[j], scanline, color);
+        // nr_hline(nr, height, width, x[i], x[j], scanline, color);
+        nodeX[nodes++] = (int) (x[i]); 
+        nodeX[nodes++] = (int) (x[j]); 
       }
       j = i; 
     }

@@ -261,6 +261,29 @@ test_that("nr-draw polygon works", {
 })
 
 
+test_that("nr-draw polygon works with outline", {
+  
+  nr <- nr_new(5, 5, 'white')
+  nr_polygon(nr, c(4, 0, 0), c(0, 0, 4), color = 'green')
+  if (interactive()) plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('white')
+  green <- colorfast::col_to_int('green')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      green, green, green, green, green,
+      green, black, black, green, white,
+      green, black, green, white, white,
+      green, green, white, white, white,
+      green, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+})
+
+
 
 
 
