@@ -23,16 +23,6 @@ SEXP nr_new_(SEXP height_, SEXP width_) {
 }
 
 
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Copy the contents of one nativeraster into another. [C interface]
-// Sizes must match
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void copy_into_c(uint32_t *nr_dst, uint32_t *nr_src, int height, int width) {
-  memcpy(nr_dst, nr_src, (size_t)height * (size_t)width * sizeof(uint32_t));
-}
-
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Copy the contents of one nativeraster into another. [R interface]
 // Sizes must match
@@ -43,23 +33,20 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
   assert_nativeraster(nr_dst_);
 
   // Check dims of src and dst
-  int  src_height = Rf_nrows(nr_src_);
-  int  src_width  = Rf_ncols(nr_src_);
-
-  int  dst_height = Rf_nrows(nr_dst_);
-  int  dst_width  = Rf_ncols(nr_dst_);
+  size_t  src_height = (size_t)Rf_nrows(nr_src_);
+  size_t  src_width  = (size_t)Rf_ncols(nr_src_);
+  size_t  dst_height = (size_t)Rf_nrows(nr_dst_);
+  size_t  dst_width  = (size_t)Rf_ncols(nr_dst_);
 
   if (src_height != dst_height || src_width != dst_width) {
     Rf_error("src and dst nativeRaster objects must be the same dimensions");
   }
 
-  uint32_t *nr_src = (uint32_t *)INTEGER(nr_src_);
-  uint32_t *nr_dst = (uint32_t *)INTEGER(nr_dst_);
-
-  copy_into_c(nr_dst, nr_src, src_height, src_width);
-
+  memcpy(INTEGER(nr_dst_), INTEGER(nr_src_), src_height * src_width * sizeof(uint32_t));
+  
   return nr_dst_;
 }
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,16 +56,6 @@ SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
 SEXP duplicate_(SEXP nr_) {
   assert_nativeraster(nr_);
   return Rf_duplicate(nr_);
-}
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Fill nativeraster with value [C interface]
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void fill_c(uint32_t *nr, int height, int width, uint32_t color) {
-  for (int i = 0; i < height * width; i++) {
-    nr[i] = color;
-  }
 }
 
 
@@ -92,15 +69,25 @@ SEXP fill_(SEXP nr_, SEXP color_) {
 
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
 
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  int N = Rf_length(nr_);
 
   uint32_t color = single_rcolor_to_int(color_);
 
-  fill_c(nr, height, width, color);
+  int i = 0;
+  for (; i < N - 3; i += 4) {
+    nr[i + 0] = color;
+    nr[i + 1] = color;
+    nr[i + 2] = color;
+    nr[i + 3] = color;
+  }
+  
+  for (; i < N; i++) {
+    nr[i] = color;
+  }
 
   return nr_;
 }
+
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,18 +97,18 @@ SEXP flipv_(SEXP nr_) {
   
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  size_t height = (size_t)Rf_nrows(nr_);
+  size_t width  = (size_t)Rf_ncols(nr_);
   
-  int *tmp = (int *)malloc((size_t)width * sizeof(int));
+  int *tmp = (int *)malloc(width * sizeof(int));
   if (tmp == NULL) {
     Rf_error("flipv_(): malloc() failure");
   }
   
   for (int row = 0; row < height/2; row++) {
-    memcpy(tmp                            , nr +                row * width, (size_t)width * sizeof(uint32_t));
-    memcpy(nr + row * width               , nr + (height - row - 1) * width, (size_t)width * sizeof(uint32_t));
-    memcpy(nr + (height - row - 1) * width,                             tmp, (size_t)width * sizeof(uint32_t));
+    memcpy(tmp                            , nr +                row * width, width * sizeof(uint32_t));
+    memcpy(nr + row * width               , nr + (height - row - 1) * width, width * sizeof(uint32_t));
+    memcpy(nr + (height - row - 1) * width,                             tmp, width * sizeof(uint32_t));
   }
   
   free(tmp);
