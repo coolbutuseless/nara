@@ -25,9 +25,9 @@ is supplied here, it must have the exact dimensions to match the matrix}
 Convert a 'magick' image to \code{nativeRaster}
 }
 \examples{
-if (requireNamespace('magick', quietly = TRUE)) {
-  im <- magick::image_read(system.file("img/Rlogo.png", package = "png"))
-  nr <- magick_to_nr(im)
-  plot(nr)
-}
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+im <- magick::logo
+nr <- magick_to_nr(im)
+plot(nr)
+\dontshow{\}) # examplesIf}
 }

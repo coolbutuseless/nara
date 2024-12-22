@@ -9,18 +9,15 @@
 #' 
 #' @return \code{nativeRaster}
 #' 
-#' @examples
-#' if (requireNamespace('magick', quietly = TRUE)) {
-#'   im <- magick::image_read(system.file("img/Rlogo.png", package = "png"))
-#'   nr <- magick_to_nr(im)
-#'   plot(nr)
-#' }
+#' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
+#' im <- magick::logo
+#' nr <- magick_to_nr(im)
+#' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_to_nr <- function(im, dst = NULL) {
   if (requireNamespace('magick', quietly = TRUE)) {
-    # Force an alpha channel. Dodgy.
-    im <- magick::image_transparent(im, color = '#00000001') 
+    im <- magick::image_convert(im, format = 'rgba', matte = TRUE)
     if (length(im) == 1) {
       .Call(magick_to_nr_, magick::image_data(im), dst)
     } else {
