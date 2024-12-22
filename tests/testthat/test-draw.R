@@ -240,8 +240,9 @@ test_that("nr-draw polyline works with close", {
 test_that("nr-draw polygon works", {
   
   nr <- nr_new(5, 5, 'white')
-  nr_polygon(nr, c(0, 0, 4), c(4, 0, 0))
-  plot(nr, T)
+  # nr_polygon(nr, c(0, 0, 4), c(4, 0, 0))
+  nr_polygon(nr, c(4, 0, 0), c(0, 0, 4))
+  if (interactive()) plot(nr, T)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -250,9 +251,9 @@ test_that("nr-draw polygon works", {
   expect_equal(
     nr,
     matrix(c(
-      black, black, black, black, black,
-      black, white, white, black, white,
-      black, white, black, white, white,
+      black, black, black, black, white,
+      black, black, black, black, white,
+      black, black, black, white, white,
       black, black, white, white, white,
       black, white, white, white, white
     ), 5, 5, byrow = T)
