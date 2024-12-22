@@ -48,6 +48,7 @@ nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = -1L, h = -1L, hjust = 0
 #' @param src_list list of native rasters
 #' @param src_idx indices into the list of the native raster
 #' 
+#' @return None. \code{nr} modified in-place and returned invisibly.
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
 #' nr_blit_list(nr, x = c(0, 25), y = c(0, 25), src_list = deer_sprites, src_idx = c(1, 2))

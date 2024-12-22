@@ -15,6 +15,17 @@ nrs_to_mp4(nr_list, mp4_name, verbose = FALSE, ...)
 
 \item{...}{other arguments passed to \code{magick::image_write_video()}}
 }
+\value{
+None.
+}
 \description{
 Magick conversion - possible won't be in final version of 'nara' pkg
+}
+\examples{
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+im <- magick::logo
+nr1 <- magick_to_nr(im)
+nr2 <- nr_duplicate(nr1)
+nrs_to_gif(list(nr1, nr2), "nothing.gif")
+\dontshow{\}) # examplesIf}
 }

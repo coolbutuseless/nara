@@ -54,7 +54,12 @@ nr_to_magick <- function(nr) {
 #' @param verbose logical. default FALSE
 #' @param framerate frames per second
 #' @param ... other arguments passed to \code{magick::image_write_gif()}
-#' 
+#' @return None.
+#' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
+#' im <- magick::logo
+#' nr1 <- magick_to_nr(im)
+#' nr2 <- nr_duplicate(nr1)
+#' nrs_to_gif(list(nr1, nr2), "nothing.gif")
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, framerate = 30, ...) {
@@ -76,7 +81,12 @@ nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, framerate = 30, ...) 
 #' @param mp4_name name of mp4 file to save
 #' @param verbose logical. default FALSE
 #' @param ... other arguments passed to \code{magick::image_write_video()}
-#' 
+#' @return None.
+#' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
+#' im <- magick::logo
+#' nr1 <- magick_to_nr(im)
+#' nr2 <- nr_duplicate(nr1)
+#' nrs_to_gif(list(nr1, nr2), "nothing.gif")
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_mp4 <- function(nr_list, mp4_name, verbose = FALSE, ...) {

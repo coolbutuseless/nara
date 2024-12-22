@@ -17,6 +17,17 @@ nrs_to_gif(nr_list, gif_name, verbose = FALSE, framerate = 30, ...)
 
 \item{...}{other arguments passed to \code{magick::image_write_gif()}}
 }
+\value{
+None.
+}
 \description{
 Magick conversion - possibly won't be in final version of 'nara' pkg
+}
+\examples{
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+im <- magick::logo
+nr1 <- magick_to_nr(im)
+nr2 <- nr_duplicate(nr1)
+nrs_to_gif(list(nr1, nr2), "nothing.gif")
+\dontshow{\}) # examplesIf}
 }

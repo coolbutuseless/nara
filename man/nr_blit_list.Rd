@@ -41,6 +41,9 @@ which can be much much faster.  If the \code{src} has an
 any transparent pixels, \code{respect_alpha = TRUE} is 
 probably the correct setting.}
 }
+\value{
+None. \code{nr} modified in-place and returned invisibly.
+}
 \description{
 Blit from a list of native rasters
 }
