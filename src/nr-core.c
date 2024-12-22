@@ -101,7 +101,7 @@ SEXP fill_(SEXP nr_, SEXP color_) {
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
 
-  uint32_t color = color_sexp_to_packed_col(color_);
+  uint32_t color = single_rcolor_to_int(color_);
 
   fill_c(nr, height, width, color);
 
@@ -170,8 +170,8 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
   int N = calc_max_length(2, old_cols_, new_cols_);
   
   bool freeold = false, freenew = false;
-  uint32_t *old_cols = colors_to_packed_cols(old_cols_, N, &freeold);
-  uint32_t *new_cols = colors_to_packed_cols(new_cols_, N, &freenew);
+  uint32_t *old_cols = multi_rcolors_to_ints(old_cols_, N, &freeold);
+  uint32_t *new_cols = multi_rcolors_to_ints(new_cols_, N, &freenew);
   
   for (int row = 0; row < height; row++) {
     for (int col = 0; col < width; col++) {

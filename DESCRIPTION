@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9025
+Version: 0.1.1.9026
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
     )
@@ -13,8 +13,10 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
+LinkingTo: colorfast
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    colorfast (>= 1.0.0.9000)
 Suggests: 
     testthat (>= 3.0.0),
     jpeg,
@@ -30,3 +32,5 @@ Copyright: The included 'deer' sprites are by Calciumtrice and licensed under
    bitmap font 'spleen' was created by Frederic Cambus (c) 2018-2024. See
    'inst/LICENSE-spleen.txt' for full LICENSE
 VignetteBuilder: knitr
+Remotes:
+  coolbutuseless/colorfast

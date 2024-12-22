@@ -32,7 +32,7 @@ Matrix to \code{nativeRaster}
 }
 \examples{
 m <- matrix(1:12, 3, 4)
-palette <- str_cols_to_packed_cols(rainbow(12))
+palette <- colorfast::col_to_int(rainbow(12))
 nr <- matrix_to_nr(m, palette) 
 plot(nr)
 

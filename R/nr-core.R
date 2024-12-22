@@ -24,10 +24,11 @@
 #' nr <- nr_new(400, 300, 'hotpink')
 #' plot(nr)
 #' 
+#' @importFrom colorfast col_to_int
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
-  res <- matrix(str_cols_to_packed_cols(fill), nrow = height, ncol = width)
+  res <- matrix(colorfast::col_to_int(fill), nrow = height, ncol = width)
   class(res) <- 'nativeRaster'
   res
 }

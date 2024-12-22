@@ -7,5 +7,5 @@ test_that("Crop work works", {
   expect_equal(ncol(nr2), 4)
   expect_equal(nrow(nr2), 3)
   
-  expect_identical(unique(nr2), str_cols_to_packed_cols('hotpink'))
+  expect_identical(unique(nr2), colorfast::col_to_int('hotpink'))
 })

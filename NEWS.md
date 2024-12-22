@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9025 2024-08-18
+# nara 0.1.1.9026 2024-12-22
 
+* [9026] Use `{colorfast}` for color conversion
 * Remove 'isocubes()'
 * Remove 'op' argument. 
 * Standardise argument ordering

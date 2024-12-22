@@ -68,7 +68,7 @@ array_to_nr <- function(arr, dst = NULL) {
 #'
 #' @examples
 #' m <- matrix(1:12, 3, 4)
-#' palette <- str_cols_to_packed_cols(rainbow(12))
+#' palette <- colorfast::col_to_int(rainbow(12))
 #' nr <- matrix_to_nr(m, palette) 
 #' plot(nr)
 #' 
@@ -127,7 +127,7 @@ if (FALSE) {
 if (FALSE) {
   mat <- matrix(seq(0, 10, length.out = 10)/ 10, 2, 5)
   
-  palette <- rainbow(100) |> str_cols_to_packed_cols()
+  palette <- rainbow(100) |> colorfast::col_to_int()
   matrix_to_nr(mat, palette = palette)
   
 }

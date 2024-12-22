@@ -55,12 +55,6 @@ extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fi
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP close_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_);
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Color
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP colors_to_packed_cols_(SEXP color_);
-extern SEXP packed_cols_to_hexcolors_(SEXP ints_);
-
 
 static const R_CallMethodDef CEntries[] = {
 
@@ -94,9 +88,6 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_circle_"    , (DL_FUNC) &nr_circle_    , 6},
   {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 5},
   {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 6},
-  
-  {"colors_to_packed_cols_"   , (DL_FUNC) &colors_to_packed_cols_   , 1},
-  {"packed_cols_to_hexcolors_", (DL_FUNC) &packed_cols_to_hexcolors_, 1},
 
 
   {NULL , NULL, 0}

@@ -130,7 +130,7 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
   
   // Colors
   bool freecol = false;
-  uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
+  uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
     nr_point(nr, height, width, x[i], y[i], color[i]);
@@ -195,7 +195,7 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
   
   // Colors
   bool freecol = false;
-  uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
+  uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
     nr_line(nr, height, width, x0[i], y0[i], x1[i], y1[i], color[i]);
@@ -244,7 +244,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP close_) {
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
 
-  uint32_t color = color_sexp_to_packed_col(color_);
+  uint32_t color = single_rcolor_to_int(color_);
   
   if (length(x_) != length(y_)) {
     error("Arguments 'x' and 'y' must be same length.");
@@ -329,7 +329,7 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
   int  nr_height = Rf_nrows(nr_);
   int  nr_width  = Rf_ncols(nr_);
 
-  uint32_t color = color_sexp_to_packed_col(color_);
+  uint32_t color = single_rcolor_to_int(color_);
   int x = asInteger(x_);
   int y = asInteger(y_);
 
@@ -411,8 +411,8 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   // Colors
   bool freecol = false, freefill = false;
-  uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
-  uint32_t *fill  = colors_to_packed_cols(fill_ , N, &freefill);
+  uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
+  uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
   
   for (int i = 0; i < N; i++) {
     
@@ -518,8 +518,8 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
   
   // Colors
   bool freecol = false, freefill = false;
-  uint32_t *color = colors_to_packed_cols(color_, N, &freecol);
-  uint32_t *fill  = colors_to_packed_cols(fill_ , N, &freefill);
+  uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
+  uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
 
   for (int idx = 0; idx < N; idx++) {
     // Rprintf("idx: %i\n", idx);
@@ -706,8 +706,8 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
   
-  uint32_t color = color_sexp_to_packed_col(color_);
-  uint32_t fill   = color_sexp_to_packed_col(fill_);
+  uint32_t color = single_rcolor_to_int(color_);
+  uint32_t fill   = single_rcolor_to_int(fill_);
   
   // get an int* from a numeric from R
   bool freex = false, freey = false;
@@ -782,8 +782,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   
   // Colors
   bool freecol = false, freefill = false;
-  uint32_t *color = colors_to_packed_cols(color_, npolys, &freecol);
-  uint32_t *fill  = colors_to_packed_cols(fill_ , npolys, &freefill);
+  uint32_t *color = multi_rcolors_to_ints(color_, npolys, &freecol);
+  uint32_t *fill  = multi_rcolors_to_ints(fill_ , npolys, &freefill);
   
   int poly_id = id[0];
   int poly_start = 0;

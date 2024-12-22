@@ -11,8 +11,9 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+#include <colorfast.h>
+
 #include "color.h"
-#include "hash-color.h"
 #include "nr-utils.h"
 
 
@@ -53,7 +54,7 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
   double *mat = REAL(mat_);
   
   bool freepal = false;
-  uint32_t *palette = colors_to_packed_cols(palette_, N, &freepal);
+  uint32_t *palette = multi_rcolors_to_ints(palette_, N, &freepal);
   
   double min = asReal(min_);
   double max = asReal(max_);
@@ -108,7 +109,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, S
   int height = Rf_nrows(mat_);
   int width  = Rf_ncols(mat_);
   
-  uint32_t fill = color_sexp_to_packed_col(fill_);
+  uint32_t fill = single_rcolor_to_int(fill_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prep native raster
@@ -134,7 +135,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, S
   int *mat = INTEGER(mat_);
   
   bool freepal = false;
-  uint32_t *palette = colors_to_packed_cols(palette_, N, &freepal);
+  uint32_t *palette = multi_rcolors_to_ints(palette_, N, &freepal);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
@@ -197,7 +198,7 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       const char *val = CHAR(STRING_ELT(ras_, col * height + row));
-      *(nr + col * height + row) = color_char_to_packed_col(val);
+      *(nr + col * height + row) = col_to_int(val);
     }
   }
   
@@ -223,9 +224,11 @@ SEXP nr_to_raster_(SEXP nr_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
+  char buf[10];
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
-      SET_STRING_ELT(ras_, col * height + row, packed_col_to_CHARSXP_color(nr + col * height + row));
+      int_to_col(nr[col * height + row], buf);
+      SET_STRING_ELT(ras_, col * height + row, mkChar(buf));
     }
   }
   
