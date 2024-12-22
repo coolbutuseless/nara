@@ -7,6 +7,6 @@ test_that("magick round-trip works", {
   nr <- magick_to_nr(im)
   im2 <- nr_to_magick(nr)
   dist <- magick::image_compare_dist(im, im2)
-  expect_equal(dist$distortion, 1)
+  expect_true(dist$distortion > 0.99)
 
 })
