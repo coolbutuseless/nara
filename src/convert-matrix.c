@@ -68,7 +68,7 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
   double max = Rf_asReal(max_);
   double range_scale = 1.0 / (max - min);
   
-  int index = 0;
+  uint32_t *nr = (uint32_t *)INTEGER(dst_);
   uint32_t *ptr = (uint32_t *)INTEGER(dst_);
   
   for (int col = 0; col < width; col++) {
@@ -78,8 +78,7 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
         Rf_error("Value in matrix out of range (%.1f, %.1f): %.3f", min, max, val);
       }
       size_t idx = (size_t)floor((val - min) * range_scale * N);
-      // Rprintf("idx: (%.1f, %.1f)  %.3f = %zu\n", min, max, val, idx);
-      ptr[index++] = palette[idx];
+      *(nr + row * width + col) = palette[idx];
     }
   }
   
