@@ -46,10 +46,10 @@ just be replaced with \code{src} pixels
 which can be much much faster.}
 }
 \value{
-\code{nativeRaster}
+None. \code{dst} modifief by-reference and returned invisibly.
 }
 \description{
-This is useful as a way of positioning sprites or icons in an image.
+Single source blitted to one or more locations.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')

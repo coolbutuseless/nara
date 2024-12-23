@@ -91,10 +91,10 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (Rf_isInteger(vec_) || Rf_isLogical(vec_)) {
     // Can only be an INTSXP of length=1
-      int value = Rf_asInteger(vec_);
-      for (int i = 0; i < N; i++) {
-        int_vec[i] = value;
-      }
+    int value = Rf_asInteger(vec_);
+    for (int i = 0; i < N; i++) {
+      int_vec[i] = value;
+    }
   } else {
     // REALSXP
     double *dbl_vec = REAL(vec_);
@@ -213,6 +213,23 @@ int calc_max_length(int count, ...) {
 
 
 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Fetch a data.frame column by name or else return NULL
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP get_df_col(SEXP df_, const char *str) {
+  SEXP col   = R_NilValue;
+  SEXP names = Rf_getAttrib(df_, R_NamesSymbol);
+  
+  for (int i = 0; i < Rf_length(df_); i++) {
+    if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
+      col = VECTOR_ELT(df_, i);
+      break;
+    }
+  }
+  return col;
+}
 
 
 

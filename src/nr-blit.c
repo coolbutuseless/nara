@@ -129,12 +129,12 @@ void blit_core_naive_(uint32_t *dst, int dst_width, int dst_height, int x, int y
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP blit_(SEXP dst_  , SEXP src_, 
-           SEXP x_    , SEXP y_, 
-           SEXP x0_   , SEXP y0_, 
-           SEXP w_    , SEXP h_,
-           SEXP hjust_, SEXP vjust_, 
-           SEXP respect_alpha_) {
+SEXP nr_blit_(SEXP dst_  , SEXP src_, 
+             SEXP x_    , SEXP y_, 
+             SEXP x0_   , SEXP y0_, 
+             SEXP w_    , SEXP h_,
+             SEXP hjust_, SEXP vjust_, 
+             SEXP respect_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
@@ -203,8 +203,14 @@ SEXP blit_(SEXP dst_  , SEXP src_,
 
 
 
-
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
+  
+  
+  return dst_;
+}
 
 
 

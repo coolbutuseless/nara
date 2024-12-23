@@ -3,7 +3,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Copy one \code{nativeRaster} image into another at an arbitrary location.
 #'
-#' This is useful as a way of positioning sprites or icons in an image.
+#' Single source blitted to one or more locations.
 #'
 #' @param dst,src source and destination native rasters
 #' @param x,y Where in \code{nr} to place the \code{sprite}. These values must
@@ -26,7 +26,7 @@
 #'        to treat the centre of the \code{src_} as the blitting origin.
 #'        Default (0, 0)
 #'
-#' @return \code{nativeRaster}
+#' @return None. \code{dst} modifief by-reference and returned invisibly.
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
@@ -43,7 +43,7 @@ nr_blit <- function(dst, src,
                     respect_alpha = TRUE) {
   
   
-  invisible(.Call(blit_, 
+  invisible(.Call(nr_blit_, 
                   dst  , src, 
                   x    , y, 
                   x0   , y0, 
@@ -51,6 +51,40 @@ nr_blit <- function(dst, src,
                   hjust, vjust, 
                   respect_alpha))
 }
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Multiple blit operations in a single call
+#' 
+#' @param dst destination native raster
+#' @param src list of native rasters
+#' @param config data.frame of configuration information for each blit which 
+#'    most contain: idx, x, y, x0, y0, w, h, hjust, vjust, respect_alpha, draw
+#' @return None. \code{dst} modifief by-reference and returned invisibly.
+#' @examples
+#' nr <- nr_new(50, 50, 'grey60')
+#' config <- data.frame(
+#'   idx = c(1, 2, 3, 4),
+#'   x = c(10, 10, 40, 40),
+#'   y = c(10, 40, 40, 10),
+#'   x0 = 0L,
+#'   y0 = 0L,
+#'   w = -1L,
+#'   h = -1L,
+#'   hjust = 0,
+#'   vjust = 0
+#' )
+#' nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
+#' plot(nr)
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_blit_bulk <- function(dst, src, config) {
+  invisible(
+    .Call(nr_blit_bulk_, dst, src, config)
+  )
+}
+
 
 
 
@@ -89,7 +123,10 @@ if (FALSE) {
     dev.flush()
     governor::gov_wait(gov)
   }
-  
+}
+
+
+if (FALSE) {
   
 }
 
