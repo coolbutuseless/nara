@@ -208,6 +208,34 @@ SEXP nr_blit_(SEXP dst_  , SEXP src_,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Check arguments are of correct type
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  assert_nativeraster(dst_);
+  if (!Rf_isNewList(src_)) {
+    Rf_error("'src' MUST be a list of native rasters");
+  }
+  int N = Rf_length(src_);
+  for (int i = 0; i < N; ++i) {
+    assert_nativeraster(VECTOR_ELT(src_, i));
+  }
+  if (!Rf_inherits(config_, "data.frame")) {
+    Rf_error("Config must be a data.frame");
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Unpack the config arguments and convert to correct type if necessary
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  SEXP idx_           = get_df_col_or_error(config_, "idx");
+  SEXP x_             = get_df_col_or_error(config_, "x");
+  SEXP y_             = get_df_col_or_error(config_, "y");
+  SEXP x0_            = get_df_col_or_error(config_, "x0");
+  SEXP y0_            = get_df_col_or_error(config_, "y0");
+  SEXP hjust_         = get_df_col_or_error(config_, "hjust");
+  SEXP vjust_         = get_df_col_or_error(config_, "vjust");
+  SEXP respect_alpha_ = get_df_col_or_error(config_, "respect_alpha");
+  SEXP render_        = get_df_col_or_error(config_, "render");
+  
   
   return dst_;
 }

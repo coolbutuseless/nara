@@ -73,7 +73,9 @@ nr_blit <- function(dst, src,
 #'   w = -1L,
 #'   h = -1L,
 #'   hjust = 0,
-#'   vjust = 0
+#'   vjust = 0,
+#'   respect_alpha = TRUE,
+#'   render = TRUE
 #' )
 #' nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
 #' plot(nr)
