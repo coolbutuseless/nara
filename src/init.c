@@ -26,9 +26,12 @@ extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, 
-                  SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, 
-                  SEXP hjust_, SEXP vjust_, SEXP respect_alpha_);
+extern SEXP blit_(SEXP dst_  , SEXP src_, 
+                  SEXP x_    , SEXP y_, 
+                  SEXP x0_   , SEXP y0_, 
+                  SEXP w_    , SEXP h_, 
+                  SEXP hjust_, SEXP vjust_, 
+                  SEXP respect_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion

@@ -22,9 +22,19 @@
 // 
 // Function tries to be smart
 //  - trim coordinates to ensure they lie within the src/dst images
+//
+// @param dst destination native raster
+// @param dst_width,dst_height dimensions of destination
+// @param x,y position within destination image
+// @param src source native raster
+// @param src_width,src_height dimensions of source
+// @param x0,y0 starting position within source
+// @param w,h dimensions of region to copy
+// @param respect_alpha Should alpha values be respected when blitting?
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, 
-                uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height,
+void blit_core_(uint32_t *dst, int dst_width, int dst_height, int x , int y , 
+                uint32_t *src, int src_width, int src_height, int x0, int y0, 
+                int w, int h,
                 bool respect_alpha) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +110,9 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
 // It attempts to plot every single point regardless of whether it
 // falls inside the boundary or not
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
+void blit_core_naive_(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
+                      uint32_t *src, int src_width, int src_height, int x0, int y0, 
+                      int w, int h) {
   
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - y0 - yoff;
@@ -117,13 +129,17 @@ void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_,
-           SEXP hjust_, SEXP vjust_, SEXP respect_alpha_) {
+SEXP blit_(SEXP dst_  , SEXP src_, 
+           SEXP x_    , SEXP y_, 
+           SEXP x0_   , SEXP y0_, 
+           SEXP w_    , SEXP h_,
+           SEXP hjust_, SEXP vjust_, 
+           SEXP respect_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  assert_nativeraster(nr_);
+  assert_nativeraster(dst_);
   assert_nativeraster(src_);
   
   if (!(Rf_length(x_) == 1 || Rf_length(y_) == 1 || Rf_length(x_) == Rf_length(y_))) {
@@ -131,10 +147,12 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Destination dimensions
+  // Dimensions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nr_width  = Rf_ncols(nr_);
-  int nr_height = Rf_nrows(nr_);
+  int dst_width  = Rf_ncols(dst_);
+  int dst_height = Rf_nrows(dst_);
+  int src_width  = Rf_ncols(src_);
+  int src_height = Rf_nrows(src_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Ensure the coordinates are integers
@@ -150,8 +168,6 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   int x0 = Rf_asInteger(x0_);
   int y0 = Rf_asInteger(y0_);
   
-  int src_width  = Rf_ncols(src_);
-  int src_height = Rf_nrows(src_);
   
   int w = Rf_asInteger(w_) < 0 ? src_width  : Rf_asInteger(w_);
   int h = Rf_asInteger(h_) < 0 ? src_height : Rf_asInteger(h_);
@@ -161,17 +177,20 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
           x0, y0, w, h, src_width, src_height);
   }
   
-  int hjust = (int)round(Rf_asReal(hjust_) * src_width);
-  int vjust = (int)round(Rf_asReal(vjust_) * src_height);
+  int hjust = (int)round(Rf_asReal(hjust_) * (src_width  - 1));
+  int vjust = (int)round(Rf_asReal(vjust_) * (src_height - 1));
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  uint32_t *nr  = (uint32_t *)INTEGER(nr_);
+  uint32_t *dst = (uint32_t *)INTEGER(dst_);
   uint32_t *src = (uint32_t *)INTEGER(src_);
   bool respect_alpha = Rf_asLogical(respect_alpha_);
   for (int i = 0; i < Rf_length(x_); i++) {
-    blit_core_(nr, x[i] - hjust, y[i] - vjust, nr_width, nr_height, src, x0, y0, w, h, src_width, src_height, respect_alpha);
+    blit_core_(
+      dst, dst_width, dst_height, x[i] - hjust, y[i] - vjust, 
+      src, src_width, src_height,           x0,           y0, 
+      w, h, respect_alpha);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,6 +198,21 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (freex) free(x);
   if (freey) free(y);
-  return nr_;
+  return dst_;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
