@@ -66,7 +66,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   // Must be length 1 or N
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (Rf_length(vec_) != 1 && Rf_length(vec_) != N) {
-    Rf_error("as_int32_vec(): Input vector must be length 1 or N, not %i", Rf_length(vec_));
+    Rf_error("as_int32_vec(): Input vector must be length 1 or %i, not %i", N, Rf_length(vec_));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,10 +91,10 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (Rf_isInteger(vec_) || Rf_isLogical(vec_)) {
     // Can only be an INTSXP of length=1
-      int value = Rf_asInteger(vec_);
-      for (int i = 0; i < N; i++) {
-        int_vec[i] = value;
-      }
+    int value = Rf_asInteger(vec_);
+    for (int i = 0; i < N; i++) {
+      int_vec[i] = value;
+    }
   } else {
     // REALSXP
     double *dbl_vec = REAL(vec_);
@@ -214,6 +214,32 @@ int calc_max_length(int count, ...) {
 
 
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Fetch a data.frame column by name or else return NULL
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP get_df_col_or_NULL(SEXP df_, const char *str) {
+  SEXP col   = R_NilValue;
+  SEXP names = Rf_getAttrib(df_, R_NamesSymbol);
+  
+  for (int i = 0; i < Rf_length(df_); i++) {
+    if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
+      col = VECTOR_ELT(df_, i);
+      break;
+    }
+  }
+  return col;
+}
+
+SEXP get_df_col_or_error(SEXP df_, const char *str) {
+  SEXP col = get_df_col_or_NULL(df_, str);
+  
+  if (Rf_isNull(col)) {
+    Rf_error("Expected data.frame to have column '%s'", str);
+  }
+  
+  return col;
+}
 
 
 

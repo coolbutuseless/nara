@@ -50,18 +50,23 @@ nr_to_magick <- function(nr) {
 #' Magick conversion - possibly won't be in final version of 'nara' pkg
 #' 
 #' @param nr_list list of nativeRasters
-#' @param gif_name name of mp4 file to save
+#' @param filename filename of gif
 #' @param verbose logical. default FALSE
 #' @param framerate frames per second
 #' @param ... other arguments passed to \code{magick::image_write_gif()}
-#' 
+#' @return None.
+#' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
+#' im <- magick::logo
+#' nr1 <- magick_to_nr(im)
+#' nr2 <- nr_duplicate(nr1)
+#' nrs_to_gif(list(nr1, nr2), "nothing.gif")
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, framerate = 30, ...) {
+nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) {
   if (requireNamespace('magick', quietly = TRUE)) {
     nr_list <- lapply(nr_list, nr_to_magick)
     ims <- do.call(magick::image_join, nr_list)
-    magick::image_write_gif(ims, path = gif_name, progress = verbose, delay = 1/framerate, ...)
+    magick::image_write_gif(ims, path = filename, progress = verbose, delay = 1/framerate, ...)
   } else {
     stop("need to install {magick}")
   }
@@ -73,17 +78,22 @@ nrs_to_gif <- function(nr_list, gif_name, verbose = FALSE, framerate = 30, ...) 
 #' Magick conversion - possible won't be in final version of 'nara' pkg
 #' 
 #' @param nr_list list of nativeRasters
-#' @param mp4_name name of mp4 file to save
+#' @param filename mp4 filename
 #' @param verbose logical. default FALSE
 #' @param ... other arguments passed to \code{magick::image_write_video()}
-#' 
+#' @return None.
+#' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
+#' im <- magick::logo
+#' nr1 <- magick_to_nr(im)
+#' nr2 <- nr_duplicate(nr1)
+#' nrs_to_mp4(list(nr1, nr2), "nothing.mp4")
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nrs_to_mp4 <- function(nr_list, mp4_name, verbose = FALSE, ...) {
+nrs_to_mp4 <- function(nr_list, filename, verbose = FALSE, ...) {
   if (requireNamespace('magick', quietly = TRUE)) {
     nr_list <- lapply(nr_list, nr_to_magick)
     ims <- do.call(magick::image_join, nr_list)
-    magick::image_write_video(ims, path = mp4_name, verbose = verbose, ...)
+    magick::image_write_video(ims, path = filename, verbose = verbose, ...)
   } else {
     stop("need to install {magick}")
   }

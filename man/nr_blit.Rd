@@ -5,10 +5,10 @@
 \title{Copy one \code{nativeRaster} image into another at an arbitrary location.}
 \usage{
 nr_blit(
-  nr,
+  dst,
+  src,
   x,
   y,
-  src,
   x0 = 0L,
   y0 = 0L,
   w = -1L,
@@ -19,7 +19,7 @@ nr_blit(
 )
 }
 \arguments{
-\item{nr}{native raster to copy into}
+\item{dst, src}{source and destination native rasters}
 
 \item{x, y}{Where in \code{nr} to place the \code{sprite}. These values must
 be vectors of the same length.  If the length is greater than 1, then
@@ -27,8 +27,6 @@ the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
 origin of \code{nativeraster} images is the top-left
 where the coordinates are (0, 0).}
-
-\item{src}{native raster to copy from}
 
 \item{x0, y0}{start coordiates within src}
 
@@ -42,20 +40,20 @@ to treat the centre of the \code{src_} as the blitting origin.
 Default (0, 0)}
 
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
-Default: TRUE.  If FALSE, then contents will be blindly overwritten
-which can be much much faster.  If the \code{src} has an 
-any transparent pixels, \code{respect_alpha = TRUE} is 
-probably the correct setting.}
+Default: TRUE means to carefully blend pixels at each location 
+using alpha values.  If FALSE, then contents at the \code{dst} will 
+just be replaced with \code{src} pixels
+which can be much much faster.}
 }
 \value{
-\code{nativeRaster}
+None. \code{dst} modifief by-reference and returned invisibly.
 }
 \description{
-This is useful as a way of positioning sprites or icons in an image.
+Single source blitted to one or more locations.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit(nr, x = 0, y = 0, src = deer_sprites[[1]])
+nr_blit(dst = nr, src = deer_sprites[[1]], x = 0, y = 0)
 plot(nr)
 
 }

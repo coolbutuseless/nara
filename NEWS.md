@@ -1,6 +1,8 @@
 
-# nara 0.1.1.9026 2024-12-22
+# nara 0.1.1.9027 2024-12-23
 
+* [9027] Add `nr_blit_bulk()`
+* [9027] Blit refactor - remove `nr_blit_list()`, `nr_blit_grid()`
 * [9026] Use `{colorfast}` for color conversion
 * Remove 'isocubes()'
 * Remove 'op' argument. 

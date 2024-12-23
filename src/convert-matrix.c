@@ -68,18 +68,16 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
   double max = Rf_asReal(max_);
   double range_scale = 1.0 / (max - min);
   
-  int index = 0;
-  uint32_t *ptr = (uint32_t *)INTEGER(dst_);
+  uint32_t *nr = (uint32_t *)INTEGER(dst_);
   
   for (int col = 0; col < width; col++) {
     for (int row = 0; row < height; row++) {
       double val = *(mat + col * height + row);
-      if (val > max || val < min) {
-        Rf_error("Value in matrix out of range (%.1f, %.1f): %.3f", min, max, val);
+      size_t idx = (size_t)round((val - min) * range_scale * (N - 1));
+      if (idx >= N || idx < 0) {
+        Rf_error("Value in matrix out of range (%.1f, %.1f): %.3f [%zu/%i]", min, max, val, idx, N);
       }
-      size_t idx = (size_t)floor((val - min) * range_scale * N);
-      // Rprintf("idx: (%.1f, %.1f)  %.3f = %zu\n", min, max, val, idx);
-      ptr[index++] = palette[idx];
+      *(nr + row * width + col) = palette[idx];
     }
   }
   

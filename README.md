@@ -110,14 +110,14 @@ nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colors)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of deer sprites
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_list(nr, x = sample(300, 15), y = sample(200, 15), src_list = deer_sprites, src_idx = 1)
+nr_blit(dst = nr, src = deer_sprites[[1]], x = sample(300, 15), y = sample(200, 15))
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add an image read from file (with alpha transparency)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-nr_blit(nr, 0, 0, img)
+nr_blit(dst = nr, src = img, x = 0, y = 0)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add a polygon
@@ -151,7 +151,7 @@ Included with `{nara}` are 16 frames of an animated deer character - see
 library(grid)
 
 nr <- nr_new(100, 32, 'grey80')
-nr_blit_list(nr, 2, 0, src_list = deer_sprites, src_idx = 1)
+nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -194,7 +194,7 @@ nr <- nr_new(100, 32, 'grey80')
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the nativeRaster
   sprite_idx <- floor((i/3) %% 5) + 11
-  nr_blit_list(nr, i, 0, deer_sprites, sprite_idx) # copy deer to nativeRaster
+  nr_blit(dst = nr, src = deer_sprites[[sprite_idx]], x = i, y = 0) # copy deer to nativeRaster
   dev.hold()
   grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
   dev.flush()
@@ -245,7 +245,8 @@ nr <- nr_new(w, h, 'white')
 for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the deer
   nr_fill(nr, 'white') 
-  nr_blit_list(nr, x, y, deer_sprites, floor((frame/3) %% 5 + 11))
+  deer_idx <- floor((frame/3) %% 5 + 11)
+  nr_blit(dst = nr, src = deer_sprites[[deer_idx]], x, y)
   
   # Draw the nativeraster to screen
   dev.hold()

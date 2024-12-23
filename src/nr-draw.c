@@ -449,8 +449,8 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   for (int i = 0; i < N; i++) {
     
-    int x = xs[i] - (int)round(hjust * ws[i]); // horizontal justification
-    int y = ys[i] - (int)round(vjust * hs[i]); // vertical justification
+    int x = xs[i] - (int)round(hjust * (ws[i] - 1)); // horizontal justification
+    int y = ys[i] - (int)round(vjust * (hs[i] - 1)); // vertical justification
     int w = ws[i];
     int h = hs[i];
     
@@ -653,8 +653,13 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
     }
   }
   
+  ymin--;
+  ymax++;
+  
   if (ymin < 0) ymin = 0;
   if (ymax >= height) ymax = height - 1;
+  
+  // Rprintf("ymin/ymax : %i  %i\n", ymin, ymax);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Precalc the gradient
@@ -698,6 +703,11 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
       if (((y[i] < scanline) && (y[j] >= scanline)) ||  
           ((y[j] < scanline) && (y[i] >= scanline))) {
         nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
+      } else if (y[i] == scanline && y[j] == scanline) {
+        // Horizontal lines
+        // nr_hline(nr, height, width, x[i], x[j], scanline, color);
+        nodeX[nodes++] = (int) (x[i]); 
+        nodeX[nodes++] = (int) (x[j]); 
       }
       j = i; 
     }
