@@ -41,73 +41,9 @@ nr_blit <- function(nr, x, y, src, x0 = 0L, y0 = 0L, w = -1L, h = -1L, hjust = 0
 }
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Blit from a list of native rasters
-#' 
-#' @inheritParams nr_blit
-#' @param src_list list of native rasters
-#' @param src_idx indices into the list of the native raster
-#' 
-#' @return None. \code{nr} modified in-place and returned invisibly.
-#' @examples
-#' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit_list(nr, x = c(0, 25), y = c(0, 25), src_list = deer_sprites, src_idx = c(1, 2))
-#' plot(nr)
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_list <- function(nr, x, y, src_list, src_idx, hjust = 0, vjust = 0, respect_alpha = TRUE) {
-  invisible(.Call(blit_list_, nr, x, y, src_list, src_idx, hjust, vjust, respect_alpha))
-}
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Blit4
-#' 
-#' @inheritParams nr_blit_list
-#' @param idx_mat integer matrix of indices into \code{src_list}
-#' @param width,height tile width/height (constant across all tiles)
-#' 
-#' @return Original \code{nativeRaster} modified in-place
-#' @examples
-#' nr <- nr_new(100, 100, 'grey80')
-#' idx_mat <- matrix(c(
-#'   1, 2, 3,
-#'   4, 5, 6,
-#'   7, 8, 9
-#' ), 3, 3, byrow = TRUE)
-#' nr_blit_grid(nr, 0, 0, src_list = deer_sprites, idx_mat = idx_mat, width = 32, height = 32)
-#' 
-#' @export 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_grid <- function(nr, x, y, src_list, idx_mat, width, height, hjust = 0, vjust = 0, respect_alpha = TRUE) {
-  
-  if (length(x) != 1 || length(y) != 1) {
-    stop("only allow length 1 for x and y")
-  }
-  
-  if (max(idx_mat, na.rm = TRUE) > length(src_list)) {
-    stop("loc idx is out of bounds")
-  }
-  
-  stopifnot(is.matrix(idx_mat))
-  
-  xoff <- (rep(seq(ncol(idx_mat)), each = nrow(idx_mat)) - 1) * width
-  yoff <- (rep(seq(nrow(idx_mat)),        ncol(idx_mat)) - 1) * height
-  
-  invisible(
-    nr_blit_list(nr, x = x + xoff, y = y + yoff, src_list = src_list, src_idx = as.vector(idx_mat), 
-             hjust = hjust, vjust = vjust, respect_alpha = respect_alpha)
-  )
-}
-
-
-
-
-
 if (FALSE) {
   
-  logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  logo <- fastpng::read_png(system.file("img", "Rlogo.png", package="png"), type = 'nativeraster')
   
   nr <- nr_new(100, 100, 'grey80')
   idx_mat <- matrix(c(
@@ -115,7 +51,6 @@ if (FALSE) {
     4, 5, 6,
     7, 8, 9
   ), 3, 3, byrow = TRUE)
-  nr_blit_grid(nr, 0, 0, src_list = deer_sprites, idx_mat = idx_mat, width = 32, height = 32)
   plot(nr, T)
   
 }

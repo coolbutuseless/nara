@@ -19,6 +19,9 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
+// 
+// Function tries to be smart
+//  - trim coordinates to ensure they lie within the src/dst images
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height, 
                 uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height,
@@ -93,7 +96,9 @@ void blit_core_(uint32_t *dst, int x, int y, int dst_width, int dst_height,
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
-// Slow and study, but it works
+// Slow and study, but it works.
+// It attempts to plot every single point regardless of whether it
+// falls inside the boundary or not
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void blit_core_naive_(uint32_t *dst, int x, int y, int dst_width, int dst_height, uint32_t *src, int x0, int y0, int w, int h, int src_width, int src_height) {
   
@@ -176,87 +181,4 @@ SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, S
   if (freey) free(y);
   return nr_;
 }
-
-
-SEXP blit_list_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_list_, SEXP src_idx_, SEXP hjust_, SEXP vjust_, SEXP respect_alpha_) {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Sanity checks
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  assert_nativeraster(nr_);
-  
-  if (!Rf_isNewList(src_list_)) {
-    Rf_error("nr_blit_list_(): src_list_ must be a list");
-  }
-  
-  if (!(Rf_length(x_) == 1 || Rf_length(y_) == 1 || Rf_length(x_) == Rf_length(y_))) {
-    Rf_error("'x' and 'y' must be the length 1 or N.  x = %i, y = %i", Rf_length(x_), Rf_length(y_));
-  }
-  
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Destination dimensions
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nr_width  = Rf_ncols(nr_);
-  int nr_height = Rf_nrows(nr_);
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Ensure the coordinates are integers
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  bool freex = false, freey = false;
-  int N = calc_max_length(2, x_, y_);
-  int *x = as_int32_vec(x_, N, &freex);
-  int *y = as_int32_vec(y_, N, &freey);
-  
-  bool freeindices = false, free_respect_alpha = false;
-  int *indices = as_int32_vec(src_idx_, N, &freeindices);
-  int *respect_alpha = as_int32_vec(respect_alpha_, N, &free_respect_alpha);
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // List of native rasters
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  bool freehjust = false, freevjust = false;
-  double *hjust = as_double_vec(hjust_, N, &freehjust);
-  double *vjust = as_double_vec(vjust_, N, &freevjust);
-  
-  uint32_t *nr  = (uint32_t *)INTEGER(nr_);
-  
-  for (int i = 0; i < N; i++) {
-    int idx = indices[i] - 1;
-    if (idx >= Rf_length(src_list_) || idx < 0) {
-      Rprintf("nr_blit_list_(): 'src_idx' is out of bounds for given 'src_list'. %i is not in range [0, %i]\n", idx, Rf_length(src_list_) - 1);
-      continue;
-    }
-    SEXP src_ = VECTOR_ELT(src_list_, idx);
-    assert_nativeraster(src_);
-    uint32_t *src = (uint32_t *)INTEGER(src_);
-
-    int src_width  = Rf_ncols(src_);
-    int src_height = Rf_nrows(src_);
-
-    int this_hjust = (int)round(hjust[i] * src_width);
-    int this_vjust = (int)round(vjust[i] * src_height);
-
-    blit_core_(nr, x[i] - this_hjust, y[i] - this_vjust, nr_width, nr_height,
-               src, 0, 0, src_width, src_height, src_width, src_height,
-               (bool)respect_alpha[i]);
-    
-    
-  }
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Tidy and return
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (freeindices) free(indices);
-  if (free_respect_alpha) free(respect_alpha);   
-  if (freehjust) free(hjust); 
-  if (freevjust) free(vjust);   
-  if (freex) free(x);
-  if (freey) free(y);
-  return nr_;
-}
-
-
-
-
-
 

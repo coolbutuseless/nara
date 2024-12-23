@@ -1,6 +1,7 @@
 
 # nara 0.1.1.9026 2024-12-22
 
+* [9027] Blit refactor
 * [9026] Use `{colorfast}` for color conversion
 * Remove 'isocubes()'
 * Remove 'op' argument. 

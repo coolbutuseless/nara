@@ -26,10 +26,9 @@ extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, 
+extern SEXP blit_(SEXP nr_, SEXP x_, SEXP y_, 
+                  SEXP src_, SEXP x0_, SEXP y0_, SEXP w_, SEXP h_, 
                   SEXP hjust_, SEXP vjust_, SEXP respect_alpha_);
-
-extern SEXP blit_list_(SEXP nr_, SEXP x_, SEXP y_, SEXP src_list_, SEXP src_idx_, SEXP hjust_, SEXP vjust_, SEXP respect_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
@@ -71,7 +70,6 @@ static const R_CallMethodDef CEntries[] = {
   {"resize_nn_"      , (DL_FUNC) &resize_nn_        , 3},
   
   {"blit_"     , (DL_FUNC) &blit_     , 11},
-  {"blit_list_", (DL_FUNC) &blit_list_,  8},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 6},
   

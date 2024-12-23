@@ -284,6 +284,29 @@ test_that("nr-draw polygon works with outline", {
 })
 
 
+test_that("nr-draw text works", {
+  
+  nr <- nr_new(width = 5, height = 5, 'azure')
+  nr_text_basic(nr, 0, 5, ".")
+  if (interactive()) plot(nr, T)
+  
+  black <- colorfast::col_to_int('black')
+  white <- colorfast::col_to_int('azure')
+  green <- colorfast::col_to_int('green')
+  
+  expect_equal(
+    nr,
+    matrix(c(
+      white, white, white, white, white,
+      white, white, white, white, white,
+      white, white, white, white, white,
+      white, white, white, black, white,
+      white, white, white, white, white
+    ), 5, 5, byrow = T)
+  )
+})
+
+
 
 
 
