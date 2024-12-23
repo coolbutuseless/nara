@@ -215,8 +215,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   if (!Rf_isNewList(src_)) {
     Rf_error("'src' MUST be a list of native rasters");
   }
-  int N = Rf_length(src_);
-  for (int i = 0; i < N; ++i) {
+  int Nsrc = Rf_length(src_);
+  for (int i = 0; i < Nsrc; ++i) {
     assert_nativeraster(VECTOR_ELT(src_, i));
   }
   if (!Rf_inherits(config_, "data.frame")) {
@@ -226,9 +226,17 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack the config arguments and convert to correct type if necessary
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int N = Rf_length(VECTOR_ELT(config_, 0));
+  if (N == 0) {
+    Rf_warning("Empty 'config'");
+    return dst_;
+  }
+  
   SEXP idx_           = get_df_col_or_error(config_, "idx");
   SEXP x_             = get_df_col_or_error(config_, "x");
   SEXP y_             = get_df_col_or_error(config_, "y");
+  SEXP w_             = get_df_col_or_error(config_, "w");
+  SEXP h_             = get_df_col_or_error(config_, "h");
   SEXP x0_            = get_df_col_or_error(config_, "x0");
   SEXP y0_            = get_df_col_or_error(config_, "y0");
   SEXP hjust_         = get_df_col_or_error(config_, "hjust");
@@ -236,7 +244,65 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   SEXP respect_alpha_ = get_df_col_or_error(config_, "respect_alpha");
   SEXP render_        = get_df_col_or_error(config_, "render");
   
+  bool freeidx = false;
+  bool freex = false, freey = false, freex0 = false, freey0 = false;
+  bool freew = false, freeh = false;
   
+  int *idx   = as_int32_vec(idx_, N, &freeidx);
+  int *x     = as_int32_vec(x_  , N, &freex);
+  int *y     = as_int32_vec(y_  , N, &freey);
+  int *w     = as_int32_vec(w_  , N, &freew);
+  int *h     = as_int32_vec(h_  , N, &freeh);
+  int *x0    = as_int32_vec(x0_ , N, &freex0);
+  int *y0    = as_int32_vec(y0_ , N, &freey0);
+  
+  double *hjust = REAL(hjust_);
+  double *vjust = REAL(vjust_);
+  int *respect_alpha = LOGICAL(respect_alpha_);
+  int *render        = LOGICAL(render_);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Do the loop
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  uint32_t *dst = (uint32_t *)INTEGER(dst_);
+  int dst_width  = Rf_ncols(dst_);
+  int dst_height = Rf_nrows(dst_);
+  
+  for (int i = 0; i < N; ++i) {
+    if (!render[i]) continue;
+    int this_idx = idx[i] - 1;
+    if (idx[i] < 0 || idx[i] >= Nsrc) {
+      Rf_error("idx = %i at row %i is invalid. Not in range [1, %i]", idx[i], i, N);
+      // continue;
+    }
+    SEXP this_src_ = VECTOR_ELT(src_, this_idx);
+    uint32_t *src = (uint32_t *)INTEGER(this_src_);
+    int src_width  = Rf_ncols(this_src_);
+    int src_height = Rf_nrows(this_src_);
+
+    int this_hjust = (int)round(hjust[i] * (src_width  - 1));
+    int this_vjust = (int)round(vjust[i] * (src_height - 1));
+
+    int this_w = w[i] < 0 ? src_width  : w[i];
+    int this_h = h[i] < 0 ? src_height : h[i];
+    
+    blit_core_(
+      dst, dst_width, dst_height, x[i] - this_hjust, y[i] - this_vjust,
+      src, src_width, src_height,           x0[i],           y0[i],
+      this_w, this_h, respect_alpha[i]);
+  }
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Tidy and return
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (freeidx) free(idx);
+  if (freex)   free(x);
+  if (freey)   free(y);
+  if (freew)   free(w);
+  if (freeh)   free(h);
+  if (freex0)  free(x0);
+  if (freey0)  free(y0);
   return dst_;
 }
 

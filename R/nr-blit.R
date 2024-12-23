@@ -63,7 +63,7 @@ nr_blit <- function(dst, src,
 #'    most contain: idx, x, y, x0, y0, w, h, hjust, vjust, respect_alpha, draw
 #' @return None. \code{dst} modifief by-reference and returned invisibly.
 #' @examples
-#' nr <- nr_new(50, 50, 'grey60')
+#' nr <- nr_new(90, 90, 'grey60')
 #' config <- data.frame(
 #'   idx = c(1, 2, 3, 4),
 #'   x = c(10, 10, 40, 40),

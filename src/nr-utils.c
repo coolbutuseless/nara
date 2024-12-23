@@ -66,7 +66,7 @@ int *as_int32_vec(SEXP vec_, int N, bool *do_free) {
   // Must be length 1 or N
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (Rf_length(vec_) != 1 && Rf_length(vec_) != N) {
-    Rf_error("as_int32_vec(): Input vector must be length 1 or N, not %i", Rf_length(vec_));
+    Rf_error("as_int32_vec(): Input vector must be length 1 or %i, not %i", N, Rf_length(vec_));
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

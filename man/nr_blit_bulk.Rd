@@ -21,7 +21,7 @@ None. \code{dst} modifief by-reference and returned invisibly.
 Multiple blit operations in a single call
 }
 \examples{
-nr <- nr_new(50, 50, 'grey60')
+nr <- nr_new(90, 90, 'grey60')
 config <- data.frame(
   idx = c(1, 2, 3, 4),
   x = c(10, 10, 40, 40),
