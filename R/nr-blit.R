@@ -54,16 +54,42 @@ nr_blit <- function(dst, src,
 
 
 
-
 if (FALSE) {
   
   logo <- fastpng::read_png(system.file("img", "Rlogo.png", package="png"), type = 'nativeraster')
-  
   nr <- nr_new(200, 200, 'grey80')
-  
   nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, respect_alpha = F)
-  
   plot(nr, T)
+  
+  
+  
+  library(grid)
+  
+  # Setup a fast graphics device that can render quickly
+  x11(type = 'cairo', antialias = 'none')
+  dev.control('inhibit')
+  
+  logo <- fastpng::read_png(system.file("img", "Rlogo.png", package="png"), type = 'nativeraster')
+  logo <- nr_scale(logo, 2, algo = 'bilinear')
+  grid <- expand.grid(x = seq(-500, 1000, 220), y = seq(-500, 1000, 200))
+  nr <- nr_new(500, 500, 'white')
+  
+  gc(full = TRUE)
+  dev.flush()
+  dev.flush()
+  dev.flush()
+  gov <- governor::gov_init(1/30)
+  for (i in 1:500) {
+    xoff <- 200 * sin(i/10 * 1/4 * pi)
+    yoff <- 130 * sin(i/13 * 1/4 * pi + pi / 3)
+    nr_fill(nr, 'white')
+    nr_blit(nr, logo, grid$x - xoff , grid$y - yoff, hjust = 0.5, vjust = 0.5, respect_alpha = T)
+    dev.hold()
+    plot(nr)
+    dev.flush()
+    governor::gov_wait(gov)
+  }
+  
   
 }
 
