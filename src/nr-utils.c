@@ -231,6 +231,9 @@ SEXP get_df_col_or_NULL(SEXP df_, const char *str) {
   return col;
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Fetch a data.frame column by name otherwise raise error
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP get_df_col_or_error(SEXP df_, const char *str) {
   SEXP col = get_df_col_or_NULL(df_, str);
   

@@ -24,7 +24,7 @@
 #' nr <- nr_new(400, 300, 'hotpink')
 #' plot(nr)
 #' 
-#' @importFrom colorfast col_to_int
+#' @import colorfast
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {

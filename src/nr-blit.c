@@ -232,34 +232,41 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     return dst_;
   }
   
-  SEXP idx_           = get_df_col_or_error(config_, "idx");
-  SEXP x_             = get_df_col_or_error(config_, "x");
-  SEXP y_             = get_df_col_or_error(config_, "y");
-  SEXP w_             = get_df_col_or_error(config_, "w");
-  SEXP h_             = get_df_col_or_error(config_, "h");
-  SEXP x0_            = get_df_col_or_error(config_, "x0");
-  SEXP y0_            = get_df_col_or_error(config_, "y0");
-  SEXP hjust_         = get_df_col_or_error(config_, "hjust");
-  SEXP vjust_         = get_df_col_or_error(config_, "vjust");
-  SEXP respect_alpha_ = get_df_col_or_error(config_, "respect_alpha");
-  SEXP render_        = get_df_col_or_error(config_, "render");
+  SEXP idx_           = get_df_col_or_error(config_, "idx"); // required
+  SEXP x_             = get_df_col_or_error(config_, "x");   // required
+  SEXP y_             = get_df_col_or_error(config_, "y");   // required
   
-  bool freeidx = false;
-  bool freex = false, freey = false, freex0 = false, freey0 = false;
-  bool freew = false, freeh = false;
+  SEXP x0_            = get_df_col_or_NULL(config_, "x0");            // def: 0
+  SEXP y0_            = get_df_col_or_NULL(config_, "y0");            // def: 0
+  SEXP w_             = get_df_col_or_NULL(config_, "w");             // def: src_width
+  SEXP h_             = get_df_col_or_NULL(config_, "h");             // def: src_height
+  SEXP hjust_         = get_df_col_or_NULL(config_, "hjust");         // def: 0
+  SEXP vjust_         = get_df_col_or_NULL(config_, "vjust");         // def: 0
+  SEXP respect_alpha_ = get_df_col_or_NULL(config_, "respect_alpha"); // def: TRUE
+  SEXP render_        = get_df_col_or_NULL(config_, "render");        // def: TRUE
   
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Required
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  bool freeidx = false, freex = false, freey = false;
   int *idx   = as_int32_vec(idx_, N, &freeidx);
   int *x     = as_int32_vec(x_  , N, &freex);
   int *y     = as_int32_vec(y_  , N, &freey);
-  int *w     = as_int32_vec(w_  , N, &freew);
-  int *h     = as_int32_vec(h_  , N, &freeh);
-  int *x0    = as_int32_vec(x0_ , N, &freex0);
-  int *y0    = as_int32_vec(y0_ , N, &freey0);
   
-  double *hjust = REAL(hjust_);
-  double *vjust = REAL(vjust_);
-  int *respect_alpha = LOGICAL(respect_alpha_);
-  int *render        = LOGICAL(render_);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Optional. If not present then use default.
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  bool freex0 = false, freey0 = false;
+  bool freew = false, freeh = false;
+  int *x0            = Rf_isNull(x0_)    ? NULL : as_int32_vec(x0_ , N, &freex0);
+  int *y0            = Rf_isNull(y0_)    ? NULL : as_int32_vec(y0_ , N, &freey0);
+  int *w             = Rf_isNull( w_)    ? NULL : as_int32_vec(w_  , N, &freew);
+  int *h             = Rf_isNull( h_)    ? NULL : as_int32_vec(h_  , N, &freeh);
+  double *hjust      = Rf_isNull(hjust_) ? NULL : REAL(hjust_);
+  double *vjust      = Rf_isNull(vjust_) ? NULL : REAL(vjust_);
+  int *respect_alpha = Rf_isNull(respect_alpha_) ? NULL : LOGICAL(respect_alpha_);
+  int *render        = Rf_isNull(render_)        ? NULL : LOGICAL(render_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do the loop
@@ -269,27 +276,32 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   int dst_height = Rf_nrows(dst_);
   
   for (int i = 0; i < N; ++i) {
-    if (!render[i]) continue;
+    if (render != NULL && !render[i]) continue;
     int this_idx = idx[i] - 1;
-    if (idx[i] < 0 || idx[i] >= Nsrc) {
-      Rf_error("idx = %i at row %i is invalid. Not in range [1, %i]", idx[i], i, N);
+    if (this_idx < 0 || this_idx >= Nsrc) {
+      Rf_error("idx = %i at row %i is invalid. Not in range [1, %i]", idx[i], i, Nsrc);
       // continue;
     }
     SEXP this_src_ = VECTOR_ELT(src_, this_idx);
     uint32_t *src = (uint32_t *)INTEGER(this_src_);
     int src_width  = Rf_ncols(this_src_);
     int src_height = Rf_nrows(this_src_);
+    
+    int this_x0 = (x0 == NULL) ? 0 : x0[i];
+    int this_y0 = (y0 == NULL) ? 0 : y0[i];
 
-    int this_hjust = (int)round(hjust[i] * (src_width  - 1));
-    int this_vjust = (int)round(vjust[i] * (src_height - 1));
-
-    int this_w = w[i] < 0 ? src_width  : w[i];
-    int this_h = h[i] < 0 ? src_height : h[i];
+    int this_w = (w == NULL || w[i] < 0) ? src_width  : w[i];
+    int this_h = (h == NULL || h[i] < 0) ? src_height : h[i];
+    
+    int this_hjust = hjust == NULL ? 0 : (int)round(hjust[i] * (src_width  - 1));
+    int this_vjust = vjust == NULL ? 0 : (int)round(vjust[i] * (src_height - 1));
+    
+    int this_res_alpha = (respect_alpha == NULL) ? 1 : respect_alpha[i];
     
     blit_core_(
       dst, dst_width, dst_height, x[i] - this_hjust, y[i] - this_vjust,
-      src, src_width, src_height,           x0[i],           y0[i],
-      this_w, this_h, respect_alpha[i]);
+      src, src_width, src_height,           this_x0,           this_y0,
+      this_w, this_h, this_res_alpha);
   }
   
   

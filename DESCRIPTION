@@ -15,7 +15,8 @@ LazyData: true
 RoxygenNote: 7.3.2
 LinkingTo: colorfast
 Depends: 
-    R (>= 2.10),
+    R (>= 2.10)
+Imports:
     colorfast (>= 1.0.0.9000)
 Suggests: 
     testthat (>= 3.0.0),
