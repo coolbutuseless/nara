@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9027 2024-12-23
+# nara 0.1.1.9028 2024-12-26
 
+* [9028] Add `nr_blit_rotozoom()`
 * [9027] Add `nr_blit_bulk()`
 * [9027] Blit refactor - remove `nr_blit_list()`, `nr_blit_grid()`
 * [9026] Use `{colorfast}` for color conversion
