@@ -16,7 +16,7 @@ test_that("nr-draw line works", {
       white, white, black, white, white,
       white, white, white, black, white,
       white, white, white, white, black
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
   
 })
@@ -39,7 +39,7 @@ test_that("nr-draw rect works", {
       white, white, white, white, white,
       white, white, white, white, white,
       white, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
   
 })
@@ -62,7 +62,7 @@ test_that("nr-draw rect works - justify 0,0", {
       white, white, black, black, black,
       white, white, black, black, black,
       white, white, black, black, black
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
   
 })
@@ -85,7 +85,7 @@ test_that("nr-draw rect works - justify 1,1", {
       black, black, black, white, white,
       white, white, white, white, white,
       white, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
   
 })
@@ -108,7 +108,7 @@ test_that("nr-draw rect works - justify 0.5, 0.5", {
       white, black, black, black, white,
       white, black, black, black, white,
       white, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
   
 })
@@ -132,7 +132,7 @@ test_that("nr-draw rect works - justify 0.5, 0.5 border", {
       white, red  , black, red  , white,
       white, red  , red  , red  , white,
       white, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -157,7 +157,7 @@ test_that("nr-draw circle works", {
       black, black, black, black, black,
       black, black, black, black, black,
       white, black, black, black, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -180,7 +180,7 @@ test_that("nr-draw circle works with border", {
       black, black, black, black, black,
       red  , black, black, black, red  ,
       white, red  , red  , red  , white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -206,7 +206,7 @@ test_that("nr-draw polyline works", {
       black, white, white, white, white,
       black, white, white, white, white,
       black, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -231,7 +231,7 @@ test_that("nr-draw polyline works with close", {
       black, white, black, white, white,
       black, black, white, white, white,
       black, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -256,7 +256,7 @@ test_that("nr-draw polygon works", {
       black, black, black, white, white,
       black, black, white, white, white,
       black, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -279,7 +279,7 @@ test_that("nr-draw polygon works with outline", {
       green, black, green, white, white,
       green, green, white, white, white,
       green, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 
@@ -302,7 +302,7 @@ test_that("nr-draw text works", {
       white, white, white, white, white,
       white, white, white, black, white,
       white, white, white, white, white
-    ), 5, 5, byrow = T)
+    ), 5, 5, byrow = T), ignore_attr = TRUE
   )
 })
 

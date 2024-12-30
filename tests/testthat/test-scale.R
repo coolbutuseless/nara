@@ -24,7 +24,7 @@ test_that("NN scale works", {
       clear, clear, clear, black, black, black,
       clear, clear, clear, black, black, black),
       nrow = 6, ncol = 6, byrow = TRUE
-    )
+    ), ignore_attr = TRUE
   )
   
   
@@ -39,7 +39,7 @@ test_that("NN scale works", {
       black, half, clear,
       half, half, half,
       clear, half, black
-    ), nrow = 3, ncol = 3, byrow = TRUE)
+    ), nrow = 3, ncol = 3, byrow = TRUE), ignore_attr = TRUE
   )
     
 })

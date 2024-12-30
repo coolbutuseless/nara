@@ -632,9 +632,11 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Pairs of values in 'nodeX' will have points drawn between them on 
-  // a scanline
+  // a scanline.
+  // 2024-12-30 Over-allocate here by a factor of 2.  Horizontal lines will cause
+  //            2 points to be added to the 'nodeX' structure.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nodeX = (int *)malloc((size_t)npoints * sizeof(int));
+  int *nodeX = (int *)malloc(2 * (size_t)npoints * sizeof(int));
   if (nodeX == NULL) {
     Rf_error("fill_polygon_c(): memory allocation failed for 'nodeX'");
   }
@@ -706,6 +708,9 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
       } else if (y[i] == scanline && y[j] == scanline) {
         // Horizontal lines
         // nr_hline(nr, height, width, x[i], x[j], scanline, color);
+        // 2024-Dec Some handling for polygons with horizontal lines between points.
+        // Note: this may cause overdraw issues when alpha < 1. Untested.
+        // Really need a better polygon algo.
         nodeX[nodes++] = (int) (x[i]); 
         nodeX[nodes++] = (int) (x[j]); 
       }

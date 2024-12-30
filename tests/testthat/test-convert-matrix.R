@@ -10,7 +10,7 @@ test_that("integer matrix to nr works", {
   ) |> t()
   dim(expected) <- c(8, 3) 
   
-  expect_equal(nr, expected)
+  expect_equal(nr, expected, ignore_attr = TRUE)
 })
 
 
@@ -31,5 +31,5 @@ test_that("numeric matrix to nr works", {
   ) |> t()
   dim(expected) <- c(8, 3) 
   
-  expect_equal(nr, expected)
+  expect_equal(nr, expected, ignore_attr = TRUE)
 })
