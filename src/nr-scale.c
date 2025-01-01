@@ -18,7 +18,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Nearest neighbour resizing
 //
-// @param height,width desired output dimensions
+// @param width,height desired output dimensions
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   
@@ -32,7 +32,7 @@ SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   int out_height = Rf_asInteger(height_);
   
   // Create nativeraster and copy contents
-  SEXP dst_ = PROTECT(nr_new(out_height, out_width));
+  SEXP dst_ = PROTECT(nr_new(out_width, out_height));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from
@@ -142,7 +142,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   }
   
   // Create nativeraster and copy contents
-  SEXP dst_ = PROTECT(nr_new(out_height, out_width));
+  SEXP dst_ = PROTECT(nr_new(out_width, out_height));
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prepare set of row/column indices to fetch from

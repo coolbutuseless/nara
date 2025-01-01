@@ -23,14 +23,14 @@
 // Use `naratext` and/or 'lofifonts' for more options
 //
 // @param nr native raster (modified in-place)
-// @param height,width dimensions
+// @param nr_width,nr_height dimensions
 // @param x,y location
 // @param str text to write
 // @param color color
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
-void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize) {
+void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize) {
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          nr_point(nr, height, width, col + i + x, y - char_h + row, color);
+          nr_point(nr, nr_width, nr_height, col + i + x, y - char_h + row, color);
         }
       }
     }
@@ -85,7 +85,7 @@ void nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char
 // Use `naratext` and/or 'lofifonts' for more options
 //
 // @param nr native raster (modified in-place)
-// @param height,width dimensions
+// @param nr_width,nr_height dimensions
 // @param x,y location
 // @param str text to write
 // @param color color
@@ -111,7 +111,7 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = Rf_asInteger(fontsize_);
-  nr_text_basic(nr, nr_height, nr_width, x, y, str, color, fontsize);
+  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize);
 
   
   return nr_;

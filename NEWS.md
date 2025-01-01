@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9028 2024-12-26
+# nara 0.1.1.9029 2025-01-01
 
+* [9029] Refactor draw commands. Argument ordering is now always (x, y), (w, h) in both C and R
 * [9028] Add `nr_blit_rotozoom()`
 * [9027] Add `nr_blit_bulk()`
 * [9027] Blit refactor - remove `nr_blit_list()`, `nr_blit_grid()`

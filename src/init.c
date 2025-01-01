@@ -103,12 +103,12 @@ static const R_CallMethodDef CEntries[] = {
 
 
 // C funcs for export via "LinkingTo"
-extern void nr_point      (uint32_t *nr, int height, int width, int x, int y,                               uint32_t color);
-extern void nr_line       (uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1,             uint32_t color) ;
-extern void nr_hline      (uint32_t *nr, int height, int width, int x1, int x2, int y,                      uint32_t color);
-extern void nr_circle     (uint32_t *nr, int height, int width, int xm, int ym, int r      , uint32_t fill, uint32_t color);
-extern void nr_polygon    (uint32_t *nr, int height, int width, int *x, int *y, int npoints,                uint32_t color);
-extern void  nr_text_basic(uint32_t *nr, int height, int width, int x, int y, const char *str, uint32_t color, int fontsize);
+extern void nr_point      (uint32_t *nr, int nr_width, int nr_height, int x, int y,                               uint32_t color);
+extern void nr_line       (uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1,             uint32_t color) ;
+extern void nr_hline      (uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y,                      uint32_t color);
+extern void nr_circle     (uint32_t *nr, int nr_width, int nr_height, int xm, int ym, int r      , uint32_t fill, uint32_t color);
+extern void nr_polygon    (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints,                uint32_t color);
+extern void  nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize);
 
 void R_init_nara(DllInfo *info) {
   R_registerRoutines(

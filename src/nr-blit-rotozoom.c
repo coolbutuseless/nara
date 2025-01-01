@@ -94,7 +94,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP
         
         if (x0 >= 0 && y0 >= 0 && x0 < src_width && y0 < src_height) {
           uint32_t col = src[(int)(y0 * src_width + x0)];
-          nr_point(dst, dst_height, dst_width, xs[i] + xi, ys[i] + yi, col);
+          nr_point(dst, dst_width, dst_height, xs[i] + xi, ys[i] + yi, col);
         }
         
       }
@@ -106,10 +106,10 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP
   // Bounding rectangle for debugging
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // if (0) {
-  //   nr_line(dst, dst_height, dst_width, x + xmax,  y - ymax, x + xmax, y + ymax, RC_BLACK);
-  //   nr_line(dst, dst_height, dst_width, x + xmax,  y + ymax, x - xmax, y + ymax, RC_BLACK);
-  //   nr_line(dst, dst_height, dst_width, x - xmax,  y + ymax, x - xmax, y - ymax, RC_BLACK);
-  //   nr_line(dst, dst_height, dst_width, x - xmax,  y - ymax, x + xmax, y - ymax, RC_BLACK);
+  //   nr_line(dst, dst_width, dst_height, x + xmax,  y - ymax, x + xmax, y + ymax, RC_BLACK);
+  //   nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x - xmax, y + ymax, RC_BLACK);
+  //   nr_line(dst, dst_width, dst_height, x - xmax,  y + ymax, x - xmax, y - ymax, RC_BLACK);
+  //   nr_line(dst, dst_width, dst_height, x - xmax,  y - ymax, x + xmax, y - ymax, RC_BLACK);
   // }
   
   if (freex) free(xs);

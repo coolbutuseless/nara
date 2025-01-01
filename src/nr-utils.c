@@ -32,11 +32,11 @@ void assert_nativeraster(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Create a new nativeRaster object
 //
-// @param height,width dimensions
+// @param width,height dimensions
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_new(int height, int width) {
+SEXP nr_new(int nr_width, int nr_height) {
   // SEXP Rf_allocMatrix(SEXPTYPE type, int nrow, int ncol);
-  SEXP nr_ = PROTECT(Rf_allocMatrix(INTSXP, height, width));
+  SEXP nr_ = PROTECT(Rf_allocMatrix(INTSXP, nr_height, nr_width));
   SEXP class_ = PROTECT(Rf_mkString("nativeRaster"));
   SET_CLASS(nr_, class_);
   

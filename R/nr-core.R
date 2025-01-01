@@ -28,7 +28,7 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
-  nr <- .Call(nr_new_, height, width)
+  nr <- .Call(nr_new_, width, height)
   .Call(fill_, nr, fill)
   nr
 }

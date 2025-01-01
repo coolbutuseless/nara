@@ -19,12 +19,12 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw circle [C interface]
 //
-// @param xm,ym centre of circle
+// @param x,y centre of circle
 // @param r radius
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint32_t fill, uint32_t color) {    
+void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, uint32_t fill, uint32_t color) {    
   // Skip NAs
-  if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
+  if (x == NA_INTEGER || y == NA_INTEGER || r == NA_INTEGER) {
     return;
   }
   
@@ -33,30 +33,31 @@ void nr_circle(uint32_t *nr, int height, int width, int xm, int ym, int r, uint3
     Rf_error("nr_circle(): error allocating 'ydone'");
   }
   
-  int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
+  int xoff = -r, yoff = 0, err = 2-2*r; /* II. Quadrant */
   do {
     
-    if (!is_transparent(fill) && !ydone[y]) {
-      nr_hline(nr, height, width, xm + x, xm - x, ym + y, fill);
-      if (y != 0) {
-        nr_hline(nr, height, width, xm + x, xm - x, ym - y, fill);
+    if (!is_transparent(fill) && !ydone[yoff]) {
+      nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill);
+      if (yoff != 0) {
+        // vertical offset from centre
+        nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y - yoff, fill);
       }
-      ydone[y] = 1;
+      ydone[yoff] = 1;
     }
     
     if (!is_transparent(color)) {
-      nr_point(nr, height, width, xm-x, ym+y, color); /*   I. Quadrant */
-      nr_point(nr, height, width, xm+x, ym+y, color); /*  II. Quadrant */
-      if (y != 0) {
-        nr_point(nr, height, width, xm-x, ym-y, color); /* III. Quadrant */
-        nr_point(nr, height, width, xm+x, ym-y, color); /*  IV. Quadrant */
+      nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color); /*   I. Quadrant */
+      nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color); /*  II. Quadrant */
+      if (yoff != 0) {
+        nr_point(nr, nr_width, nr_height, x-xoff, y-yoff, color); /* III. Quadrant */
+        nr_point(nr, nr_width, nr_height, x+xoff, y-yoff, color); /*  IV. Quadrant */
       }
     }
     
     r = err;
-    if (r <= y) err += ++y*2+1;           /* e_xy+e_y < 0 */
-    if (r > x || err > y) err += ++x*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
-  } while (x < 0);
+    if (r <= yoff) err += ++yoff*2+1;           /* e_xy+e_y < 0 */
+    if (r > xoff || err > yoff) err += ++xoff*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
+  } while (xoff < 0);
   
   free(ydone);
 }
@@ -88,48 +89,9 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
 
+  // Draw each circle
   for (int idx = 0; idx < N; idx++) {
-    // Rprintf("idx: %i\n", idx);
-    int xm = xms[idx];
-    int ym = yms[idx];
-    int  r =  rs[idx];
-    
-    // Skip NAs
-    if (xm == NA_INTEGER || ym == NA_INTEGER || r == NA_INTEGER) {
-      continue;
-    }
-
-    int *ydone = (int *)calloc((size_t)r * 2, sizeof(int));
-    if (ydone == NULL) {
-      Rf_error("error allocating 'ydone'");
-    }
-    
-    int x = -r, y = 0, err = 2-2*r; /* II. Quadrant */
-    do {
-      
-      if (!is_transparent(fill[idx]) && !ydone[y]) {
-        nr_hline(nr, nr_height, nr_width, xm + x, xm - x, ym + y, fill[idx]);
-        if (y != 0) {
-          nr_hline(nr, nr_height, nr_width, xm + x, xm - x, ym - y, fill[idx]);
-        }
-        ydone[y] = 1;
-      }
-      
-      if (!is_transparent(color[idx])) {
-        nr_point(nr, nr_height, nr_width, xm-x, ym+y, color[idx]); /*   I. Quadrant */
-        nr_point(nr, nr_height, nr_width, xm+x, ym+y, color[idx]); /*  II. Quadrant */
-        if (y != 0) {
-          nr_point(nr, nr_height, nr_width, xm-x, ym-y, color[idx]); /* III. Quadrant */
-          nr_point(nr, nr_height, nr_width, xm+x, ym-y, color[idx]); /*  IV. Quadrant */
-        }
-      }
-      
-      r = err;
-      if (r <= y) err += ++y*2+1;           /* e_xy+e_y < 0 */
-      if (r > x || err > y) err += ++x*2+1; /* e_xy+e_x > 0 or no 2nd y-step */
-    } while (x < 0);
-    
-    free(ydone);
+    nr_circle(nr, nr_width, nr_height, xms[idx], yms[idx], rs[idx], fill[idx], color[idx]);  
   }
 
 

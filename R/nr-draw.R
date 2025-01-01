@@ -121,10 +121,10 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #' @return Original \code{nativeRaster} modified in-place
 #'
 #' @examples
-#' N <- 21
+#' N <- 201
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
-#' plot(nr)
+#' plot(nr, TRUE)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -19,16 +19,16 @@
 // Draw a single point on the canvas [C interface]
 // 
 // @param nr native raster (modified in-place)
-// @param height,width dimensions
+// @param nr_width,nr_height dimensions
 // @param x,y location
 // @param color colour
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color) {
+void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (y < 0 || y > height - 1 || x < 0 || x > width - 1) return;
+  if (y < 0 || y > nr_height - 1 || x < 0 || x > nr_width - 1) return;
   
   // Check for transparent color
   if (is_transparent(color)) return;
@@ -37,10 +37,10 @@ void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color)
   uint32_t alpha = (color >> 24) & 255;
   
   if (alpha == 255) {
-    nr[y * width + x] = color;
+    nr[y * nr_width + x] = color;
   } else {
     // Alpha blending
-    uint32_t val = nr[y * width + x];
+    uint32_t val = nr[y * nr_width + x];
     uint8_t r2 =  val        & 255;
     uint8_t g2 = (val >>  8) & 255;
     uint8_t b2 = (val >> 16) & 255;
@@ -53,7 +53,7 @@ void nr_point(uint32_t *nr, int height, int width, int x, int y, uint32_t color)
     g = (uint8_t)((alpha * g + (255 - alpha) * g2) / 255);
     b = (uint8_t)((alpha * b + (255 - alpha) * b2) / 255);
     
-    nr[y * width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
+    nr[y * nr_width + x] = ((uint32_t)r) | ((uint32_t)g << 8) | ((uint32_t)b << 16) | ((uint32_t)0xff << 24);
   }
 }
 
@@ -72,8 +72,8 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
 
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
 
   // get an int* from a numeric from R
   bool freex = false, freey = false;
@@ -86,7 +86,7 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
 
   for (int i = 0 ; i < N; i++) {
-    nr_point(nr, height, width, x[i], y[i], color[i]);
+    nr_point(nr, nr_width, nr_height, x[i], y[i], color[i]);
   }
 
   // free and return

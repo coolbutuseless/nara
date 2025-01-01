@@ -49,12 +49,12 @@ SEXP magick_to_nr_(SEXP im_data_, SEXP dst_) {
   int nprotect = 0;
   
   if (Rf_isNull(dst_)) {
-    dst_ = PROTECT(nr_new(height, width)); nprotect++;
+    dst_ = PROTECT(nr_new(width, height)); nprotect++;
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimenions (%i, %i) do not match source matrix (%i, %i)", 
-            Rf_ncols(dst_), Rf_nrows(dst_), height, width);
+      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+            Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   

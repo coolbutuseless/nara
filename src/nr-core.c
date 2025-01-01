@@ -18,8 +18,8 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Interface
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_new_(SEXP height_, SEXP width_) {
-  return nr_new(Rf_asInteger(height_), Rf_asInteger(width_));
+SEXP nr_new_(SEXP nr_width_, SEXP nr_height_) {
+  return nr_new(Rf_asInteger(nr_width_), Rf_asInteger(nr_height_));
 }
 
 

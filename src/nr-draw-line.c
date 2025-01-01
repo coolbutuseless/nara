@@ -19,18 +19,18 @@
 // Draw line [C interface]
 // 
 // @param nr native raster (modified in-place)
-// @param height,width dimensions
+// @param nr_width,nr_height dimensions
 // @param x0,y0,x1,y1 endpoints of line
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1, uint32_t color) {
+void nr_line(uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1, uint32_t color) {
 
   int dx =  abs(x1-x0), sx = x0<x1 ? 1 : -1;
   int dy = -abs(y1-y0), sy = y0<y1 ? 1 : -1;
   int err = dx+dy, e2;                                  /* error value e_xy */
 
   for (;;) {                                                        /* loop */
-    nr_point(nr, height, width, x0, y0, color);
+    nr_point(nr, nr_width, nr_height, x0, y0, color);
 
     e2 = 2*err;
     if (e2 >= dy) {                                       /* e_xy+e_x > 0 */
@@ -49,7 +49,6 @@ void nr_line(uint32_t *nr, int height, int width, int x0, int y0, int x1, int y1
 // Draw lines. Vectorised [R interface]
 // 
 // @param nr native raster (modified in-place)
-// @param height,width dimensions
 // @param x0,y0,x1,y1 line endpoints
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,8 +58,8 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
 
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
 
   // get an int* from a numeric from R
   bool freex0 = false, freey0 = false, freex1 = false, freey1 = false;
@@ -75,7 +74,7 @@ SEXP nr_line_(SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_, SEXP color_) {
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
 
   for (int i = 0; i < N; i++) {
-    nr_line(nr, height, width, x0[i], y0[i], x1[i], y1[i], color[i]);
+    nr_line(nr, nr_width, nr_height, x0[i], y0[i], x1[i], y1[i], color[i]);
   }
 
   // free and return

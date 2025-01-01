@@ -30,7 +30,7 @@ static int scanline_sort_x(const void *a, const void *b) {
 // not as efficient as something with an active edge table but it
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints, uint32_t color) {
+void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Pairs of values in 'nodeX' will have points drawn between them on 
@@ -61,7 +61,7 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
   ymax++;
   
   if (ymin < 0) ymin = 0;
-  if (ymax >= height) ymax = height - 1;
+  if (ymax >= nr_height) ymax = nr_height - 1;
   
   // Rprintf("ymin/ymax : %i  %i\n", ymin, ymax);
   
@@ -109,7 +109,7 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
         nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
       } else if (y[i] == scanline && y[j] == scanline) {
         // Horizontal lines
-        // nr_hline(nr, height, width, x[i], x[j], scanline, color);
+        // nr_hline(nr, nr_width, nr_height, x[i], x[j], scanline, color);
         // 2024-Dec Some handling for polygons with horizontal lines between points.
         // Note: this may cause overdraw issues when alpha < 1. Untested.
         // Really need a better polygon algo.
@@ -129,11 +129,11 @@ void nr_polygon(uint32_t *nr, int height, int width, int *x, int *y, int npoints
     //  Fill the pixels between node pairs.
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     for (int i = 0; i < nodes; i += 2) {
-      if (nodeX[i] >= width) break;
+      if (nodeX[i] >= nr_width) break;
       if (nodeX[i + 1] >  0 ) {
         if (nodeX[i] < 0) nodeX[i] = 0;
-        if (nodeX[i + 1] >= width) nodeX[i + 1] = width - 1;
-        nr_hline(nr, height, width, nodeX[i], nodeX[i+1], scanline, color);
+        if (nodeX[i + 1] >= nr_width) nodeX[i + 1] = nr_width - 1;
+        nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, color);
       }
     }
   } // end for(scanline)
@@ -161,8 +161,8 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
   
   uint32_t color = single_rcolor_to_int(color_);
   uint32_t fill   = single_rcolor_to_int(fill_);
@@ -174,12 +174,13 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   int *y = as_int32_vec(y_, N, &freey);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, height, width, x, y, Rf_length(x_), fill);
+  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill);
   
-  // outline
+  // Polygon outline only => Closed Polyline
   if (!is_transparent(color)) {
     // Rprintf("Polygon Color: %i\n", color);
-    nr_polyline_(nr_, x_, y_, color_, Rf_ScalarLogical(1));
+    // nr_polyline_(nr_, x_, y_, color_, Rf_ScalarLogical(1));
+    nr_polyline(nr, nr_width, nr_height, x, y, N, color, 1);
   }
   
   // free and return
@@ -204,8 +205,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   // Unpack native raster
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
-  int height = Rf_nrows(nr_);
-  int width  = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
   
   // Sanity check
   int N = Rf_length(x_);
@@ -255,23 +256,20 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
     int len = poly_end - poly_start;
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
-    nr_polygon (nr, height, width, x + poly_start, y + poly_start, len, fill [i]);
-    nr_polyline(nr, height, width, x + poly_start, y + poly_start, len, color[i], 1);
+    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i]);
+    nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[i], 1);
     
     poly_start = poly_end;
     poly_id    = id[poly_start];
     poly_end++;
-    // if (!is_transparent(color)) {
-    //   nr_polyline_(nr_, x_, y_, color_, ScalarLogical(1));
-    // }
   }
   
   
   // Final polygon
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
-  nr_polygon (nr, height, width, x + poly_start, y + poly_start, len, fill [npolys - 1]);
-  nr_polyline(nr, height, width, x + poly_start, y + poly_start, len, color[npolys - 1], 1);
+  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1]);
+  nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[npolys - 1], 1);
   
   
   
