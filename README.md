@@ -12,7 +12,7 @@
 <!-- badges: end -->
 
 `{nara}` provides tools for working with R’s `nativeRaster` image format
-to enable fast double-buffered graphics rendering.
+to enable fast graphics rendering.
 
 ### Why?
 
@@ -29,7 +29,7 @@ This makes them useful for games and other interactive applications.
 - uses *in-place* operations to avoid memory allocations.
 - is focussed on rendering discrete pixels, so all dimensions are
   rounded to integer values prior to rendering.
-- some basic drawing primitives are included
+- includes basic drawing primitives e.g. rectangles, lines, circles
 
 ### What is a `nativeRaster` and why is it fast?
 
@@ -41,7 +41,7 @@ within R to be four color channels (RGBA) represented by 8 bits each.
 
 This way of encoding color information is closer to the internal
 representation used by graphics devices, and therefore can be faster to
-render, save and load (as fewer data conversion steps are needed).
+render and manipulate.
 
 Native rasters do **not** use pre-multiplied alpha.
 
@@ -50,16 +50,15 @@ Native rasters do **not** use pre-multiplied alpha.
 `{nara}` is targeted at fast rendering (\>30fps), and tries to minimise
 R function calls and memory allocations.
 
-When updating `nativeRaster` objects with this package, all changes are
-done *in place* on the current object i.e. a new object is **not**
-created.
+When updating `nativeRaster` objects with this package, changes are done
+*in place* on the current image i.e. a new image is **not** created.
 
 ### Anti-aliasing/Interpolation
 
 No anti-aliasing is done by the draw methods in this package.
 
 No interpolation is done - `x` and `y` values for drawing coordinates
-are converted to integers.
+are always rounded to integers.
 
 ## Installation
 
@@ -73,8 +72,6 @@ remotes::install_github('coolbutuseless/nara')
 
 ## Vignettes
 
-- [Pacman
-  demo](https://coolbutuseless.github.io/package/nara/articles/pacman.html)
 - [Creating, transforming, reading, writing nativeRaster
   images](https://coolbutuseless.github.io/package/nara/articles/conversion.html)
 
@@ -206,7 +203,7 @@ for (i in -30:110) {
 
 <img src="man/figures/deer.gif" />
 
-## Multi-Ball
+## Working with multiple sprites
 
 You can quickly *blit* (i.e. copy) a sprite into multiple locations on
 the nativeraster with `nr_blit()` and `nr_blit_list()`
@@ -266,6 +263,17 @@ for (frame in 1:1000) {
 #### Live screen recording
 
 <img src="man/figures/multiball.gif" />
+
+# Conventions and Terminology
+
+## Dimension ordering
+
+All arguments specifying dimensions are in the order **horizontal** then
+**vertical** i.e.
+
+- x, y
+- width, height
+- hjust, vjust
 
 ## Coordinate System
 
