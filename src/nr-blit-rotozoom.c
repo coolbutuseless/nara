@@ -32,7 +32,7 @@ double roty(double x, double y, double cost, double sint) {
 
 
 void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y,
-                      uint32_t *src, int src_width, int src_height, int x0, int y0,
+                      uint32_t *src, int src_width, int src_height, int xsrc, int ysrc,
                       int w, int h,
                       double hjust, double vjust,
                       double theta, double sf, 
@@ -100,17 +100,20 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double isf = 1/sf;
-  for (int xi = floor(xmin); xi <= ceil(xmax); ++xi) {
-    for (int yi = floor(ymin); yi <= ceil(ymax); ++yi) {
-      double x0 = rotx(xi, yi, cost, sint);
-      double y0 = roty(xi, yi, cost, sint);
+  for (int xd = floor(xmin); xd <= ceil(xmax); ++xd) {
+    for (int yd = floor(ymin); yd <= ceil(ymax); ++yd) {
       
-      x0 = round( (x0 * isf) + src_width /2 );
-      y0 = round( (y0 * isf) + src_height/2 );
+      // (xd,yd) are the offset coordinates in the destination
+      // (xs,ys) are the coordinates in the source
+      double xs = rotx(xd, yd, cost, sint);
+      double ys = roty(xd, yd, cost, sint);
       
-      if (x0 >= 0 && y0 >= 0 && x0 < src_width && y0 < src_height) {
-        uint32_t col = src[(int)(y0 * src_width + x0)];
-        nr_point(dst, dst_width, dst_height, x + xi, y + yi, col);
+      xs = round( (xs * isf) + src_width /2 );
+      ys = round( (ys * isf) + src_height/2 );
+      
+      if (xs >= 0 && ys >= 0 && xs < src_width && ys < src_height) {
+        uint32_t col = src[(int)(ys * src_width + xs)];
+        nr_point(dst, dst_width, dst_height, x + xd, y + yd, col);
       }
       
     }
@@ -132,7 +135,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
 
 
 SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
-                       SEXP src_, SEXP x0_, SEXP y0_, 
+                       SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                        SEXP w_    , SEXP h_, 
                        SEXP hjust_, SEXP vjust_, 
                        SEXP angle_, SEXP sf_,
@@ -169,8 +172,8 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Only a Single native raster allowed as input.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int x0 = Rf_asInteger(x0_);
-  int y0 = Rf_asInteger(y0_);
+  int xsrc = Rf_asInteger(xsrc_);
+  int ysrc = Rf_asInteger(ysrc_);
   
   int w = Rf_asInteger(w_) < 0 ? src_width  : Rf_asInteger(w_);
   int h = Rf_asInteger(h_) < 0 ? src_height : Rf_asInteger(h_);
@@ -180,7 +183,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   for (int i = 0; i < N; i++) {
     nr_blit_rotozoom(dst, dst_width, dst_height, xs[i], ys[i], 
-                     src, src_width, src_height, x0   , y0, 
+                     src, src_width, src_height, xsrc , ysrc, 
                      w, h,
                      Rf_asReal(hjust_), Rf_asReal(vjust_),
                      thetas[i], sfs[i], Rf_asLogical(respect_alpha_));

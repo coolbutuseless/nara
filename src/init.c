@@ -27,14 +27,14 @@ extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP nr_blit_(SEXP dst_  , SEXP x_    , SEXP y_, 
-                     SEXP src_  , SEXP x0_   , SEXP y0_, 
+                     SEXP src_  , SEXP xsrc_   , SEXP ysrc_, 
                     SEXP w_    , SEXP h_, 
                     SEXP hjust_, SEXP vjust_, 
                     SEXP respect_alpha_);
 
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
-                              SEXP src_, SEXP x0_, SEXP y0_, 
+                              SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                               SEXP w_, SEXP h_, 
                               SEXP hjust_, SEXP vjust_, 
                               SEXP angle_, SEXP sf_,

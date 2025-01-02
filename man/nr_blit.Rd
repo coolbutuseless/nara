@@ -9,8 +9,8 @@ nr_blit(
   src,
   x,
   y,
-  x0 = 0L,
-  y0 = 0L,
+  xsrc = 0L,
+  ysrc = 0L,
   w = -1L,
   h = -1L,
   hjust = 0,
@@ -28,7 +28,7 @@ Note that the
 origin of \code{nativeraster} images is the top-left
 where the coordinates are (0, 0).}
 
-\item{x0, y0}{start coordiates within src}
+\item{xsrc, ysrc}{start coordiates within src}
 
 \item{w, h}{size within src. If size is negative, then the actual width/height of
 the src is used}

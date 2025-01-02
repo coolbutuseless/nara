@@ -11,8 +11,8 @@ nr_blit_rotozoom(
   y,
   angle,
   scale,
-  x0 = 0L,
-  y0 = 0L,
+  xsrc = 0L,
+  ysrc = 0L,
   w = -1L,
   h = -1L,
   hjust = 0.5,
@@ -34,7 +34,7 @@ where the coordinates are (0, 0).}
 
 \item{scale}{zoom factor}
 
-\item{x0, y0}{start coordiates within src}
+\item{xsrc, ysrc}{start coordiates within src}
 
 \item{w, h}{size within src. If size is negative, then the actual width/height of
 the src is used}
@@ -65,6 +65,6 @@ plot(nr)
 
 nr <- nr_new(300, 200, 'grey80')
 sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/999, scale = 1)
+nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
 plot(nr)
 }

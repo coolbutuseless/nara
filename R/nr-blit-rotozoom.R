@@ -18,19 +18,19 @@
 #'
 #' nr <- nr_new(300, 200, 'grey80')
 #' sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-#' nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/999, scale = 1)
+#' nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
 #' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit_rotozoom <- function(dst, src, x, y, angle, scale, 
-                             x0 = 0L, y0 = 0L, 
+                             xsrc = 0L, ysrc = 0L, 
                              w = -1L, h = -1L,
                              hjust = 0.5, vjust = 0.5, 
                              respect_alpha = TRUE) {
   invisible(
     .Call(nr_blit_rotozoom_, 
           dst, x, y, 
-          src, x0, y0, 
+          src, xsrc, ysrc, 
           w, h,
           hjust, vjust,
           angle, scale, 

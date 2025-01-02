@@ -12,7 +12,7 @@
 #'        Note that the
 #'        origin of \code{nativeraster} images is the top-left
 #'        where the coordinates are (0, 0).
-#' @param x0,y0 start coordiates within src
+#' @param xsrc,ysrc start coordiates within src
 #' @param w,h size within src. If size is negative, then the actual width/height of
 #'        the src is used
 #' @param respect_alpha Should the alpha channel be respected when blitting?
@@ -37,7 +37,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit <- function(dst, src, 
                     x, y, 
-                    x0    =  0L , y0    =  0L, 
+                    xsrc  =  0L , ysrc  =  0L, 
                     w     = -1L , h     = -1L, 
                     hjust =  0  , vjust =  0, 
                     respect_alpha = TRUE) {
@@ -45,7 +45,7 @@ nr_blit <- function(dst, src,
   
   invisible(.Call(nr_blit_, 
                   dst  , x    , y, 
-                  src  , x0   , y0, 
+                  src  , xsrc , ysrc, 
                   w    , h, 
                   hjust, vjust, 
                   respect_alpha))
@@ -59,7 +59,7 @@ nr_blit <- function(dst, src,
 #' @param dst destination native raster
 #' @param src list of native rasters
 #' @param config data.frame of configuration information for each blit which 
-#'    most contain: idx, x, y, x0, y0, w, h, hjust, vjust, respect_alpha, draw
+#'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, respect_alpha, draw
 #' @return None. \code{dst} modifief by-reference and returned invisibly.
 #' @examples
 #' nr <- nr_new(90, 90, 'grey60')
@@ -67,8 +67,8 @@ nr_blit <- function(dst, src,
 #'   idx = c(1, 2, 3, 4),
 #'   x = c(10, 10, 40, 40),
 #'   y = c(10, 40, 40, 10),
-#'   x0 = 0L,
-#'   y0 = 0L,
+#'   xsrc = 0L,
+#'   ysrc = 0L,
 #'   w = -1L,
 #'   h = -1L,
 #'   hjust = 0,
