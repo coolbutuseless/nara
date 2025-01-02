@@ -4,18 +4,52 @@
 \alias{nr_blit_rotozoom}
 \title{Blit a source image into another native raster with rotation and scaling.}
 \usage{
-nr_blit_rotozoom(nr, src, x, y, angle, scale)
+nr_blit_rotozoom(
+  dst,
+  src,
+  x,
+  y,
+  angle,
+  scale,
+  x0 = 0L,
+  y0 = 0L,
+  w = -1L,
+  h = -1L,
+  hjust = 0,
+  vjust = 0,
+  respect_alpha = TRUE
+)
 }
 \arguments{
-\item{nr}{destination}
+\item{dst, src}{source and destination native rasters}
 
-\item{src}{src}
-
-\item{x, y}{location to start within dst}
+\item{x, y}{Where in \code{nr} to place the \code{sprite}. These values must
+be vectors of the same length.  If the length is greater than 1, then
+the \code{sprite} will be pasted into \code{nr} at multiple locations.
+Note that the
+origin of \code{nativeraster} images is the top-left
+where the coordinates are (0, 0).}
 
 \item{angle}{angle in radians}
 
 \item{scale}{zoom factor}
+
+\item{x0, y0}{start coordiates within src}
+
+\item{w, h}{size within src. If size is negative, then the actual width/height of
+the src is used}
+
+\item{hjust, vjust}{specify horizontal and vertical justification of the 
+\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
+starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
+to treat the centre of the \code{src_} as the blitting origin.
+Default (0, 0)}
+
+\item{respect_alpha}{Should the alpha channel be respected when blitting?
+Default: TRUE means to carefully blend pixels at each location 
+using alpha values.  If FALSE, then contents at the \code{dst} will 
+just be replaced with \code{src} pixels
+which can be much much faster.}
 }
 \value{
 None. \code{nr} modified in-place and returned invisibly

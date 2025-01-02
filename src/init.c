@@ -33,7 +33,12 @@ extern SEXP nr_blit_(SEXP dst_  , SEXP x_    , SEXP y_,
                     SEXP respect_alpha_);
 
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
-extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP sf_);
+extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
+                              SEXP src_, SEXP x0_, SEXP y0_, 
+                              SEXP w_, SEXP h_, 
+                              SEXP hjust_, SEXP vjust_, 
+                              SEXP angle_, SEXP sf_,
+                              SEXP respect_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
@@ -76,7 +81,7 @@ static const R_CallMethodDef CEntries[] = {
   
   {"nr_blit_"         , (DL_FUNC) &nr_blit_         , 11},
   {"nr_blit_bulk_"    , (DL_FUNC) &nr_blit_bulk_    ,  3},
-  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_,  6},
+  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 6},
   

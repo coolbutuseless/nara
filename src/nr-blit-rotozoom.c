@@ -31,8 +31,11 @@ double roty(double x, double y, double cost, double sint) {
 
 
 void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y,
-                      uint32_t *src, int src_width, int src_height, 
-                      double theta, double sf) {
+                      uint32_t *src, int src_width, int src_height, int x0, int y0,
+                      int w, int h,
+                      double hjust, double vjust,
+                      double theta, double sf, 
+                      bool respect_alpha) {
   
   double cost = cos(theta);
   double sint = sin(theta);
@@ -74,8 +77,12 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
 }
 
 
-SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP sf_) {
-  
+SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
+                       SEXP src_, SEXP x0_, SEXP y0_, 
+                       SEXP w_    , SEXP h_, 
+                       SEXP hjust_, SEXP vjust_, 
+                       SEXP angle_, SEXP sf_,
+                       SEXP respect_alpha_) {  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,9 +114,20 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Precalculate cos(theta) sin(theta). Maybe not needed.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int x0 = 0;
+  int y0 = 0;
+  double hjust = 0.5;
+  double vjust = 0.5;
+  int w = src_width;
+  int h = src_height;
+  bool respect_alpha = Rf_asLogical(respect_alpha_);
+  
   for (int i = 0; i < N; i++) {
     nr_blit_rotozoom(dst, dst_width, dst_height, xs[i], ys[i], 
-                     src, src_width, src_height, thetas[i], sfs[i]);
+                     src, src_width, src_height, x0   , y0, 
+                     w, h,
+                     hjust, vjust,
+                     thetas[i], sfs[i], respect_alpha);
   }
   
   

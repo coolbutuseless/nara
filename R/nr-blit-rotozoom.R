@@ -6,9 +6,7 @@
 #' 
 #' Only implements nearest neighbour interpolation.
 #' 
-#' @param nr destination 
-#' @param src src
-#' @param x,y location to start within dst
+#' @inheritParams nr_blit
 #' @param angle angle in radians
 #' @param scale zoom factor
 #' @return None. \code{nr} modified in-place and returned invisibly
@@ -19,9 +17,19 @@
 #' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_rotozoom <- function(nr, src, x, y, angle, scale) {
+nr_blit_rotozoom <- function(dst, src, x, y, angle, scale, 
+                             x0 = 0L, y0 = 0L, 
+                             w = -1L, h = -1L,
+                             hjust = 0, vjust = 0, 
+                             respect_alpha = TRUE) {
   invisible(
-    .Call(nr_blit_rotozoom_, nr, src, x, y, angle, scale)
+    .Call(nr_blit_rotozoom_, 
+          dst, x, y, 
+          src, x0, y0, 
+          w, h,
+          hjust, vjust,
+          angle, scale, 
+          respect_alpha)
   )
 }
 
