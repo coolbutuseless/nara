@@ -28,6 +28,7 @@ double roty(double x, double y, double cost, double sint) {
 }
 
 #define RC_BLACK 0xFF000000
+#define RC_RED 0xFF0000FF
 
 
 void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y,
@@ -40,26 +41,67 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   double cost = cos(theta);
   double sint = sin(theta);
   
+  // Rprintf(">>> w/h %i/%i\n", w, h);
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Determine extents to rotate within
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double x1 = sf * fabs(rotx(src_width/2,  src_height/2, cost, sint) + 1);
-  double x2 = sf * fabs(rotx(src_width/2, -src_height/2, cost, sint) + 1);
-  int xmax = (int)ceil(x1 > x2 ? x1 : x2);
+  double xr =  w * (1 - hjust);
+  double xl = -w *      hjust ; 
+  double yt =  h *      vjust ;
+  double yb = -h * (1 - vjust);
   
-  double y1 = sf * fabs(roty(src_width/2,  src_height/2, cost, sint) + 1);
-  double y2 = sf * fabs(roty(src_width/2, -src_height/2, cost, sint) + 1);
-  int ymax = (int)ceil(y1 > y2 ? y1 : y2);
+  // Rprintf(">>>> xr/xl %.1f/%1.f  yt/yb  %.1f/%.1f\n", xr, xl, yt, yb);
   
-  xmax = xmax > dst_width /2 ? dst_width /2 : xmax;
-  ymax = ymax > dst_height/2 ? dst_height/2 : ymax;
+  double x1 = sf * rotx(xr,  yt, cost, sint);
+  double x2 = sf * rotx(xr,  yb, cost, sint);
+  double x3 = sf * rotx(xl,  yb, cost, sint);
+  double x4 = sf * rotx(xl,  yt, cost, sint);
+  // Rprintf(">>>> x:  %.1f %.1f %.1f %.1f\n", x1, x2, x3, x4);
+  double xmax = x1;
+  xmax = x2 > xmax ? x2 : xmax;
+  xmax = x3 > xmax ? x3 : xmax;
+  xmax = x4 > xmax ? x4 : xmax;
+  double xmin = x1;
+  xmin = x2 < xmin ? x2 : xmin;
+  xmin = x3 < xmin ? x3 : xmin;
+  xmin = x4 < xmin ? x4 : xmin;
+
+  double y1 = sf * roty(xr,  yt, cost, sint);
+  double y2 = sf * roty(xr,  yb, cost, sint);
+  double y3 = sf * roty(xl,  yb, cost, sint);
+  double y4 = sf * roty(xl,  yt, cost, sint);
+  // Rprintf(">>>> y:  %.1f %.1f %.1f %.1f\n", y1, y2, y3, y4);
+  double ymax = y1;
+  ymax = y2 > ymax ? y2 : ymax;
+  ymax = y3 > ymax ? y3 : ymax;
+  ymax = y4 > ymax ? y4 : ymax;
+  double ymin = y1;
+  ymin = y2 < ymin ? y2 : ymin;
+  ymin = y3 < ymin ? y3 : ymin;
+  ymin = y4 < ymin ? y4 : ymin;
+  
+  // Add a bit of a buffer to account for rounding
+  xmin -= sf;
+  xmax += sf;
+  ymin -= sf;
+  ymax += sf;
+  
+  // Trim so that x+xmin, x+xmax y+ymin y+ymax is always within dst
+  xmax = xmax + x >= dst_width  ? dst_width  - x - 1 : xmax;
+  ymax = ymax + y >= dst_height ? dst_height - y - 1 : ymax;
+  
+  xmin = xmin + x < 0  ? -x : xmin;
+  ymin = ymin + y < 0  ? -y : ymin;
+  
+  // Rprintf(">>> xmin/xmax %.1f/%.1f  ymin/ymax %.1f/%.1f\n", xmin, xmax, ymin, ymax);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double isf = 1/sf;
-  for (int xi = -xmax; xi <= xmax; ++xi) {
-    for (int yi = -ymax; yi <= ymax; ++yi) {
+  for (int xi = floor(xmin); xi <= ceil(xmax); ++xi) {
+    for (int yi = floor(ymin); yi <= ceil(ymax); ++yi) {
       double x0 = rotx(xi, yi, cost, sint);
       double y0 = roty(xi, yi, cost, sint);
       
@@ -73,6 +115,18 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       
     }
   }
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Bounding rectangle for debugging
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (0) {
+    nr_line(dst, dst_width, dst_height, x + xmin,  y + ymax, x + xmax, y + ymax, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x + xmax, y + ymin, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + xmax,  y + ymin, x + xmin, y + ymin, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + xmin,  y + ymin, x + xmin, y + ymax, RC_RED);
+  }
+  
   
 }
 
@@ -132,16 +186,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                      thetas[i], sfs[i], Rf_asLogical(respect_alpha_));
   }
   
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Bounding rectangle for debugging
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // if (0) {
-  //   nr_line(dst, dst_width, dst_height, x + xmax,  y - ymax, x + xmax, y + ymax, RC_BLACK);
-  //   nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x - xmax, y + ymax, RC_BLACK);
-  //   nr_line(dst, dst_width, dst_height, x - xmax,  y + ymax, x - xmax, y - ymax, RC_BLACK);
-  //   nr_line(dst, dst_width, dst_height, x - xmax,  y - ymax, x + xmax, y - ymax, RC_BLACK);
-  // }
+
   
   if (freex) free(xs);
   if (freey) free(ys);

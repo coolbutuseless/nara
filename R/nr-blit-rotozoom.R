@@ -15,12 +15,17 @@
 #' sq <- nr_new(20, 20, 'darkblue')
 #' nr_blit_rotozoom(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
 #' plot(nr)
+#'
+#' nr <- nr_new(300, 200, 'grey80')
+#' sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+#' nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/999, scale = 1)
+#' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit_rotozoom <- function(dst, src, x, y, angle, scale, 
                              x0 = 0L, y0 = 0L, 
                              w = -1L, h = -1L,
-                             hjust = 0, vjust = 0, 
+                             hjust = 0.5, vjust = 0.5, 
                              respect_alpha = TRUE) {
   invisible(
     .Call(nr_blit_rotozoom_, 
@@ -32,4 +37,24 @@ nr_blit_rotozoom <- function(dst, src, x, y, angle, scale,
           respect_alpha)
   )
 }
+
+
+if (FALSE) {
+  
+  sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  
+  for (theta in seq(0, 2*pi, length.out = 20)) {
+  nr <- nr_new(300, 200, 'grey80')
+  nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = theta, scale = 2.5)
+  plot(nr)
+  Sys.sleep(0.2)
+  }
+  
+}
+
+
+
+
+
+
 
