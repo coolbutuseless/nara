@@ -110,24 +110,26 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   double *ys     = as_double_vec(y_    , N, &freey);
   double *sfs    = as_double_vec(sf_   , N, &freesf);
   double *thetas = as_double_vec(angle_, N, &freetheta);
+
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Precalculate cos(theta) sin(theta). Maybe not needed.
+  // Only a Single native raster allowed as input.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int x0 = 0;
-  int y0 = 0;
-  double hjust = 0.5;
-  double vjust = 0.5;
-  int w = src_width;
-  int h = src_height;
-  bool respect_alpha = Rf_asLogical(respect_alpha_);
+  int x0 = Rf_asInteger(x0_);
+  int y0 = Rf_asInteger(y0_);
   
+  int w = Rf_asInteger(w_) < 0 ? src_width  : Rf_asInteger(w_);
+  int h = Rf_asInteger(h_) < 0 ? src_height : Rf_asInteger(h_);
+    
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // For each of the locations in the destination, blit from the source
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   for (int i = 0; i < N; i++) {
     nr_blit_rotozoom(dst, dst_width, dst_height, xs[i], ys[i], 
                      src, src_width, src_height, x0   , y0, 
                      w, h,
-                     hjust, vjust,
-                     thetas[i], sfs[i], respect_alpha);
+                     Rf_asReal(hjust_), Rf_asReal(vjust_),
+                     thetas[i], sfs[i], Rf_asLogical(respect_alpha_));
   }
   
   
