@@ -44,9 +44,8 @@ nr_blit <- function(dst, src,
   
   
   invisible(.Call(nr_blit_, 
-                  dst  , src, 
-                  x    , y, 
-                  x0   , y0, 
+                  dst  , x    , y, 
+                  src  , x0   , y0, 
                   w    , h, 
                   hjust, vjust, 
                   respect_alpha))

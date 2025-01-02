@@ -26,7 +26,8 @@ Suggests:
     stringr,
     knitr,
     rmarkdown,
-    magick
+    magick,
+    callme
 Config/testthat/edition: 3
 Copyright: The included 'deer' sprites are by Calciumtrice and licensed under 
    CC BY 3.0.  See 'inst/LICENSE-deer.txt' for more details. The included

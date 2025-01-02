@@ -12,9 +12,10 @@
 #include <unistd.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
-
+#include "nr-blit.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,10 +33,19 @@
 // @param w,h dimensions of region to copy
 // @param respect_alpha Should alpha values be respected when blitting?
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_(uint32_t *dst, int dst_width, int dst_height, int x , int y , 
-                uint32_t *src, int src_width, int src_height, int x0, int y0, 
-                int w, int h,
-                bool respect_alpha) {
+void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , 
+             uint32_t *src, int src_width, int src_height, int x0, int y0, 
+             int w, int h,
+             double hjust, double vjust,
+             bool respect_alpha) {
+  
+  
+  
+  int hjust_delta = (int)round(hjust * (w - 1));
+  int vjust_delta = (int)round(vjust * (h - 1));
+  
+  x -= hjust_delta;
+  y -= vjust_delta;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Check if src doesn't overlap with dst **AT ALL**
@@ -110,7 +120,7 @@ void blit_core_(uint32_t *dst, int dst_width, int dst_height, int x , int y ,
 // It attempts to plot every single point regardless of whether it
 // falls inside the boundary or not
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void blit_core_naive_(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
+void nr_blit_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
                       uint32_t *src, int src_width, int src_height, int x0, int y0, 
                       int w, int h) {
   
@@ -129,12 +139,11 @@ void blit_core_naive_(uint32_t *dst, int dst_width, int dst_height, int x, int y
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_blit_(SEXP dst_  , SEXP src_, 
-             SEXP x_    , SEXP y_, 
-             SEXP x0_   , SEXP y0_, 
-             SEXP w_    , SEXP h_,
-             SEXP hjust_, SEXP vjust_, 
-             SEXP respect_alpha_) {
+SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
+              SEXP src_, SEXP x0_   , SEXP y0_, 
+              SEXP w_    , SEXP h_,
+              SEXP hjust_, SEXP vjust_, 
+              SEXP respect_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
@@ -177,9 +186,6 @@ SEXP nr_blit_(SEXP dst_  , SEXP src_,
           x0, y0, w, h, src_width, src_height);
   }
   
-  int hjust = (int)round(Rf_asReal(hjust_) * (src_width  - 1));
-  int vjust = (int)round(Rf_asReal(vjust_) * (src_height - 1));
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Blit mulitple copies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,10 +193,12 @@ SEXP nr_blit_(SEXP dst_  , SEXP src_,
   uint32_t *src = (uint32_t *)INTEGER(src_);
   bool respect_alpha = Rf_asLogical(respect_alpha_);
   for (int i = 0; i < Rf_length(x_); i++) {
-    blit_core_(
-      dst, dst_width, dst_height, x[i] - hjust, y[i] - vjust, 
-      src, src_width, src_height,           x0,           y0, 
-      w, h, respect_alpha);
+    nr_blit(
+      dst, dst_width, dst_height, x[i], y[i], 
+      src, src_width, src_height, x0  , y0, 
+      w, h, 
+      Rf_asReal(hjust_), Rf_asReal(vjust_),
+      respect_alpha);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -293,15 +301,14 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     int this_w = (w == NULL || w[i] < 0) ? src_width  : w[i];
     int this_h = (h == NULL || h[i] < 0) ? src_height : h[i];
     
-    int this_hjust = hjust == NULL ? 0 : (int)round(hjust[i] * (src_width  - 1));
-    int this_vjust = vjust == NULL ? 0 : (int)round(vjust[i] * (src_height - 1));
-    
     int this_res_alpha = (respect_alpha == NULL) ? 1 : respect_alpha[i];
     
-    blit_core_(
-      dst, dst_width, dst_height, x[i] - this_hjust, y[i] - this_vjust,
-      src, src_width, src_height,           this_x0,           this_y0,
-      this_w, this_h, this_res_alpha);
+    nr_blit(
+      dst, dst_width, dst_height, x[i]   , y[i],
+      src, src_width, src_height, this_x0, this_y0,
+      this_w, this_h, 
+      hjust[i], vjust[i],
+      this_res_alpha);
   }
   
   

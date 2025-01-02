@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
 

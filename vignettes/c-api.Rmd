@@ -1,0 +1,67 @@
+---
+title: "C API"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{C API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nara)
+library(callme)
+```
+
+
+C function declaration for drawing a line on a native raster
+
+`void nr_line(uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1, uint32_t color);`
+
+* `nr` is a `uint32_t` pointer to the native raster data
+* `nr_width` and `nr_height` are the number of columns and rows of the raster
+* `x0, y0, x1, y1` are the integer coordinates of the endpoints of the line
+* `color` is a packaged integer color of the form `0xAABBGGRRu`.  See also the `{colorfast}` package.
+
+
+```{r}
+code <- r"(
+#include <stdint.h>
+#include "nara.h"
+
+SEXP my_func(SEXP nr_) {
+
+  int nr_width = Rf_ncols(nr_);
+  int nr_height = Rf_nrows(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  uint32_t col = 0xFF0000FFu; // 0xAABBGGRR Red
+
+  //      nr, nr_width, nr_height, x0, y0,  x1,  y1, color
+  nr_line(nr, nr_width, nr_height,  0,  0, 200, 150, col  );
+
+  return nr_;
+}
+)"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Find the location of nara.h and include its directory in the search path
+# using C Pre-Processor flags (PKG_CPPFLAGS)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nara_h <- system.file("include", "nara.h", package = "nara", mustWork = TRUE)
+cpp_include = paste0("-I", dirname(nara_h))
+callme::compile(code, PKG_CPPFLAGS = cpp_include)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Create a native raster and call my function
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr <- nr_new(400, 300, 'grey70')
+nr <- my_func(nr)
+plot(nr, T)
+```
+

@@ -12,9 +12,10 @@
 #include <unistd.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
-
+#include "nr-blit-rotozoom.h"
 
 
 double rotx(double x, double y, double cost, double sint) { 
@@ -27,6 +28,50 @@ double roty(double x, double y, double cost, double sint) {
 }
 
 #define RC_BLACK 0xFF000000
+
+
+void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y,
+                      uint32_t *src, int src_width, int src_height, 
+                      double theta, double sf) {
+  
+  double cost = cos(theta);
+  double sint = sin(theta);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Determine extents to rotate within
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  double x1 = sf * fabs(rotx(src_width/2,  src_height/2, cost, sint) + 1);
+  double x2 = sf * fabs(rotx(src_width/2, -src_height/2, cost, sint) + 1);
+  int xmax = (int)ceil(x1 > x2 ? x1 : x2);
+  
+  double y1 = sf * fabs(roty(src_width/2,  src_height/2, cost, sint) + 1);
+  double y2 = sf * fabs(roty(src_width/2, -src_height/2, cost, sint) + 1);
+  int ymax = (int)ceil(y1 > y2 ? y1 : y2);
+  
+  xmax = xmax > dst_width /2 ? dst_width /2 : xmax;
+  ymax = ymax > dst_height/2 ? dst_height/2 : ymax;
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Loop over all possible dst locations (a rectangular region)
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  double isf = 1/sf;
+  for (int xi = -xmax; xi <= xmax; ++xi) {
+    for (int yi = -ymax; yi <= ymax; ++yi) {
+      double x0 = rotx(xi, yi, cost, sint);
+      double y0 = roty(xi, yi, cost, sint);
+      
+      x0 = round( (x0 * isf) + src_width /2 );
+      y0 = round( (y0 * isf) + src_height/2 );
+      
+      if (x0 >= 0 && y0 >= 0 && x0 < src_width && y0 < src_height) {
+        uint32_t col = src[(int)(y0 * src_width + x0)];
+        nr_point(dst, dst_width, dst_height, x + xi, y + yi, col);
+      }
+      
+    }
+  }
+  
+}
 
 
 SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP sf_) {
@@ -63,42 +108,8 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP src_, SEXP x_, SEXP y_, SEXP angle_, SEXP
   // Precalculate cos(theta) sin(theta). Maybe not needed.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   for (int i = 0; i < N; i++) {
-    double cost = cos(thetas[i]);
-    double sint = sin(thetas[i]);
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Determine extents to rotate within
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    double x1 = sfs[i] * fabs(rotx(src_width/2,  src_height/2, cost, sint) + 1);
-    double x2 = sfs[i] * fabs(rotx(src_width/2, -src_height/2, cost, sint) + 1);
-    int xmax = (int)ceil(x1 > x2 ? x1 : x2);
-    
-    double y1 = sfs[i] * fabs(roty(src_width/2,  src_height/2, cost, sint) + 1);
-    double y2 = sfs[i] * fabs(roty(src_width/2, -src_height/2, cost, sint) + 1);
-    int ymax = (int)ceil(y1 > y2 ? y1 : y2);
-    
-    xmax = xmax > dst_width /2 ? dst_width /2 : xmax;
-    ymax = ymax > dst_height/2 ? dst_height/2 : ymax;
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Loop
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    double isf = 1/sfs[i];
-    for (int xi = -xmax; xi <= xmax; ++xi) {
-      for (int yi = -ymax; yi <= ymax; ++yi) {
-        double x0 = rotx(xi, yi, cost, sint);
-        double y0 = roty(xi, yi, cost, sint);
-        
-        x0 = round( (x0 * isf) + src_width /2 );
-        y0 = round( (y0 * isf) + src_height/2 );
-        
-        if (x0 >= 0 && y0 >= 0 && x0 < src_width && y0 < src_height) {
-          uint32_t col = src[(int)(y0 * src_width + x0)];
-          nr_point(dst, dst_width, dst_height, xs[i] + xi, ys[i] + yi, col);
-        }
-        
-      }
-    }
+    nr_blit_rotozoom(dst, dst_width, dst_height, xs[i], ys[i], 
+                     src, src_width, src_height, thetas[i], sfs[i]);
   }
   
   

@@ -12,6 +12,7 @@
 #include <unistd.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
 
@@ -22,22 +23,22 @@
 // @param nr native raster (modified in-place)
 // @param nr_width,nr_height dimensions
 // @param x,y vertices
-// @param N number of vertices
+// @param npoints number of vertices
 // @param close should the polyline be closed?
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int N, uint32_t color, int close) {
+void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, int close) {
   
   if (is_transparent(color)) return;
   
   // Draw lines between pairs of points
-  for (int i = 0; i < N - 1; i++) {
+  for (int i = 0; i < npoints - 1; i++) {
     nr_line(nr, nr_width, nr_height, x[i], y[i], x[i+1], y[i+1], color);
   }
   
   if (close) {
     // Join last point and first point if requested
-    nr_line(nr, nr_width, nr_height, x[N - 1], y[N - 1], x[0], y[0], color);
+    nr_line(nr, nr_width, nr_height, x[npoints - 1], y[npoints - 1], x[0], y[0], color);
   }
   
 }

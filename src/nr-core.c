@@ -12,8 +12,41 @@
 #include <unistd.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Is this a native raster?
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bool is_nativeraster(SEXP nr_) {
+  return Rf_isInteger(nr_) && Rf_inherits(nr_, "nativeRaster");
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Assert object is a native raster
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void assert_nativeraster(SEXP nr_) {
+  if (!is_nativeraster(nr_)) {
+    Rf_error("Object is not a nativeRaster");
+  }
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Create a new nativeRaster object
+//
+// @param width,height dimensions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_new(int nr_width, int nr_height) {
+  // SEXP Rf_allocMatrix(SEXPTYPE type, int nrow, int ncol);
+  SEXP nr_ = PROTECT(Rf_allocMatrix(INTSXP, nr_height, nr_width));
+  SEXP class_ = PROTECT(Rf_mkString("nativeRaster"));
+  SET_CLASS(nr_, class_);
+  
+  UNPROTECT(2);
+  return nr_;
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Interface

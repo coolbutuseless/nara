@@ -1,0 +1,1 @@
+void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int x0, int y0, int w, int h, double hjust, double vjust, bool respect_alpha); 

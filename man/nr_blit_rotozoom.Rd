@@ -24,7 +24,7 @@ None. \code{nr} modified in-place and returned invisibly
 Only implements nearest neighbour interpolation.
 }
 \examples{
-nr <- nr_new(200, 200)
+nr <- nr_new(300, 200, 'grey80')
 sq <- nr_new(20, 20, 'darkblue')
 nr_blit_rotozoom(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
 plot(nr)

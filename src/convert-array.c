@@ -14,6 +14,7 @@
 #include <colorfast.h>
 
 #include "color.h"
+#include "nr-core.h"
 #include "nr-utils.h"
 
 
