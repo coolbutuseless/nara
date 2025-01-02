@@ -4,12 +4,12 @@
 \alias{nr_line}
 \title{Draw lines on a \code{nativeRaster} image}
 \usage{
-nr_line(nr, x0, y0, x1, y1, color = "black")
+nr_line(nr, x1, y1, x2, y2, color = "black")
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{x0, y0, x1, y1}{Vectors of coordinates of endpoints of line}
+\item{x1, y1, x2, y2}{Vectors of coordinates of endpoints of line}
 
 \item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
@@ -25,7 +25,7 @@ Uses Bresenham's algorithm to draw lines. No antialiasing.
 \examples{
 N <- 20
 nr <- nr_new(N, N, 'grey80')
-nr_line(nr, x0 = c(0, N-1), y0 = c(0, 0), x1 = c(N-1, 0), y1 = c(N-1, N-1), 
+nr_line(nr, x1 = c(0, N-1), y1 = c(0, 0), x2 = c(N-1, 0), y2 = c(N-1, N-1), 
         color = c('red', 'black'))
 plot(nr)
 

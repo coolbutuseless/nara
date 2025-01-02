@@ -27,21 +27,21 @@ nr_point <- function(nr, x, y, color = 'black') {
 #' Uses Bresenham's algorithm to draw lines. No antialiasing.
 #'
 #' @inheritParams nr_fill
-#' @param x0,y0,x1,y1 Vectors of coordinates of endpoints of line
+#' @param x1,y1,x2,y2 Vectors of coordinates of endpoints of line
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #' 
 #' @examples
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_line(nr, x0 = c(0, N-1), y0 = c(0, 0), x1 = c(N-1, 0), y1 = c(N-1, N-1), 
+#' nr_line(nr, x1 = c(0, N-1), y1 = c(0, 0), x2 = c(N-1, 0), y2 = c(N-1, N-1), 
 #'         color = c('red', 'black'))
 #' plot(nr)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x0, y0, x1, y1, color = 'black') {
-  invisible(.Call(nr_line_, nr, x0, y0, x1, y1, color))
+nr_line <- function(nr, x1, y1, x2, y2, color = 'black') {
+  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color))
 }
 
 

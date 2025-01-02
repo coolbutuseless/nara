@@ -66,14 +66,14 @@ static inline void nr_hline (uint32_t *nr, int nr_width, int nr_height, int x1, 
 }
 
 
-static inline void nr_line (uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1, uint32_t color) {
-  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1, uint32_t color) = NULL;
+static inline void nr_line (uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color) {
+  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1, uint32_t color)) R_GetCCallable("nara", "nr_line");
+    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color)) R_GetCCallable("nara", "nr_line");
   }
 
-  fun(nr, nr_width, nr_height, x0, y0, x1, y1, color);
+  fun(nr, nr_width, nr_height, x1, y1, x2, y2, color);
 }
 
 
@@ -132,23 +132,23 @@ static inline void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int 
 }
 
 
-static inline void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int x0, int y0, int w, int h, double hjust, double vjust, bool respect_alpha) {
-  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int x0, int y0, int w, int h, double hjust, double vjust, bool respect_alpha) = NULL;
+static inline void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha) {
+  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int x0, int y0, int w, int h, double hjust, double vjust, bool respect_alpha)) R_GetCCallable("nara", "nr_blit");
+    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha)) R_GetCCallable("nara", "nr_blit");
   }
 
-  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, x0, y0, w, h, hjust, vjust, respect_alpha);
+  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, xsrc, ysrc, w, h, hjust, vjust, respect_alpha);
 }
 
 
-static inline void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, double theta, double sf) {
-  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, double theta, double sf) = NULL;
+static inline void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha) {
+  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, double theta, double sf)) R_GetCCallable("nara", "nr_blit_rotozoom");
+    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha)) R_GetCCallable("nara", "nr_blit_rotozoom");
   }
 
-  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, theta, sf);
+  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, xsrc, ysrc, w, h, hjust, vjust, theta, sf, respect_alpha);
 }

@@ -58,7 +58,7 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
-extern SEXP nr_line_    (SEXP nr_, SEXP x0_, SEXP y0_, SEXP x1_, SEXP y1_          , SEXP color_);
+extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_);
 extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
 extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
 extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
@@ -108,7 +108,7 @@ static const R_CallMethodDef CEntries[] = {
 
 // C funcs for export via "LinkingTo"
 extern void nr_point      (uint32_t *nr, int nr_width, int nr_height, int x, int y,                               uint32_t color);
-extern void nr_line       (uint32_t *nr, int nr_width, int nr_height, int x0, int y0, int x1, int y1,             uint32_t color) ;
+extern void nr_line       (uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2,             uint32_t color) ;
 extern void nr_hline      (uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y,                      uint32_t color);
 extern void nr_circle     (uint32_t *nr, int nr_width, int nr_height, int xm, int ym, int r      , uint32_t fill, uint32_t color);
 extern void nr_polygon    (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints,                uint32_t color);
