@@ -21,7 +21,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //
-// This method only blits image with rotation or zooming i.e. scale = 1, theta = 0
+// This method only blits image with rotation or zooming i.e. scale = 1, angle = 0
 // 
 // Function tries to be smart
 //  - trim coordinates to ensure they lie within the src/dst images

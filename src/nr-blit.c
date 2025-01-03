@@ -19,9 +19,9 @@
 #include "nr-blit-rotozoom.h"
 
 
-void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha) {
+void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha) {
   
-  if (theta == 0 && sf == 1) {
+  if (angle == 0 && scale == 1) {
     nr_blit_ortho(
       dst, dst_width, dst_height, x   , y,
       src, src_width, src_height, xsrc, ysrc,
@@ -35,7 +35,7 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_
       src, src_width, src_height, xsrc , ysrc, 
       w, h,
       hjust, vjust,
-      theta, sf, 
+      angle, scale, 
       respect_alpha
     );
   }
@@ -47,7 +47,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
               SEXP src_, SEXP xsrc_, SEXP ysrc_, 
               SEXP w_    , SEXP h_, 
               SEXP hjust_, SEXP vjust_, 
-              SEXP angle_, SEXP sf_,
+              SEXP angle_, SEXP scale_,
               SEXP respect_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,12 +70,12 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args. Extend to vectors if required
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int N = calc_max_length(4 , x_, y_, angle_, sf_);
+  int N = calc_max_length(4 , x_, y_, angle_, scale_);
   
-  bool freex = false, freey = false, freesf= false, freetheta = false;
+  bool freex = false, freey = false, freescale= false, freetheta = false;
   int *xs        = as_int32_vec (x_    , N, &freex);
   int *ys        = as_int32_vec (y_    , N, &freey);
-  double *sfs    = as_double_vec(sf_   , N, &freesf);
+  double *scales    = as_double_vec(scale_   , N, &freescale);
   double *thetas = as_double_vec(angle_, N, &freetheta);
   
   
@@ -96,14 +96,14 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
             src, src_width, src_height, xsrc , ysrc, 
             w, h,
             Rf_asReal(hjust_), Rf_asReal(vjust_),
-            thetas[i], sfs[i], Rf_asLogical(respect_alpha_));
+            thetas[i], scales[i], Rf_asLogical(respect_alpha_));
   }
   
   
   
   if (freex) free(xs);
   if (freey) free(ys);
-  if (freesf) free(sfs);
+  if (freescale) free(scales);
   if (freetheta) free(thetas);
   
   return dst_;

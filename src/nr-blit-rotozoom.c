@@ -35,7 +35,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
                       uint32_t *src, int src_width, int src_height, int xsrc, int ysrc,
                       int w, int h,
                       double hjust, double vjust,
-                      double theta, double sf, 
+                      double angle, double scale, 
                       bool respect_alpha) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,8 +51,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // pre-calculate trig values for transofrming forwards
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double cost = cos(-theta);
-  double sint = sin(-theta);
+  double cost = cos(-angle);
+  double sint = sin(-angle);
   
   // Rprintf(">>> w/h %i/%i\n", w, h);
   
@@ -66,10 +66,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   
   // Rprintf(">>>> xr/xl %.1f/%1.f  yt/yb  %.1f/%.1f\n", xr, xl, yt, yb);
   
-  double x1 = sf * rotx(xr,  yt, cost, sint);
-  double x2 = sf * rotx(xr,  yb, cost, sint);
-  double x3 = sf * rotx(xl,  yb, cost, sint);
-  double x4 = sf * rotx(xl,  yt, cost, sint);
+  double x1 = scale * rotx(xr,  yt, cost, sint);
+  double x2 = scale * rotx(xr,  yb, cost, sint);
+  double x3 = scale * rotx(xl,  yb, cost, sint);
+  double x4 = scale * rotx(xl,  yt, cost, sint);
   // Rprintf(">>>> x:  %.1f %.1f %.1f %.1f\n", x1, x2, x3, x4);
   double xmax = x1;
   xmax = x2 > xmax ? x2 : xmax;
@@ -80,10 +80,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   xmin = x3 < xmin ? x3 : xmin;
   xmin = x4 < xmin ? x4 : xmin;
 
-  double y1 = sf * roty(xr,  yt, cost, sint);
-  double y2 = sf * roty(xr,  yb, cost, sint);
-  double y3 = sf * roty(xl,  yb, cost, sint);
-  double y4 = sf * roty(xl,  yt, cost, sint);
+  double y1 = scale * roty(xr,  yt, cost, sint);
+  double y2 = scale * roty(xr,  yb, cost, sint);
+  double y3 = scale * roty(xl,  yb, cost, sint);
+  double y4 = scale * roty(xl,  yt, cost, sint);
   // Rprintf(">>>> y:  %.1f %.1f %.1f %.1f\n", y1, y2, y3, y4);
   double ymax = y1;
   ymax = y2 > ymax ? y2 : ymax;
@@ -95,10 +95,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   ymin = y4 < ymin ? y4 : ymin;
   
   // Add a bit of a buffer to account for rounding
-  xmin -= sf;
-  xmax += sf;
-  ymin -= sf;
-  ymax += sf;
+  xmin -= scale;
+  xmax += scale;
+  ymin -= scale;
+  ymax += scale;
   
   xmin = floor(xmin);
   xmax = ceil (xmax);
@@ -117,13 +117,13 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // From here on, we're transforming backwards
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  cost = cos(theta);
-  sint = sin(theta);
+  cost = cos(angle);
+  sint = sin(angle);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double isf = 1/sf;
+  double iscale = 1/scale;
   for (int xd = (int)xmin; xd <= (int)xmax; ++xd) {
     for (int yd = (int)ymin; yd <= (int)ymax; ++yd) {
       
@@ -132,8 +132,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       double xs = rotx(xd, yd, cost, sint);
       double ys = roty(xd, yd, cost, sint);
       
-      xs = round( (xs * isf) + xsrc + w * hjust);
-      ys = round( (ys * isf) + ysrc + h * vjust);
+      xs = round( (xs * iscale) + xsrc + w * hjust);
+      ys = round( (ys * iscale) + ysrc + h * vjust);
       
       bool within_src = xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h;
       if (within_src) {
@@ -169,7 +169,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                        SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                        SEXP w_    , SEXP h_, 
                        SEXP hjust_, SEXP vjust_, 
-                       SEXP angle_, SEXP sf_,
+                       SEXP angle_, SEXP scale_,
                        SEXP respect_alpha_) {  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -191,13 +191,13 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args. Extend to vectors if required
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int N = calc_max_length(4 , x_, y_, angle_, sf_);
+  int N = calc_max_length(4 , x_, y_, angle_, scale_);
   
-  bool freex = false, freey = false, freesf= false, freetheta = false;
+  bool freex = false, freey = false, freescale= false, freeangle = false;
   int *xs        = as_int32_vec (x_    , N, &freex);
   int *ys        = as_int32_vec (y_    , N, &freey);
-  double *sfs    = as_double_vec(sf_   , N, &freesf);
-  double *thetas = as_double_vec(angle_, N, &freetheta);
+  double *scales    = as_double_vec(scale_   , N, &freescale);
+  double *angles = as_double_vec(angle_, N, &freeangle);
 
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -217,15 +217,15 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                      src, src_width, src_height, xsrc , ysrc, 
                      w, h,
                      Rf_asReal(hjust_), Rf_asReal(vjust_),
-                     thetas[i], sfs[i], Rf_asLogical(respect_alpha_));
+                     angles[i], scales[i], Rf_asLogical(respect_alpha_));
   }
   
 
   
   if (freex) free(xs);
   if (freey) free(ys);
-  if (freesf) free(sfs);
-  if (freetheta) free(thetas);
+  if (freescale) free(scales);
+  if (freeangle) free(angles);
   
   return dst_;
 }
