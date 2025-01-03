@@ -212,3 +212,65 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
   return nr_;
 }
 
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Replace old colours with new colours
+// 
+// @param nr modified in-place
+// @param old_cols vector of old colours
+// @param new_cols vector of new colours
+//
+// @return modified nr
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_rotate_(SEXP nr_, SEXP angle_) {
+  
+  assert_nativeraster(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
+  
+  int angle = Rf_asInteger(angle_);
+  while(angle < 0) angle += 360;
+  if (angle % 90 != 0) {
+    Rf_error("nr_rotate_(): Angle must be multiple of 90");
+  }
+  angle %= 360;
+  if (angle == 0) {
+    return nr_;
+  }
+  
+  // Make a copy of the input into 'tmp'
+  uint32_t *tmp = malloc(Rf_length(nr_) * sizeof(uint32_t));
+  if (tmp == NULL) {
+    Rf_error("nr_rotate_(): Could not allocate 'tmp'");
+  }
+  
+  memcpy(tmp, nr, Rf_length(nr_) * sizeof(uint32_t));
+  
+  if (angle == 90) {
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        nr[row * width + col] = tmp[col * height + row];
+      }
+    }
+    
+    SEXP dims_ = PROTECT(Rf_allocVector(INTSXP, 2));
+    // INTEGER(dims_)[1] = height;
+    // INTEGER(dims_)[0] = width;
+    // 
+    // Rf_setAttrib(nr_, R_DimSymbol, dims_);
+    
+    UNPROTECT(1);
+  } else if (angle == 180) {
+    Rprintf("180 not done yet\n");
+  } else if (angle == 270) {
+    Rprintf("270 not done yet\n");
+  } else {
+    Rf_error("nr_rotate_(): Impossible angle %i", angle);
+  }
+  
+  free(tmp);
+  return nr_;
+}
+

@@ -201,16 +201,35 @@ nr_replace <- function(nr, old, new) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Rotate a native raster by 90,180,270 degrees
+#' @inheritParams nr_fill
+#' @param angle one of 0,90,180,270
+#' 
+#' @return Original \code{nativeRaster} modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(20, 10, 'hotpink')
+#' dim(nr)
+#' nr_rotate(nr, 90)
+#' dim(nr)
+#' 
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_rotate <- function(nr, angle) {
+  invisible(
+    .Call(nr_rotate_, nr, angle)
+  )
+}
 
 
 if (FALSE) {
-  
-  
   logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   plot(logo, T)
-
   
+  nr_rotate(logo, 90)
+  plot(logo, T)  
   
-  
-    
 }
+
+
