@@ -6,9 +6,7 @@
 #' 
 #' Only implements nearest neighbour interpolation.
 #' 
-#' @param nr destination 
-#' @param src src
-#' @param x,y location to start within dst
+#' @inheritParams nr_blit
 #' @param angle angle in radians
 #' @param scale zoom factor
 #' @return None. \code{nr} modified in-place and returned invisibly
@@ -17,11 +15,67 @@
 #' sq <- nr_new(20, 20, 'darkblue')
 #' nr_blit_rotozoom(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
 #' plot(nr)
+#'
+#' nr <- nr_new(300, 200, 'grey80')
+#' sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+#' nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
+#' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_rotozoom <- function(nr, src, x, y, angle, scale) {
+nr_blit_rotozoom <- function(dst, src, x, y, angle, scale, 
+                             xsrc = 0L, ysrc = 0L, 
+                             w = -1L, h = -1L,
+                             hjust = 0.5, vjust = 0.5, 
+                             respect_alpha = TRUE) {
   invisible(
-    .Call(nr_blit_rotozoom_, nr, src, x, y, angle, scale)
+    .Call(nr_blit_rotozoom_, 
+          dst, x, y, 
+          src, xsrc, ysrc, 
+          w, h,
+          hjust, vjust,
+          angle, scale, 
+          respect_alpha)
   )
 }
+
+
+if (FALSE) {
+  
+  sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+
+  theta <- 0
+  # for (theta in seq(0, 2*pi, length.out = 20)) {
+  nr <- nr_new(300, 200, 'grey80')
+  nr_blit_rotozoom(nr, src = sq, x = 50, y = 10,
+                   hjust = 1, vjust = 0.33,
+                   angle = -pi/4, scale = 1, respect_alpha = T)
+  nr_circle(nr, 150, 100, 2, fill = 'hotpink')
+  # nr_blit(nr, sq, 0, 0, respect_alpha = T)
+  plot(nr, T)
+  # Sys.sleep(0.15)
+  # }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

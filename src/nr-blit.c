@@ -29,12 +29,12 @@
 // @param x,y position within destination image
 // @param src source native raster
 // @param src_width,src_height dimensions of source
-// @param x0,y0 starting position within source
+// @param xsrc,ysrc starting position within source
 // @param w,h dimensions of region to copy
 // @param respect_alpha Should alpha values be respected when blitting?
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , 
-             uint32_t *src, int src_width, int src_height, int x0, int y0, 
+void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
+             uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
              int w, int h,
              double hjust, double vjust,
              bool respect_alpha) {
@@ -66,16 +66,16 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y ,
   if (x < 0) {
     // Trim left of src
     int diff = -x;
-    x0 += diff;
-    w  -= diff ;
-    x   = 0;
+    xsrc += diff;
+    w    -= diff ;
+    x     = 0;
   }
   if (y < 0) {
     // Trim bottom of src
     int diff = -y ;
-    y0 += diff;
-    h  -= diff ;
-    y   = 0;
+    ysrc += diff;
+    h    -= diff ;
+    y     = 0;
   }
   if (x + w >= dst_width) {
     // Trim right of src
@@ -93,9 +93,9 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y ,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (respect_alpha) {
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = y0 + yoff ;
+      int y1 = ysrc + yoff ;
       for (int xoff = 0; xoff < w; xoff++) {
-        uint32_t src_col = src[y1 * src_width + x0 + xoff];
+        uint32_t src_col = src[y1 * src_width + xsrc + xoff];
         nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col);
       }
     }
@@ -103,10 +103,10 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y ,
     // Blit it via 'memcpy()' trashing any contents
     // Flip y axis. matrices are (0, 0) at top left,
     for (int yoff = 0; yoff < h; yoff++) {
-      int y1 = y0 + yoff;
+      int y1 = ysrc + yoff;
       memcpy(
         dst + (y + yoff) * dst_width + x, 
-        src + y1 * src_width + x0, 
+        src + y1 * src_width + xsrc, 
         (unsigned long)w * sizeof(int32_t)
       );
     }
@@ -121,14 +121,14 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y ,
 // falls inside the boundary or not
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_blit_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
-                      uint32_t *src, int src_width, int src_height, int x0, int y0, 
+                      uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                       int w, int h) {
   
   for (int yoff = 0; yoff < h; yoff++) {
-    int y1 = src_height - y0 - yoff;
+    int y1 = src_height - ysrc - yoff;
     for (int xoff = 0; xoff < w; xoff++) {
       
-      uint32_t src_col = src[y1 * src_width + x0 + xoff - 1];
+      uint32_t src_col = src[y1 * src_width + xsrc + xoff - 1];
       
       nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col);
     }
@@ -140,7 +140,7 @@ void nr_blit_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y,
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
-              SEXP src_, SEXP x0_   , SEXP y0_, 
+              SEXP src_, SEXP xsrc_   , SEXP ysrc_, 
               SEXP w_    , SEXP h_,
               SEXP hjust_, SEXP vjust_, 
               SEXP respect_alpha_) {
@@ -174,16 +174,16 @@ SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Single native raster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int x0 = Rf_asInteger(x0_);
-  int y0 = Rf_asInteger(y0_);
+  int xsrc = Rf_asInteger(xsrc_);
+  int ysrc = Rf_asInteger(ysrc_);
   
   
   int w = Rf_asInteger(w_) < 0 ? src_width  : Rf_asInteger(w_);
   int h = Rf_asInteger(h_) < 0 ? src_height : Rf_asInteger(h_);
   
-  if (x0 + w - 1 >= src_width || y0 + h - 1 >= src_height) {
-    Rf_error("Specified src [x0 = %i, y0 = %i] + [w = %i, h = %i] is outside bounds [%i, %i]",
-          x0, y0, w, h, src_width, src_height);
+  if (xsrc + w - 1 >= src_width || ysrc + h - 1 >= src_height) {
+    Rf_error("Specified src [xsrc = %i, ysrc = %i] + [w = %i, h = %i] is outside bounds [%i, %i]",
+          xsrc, ysrc, w, h, src_width, src_height);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -195,7 +195,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
   for (int i = 0; i < Rf_length(x_); i++) {
     nr_blit(
       dst, dst_width, dst_height, x[i], y[i], 
-      src, src_width, src_height, x0  , y0, 
+      src, src_width, src_height, xsrc, ysrc, 
       w, h, 
       Rf_asReal(hjust_), Rf_asReal(vjust_),
       respect_alpha);
@@ -244,8 +244,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   SEXP x_             = get_df_col_or_error(config_, "x");   // required
   SEXP y_             = get_df_col_or_error(config_, "y");   // required
   
-  SEXP x0_            = get_df_col_or_NULL(config_, "x0");            // def: 0
-  SEXP y0_            = get_df_col_or_NULL(config_, "y0");            // def: 0
+  SEXP xsrc_          = get_df_col_or_NULL(config_, "xsrc");          // def: 0
+  SEXP ysrc_          = get_df_col_or_NULL(config_, "ysrc");          // def: 0
   SEXP w_             = get_df_col_or_NULL(config_, "w");             // def: src_width
   SEXP h_             = get_df_col_or_NULL(config_, "h");             // def: src_height
   SEXP hjust_         = get_df_col_or_NULL(config_, "hjust");         // def: 0
@@ -265,12 +265,12 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Optional. If not present then use default.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  bool freex0 = false, freey0 = false;
+  bool freexsrc = false, freeysrc = false;
   bool freew = false, freeh = false;
-  int *x0            = Rf_isNull(x0_)    ? NULL : as_int32_vec(x0_ , N, &freex0);
-  int *y0            = Rf_isNull(y0_)    ? NULL : as_int32_vec(y0_ , N, &freey0);
-  int *w             = Rf_isNull( w_)    ? NULL : as_int32_vec(w_  , N, &freew);
-  int *h             = Rf_isNull( h_)    ? NULL : as_int32_vec(h_  , N, &freeh);
+  int *xsrc          = Rf_isNull(xsrc_)  ? NULL : as_int32_vec(xsrc_, N, &freexsrc);
+  int *ysrc          = Rf_isNull(ysrc_)  ? NULL : as_int32_vec(ysrc_, N, &freeysrc);
+  int *w             = Rf_isNull( w_)    ? NULL : as_int32_vec(w_   , N, &freew);
+  int *h             = Rf_isNull( h_)    ? NULL : as_int32_vec(h_   , N, &freeh);
   double *hjust      = Rf_isNull(hjust_) ? NULL : REAL(hjust_);
   double *vjust      = Rf_isNull(vjust_) ? NULL : REAL(vjust_);
   int *respect_alpha = Rf_isNull(respect_alpha_) ? NULL : LOGICAL(respect_alpha_);
@@ -295,8 +295,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     int src_width  = Rf_ncols(this_src_);
     int src_height = Rf_nrows(this_src_);
     
-    int this_x0 = (x0 == NULL) ? 0 : x0[i];
-    int this_y0 = (y0 == NULL) ? 0 : y0[i];
+    int this_xsrc = (xsrc == NULL) ? 0 : xsrc[i];
+    int this_ysrc = (ysrc == NULL) ? 0 : ysrc[i];
 
     int this_w = (w == NULL || w[i] < 0) ? src_width  : w[i];
     int this_h = (h == NULL || h[i] < 0) ? src_height : h[i];
@@ -305,7 +305,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     
     nr_blit(
       dst, dst_width, dst_height, x[i]   , y[i],
-      src, src_width, src_height, this_x0, this_y0,
+      src, src_width, src_height, this_xsrc, this_ysrc,
       this_w, this_h, 
       hjust[i], vjust[i],
       this_res_alpha);
@@ -320,8 +320,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   if (freey)   free(y);
   if (freew)   free(w);
   if (freeh)   free(h);
-  if (freex0)  free(x0);
-  if (freey0)  free(y0);
+  if (freexsrc)  free(xsrc);
+  if (freeysrc)  free(ysrc);
   return dst_;
 }
 
