@@ -64,8 +64,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double xr =  w * (1 - hjust);
   double xl = -w *      hjust ; 
-  double yt =  h *      vjust ;
-  double yb = -h * (1 - vjust);
+  double yt =  h * (1 - vjust);
+  double yb = -h *      vjust ;
   
   // Rprintf(">>>> xr/xl %.1f/%1.f  yt/yb  %.1f/%.1f\n", xr, xl, yt, yb);
   
@@ -124,8 +124,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       double xs = rotx(xd, yd, cost, sint);
       double ys = roty(xd, yd, cost, sint);
       
-      xs = round( (xs * isf) + xsrc + w/2 );
-      ys = round( (ys * isf) + ysrc + h/2 );
+      xs = round( (xs * isf) + xsrc + w * hjust);
+      ys = round( (ys * isf) + ysrc + h * vjust);
       
       if (xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h) {
         uint32_t col = src[(int)(ys * src_width + xs)];
@@ -139,7 +139,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Bounding rectangle for debugging
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (0) {
+  if (1) {
     nr_line(dst, dst_width, dst_height, x + xmin,  y + ymax, x + xmax, y + ymax, RC_RED);
     nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x + xmax, y + ymin, RC_RED);
     nr_line(dst, dst_width, dst_height, x + xmax,  y + ymin, x + xmin, y + ymin, RC_RED);
