@@ -38,6 +38,22 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
                       double theta, double sf, 
                       bool respect_alpha) {
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Sanity check
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  if (xsrc < 0 || ysrc < 0 || 
+      w < 0 || h < 0 || 
+      xsrc + w > src_width || ysrc + h > src_height) {
+    return;
+  }
+  if (x >= dst_width || y >= dst_height) {
+    return;
+  }
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // pre-calculate trig values
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double cost = cos(theta);
   double sint = sin(theta);
   
@@ -108,10 +124,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       double xs = rotx(xd, yd, cost, sint);
       double ys = roty(xd, yd, cost, sint);
       
-      xs = round( (xs * isf) + src_width /2 );
-      ys = round( (ys * isf) + src_height/2 );
+      xs = round( (xs * isf) + xsrc + w/2 );
+      ys = round( (ys * isf) + ysrc + h/2 );
       
-      if (xs >= 0 && ys >= 0 && xs < src_width && ys < src_height) {
+      if (xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h) {
         uint32_t col = src[(int)(ys * src_width + xs)];
         nr_point(dst, dst_width, dst_height, x + xd, y + yd, col);
       }

@@ -42,14 +42,18 @@ nr_blit_rotozoom <- function(dst, src, x, y, angle, scale,
 if (FALSE) {
   
   sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-  
+
+  theta <- pi/4
   for (theta in seq(0, 2*pi, length.out = 20)) {
   nr <- nr_new(300, 200, 'grey80')
-  nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, angle = theta, scale = 2.5)
+  nr_blit_rotozoom(nr, src = sq, x = 180, y = 120, 
+                   w = 50, h = 40,
+                   xsrc = 0, ysrc = 0, 
+                   angle = theta, scale = 3.5)
   plot(nr)
-  Sys.sleep(0.2)
+  Sys.sleep(0.15)
   }
-  
+
 }
 
 
