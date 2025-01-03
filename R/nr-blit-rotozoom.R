@@ -43,13 +43,13 @@ if (FALSE) {
   
   sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
 
-  theta <- pi/4
+  theta <- 0
   # for (theta in seq(0, 2*pi, length.out = 20)) {
   nr <- nr_new(300, 200, 'grey80')
-  nr_blit_rotozoom(nr, src = sq, x = 50, y = 50,
-                   hjust = 0.5, vjust = 0.5,
-                   angle = 0, scale = 1)
-  nr_circle(nr, 50, 50, 2, fill = 'red')
+  nr_blit_rotozoom(nr, src = sq, x = 150, y = 100,
+                   hjust = 1.33, vjust = 0.33,
+                   angle = theta, scale = 1)
+  nr_circle(nr, 150, 100, 2, fill = 'red')
   plot(nr)
   # Sys.sleep(0.15)
   # }

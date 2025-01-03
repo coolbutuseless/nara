@@ -52,10 +52,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // pre-calculate trig values
+  // pre-calculate trig values for transofrming forwards
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double cost = cos(theta);
-  double sint = sin(theta);
+  double cost = cos(-theta);
+  double sint = sin(-theta);
   
   // Rprintf(">>> w/h %i/%i\n", w, h);
   
@@ -113,6 +113,12 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Rprintf(">>> xmin/xmax %.1f/%.1f  ymin/ymax %.1f/%.1f\n", xmin, xmax, ymin, ymax);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // From here on, we're transforming backwards
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  cost = cos(theta);
+  sint = sin(theta);
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double isf = 1/sf;
@@ -139,7 +145,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Bounding rectangle for debugging
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (1) {
+  if (0) {
     nr_line(dst, dst_width, dst_height, x + xmin,  y + ymax, x + xmax, y + ymax, RC_RED);
     nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x + xmax, y + ymin, RC_RED);
     nr_line(dst, dst_width, dst_height, x + xmax,  y + ymin, x + xmin, y + ymin, RC_RED);
