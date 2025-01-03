@@ -60,24 +60,47 @@ SEXP nr_new_(SEXP nr_width_, SEXP nr_height_) {
 // Copy the contents of one nativeraster into another. [R interface]
 // Sizes must match
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_) {
-
-  assert_nativeraster(nr_src_);
-  assert_nativeraster(nr_dst_);
-
+SEXP copy_into_(SEXP dst_, SEXP src_, SEXP mask_, SEXP col_, SEXP invert_) {
+  
+  assert_nativeraster(src_);
+  assert_nativeraster(dst_);
+  
   // Check dims of src and dst
-  size_t  src_height = (size_t)Rf_nrows(nr_src_);
-  size_t  src_width  = (size_t)Rf_ncols(nr_src_);
-  size_t  dst_height = (size_t)Rf_nrows(nr_dst_);
-  size_t  dst_width  = (size_t)Rf_ncols(nr_dst_);
-
+  size_t  src_height = (size_t)Rf_nrows(src_);
+  size_t  src_width  = (size_t)Rf_ncols(src_);
+  size_t  dst_height = (size_t)Rf_nrows(dst_);
+  size_t  dst_width  = (size_t)Rf_ncols(dst_);
+  
   if (src_height != dst_height || src_width != dst_width) {
     Rf_error("src and dst nativeRaster objects must be the same dimensions");
   }
-
-  memcpy(INTEGER(nr_dst_), INTEGER(nr_src_), src_height * src_width * sizeof(uint32_t));
   
-  return nr_dst_;
+  if (Rf_isNull(mask_)) {
+    memcpy(INTEGER(dst_), INTEGER(src_), src_height * src_width * sizeof(uint32_t));
+  } else {
+    assert_nativeraster(mask_);
+    if (src_height != Rf_nrows(mask_) || src_width != Rf_ncols(mask_)) {
+      Rf_error("'mask' must be same dimensions as 'src' and 'dst'");
+    }
+    uint32_t *src  = (uint32_t *)INTEGER(src_);
+    uint32_t *dst  = (uint32_t *)INTEGER(dst_);
+    uint32_t *mask = (uint32_t *)INTEGER(mask_);
+    
+    uint32_t color = single_rcolor_to_int(col_);
+    bool invert = Rf_asInteger(invert_);
+    
+    for (int row = 0; row < src_height; ++row) {
+      for (int col = 0; col < src_width; ++col) {
+        int loc = row * src_width + col;
+        bool mask_set = mask[loc] == color;
+        if (mask_set ^ invert) {
+          dst[loc] = src[loc];
+        }
+      }
+    }
+  }
+  
+  return dst_;
 }
 
 

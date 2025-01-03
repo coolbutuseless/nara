@@ -62,10 +62,15 @@ nr_fill <- function(nr, color) {
 #'
 #' The source and destination \code{nativeRaster} images must have the same dimensions.
 #'
-#' If the \code{nativeRaster} images are of different sizes, use the
-#' \code{nr_blit()} function.
+#' If the \code{nativeRaster} images are of different sizes or alpha blending is
+#' required, use the \code{nr_blit()} function.
 #'
 #' @param src,dst Source and destination \code{nativeRaster} images
+#' @param mask Optional nativeRaster image to use as a mask. Default: NULL (no mask)
+#' @param color Copy the source pixels into the destination where the mask
+#'        matches this color.  See also the \code{invert} argument.
+#' @param invert Invert masking so that pixels are copied where the mask does 
+#'        not match the specified color. Default: FALSE
 #'
 #' @return The 'dst' \code{nativeRaster}
 #' 
@@ -75,10 +80,20 @@ nr_fill <- function(nr, color) {
 #' nr_copy_into(nr1, nr2)
 #' plot(nr1)
 #' 
+#' # Copy with mask
+#' logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+#' src <- nr_duplicate(logo)
+#' dst <- nr_duplicate(logo)
+#' nr_fill(src, 'hotpink')
+#' 
+#' nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)
+#' plot(dst, T)
+#' 
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_copy_into <- function(dst, src) {
-  invisible(.Call(copy_into_, dst, src))
+nr_copy_into <- function(dst, src, mask = NULL, color = 'black', invert = FALSE) {
+  invisible(.Call(copy_into_, dst, src, mask, color, invert))
 }
 
 
@@ -117,7 +132,6 @@ nr_duplicate <- function(nr) {
 #' nr2 <- nr_crop(nr, 0, 0, 10, 10)
 #' dim(nr2)
 #' plot(nr2)
-#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_crop <- function(nr, x, y, w, h) {
@@ -247,10 +261,13 @@ nr_transpose <- function(nr) {
 if (FALSE) {
   logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
   plot(logo, T)
-  
-  nr_rotate(logo, -90)
-  nr_transpose(logo)
-  plot(logo, T)  
+
+  src <- nr_duplicate(logo)
+  dst <- nr_duplicate(logo)
+  nr_fill(src, 'hotpink')
+
+  nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)
+  plot(dst, T)
   
 }
 

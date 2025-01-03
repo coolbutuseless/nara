@@ -13,7 +13,7 @@
 // Core
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP nr_new_(SEXP height_, SEXP width_);
-extern SEXP copy_into_(SEXP nr_dst_, SEXP nr_src_);
+extern SEXP copy_into_(SEXP dst_, SEXP src_, SEXP mask_, SEXP col_, SEXP invert_);
 extern SEXP duplicate_(SEXP nr_);
 extern SEXP fill_(SEXP nr_, SEXP color_);
 extern SEXP flipv_(SEXP nr_);
@@ -34,7 +34,6 @@ extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_,
                     SEXP hjust_, SEXP vjust_, 
                     SEXP respect_alpha_);
 
-extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
                               SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                               SEXP w_, SEXP h_, 
@@ -48,6 +47,8 @@ extern SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
                      SEXP hjust_, SEXP vjust_, 
                      SEXP angle_, SEXP sf_,
                      SEXP respect_alpha_);
+
+extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Converstion
@@ -78,7 +79,7 @@ extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , S
 static const R_CallMethodDef CEntries[] = {
   
   {"nr_new_"   , (DL_FUNC) &nr_new_   , 2},
-  {"copy_into_", (DL_FUNC) &copy_into_, 2},
+  {"copy_into_", (DL_FUNC) &copy_into_, 5},
   {"duplicate_", (DL_FUNC) &duplicate_, 1},
   {"fill_"     , (DL_FUNC) &fill_     , 2},
   {"flipv_"    , (DL_FUNC) &flipv_    , 1},
