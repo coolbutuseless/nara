@@ -25,31 +25,50 @@
 #'        starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
 #'        to treat the centre of the \code{src_} as the blitting origin.
 #'        Default (0, 0)
+#' @param angle Rotation angle (clockwise) in radians. Default: 0
+#' @param scale Zoom factor. Default: 1
 #'
-#' @return None. \code{dst} modifief by-reference and returned invisibly.
+#' @return None. \code{dst} modified by-reference and returned invisibly.
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit(dst = nr, src = deer_sprites[[1]], x = 0, y = 0)
-#' plot(nr)
+#' nr_blit(dst = nr, src = deer_sprites[[1]], x = 25, y = 25)
+#' plot(nr, T)
+#' 
+#' nr <- nr_new(300, 200, 'grey80')
+#' sq <- nr_new(20, 20, 'darkblue')
+#' nr_blit(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
+#' plot(nr, T)
+#'
+#' nr <- nr_new(300, 200, 'grey80')
+#' sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+#' nr_blit(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
+#' plot(nr, T)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit <- function(dst, src, 
-                    x, y, 
-                    xsrc  =  0L , ysrc  =  0L, 
-                    w     = -1L , h     = -1L, 
-                    hjust =  0  , vjust =  0, 
+nr_blit <- function(dst, src, x, y, 
+                    xsrc = 0L, ysrc = 0L, 
+                    w = -1L, h = -1L,
+                    hjust = 0.5, vjust = 0.5, 
+                    angle = 0, scale = 1,
                     respect_alpha = TRUE) {
-  
-  
-  invisible(.Call(nr_blit_ortho_, 
-                  dst  , x    , y, 
-                  src  , xsrc , ysrc, 
-                  w    , h, 
-                  hjust, vjust, 
-                  respect_alpha))
+  invisible(
+    .Call(nr_blit_, 
+          dst, x, y, 
+          src, xsrc, ysrc, 
+          w, h,
+          hjust, vjust,
+          angle, scale, 
+          respect_alpha)
+  )
 }
+
+
+
+
+
+
 
 
 
@@ -127,11 +146,27 @@ if (FALSE) {
 }
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Rotozoom testing
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (FALSE) {
   
+  sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  
+  theta <- 0
+  # for (theta in seq(0, 2*pi, length.out = 20)) {
+  nr <- nr_new(300, 200, 'grey80')
+  nr_blit_rotozoom(nr, src = sq, x = 150, y = 100,
+                   hjust = 0, vjust = 0,
+                   angle = -pi/4, scale = 1, respect_alpha = F)
+  nr_circle(nr, 150, 100, 2, fill = 'hotpink')
+  # nr_blit(nr, sq, 0, 0, respect_alpha = T)
+  plot(nr, T)
+  # Sys.sleep(0.15)
+  # }
+  
 }
-
-
 
 
 

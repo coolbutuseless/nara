@@ -13,8 +13,10 @@ nr_blit(
   ysrc = 0L,
   w = -1L,
   h = -1L,
-  hjust = 0,
-  vjust = 0,
+  hjust = 0.5,
+  vjust = 0.5,
+  angle = 0,
+  scale = 1,
   respect_alpha = TRUE
 )
 }
@@ -39,6 +41,10 @@ starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
 to treat the centre of the \code{src_} as the blitting origin.
 Default (0, 0)}
 
+\item{angle}{Rotation angle (clockwise) in radians. Default: 0}
+
+\item{scale}{Zoom factor. Default: 1}
+
 \item{respect_alpha}{Should the alpha channel be respected when blitting?
 Default: TRUE means to carefully blend pixels at each location 
 using alpha values.  If FALSE, then contents at the \code{dst} will 
@@ -46,14 +52,24 @@ just be replaced with \code{src} pixels
 which can be much much faster.}
 }
 \value{
-None. \code{dst} modifief by-reference and returned invisibly.
+None. \code{dst} modified by-reference and returned invisibly.
 }
 \description{
 Single source blitted to one or more locations.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit(dst = nr, src = deer_sprites[[1]], x = 0, y = 0)
-plot(nr)
+nr_blit(dst = nr, src = deer_sprites[[1]], x = 25, y = 25)
+plot(nr, T)
+
+nr <- nr_new(300, 200, 'grey80')
+sq <- nr_new(20, 20, 'darkblue')
+nr_blit(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
+plot(nr, T)
+
+nr <- nr_new(300, 200, 'grey80')
+sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+nr_blit(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
+plot(nr, T)
 
 }

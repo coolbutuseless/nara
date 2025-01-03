@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9030 2025-01-01
+# nara 0.1.1.9031 2025-01-01
 
+* [9031] merged blit-ortho and blit-rotozoom.
 * [9030] rotozoom and blit are moving towards the same interface
 * [9029] Refactor draw commands. Argument ordering is now always (x, y), (w, h) in both C and R
 * [9028] Add `nr_blit_rotozoom()`
