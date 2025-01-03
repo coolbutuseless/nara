@@ -215,13 +215,6 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Replace old colours with new colours
-// 
-// @param nr modified in-place
-// @param old_cols vector of old colours
-// @param new_cols vector of new colours
-//
-// @return modified nr
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rotate_(SEXP nr_, SEXP angle_) {
   
@@ -251,26 +244,74 @@ SEXP nr_rotate_(SEXP nr_, SEXP angle_) {
   if (angle == 90) {
     for (int row = 0; row < height; row++) {
       for (int col = 0; col < width; col++) {
-        nr[row * width + col] = tmp[col * height + row];
+         nr[col * height + row] = tmp[row * width + (width - col - 1)];
       }
     }
     
     SEXP dims_ = PROTECT(Rf_allocVector(INTSXP, 2));
-    // INTEGER(dims_)[1] = height;
-    // INTEGER(dims_)[0] = width;
-    // 
-    // Rf_setAttrib(nr_, R_DimSymbol, dims_);
-    
+    INTEGER(dims_)[1] = height;
+    INTEGER(dims_)[0] = width;
+    Rf_setAttrib(nr_, R_DimSymbol, dims_);
     UNPROTECT(1);
   } else if (angle == 180) {
-    Rprintf("180 not done yet\n");
+    
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        nr[row * width + col] = tmp[(height - row - 1) * width + col];
+      }
+    }
+    
   } else if (angle == 270) {
-    Rprintf("270 not done yet\n");
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        nr[col * height + row] = tmp[(height - row - 1) * width + col];
+      }
+    }
+    
+    SEXP dims_ = PROTECT(Rf_allocVector(INTSXP, 2));
+    INTEGER(dims_)[1] = height;
+    INTEGER(dims_)[0] = width;
+    Rf_setAttrib(nr_, R_DimSymbol, dims_);
+    UNPROTECT(1);
   } else {
     Rf_error("nr_rotate_(): Impossible angle %i", angle);
   }
   
   free(tmp);
+  return nr_;
+}
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_transpose_(SEXP nr_) {
+  
+  assert_nativeraster(nr_);
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  int height = Rf_nrows(nr_);
+  int width  = Rf_ncols(nr_);
+  
+  // Make a copy of the input into 'tmp'
+  uint32_t *tmp = malloc(Rf_length(nr_) * sizeof(uint32_t));
+  if (tmp == NULL) {
+    Rf_error("nr_rotate_(): Could not allocate 'tmp'");
+  }
+  
+  memcpy(tmp, nr, Rf_length(nr_) * sizeof(uint32_t));
+  
+  for (int row = 0; row < height; row++) {
+    for (int col = 0; col < width; col++) {
+      nr[col * height + row] = tmp[row * width + col];
+    }
+  }
+  
+  SEXP dims_ = PROTECT(Rf_allocVector(INTSXP, 2));
+  INTEGER(dims_)[1] = height;
+  INTEGER(dims_)[0] = width;
+  Rf_setAttrib(nr_, R_DimSymbol, dims_);
+  
+  free(tmp);
+  UNPROTECT(1);
   return nr_;
 }
 
