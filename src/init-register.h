@@ -1,0 +1,13 @@
+R_RegisterCCallable("nara", "nr_new"   , (DL_FUNC) &nr_new);
+R_RegisterCCallable("nara", "is_nativeraster"   , (DL_FUNC) &is_nativeraster);
+R_RegisterCCallable("nara", "assert_nativeraster"   , (DL_FUNC) &assert_nativeraster);
+R_RegisterCCallable("nara", "nr_circle"   , (DL_FUNC) &nr_circle);
+R_RegisterCCallable("nara", "nr_hline"   , (DL_FUNC) &nr_hline);
+R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &nr_line);
+R_RegisterCCallable("nara", "nr_point"   , (DL_FUNC) &nr_point);
+R_RegisterCCallable("nara", "nr_polygon"   , (DL_FUNC) &nr_polygon);
+R_RegisterCCallable("nara", "nr_polyline"   , (DL_FUNC) &nr_polyline);
+R_RegisterCCallable("nara", "nr_rect"   , (DL_FUNC) &nr_rect);
+R_RegisterCCallable("nara", "nr_text_basic"   , (DL_FUNC) &nr_text_basic);
+R_RegisterCCallable("nara", "nr_blit"   , (DL_FUNC) &nr_blit);
+R_RegisterCCallable("nara", "nr_blit_rotozoom"   , (DL_FUNC) &nr_blit_rotozoom);
