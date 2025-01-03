@@ -132,23 +132,12 @@ static inline void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int 
 }
 
 
-static inline void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha) {
-  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha) = NULL;
+static inline void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha) {
+  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x , int y , uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, bool respect_alpha)) R_GetCCallable("nara", "nr_blit");
+    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha)) R_GetCCallable("nara", "nr_blit");
   }
 
-  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, xsrc, ysrc, w, h, hjust, vjust, respect_alpha);
-}
-
-
-static inline void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha) {
-  static void (*fun)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha) = NULL;
-
-  if (fun == NULL) {
-    fun = (void (*)(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double theta, double sf, bool respect_alpha)) R_GetCCallable("nara", "nr_blit_rotozoom");
-  }
-
-  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, xsrc, ysrc, w, h, hjust, vjust, theta, sf, respect_alpha);
+  fun(dst, dst_width, dst_height, x, y, src, src_width, src_height, xsrc, ysrc, w, h, hjust, vjust, angle, scale, respect_alpha);
 }

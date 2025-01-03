@@ -10,4 +10,3 @@ R_RegisterCCallable("nara", "nr_polyline"   , (DL_FUNC) &nr_polyline);
 R_RegisterCCallable("nara", "nr_rect"   , (DL_FUNC) &nr_rect);
 R_RegisterCCallable("nara", "nr_text_basic"   , (DL_FUNC) &nr_text_basic);
 R_RegisterCCallable("nara", "nr_blit"   , (DL_FUNC) &nr_blit);
-R_RegisterCCallable("nara", "nr_blit_rotozoom"   , (DL_FUNC) &nr_blit_rotozoom);
