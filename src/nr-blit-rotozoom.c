@@ -46,10 +46,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       xsrc + w > src_width || ysrc + h > src_height) {
     return;
   }
-  if (x >= dst_width || y >= dst_height) {
-    return;
-  }
-  
+
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // pre-calculate trig values for transofrming forwards
@@ -103,6 +100,11 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   ymin -= sf;
   ymax += sf;
   
+  xmin = floor(xmin);
+  xmax = ceil (xmax);
+  ymin = floor(ymin);
+  ymax = ceil (ymax);
+  
   // Trim so that x+xmin, x+xmax y+ymin y+ymax is always within dst
   xmax = xmax + x >= dst_width  ? dst_width  - x - 1 : xmax;
   ymax = ymax + y >= dst_height ? dst_height - y - 1 : ymax;
@@ -122,8 +124,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double isf = 1/sf;
-  for (int xd = floor(xmin); xd <= ceil(xmax); ++xd) {
-    for (int yd = floor(ymin); yd <= ceil(ymax); ++yd) {
+  for (int xd = xmin; xd <= xmax; ++xd) {
+    for (int yd = ymin; yd <= ymax; ++yd) {
       
       // (xd,yd) are the offset coordinates in the destination
       // (xs,ys) are the coordinates in the source
@@ -133,9 +135,16 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       xs = round( (xs * isf) + xsrc + w * hjust);
       ys = round( (ys * isf) + ysrc + h * vjust);
       
-      if (xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h) {
+      bool within_src = xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h;
+      if (within_src) {
         uint32_t col = src[(int)(ys * src_width + xs)];
-        nr_point(dst, dst_width, dst_height, x + xd, y + yd, col);
+        if (respect_alpha) {
+          nr_point(dst, dst_width, dst_height, x + xd, y + yd, col);
+        } else {
+          // the range xmin/xmax and ymin/ymax are guarantted by the 
+          // checks above to always be in the range of 'dst'
+          dst[(int)((y + yd) * dst_width + (x + xd))] = col;
+        }
       }
       
     }
