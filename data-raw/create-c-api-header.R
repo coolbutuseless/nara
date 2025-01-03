@@ -85,7 +85,7 @@ decl_to_func <- function(decl) {
 header_files <- c(
   "./src/nr-core.h",
   "./src/nr-draw.h",
-  "./src/nr-blit.h",
+  "./src/nr-blit-ortho.h",
   "./src/nr-blit-rotozoom.h"
 )
 

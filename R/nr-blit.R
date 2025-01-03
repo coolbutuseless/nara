@@ -43,7 +43,7 @@ nr_blit <- function(dst, src,
                     respect_alpha = TRUE) {
   
   
-  invisible(.Call(nr_blit_, 
+  invisible(.Call(nr_blit_ortho_, 
                   dst  , x    , y, 
                   src  , xsrc , ysrc, 
                   w    , h, 

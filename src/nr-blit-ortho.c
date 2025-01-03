@@ -15,11 +15,13 @@
 #include "nr-core.h"
 #include "nr-utils.h"
 #include "nr-draw.h"
-#include "nr-blit.h"
+#include "nr-blit-ortho.h"
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
+//
+// This method only blits image with rotation or zooming i.e. scale = 1, theta = 0
 // 
 // Function tries to be smart
 //  - trim coordinates to ensure they lie within the src/dst images
@@ -33,11 +35,11 @@
 // @param w,h dimensions of region to copy
 // @param respect_alpha Should alpha values be respected when blitting?
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
-             uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
-             int w, int h,
-             double hjust, double vjust,
-             bool respect_alpha) {
+void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
+                   uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
+                   int w, int h,
+                   double hjust, double vjust,
+                   bool respect_alpha) {
   
   
   
@@ -120,7 +122,7 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x   , int y ,
 // It attempts to plot every single point regardless of whether it
 // falls inside the boundary or not
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_blit_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
+void nr_blit_ortho_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y, 
                       uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                       int w, int h) {
   
@@ -139,11 +141,11 @@ void nr_blit_naive(uint32_t *dst, int dst_width, int dst_height, int x, int y,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprites into raster [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
-              SEXP src_, SEXP xsrc_   , SEXP ysrc_, 
-              SEXP w_    , SEXP h_,
-              SEXP hjust_, SEXP vjust_, 
-              SEXP respect_alpha_) {
+SEXP nr_blit_ortho_(SEXP dst_, SEXP x_    , SEXP y_,
+                    SEXP src_, SEXP xsrc_   , SEXP ysrc_, 
+                    SEXP w_    , SEXP h_,
+                    SEXP hjust_, SEXP vjust_, 
+                    SEXP respect_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
@@ -193,7 +195,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_    , SEXP y_,
   uint32_t *src = (uint32_t *)INTEGER(src_);
   bool respect_alpha = Rf_asLogical(respect_alpha_);
   for (int i = 0; i < Rf_length(x_); i++) {
-    nr_blit(
+    nr_blit_ortho(
       dst, dst_width, dst_height, x[i], y[i], 
       src, src_width, src_height, xsrc, ysrc, 
       w, h, 
@@ -303,7 +305,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     
     int this_res_alpha = (respect_alpha == NULL) ? 1 : respect_alpha[i];
     
-    nr_blit(
+    nr_blit_ortho(
       dst, dst_width, dst_height, x[i]   , y[i],
       src, src_width, src_height, this_xsrc, this_ysrc,
       this_w, this_h, 
