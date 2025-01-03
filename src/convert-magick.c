@@ -62,7 +62,7 @@ SEXP magick_to_nr_(SEXP im_data_, SEXP dst_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the RGBA bytes directly into the nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  memcpy(INTEGER(dst_), RAW(im_data_), width * height * sizeof(uint32_t));
+  memcpy(INTEGER(dst_), RAW(im_data_), (size_t)width * (size_t)height * sizeof(uint32_t));
   
   UNPROTECT(nprotect);
   return dst_;

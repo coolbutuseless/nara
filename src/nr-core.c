@@ -138,8 +138,8 @@ SEXP flipv_(SEXP nr_) {
     Rf_error("flipv_(): malloc() failure");
   }
   
-  for (int row = 0; row < height/2; row++) {
-    memcpy(tmp                            , nr +                row * width, width * sizeof(uint32_t));
+  for (size_t row = 0; row < height/2; row++) {
+    memcpy(tmp                            , nr +        (size_t)row * width, width * sizeof(uint32_t));
     memcpy(nr + row * width               , nr + (height - row - 1) * width, width * sizeof(uint32_t));
     memcpy(nr + (height - row - 1) * width,                             tmp, width * sizeof(uint32_t));
   }
@@ -234,12 +234,12 @@ SEXP nr_rotate_(SEXP nr_, SEXP angle_) {
   }
   
   // Make a copy of the input into 'tmp'
-  uint32_t *tmp = malloc(Rf_length(nr_) * sizeof(uint32_t));
+  uint32_t *tmp = malloc((size_t)Rf_length(nr_) * sizeof(uint32_t));
   if (tmp == NULL) {
     Rf_error("nr_rotate_(): Could not allocate 'tmp'");
   }
   
-  memcpy(tmp, nr, Rf_length(nr_) * sizeof(uint32_t));
+  memcpy(tmp, nr, (size_t)Rf_length(nr_) * sizeof(uint32_t));
   
   if (angle == 90) {
     for (int row = 0; row < height; row++) {
@@ -292,12 +292,12 @@ SEXP nr_transpose_(SEXP nr_) {
   int width  = Rf_ncols(nr_);
   
   // Make a copy of the input into 'tmp'
-  uint32_t *tmp = malloc(Rf_length(nr_) * sizeof(uint32_t));
+  uint32_t *tmp = malloc((size_t)Rf_length(nr_) * sizeof(uint32_t));
   if (tmp == NULL) {
     Rf_error("nr_rotate_(): Could not allocate 'tmp'");
   }
   
-  memcpy(tmp, nr, Rf_length(nr_) * sizeof(uint32_t));
+  memcpy(tmp, nr, (size_t)Rf_length(nr_) * sizeof(uint32_t));
   
   for (int row = 0; row < height; row++) {
     for (int col = 0; col < width; col++) {

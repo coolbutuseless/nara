@@ -105,6 +105,53 @@ nara_h <- c(includes, funcs)
 writeLines(nara_h, "./inst/include/nara.h")
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# header to init-decls.h
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+decls <- map(header_files, function(f) {
+  decls <- readLines(f)
+  decls <- decls[decls != '']
+  decls
+}) |> flatten_chr()
+
+decls <- paste("extern", decls)
+writeLines(decls, "./src/init-decls.h")
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Register callables
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &nr_line);
+
+decl_to_name <- function(decl) {
+  decl <- decl |>
+    str_replace_all("\\s+", " ") |>
+    str_replace_all(";", "") |> 
+    str_trim()
+  
+  # return_type, name, arg_list
+  bits <- stringr::str_split_fixed(decl, "\\(", 2)
+  type_name <- bits[[1]] |> 
+    str_split(" ") |> 
+    el()
+  type_name[[2]]
+}
+
+decl_to_register <- function(decl) {
+  nm <- decl_to_name(decl)
+  sprintf('R_RegisterCCallable("nara", "%s"   , (DL_FUNC) &%s);', nm, nm)
+}
+
+decls <- map(header_files, function(f) {
+  decls <- readLines(f)
+  decls <- decls[decls != '']
+  decls
+}) |> flatten_chr()
+
+register_callables <- map_chr(decls, decl_to_register)
+
+writeLines(register_callables, "./src/init-register.h")
+
 
 
 

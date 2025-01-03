@@ -124,8 +124,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double isf = 1/sf;
-  for (int xd = xmin; xd <= xmax; ++xd) {
-    for (int yd = ymin; yd <= ymax; ++yd) {
+  for (int xd = (int)xmin; xd <= (int)xmax; ++xd) {
+    for (int yd = (int)ymin; yd <= (int)ymax; ++yd) {
       
       // (xd,yd) are the offset coordinates in the destination
       // (xs,ys) are the coordinates in the source
@@ -155,10 +155,10 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Bounding rectangle for debugging
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (0) {
-    nr_line(dst, dst_width, dst_height, x + xmin,  y + ymax, x + xmax, y + ymax, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + xmax,  y + ymax, x + xmax, y + ymin, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + xmax,  y + ymin, x + xmin, y + ymin, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + xmin,  y + ymin, x + xmin, y + ymax, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymax, x + (int)xmax, y + (int)ymax, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymax, x + (int)xmax, y + (int)ymin, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymin, x + (int)xmin, y + (int)ymin, RC_RED);
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymin, x + (int)xmin, y + (int)ymax, RC_RED);
   }
   
   
@@ -194,8 +194,8 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   int N = calc_max_length(4 , x_, y_, angle_, sf_);
   
   bool freex = false, freey = false, freesf= false, freetheta = false;
-  double *xs     = as_double_vec(x_    , N, &freex);
-  double *ys     = as_double_vec(y_    , N, &freey);
+  int *xs        = as_int32_vec (x_    , N, &freex);
+  int *ys        = as_int32_vec (y_    , N, &freey);
   double *sfs    = as_double_vec(sf_   , N, &freesf);
   double *thetas = as_double_vec(angle_, N, &freetheta);
 

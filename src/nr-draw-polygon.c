@@ -124,7 +124,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
     // Sort the x-coordinates along the scanline
     // void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    qsort(nodeX, nodes, sizeof(int), scanline_sort_x);
+    qsort(nodeX, (size_t)nodes, sizeof(int), scanline_sort_x);
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Fill the pixels between node pairs.

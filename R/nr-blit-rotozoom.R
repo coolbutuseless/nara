@@ -46,9 +46,9 @@ if (FALSE) {
   theta <- 0
   # for (theta in seq(0, 2*pi, length.out = 20)) {
   nr <- nr_new(300, 200, 'grey80')
-  nr_blit_rotozoom(nr, src = sq, x = 50, y = 10,
-                   hjust = 1, vjust = 0.33,
-                   angle = -pi/4, scale = 1, respect_alpha = T)
+  nr_blit_rotozoom(nr, src = sq, x = 150, y = 100,
+                   hjust = 0, vjust = 0,
+                   angle = -pi/4, scale = 1, respect_alpha = F)
   nr_circle(nr, 150, 100, 2, fill = 'hotpink')
   # nr_blit(nr, sq, 0, 0, respect_alpha = T)
   plot(nr, T)
