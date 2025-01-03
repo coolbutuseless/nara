@@ -24,17 +24,19 @@ Multiple blit operations in a single call
 nr <- nr_new(90, 90, 'grey60')
 config <- data.frame(
   idx = c(1, 2, 3, 4),
-  x = c(10, 10, 40, 40),
-  y = c(10, 40, 40, 10),
+  x = c(10, 10, 40, 40) + 15,
+  y = c(10, 40, 40, 10) + 15,
   xsrc = 0L,
   ysrc = 0L,
   w = -1L,
   h = -1L,
-  hjust = 0,
-  vjust = 0,
+  hjust = 0.5,
+  vjust = 0.5,
+  angle = c(0, 0, 0, pi/4),
+  scale = c(0.5, 1, 1, 1),
   respect_alpha = TRUE,
   render = TRUE
 )
 nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
-plot(nr)
+plot(nr, T)
 }

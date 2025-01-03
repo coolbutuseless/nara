@@ -152,6 +152,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   SEXP vjust_         = get_df_col_or_NULL(config_, "vjust");         // def: 0
   SEXP respect_alpha_ = get_df_col_or_NULL(config_, "respect_alpha"); // def: TRUE
   SEXP render_        = get_df_col_or_NULL(config_, "render");        // def: TRUE
+  SEXP angle_         = get_df_col_or_NULL(config_, "angle");         // def: 0.0
+  SEXP scale_         = get_df_col_or_NULL(config_, "scale");         // def: 1.0
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,6 +177,8 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   double *vjust      = Rf_isNull(vjust_) ? NULL : REAL(vjust_);
   int *respect_alpha = Rf_isNull(respect_alpha_) ? NULL : LOGICAL(respect_alpha_);
   int *render        = Rf_isNull(render_)        ? NULL : LOGICAL(render_);
+  double *angle      = Rf_isNull(angle_)         ? NULL : REAL(angle_);
+  double *scale      = Rf_isNull(scale_)         ? NULL : REAL(scale_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do the loop
@@ -201,13 +205,20 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     int this_w = (w == NULL || w[i] < 0) ? src_width  : w[i];
     int this_h = (h == NULL || h[i] < 0) ? src_height : h[i];
     
+    double this_hjust = (hjust == NULL) ? 0.5 : hjust[i];
+    double this_vjust = (vjust == NULL) ? 0.5 : vjust[i];
+    
+    double this_angle = (angle == NULL) ? 0 : angle[i];
+    double this_scale = (scale == NULL) ? 1 : scale[i];
+    
     int this_res_alpha = (respect_alpha == NULL) ? 1 : respect_alpha[i];
     
-    nr_blit_ortho(
+    nr_blit(
       dst, dst_width, dst_height, x[i]   , y[i],
       src, src_width, src_height, this_xsrc, this_ysrc,
       this_w, this_h, 
-      hjust[i], vjust[i],
+      this_hjust, this_vjust,
+      this_angle, this_scale,
       this_res_alpha);
   }
   
