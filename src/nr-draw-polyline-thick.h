@@ -24,6 +24,6 @@
 /// - @a pPolyline must have `2 * polylineCount` readable coordinates.
 /// - The generated triangles count is at most `4 * (polylineCount - 2) + 2`.
 ///   Thus, there are at most `24 * (polylineCount - 2) + 6` coordinates written into @a triangles .
-int32_t jvPolylineTriangulate(float const polyline[], int32_t polylineCount, float thickness,
-                              float miterLimit, float triangles[], int32_t triangleCapacity);
+int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
+                              double miterLimit, double triangles[], int32_t triangleCapacity);
 
