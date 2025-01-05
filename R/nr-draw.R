@@ -147,13 +147,41 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-#' plot(nr)
+#' plot(nr, T)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
   invisible(.Call(nr_polyline_, nr, x, y, color, close))
 }
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Draw thick polyline on a \code{nativeRaster} image
+#'
+#' @inheritParams nr_polyline
+#' @param thickness Default: 1
+#' @param mitre_limit Default: 1
+#'        
+#' @return Original \code{nativeRaster} modified in-place
+#'
+#' @examples
+#' N <- 20
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polyline_thick(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
+#' plot(nr, T)
+#'
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_polyline_thick <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 1, close = FALSE) {
+  invisible(
+    .Call(nr_polyline_thick_, nr, x, y, color, thickness, mitre_limit, close)
+  )
+}
+
+
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

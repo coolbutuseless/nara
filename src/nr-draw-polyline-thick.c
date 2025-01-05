@@ -1,4 +1,19 @@
+#define R_NO_REMAP
 
+#include <R.h>
+#include <Rinternals.h>
+#include <Rdefines.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <unistd.h>
+
+#include "color.h"
+#include "nr-core.h"
+#include "nr-utils.h"
+#include "nr-draw.h"
 
 /*
  JvPolyline is authored by Julien Vernay, in year 2025 (dev AT jvernay DOT fr).
@@ -35,9 +50,22 @@
 #include "nr-draw-polyline-thick.h"
 #include <math.h>
 
+/// @param polyline[in] Input array of coordinates (X,Y) composing the polyline.
+/// @param polylineCount Number of points in @a polyline .
+/// @param thickness Distance between the two parallel lines.
+/// @param miterLimit Threshold to make angles sharp. Use `10.f` as default, `0.0f` to disable.
+/// @param triangles[out] Output array of coordinates (X,Y), to be assembled three-by-three into
+/// triangles.
+/// @param triangleCapacity Number of triangles writable in @a triangles .
+/// @return Number of triangles corresponding to the given @a polyline,
+/// which can be bigger than @a triangleCapacity .
+///
+/// @attention
+/// - @a pPolyline must have `2 * polylineCount` readable coordinates.
+/// - The generated triangles count is at most `4 * (polylineCount - 2) + 2`.
+///   Thus, there are at most `24 * (polylineCount - 2) + 6` coordinates written into @a triangles .
 int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
-                              double miterLimit, double triangles[], int32_t triangleCapacity)
-{
+                              double miterLimit, double triangles[], int32_t triangleCapacity) {
   if (polylineCount <= 1)
     return 0; // Degenerate case: cannot trace a line from 0 or 1 point.
   if (miterLimit <= 0)
@@ -206,5 +234,78 @@ int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, do
   
   // Returns number of triangle
   return idxOut / 6;
+}
+
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw polyline [R interace]
+// 
+// @param nr native raster (modified in-place)
+// @param nr_width,nr_height dimensions
+// @param x,y locations
+// @param color colour
+// @param thickness line thickness
+// @param close should the polyline be closed
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
+                        SEXP mitre_limit_, SEXP close_) {
+  
+  assert_nativeraster(nr_);
+  
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
+  
+  uint32_t color = single_rcolor_to_int(color_);
+  
+  if (Rf_length(x_) != Rf_length(y_)) {
+    Rf_error("Arguments 'x' and 'y' must be same length.");
+  }
+  
+  // get an int* from a numeric from R
+  bool freex = false, freey = false;
+  int N = calc_max_length(2, x_, y_);
+  int *x = as_int32_vec(x_, N, &freex);
+  int *y = as_int32_vec(y_, N, &freey);
+  
+  
+  
+  int polylineCount = Rf_length(x_);
+  int triangleCapacity = 24 * (polylineCount - 2) + 6;
+  double *triangles = malloc(triangleCapacity * sizeof(double));
+  if (triangles == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate 'triangles'");
+  }
+  
+  double miterLimit = 3;
+  double thickness = 3;
+  
+  double *polyline = malloc(2 * polylineCount * sizeof(double));
+  if (polyline == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate 'polyline'");
+  }
+  for (int i = 0; i < Rf_length(x_); ++i) {
+    polyline[2 * i + 0] = (double)x[i];
+    polyline[2 * i + 1] = (double)y[i];
+  }
+  
+  // int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
+  // double miterLimit, double triangles[], int32_t triangleCapacity) 
+  int ntris = jvPolylineTriangulate(polyline, polylineCount, thickness, 
+                                    miterLimit, triangles, triangleCapacity);
+  
+  Rprintf("TRIS: alloc:%i found:%i\n", triangleCapacity, ntris);
+  
+  free(triangles);
+  free(polyline);
+  
+  // nr_polyline(nr, nr_width, nr_height, x, y, N, color, Rf_asInteger(close_));
+  
+  // free and return
+  if (freex) free(x);
+  if (freey) free(y);
+  return nr_;
 }
 
