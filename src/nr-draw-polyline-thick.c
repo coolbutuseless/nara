@@ -274,15 +274,15 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
   
   int polylineCount = Rf_length(x_);
   int triangleCapacity = 24 * (polylineCount - 2) + 6;
-  double *triangles = malloc(triangleCapacity * sizeof(double));
+  double *triangles = malloc(triangleCapacity * sizeof(double) * 2); // Safety factor = 2x
   if (triangles == NULL) {
     Rf_error("nr_polyline_thick_(): Couldn't allocate 'triangles'");
   }
   
-  double miterLimit = 3;
-  double thickness = 3;
+  double miterLimit = Rf_asReal(mitre_limit_);
+  double thickness  = Rf_asReal(thickness_);
   
-  double *polyline = malloc(2 * polylineCount * sizeof(double));
+  double *polyline = malloc(2 * polylineCount * sizeof(double)); 
   if (polyline == NULL) {
     Rf_error("nr_polyline_thick_(): Couldn't allocate 'polyline'");
   }
@@ -297,6 +297,26 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
                                     miterLimit, triangles, triangleCapacity);
   
   Rprintf("TRIS: alloc:%i found:%i\n", triangleCapacity, ntris);
+  
+  // Draw triangles using nr_polygon()
+  // void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color) 
+  int *xs = malloc(ntris * 3 * sizeof(int));
+  int *ys = malloc(ntris * 3 * sizeof(int));
+  if (xs == NULL || ys == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate triangle coords 'xs', 'ys'");
+  }
+  for (int i = 0; i < ntris * 3; ++i) {
+    xs[i] = triangles[2 * i + 0];
+    ys[i] = triangles[2 * i + 1];
+  }
+  
+  for (int i = 0; i < ntris; ++i) {
+    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color);
+  }
+  
+  
+  free(ys);
+  free(xs);
   
   free(triangles);
   free(polyline);

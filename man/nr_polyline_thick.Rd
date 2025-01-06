@@ -38,9 +38,11 @@ Original \code{nativeRaster} modified in-place
 Draw thick polyline on a \code{nativeRaster} image
 }
 \examples{
-N <- 20
+N <- 200
 nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-plot(nr)
+nr_polyline_thick(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
+                  thickness = 10, mitre_limit = 5)
+nr_polyline      (nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
+plot(nr, T)
 
 }
