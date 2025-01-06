@@ -14,7 +14,7 @@ nr_rect(
   color = NA,
   hjust = 0,
   vjust = 0,
-  thickness = 1
+  linewidth = 1
 )
 }
 \arguments{
@@ -34,8 +34,8 @@ starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
 to treat the centre of the \code{src_} as the blitting origin.
 Default (0, 0)}
 
-\item{thickness}{Line thickness. Default: 1.  If \code{thickness = 1} then a 
-naive version of Bresenham is used to draw the points.  If thickness 
+\item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+naive version of Bresenham is used to draw the points.  If linewidth 
 is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
 }
@@ -49,7 +49,7 @@ Draw rectangles on a \code{nativeRaster} image
 N <- 200
 nr <- nr_new(N, N, 'grey80')
 nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-        fill = 'blue', color = c('red', 'green'), thickness = 17)
+        fill = 'blue', color = c('red', 'green'), linewidth = 17)
 plot(nr, TRUE)
 
 }

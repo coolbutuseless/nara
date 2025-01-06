@@ -41,8 +41,8 @@ nr_point <- function(nr, x, y, color = 'black') {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x1, y1, x2, y2, color = 'black', thickness = 1) {
-  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, thickness))
+nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1) {
+  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth))
 }
 
 
@@ -100,13 +100,13 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-#'         fill = 'blue', color = c('red', 'green'), thickness = 17)
+#'         fill = 'blue', color = c('red', 'green'), linewidth = 17)
 #' plot(nr, TRUE)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, thickness = 1) {
-  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, thickness))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1) {
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth))
 }
 
 
@@ -140,13 +140,13 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
-#' @param thickness Line thickness. Default: 1.  If \code{thickness = 1} then a 
-#'        naive version of Bresenham is used to draw the points.  If thickness 
+#' @param linewidth Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+#'        naive version of Bresenham is used to draw the points.  If linewidth 
 #'        is greater than 1, then the line is convert to a triangle strip and
 #'        rendered as polygons.
 #' @param mitre_limit Limit the size of the mitre when two lines meet at an 
-#'        acute angle and thickness is greater than 1. Default: same as line 
-#'        thickness which mostly looks OK.
+#'        acute angle and linewidth is greater than 1. Default: same as line 
+#'        linewidth which mostly looks OK.
 #' @param close Should the polyline be closed? I.e. should a line be drawn between
 #'        the last point and the first point?   Default: FALSE
 #'        
@@ -161,7 +161,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
-#'                   thickness = 5, mitre_limit = 3)
+#'                   linewidth = 5, mitre_limit = 3)
 #' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
 #' plot(nr, TRUE)
 #'
@@ -169,14 +169,14 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-#'                   color = 'red', thickness = 10, mitre_limit = 5, close = TRUE)
+#'                   color = 'red', linewidth = 10, mitre_limit = 5, close = TRUE)
 #' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
 #'            color = 'black', close = TRUE)
 #' plot(nr, TRUE)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = thickness, close = FALSE) {
-  invisible(.Call(nr_polyline_, nr, x, y, color, thickness, mitre_limit, close))
+nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE) {
+  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close))
 }
 
 
@@ -201,13 +201,13 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
-#'            color = 'red', thickness = 5)
+#'            color = 'red', linewidth = 5)
 #' plot(nr, TRUE)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, thickness = 1, mitre_limit = thickness) {
-  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, thickness, mitre_limit))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit))
 }
 
 

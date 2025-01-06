@@ -11,8 +11,8 @@ nr_polygon(
   id = NULL,
   fill = "black",
   color = NA,
-  thickness = 1,
-  mitre_limit = thickness
+  linewidth = 1,
+  mitre_limit = linewidth
 )
 }
 \arguments{
@@ -32,14 +32,14 @@ all coordinates are assumed to be vertices of a single polygon.}
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 
-\item{thickness}{Line thickness. Default: 1.  If \code{thickness = 1} then a 
-naive version of Bresenham is used to draw the points.  If thickness 
+\item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+naive version of Bresenham is used to draw the points.  If linewidth 
 is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
 
 \item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
-acute angle and thickness is greater than 1. Default: same as line 
-thickness which mostly looks OK.}
+acute angle and linewidth is greater than 1. Default: same as line 
+linewidth which mostly looks OK.}
 }
 \value{
 Original \code{nativeRaster} modified in-place
@@ -51,7 +51,7 @@ Draw multiple polygon on a \code{nativeRaster} image
 N <- 200
 nr <- nr_new(N, N, 'grey80')
 nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
-           color = 'red', thickness = 5)
+           color = 'red', linewidth = 5)
 plot(nr, TRUE)
 
 }

@@ -22,7 +22,7 @@ void nr_rect(uint32_t *nr,
              int w, int h, 
              uint32_t fill, uint32_t color, 
              double hjust, double vjust, 
-             double thickness) {
+             double linewidth) {
 
   // Adjust handle on rectangle
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
@@ -40,14 +40,14 @@ void nr_rect(uint32_t *nr,
     int ys[4] = {y, y, y + h - 1, y + h - 1};
     int npoints = 4;
     bool close = true;
-    double mitre_limit = thickness;
+    double mitre_limit = linewidth;
     
-    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, thickness, mitre_limit, close);
+    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close);
     
-    // nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color, thickness);
-    // nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color, thickness);
-    // nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color, thickness);
-    // nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color, thickness);
+    // nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color, linewidth);
+    // nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color, linewidth);
+    // nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color, linewidth);
+    // nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color, linewidth);
   }
   
 }
@@ -81,7 +81,7 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int *ys = as_int32_vec(y_, N, &freey);
   int *ws = as_int32_vec(w_, N, &freew);
   int *hs = as_int32_vec(h_, N, &freeh);
-  double *thickness = as_double_vec(thickness_, N, &freethickness);
+  double *linewidth = as_double_vec(thickness_, N, &freethickness);
   
   double hjust = Rf_asReal(hjust_);
   double vjust = Rf_asReal(vjust_);
@@ -95,7 +95,7 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   
   // Draw each rect
   for (int i = 0; i < N; i++) {
-    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, thickness[i]);
+    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i]);
   }
   
   
@@ -105,7 +105,7 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   if (freeh) free(hs);
   if (freecol) free(color);
   if (freefill) free(fill);
-  if (freethickness) free(thickness);
+  if (freethickness) free(linewidth);
   return nr_;
 }
 

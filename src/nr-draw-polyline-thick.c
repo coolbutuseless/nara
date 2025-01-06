@@ -52,7 +52,7 @@
 
 /// @param polyline[in] Input array of coordinates (X,Y) composing the polyline.
 /// @param polylineCount Number of points in @a polyline .
-/// @param thickness Distance between the two parallel lines.
+/// @param linewidth Distance between the two parallel lines.
 /// @param miterLimit Threshold to make angles sharp. Use `10.f` as default, `0.0f` to disable.
 /// @param triangles[out] Output array of coordinates (X,Y), to be assembled three-by-three into
 /// triangles.
@@ -64,7 +64,7 @@
 /// - @a pPolyline must have `2 * polylineCount` readable coordinates.
 /// - The generated triangles count is at most `4 * (polylineCount - 2) + 2`.
 ///   Thus, there are at most `24 * (polylineCount - 2) + 6` coordinates written into @a triangles .
-int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
+int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double linewidth,
                               double miterLimit, double triangles[], int32_t triangleCapacity) {
   if (polylineCount <= 1)
     return 0; // Degenerate case: cannot trace a line from 0 or 1 point.
@@ -72,8 +72,8 @@ int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, do
     miterLimit = 0;
   
   // Only compute these constants once.
-  double halfThickness = thickness / 2;
-  double sqMiterThreshold = (thickness * thickness) * (miterLimit * miterLimit) / 4;
+  double halfThickness = linewidth / 2;
+  double sqMiterThreshold = (linewidth * linewidth) * (miterLimit * miterLimit) / 4;
   
   // Iteration logic in the input and output arrays.
   // Indices represent coordinates (2 per point, 6 per triangle).
@@ -239,7 +239,7 @@ int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, do
 
 
 void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y,
-                       int npoints, uint32_t color, double thickness, double mitre_limit, bool close) {
+                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // How many polylines are there?
@@ -282,7 +282,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Call core algo to create triangles to represent the polyline
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int ntris = jvPolylineTriangulate(polyline, polylineCount, thickness, 
+  int ntris = jvPolylineTriangulate(polyline, polylineCount, linewidth, 
                                     mitre_limit, triangles, triangleCapacity);
   
   
@@ -321,7 +321,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 // @param nr_width,nr_height dimensions
 // @param x,y locations
 // @param color colour
-// @param thickness line thickness
+// @param linewidth line linewidth
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
@@ -341,7 +341,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 //   }
 //   
 //   double mitre_limit = Rf_asReal(mitre_limit_);
-//   double thickness   = Rf_asReal(thickness_);
+//   double linewidth   = Rf_asReal(thickness_);
 //   
 //   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //   // Ensure we have an integer vector for x and y
@@ -353,7 +353,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 //   bool close = Rf_asLogical(close_);
 //   
 //   nr_polyline_thick(nr, nr_width, nr_height, x, y,
-//                          N, color, thickness, mitre_limit, close);
+//                          N, color, linewidth, mitre_limit, close);
 // 
 //   if (freex) free(x);
 //   if (freey) free(y);
