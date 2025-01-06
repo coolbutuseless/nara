@@ -6,7 +6,7 @@ extern void nr_hline     (uint32_t *nr, int nr_width, int nr_height, int x1, int
 extern void nr_line      (uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color);
 extern void nr_point     (uint32_t *nr, int nr_width, int nr_height, int x , int y , uint32_t color);
 extern void nr_polygon   (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color);
-extern void nr_polyline  (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, int close);
+extern void nr_polyline  (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, double thickness, double mitre_limit, bool close);
 extern void nr_rect      (uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust);
 extern void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x , int y , const char *str, uint32_t color, int fontsize);
 extern void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha); 

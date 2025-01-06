@@ -238,6 +238,82 @@ int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, do
 
 
 
+void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y,
+                       int npoints, uint32_t color, double thickness, double mitre_limit, bool close) {
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // How many polylines are there?
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int polylineCount = npoints;
+  if (close) {
+    polylineCount += 2;  // close the polygon by manually adding the first two points at the end
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Allocation room for the triangles
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int triangleCapacity = 24 * (polylineCount - 2) + 6;
+  double *triangles = malloc((size_t)triangleCapacity * sizeof(double) * 2); // Safety factor = 2x
+  if (triangles == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate 'triangles'");
+  }
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Convert the triangles from integers to 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  double *polyline = malloc(2 * (size_t)polylineCount * sizeof(double)); 
+  if (polyline == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate 'polyline'");
+  }
+  for (int i = 0; i < npoints; ++i) {
+    polyline[2 * i + 0] = x[i];
+    polyline[2 * i + 1] = y[i];
+  }
+  
+  // Add extra point if close=TRUE
+  if (close) {
+    polyline[2 * (npoints) + 0] = x[0];
+    polyline[2 * (npoints) + 1] = y[0];
+    polyline[2 * (npoints) + 2] = x[1];
+    polyline[2 * (npoints) + 3] = y[1];
+  }
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Call core algo to create triangles to represent the polyline
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int ntris = jvPolylineTriangulate(polyline, polylineCount, thickness, 
+                                    mitre_limit, triangles, triangleCapacity);
+  
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Draw triangles using nr_polygon()
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int *xs = malloc((size_t)ntris * 3 * sizeof(int));
+  int *ys = malloc((size_t)ntris * 3 * sizeof(int));
+  if (xs == NULL || ys == NULL) {
+    Rf_error("nr_polyline_thick_(): Couldn't allocate triangle coords 'xs', 'ys'");
+  }
+  for (int i = 0; i < ntris * 3; ++i) {
+    xs[i] = (int)round(triangles[2 * i + 0]);
+    ys[i] = (int)round(triangles[2 * i + 1]);
+  }
+  
+  for (int i = 0; i < ntris; ++i) {
+    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color);
+  }
+  
+  
+  // free and return
+  free(ys);
+  free(xs);
+  free(triangles);
+  free(polyline);
+  
+}
+
+
+
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw polyline [R interace]
 // 
@@ -264,86 +340,21 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
     Rf_error("Arguments 'x' and 'y' must be same length.");
   }
   
-  double miterLimit = Rf_asReal(mitre_limit_);
-  double thickness  = Rf_asReal(thickness_);
+  double mitre_limit = Rf_asReal(mitre_limit_);
+  double thickness   = Rf_asReal(thickness_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Ensure we have an integer vector for x and y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   bool freex = false, freey = false;
   int N = calc_max_length(2, x_, y_);
-  double *x = as_double_vec(x_, N, &freex);
-  double *y = as_double_vec(y_, N, &freey);
+  int *x = as_int32_vec(x_, N, &freex);
+  int *y = as_int32_vec(y_, N, &freey);
   bool close = Rf_asLogical(close_);
   
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // How many polylines are there?
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int polylineCount = Rf_length(x_);
-  if (close) {
-    polylineCount += 2;  // close the polygon by manually adding the first two points at the end
-  }
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Allocation room for the triangles
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int triangleCapacity = 24 * (polylineCount - 2) + 6;
-  double *triangles = malloc((size_t)triangleCapacity * sizeof(double) * 2); // Safety factor = 2x
-  if (triangles == NULL) {
-    Rf_error("nr_polyline_thick_(): Couldn't allocate 'triangles'");
-  }
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Convert the triangles from integers to 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double *polyline = malloc(2 * (size_t)polylineCount * sizeof(double)); 
-  if (polyline == NULL) {
-    Rf_error("nr_polyline_thick_(): Couldn't allocate 'polyline'");
-  }
-  for (int i = 0; i < Rf_length(x_); ++i) {
-    polyline[2 * i + 0] = x[i];
-    polyline[2 * i + 1] = y[i];
-  }
-  
-  // Add extra point if close=TRUE
-  if (close) {
-    polyline[2 * (Rf_length(x_)) + 0] = x[0];
-    polyline[2 * (Rf_length(x_)) + 1] = y[0];
-    polyline[2 * (Rf_length(x_)) + 2] = x[1];
-    polyline[2 * (Rf_length(x_)) + 3] = y[1];
-  }
-  
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Call core algo to create triangles to represent the polyline
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int ntris = jvPolylineTriangulate(polyline, polylineCount, thickness, 
-                                    miterLimit, triangles, triangleCapacity);
-  
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Draw triangles using nr_polygon()
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *xs = malloc((size_t)ntris * 3 * sizeof(int));
-  int *ys = malloc((size_t)ntris * 3 * sizeof(int));
-  if (xs == NULL || ys == NULL) {
-    Rf_error("nr_polyline_thick_(): Couldn't allocate triangle coords 'xs', 'ys'");
-  }
-  for (int i = 0; i < ntris * 3; ++i) {
-    xs[i] = (int)round(triangles[2 * i + 0]);
-    ys[i] = (int)round(triangles[2 * i + 1]);
-  }
-  
-  for (int i = 0; i < ntris; ++i) {
-    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color);
-  }
-  
-  
-  // free and return
-  free(ys);
-  free(xs);
-  free(triangles);
-  free(polyline);
+  nr_polyline_thick(nr, nr_width, nr_height, x, y,
+                         N, color, thickness, mitre_limit, close);
+
   if (freex) free(x);
   if (freey) free(y);
   return nr_;

@@ -181,7 +181,10 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   if (!is_transparent(color)) {
     // Rprintf("Polygon Color: %i\n", color);
     // nr_polyline_(nr_, x_, y_, color_, Rf_ScalarLogical(1));
-    nr_polyline(nr, nr_width, nr_height, x, y, N, color, 1);
+    double thickness = 1;
+    double mitre_limit = 1;
+    bool close = true;
+    nr_polyline(nr, nr_width, nr_height, x, y, N, color, thickness, mitre_limit, close);
   }
   
   // free and return
@@ -245,6 +248,10 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   uint32_t *color = multi_rcolors_to_ints(color_, npolys, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , npolys, &freefill);
   
+  double thickness = 1;
+  double mitre_limit = 1;
+  bool close = true;
+  
   int poly_id = id[0];
   int poly_start = 0;
   int poly_end = 1;
@@ -258,7 +265,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
     nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i]);
-    nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[i], 1);
+    nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[i], thickness, mitre_limit, close);
     
     poly_start = poly_end;
     poly_id    = id[poly_start];
@@ -270,7 +277,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
   nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1]);
-  nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[npolys - 1], 1);
+  nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[npolys - 1], 
+              thickness, mitre_limit, close);
   
   
   
