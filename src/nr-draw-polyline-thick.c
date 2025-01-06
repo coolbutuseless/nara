@@ -281,7 +281,7 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int polylineCount = Rf_length(x_);
   if (close) {
-    polylineCount += 1;  // close the polygon by manually adding the first point at the end
+    polylineCount += 2;  // close the polygon by manually adding the first two points at the end
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -309,6 +309,8 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
   if (close) {
     polyline[2 * (Rf_length(x_)) + 0] = x[0];
     polyline[2 * (Rf_length(x_)) + 1] = y[0];
+    polyline[2 * (Rf_length(x_)) + 2] = x[1];
+    polyline[2 * (Rf_length(x_)) + 3] = y[1];
   }
   
   
