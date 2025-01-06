@@ -170,7 +170,7 @@ nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline_thick(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
-#'                   thickness = 10, mitre_limit = 5)
+#'                   thickness = 5, mitre_limit = 3)
 #' nr_polyline      (nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
 #' plot(nr, TRUE)
 #'
