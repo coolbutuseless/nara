@@ -31,119 +31,129 @@ static int scanline_sort_x(const void *a, const void *b) {
 // not as efficient as something with an active edge table but it
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color) {
+void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, 
+                uint32_t color, double linewidth, double mitre_limit) {
   
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Pairs of values in 'nodeX' will have points drawn between them on 
-  // a scanline.
-  // 2024-12-30 Over-allocate here by a factor of 2.  Horizontal lines will cause
-  //            2 points to be added to the 'nodeX' structure.
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int *nodeX = (int *)malloc(2 * (size_t)npoints * sizeof(int));
-  if (nodeX == NULL) {
-    Rf_error("fill_polygon_c(): memory allocation failed for 'nodeX'");
-  }
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Find vertical extents of all the polygons
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int ymin = INT_MAX;
-  int ymax = INT_MIN;
-  for (int i = 0; i < npoints; i++) {
-    if (y[i] < ymin) {
-      ymin = y[i];
+  if (!is_transparent(fill)) {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Pairs of values in 'nodeX' will have points drawn between them on 
+    // a scanline.
+    // 2024-12-30 Over-allocate here by a factor of 2.  Horizontal lines will cause
+    //            2 points to be added to the 'nodeX' structure.
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    int *nodeX = (int *)malloc(2 * (size_t)npoints * sizeof(int));
+    if (nodeX == NULL) {
+      Rf_error("fill_polygon_c(): memory allocation failed for 'nodeX'");
     }
-    if (y[i] > ymax) {
-      ymax = y[i];
-    }
-  }
-  
-  ymin--;
-  ymax++;
-  
-  if (ymin < 0) ymin = 0;
-  if (ymax >= nr_height) ymax = nr_height - 1;
-  
-  // Rprintf("ymin/ymax : %i  %i\n", ymin, ymax);
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Precalc the gradient
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  double *m = (double *)malloc((size_t)npoints * sizeof(double));
-  if (m == NULL) {
-    Rf_error("fill_polygon_c(): memory allocation failed for 'm'");
-  }
-  
-  {
-    int j = npoints - 1; // last point
-    for (int i=0; i < npoints; i++) {
-      m[i] = (double)(x[j] - x[i]) / (double)(y[j] - y[i]); 
-      j = i; 
-    }
-  }
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Loop through all the scanlines in the image which contain polygons
-  // This would be faster if this used an Active Edge List
-  // i.e. 
-  //   - Sort lines by starting y, 
-  //   - ignore lines when scanline < ystart
-  //   - when scanline = ystart add to list of active edges
-  //   - loop to find possible lines which intersect scanline runs faster
-  //   - when scanline > yend, remove line from active edge list
-  //
-  // i.e. an active edge list would limit the search space for matching lines
-  //      to just those lines which actually cross the scanline, so the 
-  //      for loop would no longer be going through all 'npoints' to find intersects
-  //
-  // Further: no need to calculate 'nodeX' at each scanline.
-  //   nodeX at scanline + 1 = nodeX at scaneline + 'm'
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  for (int scanline = ymin; scanline <= ymax; scanline++) {
     
-    //  Build a list of nodes whose line crosses the scanline
-    int nodes = 0; 
-    int j = npoints - 1; // last point
-    for (int i=0; i < npoints; i++) {
-      if (((y[i] < scanline) && (y[j] >= scanline)) ||  
-          ((y[j] < scanline) && (y[i] >= scanline))) {
-        nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
-      } else if (y[i] == scanline && y[j] == scanline) {
-        // Horizontal lines
-        // nr_hline(nr, nr_width, nr_height, x[i], x[j], scanline, color);
-        // 2024-Dec Some handling for polygons with horizontal lines between points.
-        // Note: this may cause overdraw issues when alpha < 1. Untested.
-        // Really need a better polygon algo.
-        nodeX[nodes++] = (int) (x[i]); 
-        nodeX[nodes++] = (int) (x[j]); 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Find vertical extents of all the polygons
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    int ymin = INT_MAX;
+    int ymax = INT_MIN;
+    for (int i = 0; i < npoints; i++) {
+      if (y[i] < ymin) {
+        ymin = y[i];
       }
-      j = i; 
-    }
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Sort the x-coordinates along the scanline
-    // void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    qsort(nodeX, (size_t)nodes, sizeof(int), scanline_sort_x);
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Fill the pixels between node pairs.
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    for (int i = 0; i < nodes; i += 2) {
-      if (nodeX[i] >= nr_width) break;
-      if (nodeX[i + 1] >  0 ) {
-        if (nodeX[i] < 0) nodeX[i] = 0;
-        if (nodeX[i + 1] >= nr_width) nodeX[i + 1] = nr_width - 1;
-        nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, color);
+      if (y[i] > ymax) {
+        ymax = y[i];
       }
     }
-  } // end for(scanline)
+    
+    ymin--;
+    ymax++;
+    
+    if (ymin < 0) ymin = 0;
+    if (ymax >= nr_height) ymax = nr_height - 1;
+    
+    // Rprintf("ymin/ymax : %i  %i\n", ymin, ymax);
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Precalc the gradient
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    double *m = (double *)malloc((size_t)npoints * sizeof(double));
+    if (m == NULL) {
+      Rf_error("fill_polygon_c(): memory allocation failed for 'm'");
+    }
+    
+    {
+      int j = npoints - 1; // last point
+      for (int i=0; i < npoints; i++) {
+        m[i] = (double)(x[j] - x[i]) / (double)(y[j] - y[i]); 
+        j = i; 
+      }
+    }
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Loop through all the scanlines in the image which contain polygons
+    // This would be faster if this used an Active Edge List
+    // i.e. 
+    //   - Sort lines by starting y, 
+    //   - ignore lines when scanline < ystart
+    //   - when scanline = ystart add to list of active edges
+    //   - loop to find possible lines which intersect scanline runs faster
+    //   - when scanline > yend, remove line from active edge list
+    //
+    // i.e. an active edge list would limit the search space for matching lines
+    //      to just those lines which actually cross the scanline, so the 
+    //      for loop would no longer be going through all 'npoints' to find intersects
+    //
+    // Further: no need to calculate 'nodeX' at each scanline.
+    //   nodeX at scanline + 1 = nodeX at scaneline + 'm'
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    for (int scanline = ymin; scanline <= ymax; scanline++) {
+      
+      //  Build a list of nodes whose line crosses the scanline
+      int nodes = 0; 
+      int j = npoints - 1; // last point
+      for (int i=0; i < npoints; i++) {
+        if (((y[i] < scanline) && (y[j] >= scanline)) ||  
+            ((y[j] < scanline) && (y[i] >= scanline))) {
+          nodeX[nodes++] = (int) (x[i] + (scanline - y[i]) * m[i]); ///(double)(y[j] - y[i]) * (x[j] - x[i])); 
+        } else if (y[i] == scanline && y[j] == scanline) {
+          // Horizontal lines
+          // 2024-Dec Some handling for polygons with horizontal lines between points.
+          // Note: this may cause overdraw issues when alpha < 1. Untested.
+          // Really need a better polygon algo.
+          nodeX[nodes++] = (int) (x[i]); 
+          nodeX[nodes++] = (int) (x[j]); 
+        }
+        j = i; 
+      }
+      
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Sort the x-coordinates along the scanline
+      // void qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      qsort(nodeX, (size_t)nodes, sizeof(int), scanline_sort_x);
+      
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      //  Fill the pixels between node pairs.
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      for (int i = 0; i < nodes; i += 2) {
+        if (nodeX[i] >= nr_width) break;
+        if (nodeX[i + 1] >  0 ) {
+          if (nodeX[i] < 0) nodeX[i] = 0;
+          if (nodeX[i + 1] >= nr_width) nodeX[i + 1] = nr_width - 1;
+          nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, fill);
+        }
+      }
+    } // end for(scanline)
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Tidy
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    free(m);
+    free(nodeX);
+  }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Tidy
+  // Outline
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  free(m);
-  free(nodeX);
+  if (!is_transparent(color)) {
+    bool close = true;
+    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close);
+  }
 }
 
 
@@ -152,7 +162,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP thickness_, SEXP mitre_limit_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_) {
   
   assert_nativeraster(nr_);
   
@@ -174,16 +184,11 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
-  // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill);
+  double linewidth = Rf_asReal(linewidth_);
+  double mitre_limit = Rf_asReal(mitre_limit_);
   
-  // Polygon outline only => Closed Polyline
-  if (!is_transparent(color)) {
-    double linewidth = Rf_asReal(thickness_);
-    double mitre_limit = Rf_asReal(mitre_limit_);
-    bool close = true;
-    nr_polyline(nr, nr_width, nr_height, x, y, N, color, linewidth, mitre_limit, close);
-  }
+  // Rprintf("Polygon Fill: %i\n", fill);
+  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit);
   
   // free and return
   if (freex) free(x);
@@ -195,12 +200,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP thickness_, SEXP mitre_limit_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_) {
   
   // Can we just do single polygon handling?
   if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygons_single_(nr_, x_, y_, fill_, color_, thickness_, mitre_limit_);
+    return nr_polygons_single_(nr_, x_, y_, fill_, color_, linewidth_, mitre_limit_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -247,9 +252,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , npolys, &freefill);
   
   
-  double linewidth = Rf_asReal(thickness_);
+  double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
-  bool close = true;
   
   int poly_id = id[0];
   int poly_start = 0;
@@ -263,9 +267,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
     int len = poly_end - poly_start;
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
-    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i]);
-    nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[i], linewidth, mitre_limit, close);
-    
+    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i], color[i], linewidth, mitre_limit);
+
     poly_start = poly_end;
     poly_id    = id[poly_start];
     poly_end++;
@@ -275,12 +278,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   // Final polygon
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
-  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1]);
-  nr_polyline(nr, nr_width, nr_height, x + poly_start, y + poly_start, len, color[npolys - 1], 
-              linewidth, mitre_limit, close);
-  
-  
-  
+  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1], color[npolys - 1], linewidth, mitre_limit);
   
   // free and return
   if (freeid)   free(id);

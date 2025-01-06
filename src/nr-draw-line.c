@@ -64,7 +64,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
 // @param x1,y1,x2,y2 line endpoints
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP thickness_) {
+SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP linewidth_) {
 
   assert_nativeraster(nr_);
 
@@ -76,12 +76,12 @@ SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEX
   // get an int* from a numeric from R
   bool freex1 = false, freey1 = false, freex2 = false, freey2 = false;
   bool freethickness = false;
-  int N = calc_max_length(5, x1_, y1_, x2_, y2_, thickness_);
+  int N = calc_max_length(5, x1_, y1_, x2_, y2_, linewidth_);
   int *x1 = as_int32_vec(x1_, N, &freex1);
   int *y1 = as_int32_vec(y1_, N, &freey1);
   int *x2 = as_int32_vec(x2_, N, &freex2);
   int *y2 = as_int32_vec(y2_, N, &freey2);
-  double *linewidth = as_double_vec(thickness_, N, &freethickness);
+  double *linewidth = as_double_vec(linewidth_, N, &freethickness);
   
   // Colors
   bool freecol = false;

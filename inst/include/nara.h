@@ -66,14 +66,14 @@ static inline void nr_hline (uint32_t *nr, int nr_width, int nr_height, int x1, 
 }
 
 
-static inline void nr_line (uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color) {
-  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color) = NULL;
+static inline void nr_line (uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth) {
+  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color)) R_GetCCallable("nara", "nr_line");
+    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth)) R_GetCCallable("nara", "nr_line");
   }
 
-  fun(nr, nr_width, nr_height, x1, y1, x2, y2, color);
+  fun(nr, nr_width, nr_height, x1, y1, x2, y2, color, linewidth);
 }
 
 
@@ -88,14 +88,14 @@ static inline void nr_point (uint32_t *nr, int nr_width, int nr_height, int x , 
 }
 
 
-static inline void nr_polygon (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color) {
-  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color) = NULL;
+static inline void nr_polygon (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, uint32_t color, double linewidth, double mitre_limit) {
+  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, uint32_t color, double linewidth, double mitre_limit) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color)) R_GetCCallable("nara", "nr_polygon");
+    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, uint32_t color, double linewidth, double mitre_limit)) R_GetCCallable("nara", "nr_polygon");
   }
 
-  fun(nr, nr_width, nr_height, x, y, npoints, color);
+  fun(nr, nr_width, nr_height, x, y, npoints, fill, color, linewidth, mitre_limit);
 }
 
 
@@ -110,14 +110,14 @@ static inline void nr_polyline (uint32_t *nr, int nr_width, int nr_height, int *
 }
 
 
-static inline void nr_rect (uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust) {
-  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust) = NULL;
+static inline void nr_rect (uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust, double linewidth) {
+  static void (*fun)(uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust, double linewidth) = NULL;
 
   if (fun == NULL) {
-    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust)) R_GetCCallable("nara", "nr_rect");
+    fun = (void (*)(uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust, double linewidth)) R_GetCCallable("nara", "nr_rect");
   }
 
-  fun(nr, nr_width, nr_height, x, y, w, h, fill, color, hjust, vjust);
+  fun(nr, nr_width, nr_height, x, y, w, h, fill, color, hjust, vjust, linewidth);
 }
 
 

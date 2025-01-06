@@ -64,7 +64,7 @@ void nr_rect(uint32_t *nr,
 // @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP thickness_) {
+                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -76,12 +76,12 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   int  nr_width  = Rf_ncols(nr_);
   
   bool freex = false, freey = false, freew = false, freeh = false, freethickness = false;
-  int N = calc_max_length(5, x_, y_, w_, h_, thickness_);
+  int N = calc_max_length(5, x_, y_, w_, h_, linewidth_);
   int *xs = as_int32_vec(x_, N, &freex);
   int *ys = as_int32_vec(y_, N, &freey);
   int *ws = as_int32_vec(w_, N, &freew);
   int *hs = as_int32_vec(h_, N, &freeh);
-  double *linewidth = as_double_vec(thickness_, N, &freethickness);
+  double *linewidth = as_double_vec(linewidth_, N, &freethickness);
   
   double hjust = Rf_asReal(hjust_);
   double vjust = Rf_asReal(vjust_);

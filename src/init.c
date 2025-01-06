@@ -68,15 +68,15 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
-extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP thickness_);
+extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_);
 extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
-extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP thickness_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_);
 extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
-extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP thickness_, SEXP mitre_limit_, SEXP close_);
+extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
-                               SEXP thickness_, SEXP mitre_limit_);
+                               SEXP linewidth_, SEXP mitre_limit_);
 
-// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
+// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, 
 //                         SEXP mitre_limit_, SEXP close_);
 
 static const R_CallMethodDef CEntries[] = {

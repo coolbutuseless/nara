@@ -299,8 +299,12 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
     ys[i] = (int)round(triangles[2 * i + 1]);
   }
   
+#define TRANSPARENT_BLACK 0x00000000u
+  
+  double thickness_tri = 1; // ignored
+  double mitre_limit_tri = 1; // ignored
   for (int i = 0; i < ntris; ++i) {
-    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color);
+    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color, TRANSPARENT_BLACK, thickness_tri, mitre_limit_tri);
   }
   
   
@@ -324,7 +328,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 // @param linewidth line linewidth
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
+// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, 
 //                         SEXP mitre_limit_, SEXP close_) {
 //   
 //   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -341,7 +345,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 //   }
 //   
 //   double mitre_limit = Rf_asReal(mitre_limit_);
-//   double linewidth   = Rf_asReal(thickness_);
+//   double linewidth   = Rf_asReal(linewidth_);
 //   
 //   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //   // Ensure we have an integer vector for x and y

@@ -69,7 +69,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
 // @param color colour
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, SEXP mitre_limit_, SEXP close_) {
+SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_) {
 
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -83,7 +83,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, SEXP
     Rf_error("Arguments 'x' and 'y' must be same length.");
   }
   
-  double linewidth = Rf_asReal(thickness_);
+  double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
   // get an int* from a numeric from R
