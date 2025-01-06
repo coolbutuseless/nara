@@ -147,7 +147,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-#' plot(nr, T)
+#' plot(nr, TRUE)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,8 +172,17 @@ nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
 #' nr_polyline_thick(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
 #'                   thickness = 10, mitre_limit = 5)
 #' nr_polyline      (nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
-#' plot(nr, T)
+#' plot(nr, TRUE)
 #'
+#'
+#' N <- 200
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polyline_thick(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+#'                   color = 'red', thickness = 10, mitre_limit = 5, close = TRUE)
+#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+#'            color = 'black', close = TRUE)
+#' plot(nr, TRUE)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline_thick <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 1, close = FALSE) {

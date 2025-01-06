@@ -269,10 +269,14 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
   int N = calc_max_length(2, x_, y_);
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
-  
+  bool close = Rf_asLogical(close_);
   
   
   int polylineCount = Rf_length(x_);
+  if (close) {
+    polylineCount += 1;  // close the polygon
+  }
+  
   int triangleCapacity = 24 * (polylineCount - 2) + 6;
   double *triangles = malloc(triangleCapacity * sizeof(double) * 2); // Safety factor = 2x
   if (triangles == NULL) {
@@ -290,6 +294,12 @@ SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_
     polyline[2 * i + 0] = (double)x[i];
     polyline[2 * i + 1] = (double)y[i];
   }
+  
+  if (close) {
+    polyline[2 * (Rf_length(x_)) + 0] = (double)x[0];
+    polyline[2 * (Rf_length(x_)) + 1] = (double)y[0];
+  }
+  
   
   // int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
   // double miterLimit, double triangles[], int32_t triangleCapacity) 
