@@ -28,7 +28,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
 
   if (thickness > 1) {
     bool close = false;
-    double mitre_limit = 0;
+    double mitre_limit = -1; // doesn't matter. no mitre-ing for a simple line.
     int npoints = 2;
     int x[2] = {x1, x2};
     int y[2] = {y1, y2};

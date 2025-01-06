@@ -40,7 +40,7 @@ void nr_rect(uint32_t *nr,
     int ys[4] = {y, y, y + h - 1, y + h - 1};
     int npoints = 4;
     bool close = true;
-    double mitre_limit = 1000;
+    double mitre_limit = thickness;
     
     nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, thickness, mitre_limit, close);
     

@@ -12,7 +12,7 @@ nr_polygon(
   fill = "black",
   color = NA,
   thickness = 1,
-  mitre_limit = 5
+  mitre_limit = thickness
 )
 }
 \arguments{
@@ -38,7 +38,8 @@ is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
 
 \item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
-acute angle and thickness is greater than 1. Default: 1}
+acute angle and thickness is greater than 1. Default: same as line 
+thickness which mostly looks OK.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

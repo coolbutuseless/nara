@@ -145,7 +145,8 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #'        is greater than 1, then the line is convert to a triangle strip and
 #'        rendered as polygons.
 #' @param mitre_limit Limit the size of the mitre when two lines meet at an 
-#'        acute angle and thickness is greater than 1. Default: 1
+#'        acute angle and thickness is greater than 1. Default: same as line 
+#'        thickness which mostly looks OK.
 #' @param close Should the polyline be closed? I.e. should a line be drawn between
 #'        the last point and the first point?   Default: FALSE
 #'        
@@ -174,7 +175,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' plot(nr, TRUE)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 1, close = FALSE) {
+nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = thickness, close = FALSE) {
   invisible(.Call(nr_polyline_, nr, x, y, color, thickness, mitre_limit, close))
 }
 
@@ -205,7 +206,7 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, thickness = 1, mitre_limit = 5) {
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, thickness = 1, mitre_limit = thickness) {
   invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, thickness, mitre_limit))
 }
 

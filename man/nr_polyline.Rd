@@ -10,7 +10,7 @@ nr_polyline(
   y,
   color = "black",
   thickness = 1,
-  mitre_limit = 1,
+  mitre_limit = thickness,
   close = FALSE
 )
 }
@@ -30,7 +30,8 @@ is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
 
 \item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
-acute angle and thickness is greater than 1. Default: 1}
+acute angle and thickness is greater than 1. Default: same as line 
+thickness which mostly looks OK.}
 
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
 the last point and the first point?   Default: FALSE}
