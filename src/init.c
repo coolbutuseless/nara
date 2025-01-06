@@ -70,7 +70,7 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
 extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP thickness_);
 extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
-extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP thickness_);
 extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP thickness_, SEXP mitre_limit_, SEXP close_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
@@ -112,7 +112,7 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_point_"     , (DL_FUNC) &nr_point_     , 4},
   {"nr_line_"      , (DL_FUNC) &nr_line_      , 7},
   {"nr_text_basic_", (DL_FUNC) &nr_text_basic_, 6},
-  {"nr_rect_"      , (DL_FUNC) &nr_rect_      , 9},
+  {"nr_rect_"      , (DL_FUNC) &nr_rect_      , 10},
   {"nr_circle_"    , (DL_FUNC) &nr_circle_    , 6},
   {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 7},
   {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 8},

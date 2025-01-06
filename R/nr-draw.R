@@ -88,6 +88,7 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
 #' @inheritParams nr_blit
+#' @inheritParams nr_polyline
 #' @param x,y coordinates of lower left corner of rectangle.  [vector]
 #' @param w,h width and height of rectangle. [vector]
 #' @param color outline color. Default: NA. [vector]
@@ -96,16 +97,16 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' @return Original \code{nativeRaster} modified in-place
 #' 
 #' @examples
-#' N <- 20
+#' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-#'         fill = 'blue', color = c('red', 'green'))
-#' plot(nr)
+#'         fill = 'blue', color = c('red', 'green'), thickness = 17)
+#' plot(nr, TRUE)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0) {
-  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, thickness = 1) {
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, thickness))
 }
 
 
@@ -198,7 +199,8 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 #' @examples
 #' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', color = 'red', thickness = 5)
+#' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
+#'            color = 'red', thickness = 5)
 #' plot(nr, TRUE)
 #'
 #' @export

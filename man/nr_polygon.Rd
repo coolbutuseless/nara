@@ -12,7 +12,7 @@ nr_polygon(
   fill = "black",
   color = NA,
   thickness = 1,
-  mitre_limit = 1
+  mitre_limit = 5
 )
 }
 \arguments{
@@ -47,9 +47,10 @@ Original \code{nativeRaster} modified in-place
 Draw multiple polygon on a \code{nativeRaster} image
 }
 \examples{
-N <- 20
+N <- 200
 nr <- nr_new(N, N, 'grey80')
-nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
-plot(nr)
+nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
+           color = 'red', thickness = 5)
+plot(nr, TRUE)
 
 }
