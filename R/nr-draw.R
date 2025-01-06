@@ -186,6 +186,7 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
+#' @inheritParams nr_polyline
 #' @param fill fill color 
 #' @param id integer vector used to separate coordinates into 
 #'        multiple polygons. Consecutive runs of the same \code{id}
@@ -195,15 +196,15 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 #' @return Original \code{nativeRaster} modified in-place
 #'
 #' @examples
-#' N <- 20
+#' N <- 200
 #' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
-#' plot(nr)
+#' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', color = 'red', thickness = 5)
+#' plot(nr, TRUE)
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA) {
-  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, thickness = 1, mitre_limit = 5) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, thickness, mitre_limit))
 }
 
 

@@ -152,7 +152,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP thickness_, SEXP mitre_limit_) {
   
   assert_nativeraster(nr_);
   
@@ -179,10 +179,8 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
   
   // Polygon outline only => Closed Polyline
   if (!is_transparent(color)) {
-    // Rprintf("Polygon Color: %i\n", color);
-    // nr_polyline_(nr_, x_, y_, color_, Rf_ScalarLogical(1));
-    double thickness = 1;
-    double mitre_limit = 1;
+    double thickness = Rf_asReal(thickness_);
+    double mitre_limit = Rf_asReal(mitre_limit_);
     bool close = true;
     nr_polyline(nr, nr_width, nr_height, x, y, N, color, thickness, mitre_limit, close);
   }
@@ -197,12 +195,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP thickness_, SEXP mitre_limit_) {
   
   // Can we just do single polygon handling?
   if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygons_single_(nr_, x_, y_, fill_, color_);
+    return nr_polygons_single_(nr_, x_, y_, fill_, color_, thickness_, mitre_limit_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -248,8 +246,9 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   uint32_t *color = multi_rcolors_to_ints(color_, npolys, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , npolys, &freefill);
   
-  double thickness = 1;
-  double mitre_limit = 1;
+  
+  double thickness = Rf_asReal(thickness_);
+  double mitre_limit = Rf_asReal(mitre_limit_);
   bool close = true;
   
   int poly_id = id[0];

@@ -73,7 +73,8 @@ extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_            
 extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_);
 extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP thickness_, SEXP mitre_limit_, SEXP close_);
-extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_);
+extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
+                               SEXP thickness_, SEXP mitre_limit_);
 
 // SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
 //                         SEXP mitre_limit_, SEXP close_);
@@ -114,8 +115,7 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_rect_"      , (DL_FUNC) &nr_rect_      , 9},
   {"nr_circle_"    , (DL_FUNC) &nr_circle_    , 6},
   {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 7},
-  {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 6},
-  // {"nr_polyline_thick_"  , (DL_FUNC) &nr_polyline_thick_  , 7},
+  {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 8},
 
 
   {NULL , NULL, 0}

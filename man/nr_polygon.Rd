@@ -4,7 +4,16 @@
 \alias{nr_polygon}
 \title{Draw multiple polygon on a \code{nativeRaster} image}
 \usage{
-nr_polygon(nr, x, y, id = NULL, fill = "black", color = NA)
+nr_polygon(
+  nr,
+  x,
+  y,
+  id = NULL,
+  fill = "black",
+  color = NA,
+  thickness = 1,
+  mitre_limit = 1
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -22,6 +31,14 @@ all coordinates are assumed to be vertices of a single polygon.}
 (e.g. 'blue', 'white')
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
+
+\item{thickness}{Line thickness. Default: 1.  If \code{thickness = 1} then a 
+naive version of Bresenham is used to draw the points.  If thickness 
+is greater than 1, then the line is convert to a triangle strip and
+rendered as polygons.}
+
+\item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
+acute angle and thickness is greater than 1. Default: 1}
 }
 \value{
 Original \code{nativeRaster} modified in-place
