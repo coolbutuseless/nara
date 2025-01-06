@@ -4,7 +4,18 @@
 \alias{nr_rect}
 \title{Draw rectangles on a \code{nativeRaster} image}
 \usage{
-nr_rect(nr, x, y, w, h, fill = "black", color = NA, hjust = 0, vjust = 0)
+nr_rect(
+  nr,
+  x,
+  y,
+  w,
+  h,
+  fill = "black",
+  color = NA,
+  hjust = 0,
+  vjust = 0,
+  linewidth = 1
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -22,6 +33,11 @@ nr_rect(nr, x, y, w, h, fill = "black", color = NA, hjust = 0, vjust = 0)
 starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
 to treat the centre of the \code{src_} as the blitting origin.
 Default (0, 0)}
+
+\item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+naive version of Bresenham is used to draw the points.  If linewidth 
+is greater than 1, then the line is convert to a triangle strip and
+rendered as polygons.}
 }
 \value{
 Original \code{nativeRaster} modified in-place
@@ -30,10 +46,10 @@ Original \code{nativeRaster} modified in-place
 Draw rectangles on a \code{nativeRaster} image
 }
 \examples{
-N <- 20
+N <- 200
 nr <- nr_new(N, N, 'grey80')
 nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-        fill = 'blue', color = c('red', 'green'))
-plot(nr)
+        fill = 'blue', color = c('red', 'green'), linewidth = 17)
+plot(nr, TRUE)
 
 }

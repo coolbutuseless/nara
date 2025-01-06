@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9032 2025-01-01
+# nara 0.1.1.9033 2025-01-06
 
+* [9033] most line drawing operations now take a `linewidth` argument
 * [9032] `nr_copy_into()` now supports a mask
 * [9031] merged blit-ortho and blit-rotozoom.
 * [9030] rotozoom and blit are moving towards the same interface

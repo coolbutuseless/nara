@@ -4,7 +4,16 @@
 \alias{nr_polygon}
 \title{Draw multiple polygon on a \code{nativeRaster} image}
 \usage{
-nr_polygon(nr, x, y, id = NULL, fill = "black", color = NA)
+nr_polygon(
+  nr,
+  x,
+  y,
+  id = NULL,
+  fill = "black",
+  color = NA,
+  linewidth = 1,
+  mitre_limit = linewidth
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -22,6 +31,15 @@ all coordinates are assumed to be vertices of a single polygon.}
 (e.g. 'blue', 'white')
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
+
+\item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+naive version of Bresenham is used to draw the points.  If linewidth 
+is greater than 1, then the line is convert to a triangle strip and
+rendered as polygons.}
+
+\item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
+acute angle and linewidth is greater than 1. Default: same as line 
+linewidth which mostly looks OK.}
 }
 \value{
 Original \code{nativeRaster} modified in-place
@@ -30,9 +48,10 @@ Original \code{nativeRaster} modified in-place
 Draw multiple polygon on a \code{nativeRaster} image
 }
 \examples{
-N <- 20
+N <- 200
 nr <- nr_new(N, N, 'grey80')
-nr_polygon(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), fill = 'blue', color = 'red')
-plot(nr)
+nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
+           color = 'red', linewidth = 5)
+plot(nr, TRUE)
 
 }

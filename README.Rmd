@@ -204,7 +204,7 @@ Included with `{nara}` are 16 frames of an animated deer character - see `deer_s
 library(grid)
 
 nr <- nr_new(100, 32, 'grey80')
-nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0)
+nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 

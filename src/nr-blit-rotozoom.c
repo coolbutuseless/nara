@@ -155,10 +155,11 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Bounding rectangle for debugging
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (0) {
-    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymax, x + (int)xmax, y + (int)ymax, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymax, x + (int)xmax, y + (int)ymin, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymin, x + (int)xmin, y + (int)ymin, RC_RED);
-    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymin, x + (int)xmin, y + (int)ymax, RC_RED);
+    double linewidth = 1;
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymax, x + (int)xmax, y + (int)ymax, RC_RED, linewidth);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymax, x + (int)xmax, y + (int)ymin, RC_RED, linewidth);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymin, x + (int)xmin, y + (int)ymin, RC_RED, linewidth);
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymin, x + (int)xmin, y + (int)ymax, RC_RED, linewidth);
   }
   
   

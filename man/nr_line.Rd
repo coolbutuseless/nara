@@ -4,7 +4,7 @@
 \alias{nr_line}
 \title{Draw lines on a \code{nativeRaster} image}
 \usage{
-nr_line(nr, x1, y1, x2, y2, color = "black")
+nr_line(nr, x1, y1, x2, y2, color = "black", linewidth = 1)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -15,6 +15,11 @@ nr_line(nr, x1, y1, x2, y2, color = "black")
 (e.g. 'blue', 'white')
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
+
+\item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
+naive version of Bresenham is used to draw the points.  If linewidth 
+is greater than 1, then the line is convert to a triangle strip and
+rendered as polygons.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

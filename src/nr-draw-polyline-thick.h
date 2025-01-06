@@ -12,7 +12,7 @@
 
 /// @param polyline[in] Input array of coordinates (X,Y) composing the polyline.
 /// @param polylineCount Number of points in @a polyline .
-/// @param thickness Distance between the two parallel lines.
+/// @param linewidth Distance between the two parallel lines.
 /// @param miterLimit Threshold to make angles sharp. Use `10.f` as default, `0.0f` to disable.
 /// @param triangles[out] Output array of coordinates (X,Y), to be assembled three-by-three into
 /// triangles.
@@ -24,8 +24,8 @@
 /// - @a pPolyline must have `2 * polylineCount` readable coordinates.
 /// - The generated triangles count is at most `4 * (polylineCount - 2) + 2`.
 ///   Thus, there are at most `24 * (polylineCount - 2) + 6` coordinates written into @a triangles .
-// int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double thickness,
+// int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, double linewidth,
 //                               double miterLimit, double triangles[], int32_t triangleCapacity);
 
 void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y,
-                       int npoints, uint32_t color, double thickness, double mitre_limit, bool close);
+                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close);
