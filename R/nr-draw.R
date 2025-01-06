@@ -178,40 +178,6 @@ nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw thick polyline on a \code{nativeRaster} image
-#'
-#' @inheritParams nr_polyline
-#'        
-#' @return Original \code{nativeRaster} modified in-place
-#'
-#' @examples
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline_thick(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
-#'                   thickness = 5, mitre_limit = 3)
-#' nr_polyline      (nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
-#' plot(nr, TRUE)
-#'
-#'
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline_thick(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-#'                   color = 'red', thickness = 10, mitre_limit = 5, close = TRUE)
-#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-#'            color = 'black', close = TRUE)
-#' plot(nr, TRUE)
-#' 
-#' @noRd
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline_thick <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 1, close = FALSE) {
-  invisible(
-    .Call(nr_polyline_thick_, nr, x, y, color, thickness, mitre_limit, close)
-  )
-}
-
-
-
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

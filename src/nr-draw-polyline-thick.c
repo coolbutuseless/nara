@@ -324,39 +324,39 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 // @param thickness line thickness
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
-                        SEXP mitre_limit_, SEXP close_) {
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Unpack args
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  assert_nativeraster(nr_);
-  uint32_t *nr = (uint32_t *)INTEGER(nr_);
-  int nr_height = Rf_nrows(nr_);
-  int nr_width  = Rf_ncols(nr_);
-  uint32_t color = single_rcolor_to_int(color_);
-  
-  if (Rf_length(x_) != Rf_length(y_)) {
-    Rf_error("Arguments 'x' and 'y' must be same length.");
-  }
-  
-  double mitre_limit = Rf_asReal(mitre_limit_);
-  double thickness   = Rf_asReal(thickness_);
-  
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Ensure we have an integer vector for x and y
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  bool freex = false, freey = false;
-  int N = calc_max_length(2, x_, y_);
-  int *x = as_int32_vec(x_, N, &freex);
-  int *y = as_int32_vec(y_, N, &freey);
-  bool close = Rf_asLogical(close_);
-  
-  nr_polyline_thick(nr, nr_width, nr_height, x, y,
-                         N, color, thickness, mitre_limit, close);
-
-  if (freex) free(x);
-  if (freey) free(y);
-  return nr_;
-}
+// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP thickness_, 
+//                         SEXP mitre_limit_, SEXP close_) {
+//   
+//   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//   // Unpack args
+//   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//   assert_nativeraster(nr_);
+//   uint32_t *nr = (uint32_t *)INTEGER(nr_);
+//   int nr_height = Rf_nrows(nr_);
+//   int nr_width  = Rf_ncols(nr_);
+//   uint32_t color = single_rcolor_to_int(color_);
+//   
+//   if (Rf_length(x_) != Rf_length(y_)) {
+//     Rf_error("Arguments 'x' and 'y' must be same length.");
+//   }
+//   
+//   double mitre_limit = Rf_asReal(mitre_limit_);
+//   double thickness   = Rf_asReal(thickness_);
+//   
+//   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//   // Ensure we have an integer vector for x and y
+//   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//   bool freex = false, freey = false;
+//   int N = calc_max_length(2, x_, y_);
+//   int *x = as_int32_vec(x_, N, &freex);
+//   int *y = as_int32_vec(y_, N, &freey);
+//   bool close = Rf_asLogical(close_);
+//   
+//   nr_polyline_thick(nr, nr_width, nr_height, x, y,
+//                          N, color, thickness, mitre_limit, close);
+// 
+//   if (freex) free(x);
+//   if (freey) free(y);
+//   return nr_;
+// }
 
