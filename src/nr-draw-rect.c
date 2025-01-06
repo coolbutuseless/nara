@@ -23,6 +23,8 @@ void nr_rect(uint32_t *nr,
              uint32_t fill, uint32_t color, 
              double hjust, double vjust) {
   
+  double thickness = 1;
+
   // Adjust handle on rectangle
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
   y = y - (int)round(vjust * (h - 1)); // vertical justification
@@ -41,10 +43,10 @@ void nr_rect(uint32_t *nr,
   
   // Draw outline
   if (!is_transparent(color)) {
-    nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color);
-    nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color);
-    nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color);
-    nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color);
+    nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color, thickness);
+    nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color, thickness);
+    nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color, thickness);
+    nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color, thickness);
   }
   
 }

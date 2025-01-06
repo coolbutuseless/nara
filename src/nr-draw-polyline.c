@@ -32,20 +32,28 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
   
   if (is_transparent(color)) return;
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Draw a thick line
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (thickness > 1) {
      nr_polyline_thick(nr, nr_width, nr_height, x, y, 
                              npoints, color, thickness, mitre_limit, close);
     return;
   } 
   
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Draw a 1-point line
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  thickness = 1;
+  
   // Draw lines between pairs of points
   for (int i = 0; i < npoints - 1; i++) {
-    nr_line(nr, nr_width, nr_height, x[i], y[i], x[i+1], y[i+1], color);
+    nr_line(nr, nr_width, nr_height, x[i], y[i], x[i+1], y[i+1], color, thickness);
   }
   
   if (close) {
     // Join last point and first point if requested
-    nr_line(nr, nr_width, nr_height, x[npoints - 1], y[npoints - 1], x[0], y[0], color);
+    nr_line(nr, nr_width, nr_height, x[npoints - 1], y[npoints - 1], x[0], y[0], color, thickness);
   }
   
 }
