@@ -138,6 +138,12 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #'
 #' @inheritParams nr_fill
 #' @inheritParams nr_point
+#' @param thickness Line thickness. Default: 1.  If \code{thickness = 1} then a 
+#'        naive version of Bresenham is used to draw the points.  If thickness 
+#'        is greater than 1, then the line is convert to a triangle strip and
+#'        rendered as polygons.
+#' @param mitre_limit Limit the size of the mitre when two lines meet at an 
+#'        acute angle and thickness is greater than 1. Default: 1
 #' @param close Should the polyline be closed? I.e. should a line be drawn between
 #'        the last point and the first point?   Default: FALSE
 #'        
@@ -147,13 +153,31 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' N <- 20
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-#' plot(nr)
+#' plot(nr, TRUE)
 #'
+#' N <- 200
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
+#'                   thickness = 5, mitre_limit = 3)
+#' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
+#' plot(nr, TRUE)
+#'
+#'
+#' N <- 200
+#' nr <- nr_new(N, N, 'grey80')
+#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+#'                   color = 'red', thickness = 10, mitre_limit = 5, close = TRUE)
+#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+#'            color = 'black', close = TRUE)
+#' plot(nr, TRUE)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', close = FALSE) {
-  invisible(.Call(nr_polyline_, nr, x, y, color, close))
+nr_polyline <- function(nr, x, y, color = 'black', thickness = 1, mitre_limit = 1, close = FALSE) {
+  invisible(.Call(nr_polyline_, nr, x, y, color, thickness, mitre_limit, close))
 }
+
+
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

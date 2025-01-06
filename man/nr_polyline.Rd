@@ -4,7 +4,15 @@
 \alias{nr_polyline}
 \title{Draw polyline on a \code{nativeRaster} image}
 \usage{
-nr_polyline(nr, x, y, color = "black", close = FALSE)
+nr_polyline(
+  nr,
+  x,
+  y,
+  color = "black",
+  thickness = 1,
+  mitre_limit = 1,
+  close = FALSE
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -15,6 +23,14 @@ nr_polyline(nr, x, y, color = "black", close = FALSE)
 (e.g. 'blue', 'white')
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
+
+\item{thickness}{Line thickness. Default: 1.  If \code{thickness = 1} then a 
+naive version of Bresenham is used to draw the points.  If thickness 
+is greater than 1, then the line is convert to a triangle strip and
+rendered as polygons.}
+
+\item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
+acute angle and thickness is greater than 1. Default: 1}
 
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
 the last point and the first point?   Default: FALSE}
@@ -29,6 +45,21 @@ Draw polyline on a \code{nativeRaster} image
 N <- 20
 nr <- nr_new(N, N, 'grey80')
 nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-plot(nr)
+plot(nr, TRUE)
 
+N <- 200
+nr <- nr_new(N, N, 'grey80')
+nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
+                  thickness = 5, mitre_limit = 3)
+nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
+plot(nr, TRUE)
+
+
+N <- 200
+nr <- nr_new(N, N, 'grey80')
+nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+                  color = 'red', thickness = 10, mitre_limit = 5, close = TRUE)
+nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
+           color = 'black', close = TRUE)
+plot(nr, TRUE)
 }
