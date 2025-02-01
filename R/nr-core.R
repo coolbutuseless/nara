@@ -151,7 +151,7 @@ nr_crop <- function(nr, x, y, w, h) {
           xsrc = x, ysrc = y, 
           w = w, h = h, 
           hjust = 0, vjust = 0,
-          respect_alpha = FALSE)
+          mode = draw_mode$ignore_alpha)
   dst
 }
 

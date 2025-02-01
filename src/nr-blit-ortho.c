@@ -33,13 +33,13 @@
 // @param src_width,src_height dimensions of source
 // @param xsrc,ysrc starting position within source
 // @param w,h dimensions of region to copy
-// @param respect_alpha Should alpha values be respected when blitting?
+// @param draw_mode draw_mode_t enum
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
                    uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                    int w, int h,
                    double hjust, double vjust,
-                   bool respect_alpha) {
+                   draw_mode_t draw_mode) {
   
   
   
@@ -93,7 +93,7 @@ void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // If 'respect_alpha', then copy pixel by pixel
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (respect_alpha) {
+  if (draw_mode == RESPECT_ALPHA) {
     draw_mode_t draw_mode = RESPECT_ALPHA;
     for (int yoff = 0; yoff < h; yoff++) {
       int y1 = ysrc + yoff ;
@@ -148,7 +148,7 @@ SEXP nr_blit_ortho_(SEXP dst_, SEXP x_    , SEXP y_,
                     SEXP src_, SEXP xsrc_   , SEXP ysrc_, 
                     SEXP w_    , SEXP h_,
                     SEXP hjust_, SEXP vjust_, 
-                    SEXP respect_alpha_) {
+                    SEXP draw_mode_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
@@ -196,14 +196,14 @@ SEXP nr_blit_ortho_(SEXP dst_, SEXP x_    , SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *dst = (uint32_t *)INTEGER(dst_);
   uint32_t *src = (uint32_t *)INTEGER(src_);
-  bool respect_alpha = Rf_asLogical(respect_alpha_);
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   for (int i = 0; i < Rf_length(x_); i++) {
     nr_blit_ortho(
       dst, dst_width, dst_height, x[i], y[i], 
       src, src_width, src_height, xsrc, ysrc, 
       w, h, 
       Rf_asReal(hjust_), Rf_asReal(vjust_),
-      respect_alpha);
+      draw_mode);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

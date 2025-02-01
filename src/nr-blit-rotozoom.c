@@ -36,7 +36,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
                       int w, int h,
                       double hjust, double vjust,
                       double angle, double scale, 
-                      bool respect_alpha) {
+                      draw_mode_t draw_mode) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -124,7 +124,6 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double iscale = 1/scale;
-  draw_mode_t draw_mode = RESPECT_ALPHA;
   
   for (int xd = (int)xmin; xd <= (int)xmax; ++xd) {
     for (int yd = (int)ymin; yd <= (int)ymax; ++yd) {
@@ -140,7 +139,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       bool within_src = xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h;
       if (within_src) {
         uint32_t col = src[(int)(ys * src_width + xs)];
-        if (respect_alpha) {
+        if (draw_mode == RESPECT_ALPHA) {
           nr_point(dst, dst_width, dst_height, x + xd, y + yd, col, draw_mode);
         } else {
           // the range xmin/xmax and ymin/ymax are guarantted by the 
@@ -174,7 +173,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                        SEXP w_    , SEXP h_, 
                        SEXP hjust_, SEXP vjust_, 
                        SEXP angle_, SEXP scale_,
-                       SEXP respect_alpha_) {  
+                       SEXP draw_mode_) {  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -221,7 +220,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                      src, src_width, src_height, xsrc , ysrc, 
                      w, h,
                      Rf_asReal(hjust_), Rf_asReal(vjust_),
-                     angles[i], scales[i], Rf_asLogical(respect_alpha_));
+                     angles[i], scales[i], (draw_mode_t)Rf_asInteger(draw_mode_));
   }
   
 

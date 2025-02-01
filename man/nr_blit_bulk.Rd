@@ -12,7 +12,7 @@ nr_blit_bulk(dst, src, config)
 \item{src}{list of native rasters}
 
 \item{config}{data.frame of configuration information for each blit which 
-most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, respect_alpha, draw}
+most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw}
 }
 \value{
 None. \code{dst} modifief by-reference and returned invisibly.
@@ -34,7 +34,7 @@ config <- data.frame(
   vjust = 0.5,
   angle = c(0, 0, 0, pi/4),
   scale = c(0.5, 1, 1, 1),
-  respect_alpha = TRUE,
+  mode = draw_mode$respect_alpha,
   render = TRUE
 )
 nr_blit_bulk(dst = nr, src = deer_sprites, config = config)

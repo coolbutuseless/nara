@@ -28,25 +28,25 @@ extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_, 
-                     SEXP src_  , SEXP xsrc_   , SEXP ysrc_, 
-                    SEXP w_    , SEXP h_, 
-                    SEXP hjust_, SEXP vjust_, 
-                    SEXP respect_alpha_);
+extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_,
+                     SEXP src_  , SEXP xsrc_   , SEXP ysrc_,
+                    SEXP w_    , SEXP h_,
+                    SEXP hjust_, SEXP vjust_,
+                    SEXP draw_mode_);
 
-extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
-                              SEXP src_, SEXP xsrc_, SEXP ysrc_, 
-                              SEXP w_, SEXP h_, 
-                              SEXP hjust_, SEXP vjust_, 
+extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
+                              SEXP src_, SEXP xsrc_, SEXP ysrc_,
+                              SEXP w_, SEXP h_,
+                              SEXP hjust_, SEXP vjust_,
                               SEXP angle_, SEXP sf_,
-                              SEXP respect_alpha_);
+                              SEXP draw_mode_);
 
 extern SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_, 
                      SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                      SEXP w_, SEXP h_, 
                      SEXP hjust_, SEXP vjust_, 
                      SEXP angle_, SEXP sf_,
-                     SEXP respect_alpha_);
+                     SEXP draw_mode_);
 
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 
@@ -91,10 +91,10 @@ static const R_CallMethodDef CEntries[] = {
   {"resize_bilinear_", (DL_FUNC) &resize_bilinear_  , 3},
   {"resize_nn_"      , (DL_FUNC) &resize_nn_        , 3},
   
-  {"nr_blit_ortho_"   , (DL_FUNC) &nr_blit_ortho_   , 11},
-  {"nr_blit_bulk_"    , (DL_FUNC) &nr_blit_bulk_    ,  3},
-  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13},
+  {"nr_blit_ortho_"   , (DL_FUNC) &nr_blit_ortho_   , 11}, // subsumed into 'nr_blit_'
+  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13}, // subsumed into 'nr_blit_'
   {"nr_blit_"         , (DL_FUNC) &nr_blit_         , 13},
+  {"nr_blit_bulk_"    , (DL_FUNC) &nr_blit_bulk_    ,  3},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 6},
   
