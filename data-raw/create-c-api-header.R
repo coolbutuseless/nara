@@ -78,6 +78,20 @@ decl_to_func <- function(decl) {
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Typedefs for export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+typedefs <- r"(
+
+
+typedef enum {
+  RESPECT_ALPHA = 1,
+  IGNORE_ALPHA  = 2
+} draw_mode_t;
+
+
+)"
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Read all the declarations from a header file
@@ -100,8 +114,9 @@ header_to_funcs <- function(header_file) {
 funcs <- map(header_files, header_to_funcs) |> purrr::flatten_chr()
 funcs <- paste(funcs, collapse = "\n\n\n")
 
-nara_h <- c(includes, funcs)
-writeLines(nara_h, "./inst/include/nara.h")
+
+nara_h <- c(includes, typedefs, funcs)
+writeLines(nara_h, "./inst/include/private/nara.h")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,6 +129,7 @@ decls <- map(header_files, function(f) {
 }) |> flatten_chr()
 
 decls <- paste("extern", decls)
+decls <- c(typedefs, decls)
 writeLines(decls, "./src/init-decls.h")
 
 

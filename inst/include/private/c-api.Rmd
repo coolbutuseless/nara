@@ -41,9 +41,10 @@ SEXP my_func(SEXP nr_) {
   int nr_height = Rf_nrows(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   uint32_t col = 0xFF0000FFu; // 0xAABBGGRR Red
+  draw_mode_t draw_mode = RESPECT_ALPHA;
 
-  //      nr, nr_width, nr_height, x1, y1,  x2,  y2, color, linewidth
-  nr_line(nr, nr_width, nr_height,  0,  0, 200, 150, col  , 1);
+  //      nr, nr_width, nr_height, x1, y1,  x2,  y2, color, linewidth, draw_mode
+  nr_line(nr, nr_width, nr_height,  0,  0, 200, 150, col  , 1,         draw_mode);
 
   return nr_;
 }
@@ -53,7 +54,7 @@ SEXP my_func(SEXP nr_) {
 # Find the location of nara.h and include its directory in the search path
 # using C Pre-Processor flags (PKG_CPPFLAGS)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nara_h <- system.file("include", "nara.h", package = "nara", mustWork = TRUE)
+nara_h <- system.file("include/private/nara.h", package = "nara", mustWork = TRUE)
 cpp_include = paste0("-I", dirname(nara_h))
 callme::compile(code, PKG_CPPFLAGS = cpp_include)
 
