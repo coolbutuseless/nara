@@ -5,6 +5,7 @@
 #' @inheritParams nr_fill
 #' @param x,y Vectors of point coordinates
 #' @param color Vector of colors
+#' @param mode drawing mode. 
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #'
@@ -16,8 +17,8 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_point <- function(nr, x, y, color = 'black') {
-  invisible(.Call(nr_point_, nr, x, y, color))
+nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_point_, nr, x, y, color, mode))
 }
 
 
@@ -77,8 +78,8 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
-  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize))
+nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize, mode))
 }
 
 

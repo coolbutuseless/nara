@@ -21,7 +21,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit sprite onto raster [C interface]
 //
-// This method only blits image with rotation or zooming i.e. scale = 1, angle = 0
+// This method only blits image WITHOUT rotation or zooming i.e. scale = 1, angle = 0
 // 
 // Function tries to be smart
 //  - trim coordinates to ensure they lie within the src/dst images
@@ -94,11 +94,12 @@ void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y
   // If 'respect_alpha', then copy pixel by pixel
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (respect_alpha) {
+    draw_mode_t draw_mode = RESPECT_ALPHA;
     for (int yoff = 0; yoff < h; yoff++) {
       int y1 = ysrc + yoff ;
       for (int xoff = 0; xoff < w; xoff++) {
         uint32_t src_col = src[y1 * src_width + xsrc + xoff];
-        nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col);
+        nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, draw_mode);
       }
     }
   } else {
@@ -126,13 +127,15 @@ void nr_blit_ortho_naive(uint32_t *dst, int dst_width, int dst_height, int x, in
                       uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                       int w, int h) {
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - ysrc - yoff;
     for (int xoff = 0; xoff < w; xoff++) {
       
       uint32_t src_col = src[y1 * src_width + xsrc + xoff - 1];
       
-      nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col);
+      nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, draw_mode);
     }
   }
 }

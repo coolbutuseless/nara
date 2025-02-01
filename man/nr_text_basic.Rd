@@ -5,7 +5,15 @@
 \title{Draw text on a \code{nativeRaster} image using the built-in \code{spleen} 
 bitmapped font.}
 \usage{
-nr_text_basic(nr, x, y, str, color = "black", fontsize = 8L)
+nr_text_basic(
+  nr,
+  x,
+  y,
+  str,
+  color = "black",
+  fontsize = 8L,
+  mode = draw_mode$respect_alpha
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -21,6 +29,8 @@ or \code{#rgb}}
 
 \item{fontsize}{height of font in pizels.  Only valid values are 8, 12 and 16.
 Default: 8.}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

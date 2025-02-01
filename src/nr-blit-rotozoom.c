@@ -124,6 +124,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   // Loop over all possible dst locations (a rectangular region)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double iscale = 1/scale;
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   for (int xd = (int)xmin; xd <= (int)xmax; ++xd) {
     for (int yd = (int)ymin; yd <= (int)ymax; ++yd) {
       
@@ -139,7 +141,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       if (within_src) {
         uint32_t col = src[(int)(ys * src_width + xs)];
         if (respect_alpha) {
-          nr_point(dst, dst_width, dst_height, x + xd, y + yd, col);
+          nr_point(dst, dst_width, dst_height, x + xd, y + yd, col, draw_mode);
         } else {
           // the range xmin/xmax and ymin/ymax are guarantted by the 
           // checks above to always be in the range of 'dst'

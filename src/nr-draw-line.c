@@ -40,9 +40,11 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
   int dx =  abs(x2-x1), sx = x1<x2 ? 1 : -1;
   int dy = -abs(y2-y1), sy = y1<y2 ? 1 : -1;
   int err = dx+dy, e2;                                  /* error value e_xy */
-
+  
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   for (;;) {                                                        /* loop */
-    nr_point(nr, nr_width, nr_height, x1, y1, color);
+    nr_point(nr, nr_width, nr_height, x1, y1, color, draw_mode);
 
     e2 = 2*err;
     if (e2 >= dy) {                                       /* e_xy+e_x > 0 */

@@ -24,7 +24,7 @@
 // @param x,y location
 // @param color colour
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color) {
+void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color, draw_mode_t draw_mode) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
@@ -34,6 +34,11 @@ void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t 
   // Check for transparent color
   if (is_transparent(color)) return;
 
+  if (draw_mode == IGNORE_ALPHA) {
+    nr[y * nr_width + x] = color;
+    return;
+  }
+  
   // Alpha channel for blending colors
   uint32_t alpha = (color >> 24) & 255;
   
@@ -67,7 +72,7 @@ void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t 
 // @param x,y locations
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
+SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP draw_mode_) {
 
   assert_nativeraster(nr_);
 
@@ -86,8 +91,10 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_) {
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
 
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  
   for (int i = 0 ; i < N; i++) {
-    nr_point(nr, nr_width, nr_height, x[i], y[i], color[i]);
+    nr_point(nr, nr_width, nr_height, x[i], y[i], color[i], draw_mode);
   }
 
   // free and return

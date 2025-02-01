@@ -34,10 +34,13 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
     Rf_error("nr_circle(): error allocating 'ydone'");
   }
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   int xoff = -r, yoff = 0, err = 2-2*r; /* II. Quadrant */
   do {
     
     if (!is_transparent(fill) && !ydone[yoff]) {
+      // Fill is not transparent, no need to worry about alpha
       nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill);
       if (yoff != 0) {
         // vertical offset from centre
@@ -47,11 +50,12 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
     }
     
     if (!is_transparent(color)) {
-      nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color); /*   I. Quadrant */
-      nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color); /*  II. Quadrant */
+      // Outline is not transparent
+      nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color, draw_mode); /*   I. Quadrant */
+      nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color, draw_mode); /*  II. Quadrant */
       if (yoff != 0) {
-        nr_point(nr, nr_width, nr_height, x-xoff, y-yoff, color); /* III. Quadrant */
-        nr_point(nr, nr_width, nr_height, x+xoff, y-yoff, color); /*  IV. Quadrant */
+        nr_point(nr, nr_width, nr_height, x-xoff, y-yoff, color, draw_mode); /* III. Quadrant */
+        nr_point(nr, nr_width, nr_height, x+xoff, y-yoff, color, draw_mode); /*  IV. Quadrant */
       }
     }
     
