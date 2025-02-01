@@ -65,7 +65,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
 // @param x1,y1,x2,y2 line endpoints
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP linewidth_) {
+SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP linewidth_, SEXP draw_mode_) {
 
   assert_nativeraster(nr_);
 
@@ -88,7 +88,7 @@ SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEX
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   for (int i = 0; i < N; i++) {
     nr_line(nr, nr_width, nr_height, x1[i], y1[i], x2[i], y2[i], color[i], linewidth[i], draw_mode);

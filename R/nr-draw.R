@@ -42,8 +42,8 @@ nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) 
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1) {
-  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth))
+nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth, mode))
 }
 
 
@@ -131,8 +131,8 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
-  invisible(.Call(nr_circle_, nr, x, y, r, fill, color))
+nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_circle_, nr, x, y, r, fill, color, mode))
 }
 
 
@@ -207,8 +207,8 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth) {
-  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit, mode))
 }
 
 

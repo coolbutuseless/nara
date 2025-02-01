@@ -162,7 +162,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
   
   assert_nativeraster(nr_);
   
@@ -187,7 +187,7 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   // Rprintf("Polygon Fill: %i\n", fill);
   nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit, draw_mode);
@@ -202,12 +202,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
   
   // Can we just do single polygon handling?
   if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygons_single_(nr_, x_, y_, fill_, color_, linewidth_, mitre_limit_);
+    return nr_polygons_single_(nr_, x_, y_, fill_, color_, linewidth_, mitre_limit_, draw_mode_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -257,7 +257,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   int poly_id = id[0];
   int poly_start = 0;

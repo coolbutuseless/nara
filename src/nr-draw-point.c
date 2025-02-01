@@ -90,7 +90,7 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP draw_mode_) {
   // Colors
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
-
+  
   draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   for (int i = 0 ; i < N; i++) {

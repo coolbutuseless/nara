@@ -4,7 +4,15 @@
 \alias{nr_circle}
 \title{Draw circles on a \code{nativeRaster} image}
 \usage{
-nr_circle(nr, x, y, r, fill = "black", color = NA)
+nr_circle(
+  nr,
+  x,
+  y,
+  r,
+  fill = "black",
+  color = NA,
+  mode = draw_mode$respect_alpha
+)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -16,6 +24,8 @@ nr_circle(nr, x, y, r, fill = "black", color = NA)
 \item{fill}{interior fill color [vector]}
 
 \item{color}{outline color. Default: NA. [vector]}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

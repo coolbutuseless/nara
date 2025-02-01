@@ -69,7 +69,7 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Circle. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
+SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_, SEXP draw_mode_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -92,7 +92,7 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
 
   // Draw each circle
   for (int idx = 0; idx < N; idx++) {
