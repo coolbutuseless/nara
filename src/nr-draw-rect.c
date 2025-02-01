@@ -22,13 +22,12 @@ void nr_rect(uint32_t *nr,
              int w, int h, 
              uint32_t fill, uint32_t color, 
              double hjust, double vjust, 
-             double linewidth) {
+             double linewidth,
+             draw_mode_t draw_mode) {
 
   // Adjust handle on rectangle
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
   y = y - (int)round(vjust * (h - 1)); // vertical justification
-  
-  draw_mode_t draw_mode = RESPECT_ALPHA;
   
   if (!is_transparent(fill)) {
     for (int row = y; row < y + h; row++) {
@@ -88,11 +87,11 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
   
-  
+  draw_mode_t draw_mode = RESPECT_ALPHA;
   
   // Draw each rect
   for (int i = 0; i < N; i++) {
-    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i]);
+    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i], draw_mode);
   }
   
   

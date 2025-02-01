@@ -23,7 +23,7 @@
 // @param x,y centre of circle
 // @param r radius
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, uint32_t fill, uint32_t color) {    
+void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, uint32_t fill, uint32_t color, draw_mode_t draw_mode) {    
   // Skip NAs
   if (x == NA_INTEGER || y == NA_INTEGER || r == NA_INTEGER) {
     return;
@@ -33,8 +33,6 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
   if (ydone == NULL) {
     Rf_error("nr_circle(): error allocating 'ydone'");
   }
-  
-  draw_mode_t draw_mode = RESPECT_ALPHA;
   
   int xoff = -r, yoff = 0, err = 2-2*r; /* II. Quadrant */
   do {
@@ -93,10 +91,12 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
   bool freecol = false, freefill = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
+  
+  draw_mode_t draw_mode = RESPECT_ALPHA;
 
   // Draw each circle
   for (int idx = 0; idx < N; idx++) {
-    nr_circle(nr, nr_width, nr_height, xms[idx], yms[idx], rs[idx], fill[idx], color[idx]);  
+    nr_circle(nr, nr_width, nr_height, xms[idx], yms[idx], rs[idx], fill[idx], color[idx], draw_mode);  
   }
 
 
