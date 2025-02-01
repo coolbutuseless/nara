@@ -31,27 +31,43 @@ class(nr)
 
 ## Save/Load `nativeRaster` images to/from PNG and JPEG
 
-Both the `{png}` and `{jpeg}` packages allow images to be loaded directly 
+The `{fastpng}`, `{png}` and `{jpeg}` packages allow images to be loaded directly 
 as `nativeRaster` images.
 
+
 ```{r}
-img <- jpeg::readJPEG(system.file("img", "Rlogo.jpg", package="jpeg"), native = TRUE)
-class(img)
-grid.raster(img, interpolate = FALSE)
+png_file <- system.file("image", "deer-1.png", package="nara")
+jpg_file <- system.file("image", "deer-1.jpg", package="nara")
+```
+
+
+
+```{r}
+nr <- fastpng::read_png(png_file, type = 'nativeraster')
+class(nr)
+grid.raster(nr, interpolate = FALSE)
 ```
 
 
 ```{r}
-img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-class(img)
-grid.raster(img, interpolate = FALSE)
+nr <- png::readPNG(png_file, native = TRUE)
+class(nr)
+grid.raster(nr, interpolate = FALSE)
 ```
 
+```{r}
+nr <- jpeg::readJPEG(jpg_file, native = TRUE)
+class(nr)
+grid.raster(nr, interpolate = FALSE)
+```
+
+
+These packages will also automatically detect and save native raster images
 
 ```{r eval=FALSE}
-# {jpeg} and {png} will automatically detect and save 'nativeRaster' images
-jpeg::writeJPEG(img, "test.jpg")
-png::writePNG(img, "test.png")
+fastpng::write_png(nr, "test.png")
+jpeg::writeJPEG(nr, "test.jpg")
+png::writePNG(nr, "test.png")
 ```
 
 ## Convert a regular R `raster` image to/from `nativeRaster`
@@ -59,6 +75,7 @@ png::writePNG(img, "test.png")
 ```{r}
 ras <- matrix(c('brown', 'darkblue', 'darkblue', 'brown'), 2, 2)
 ras
+class(ras)
 grid.raster(ras, interpolate = FALSE)
 ```
 
@@ -66,6 +83,7 @@ grid.raster(ras, interpolate = FALSE)
 ```{r}
 nr <- nara::raster_to_nr(ras)
 nr
+class(nr)
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -80,12 +98,14 @@ arr <- array(c(
 ), dim = c(2, 2, 3))
 
 arr
+class(arr)
 grid.raster(arr, interpolate = FALSE)
 ```
 
 ```{r}
 nr <- nara::array_to_nr(arr)
 nr
+class(nr)
 grid.raster(nr, interpolate = FALSE)
 ```
 

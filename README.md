@@ -114,7 +114,8 @@ nr_blit(dst = nr, src = deer_sprites[[1]],
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add an image read from file (with alpha transparency)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+img <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
+img <- nr_scale(img, 0.15)
 nr_blit(dst = nr, src = img, x = 50, y = 50)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,7 +150,7 @@ Included with `{nara}` are 16 frames of an animated deer character - see
 library(grid)
 
 nr <- nr_new(100, 32, 'grey80')
-nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0)
+nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 

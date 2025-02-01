@@ -1,7 +1,7 @@
 
 
 source <- "data-raw/oga-buch/characters_7.png"
-king <- png::readPNG(source)
+king <- fastpng::read_png(source)
 if (FALSE) {
   grid.newpage(); grid.raster(ss)
 }

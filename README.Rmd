@@ -24,6 +24,18 @@ if (FALSE) {
     override = list(destination = "../coolbutuseless.github.io/package/nara")
   )
 }
+
+if (FALSE) {
+  # Check for functions which do not have an @examples block for roxygen
+  system("grep -c examples man/*Rd", intern = TRUE) |> 
+    grep(":0$", x = _, value = TRUE)
+}
+
+
+if (FALSE) {
+  covr::report()
+}
+
 ```
 
 
@@ -33,7 +45,7 @@ if (FALSE) {
 # Make a logo of an animated deer
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 grid.newpage()
-back <- png::readPNG("man/figures/logo-nara.png")
+back <- fastpng::read_png("man/figures/logo-nara.png")
 
 N <- 100
 
@@ -169,7 +181,8 @@ nr_blit(dst = nr, src = deer_sprites[[1]],
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add an image read from file (with alpha transparency)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-img <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+img <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
+img <- nr_scale(img, 0.15)
 nr_blit(dst = nr, src = img, x = 50, y = 50)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

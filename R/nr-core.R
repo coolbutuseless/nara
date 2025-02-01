@@ -81,7 +81,7 @@ nr_fill <- function(nr, color) {
 #' plot(nr1)
 #' 
 #' # Copy with mask
-#' logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+#' logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
 #' src <- nr_duplicate(logo)
 #' dst <- nr_duplicate(logo)
 #' nr_fill(src, 'hotpink')
@@ -259,7 +259,7 @@ nr_transpose <- function(nr) {
 
 
 if (FALSE) {
-  logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
   plot(logo, T)
 
   src <- nr_duplicate(logo)

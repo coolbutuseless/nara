@@ -1,7 +1,7 @@
 
 
 source <- "data-raw/deer female calciumtrice.png"
-deer <- png::readPNG(source, native = TRUE)
+deer <- fastpng::read_png(source, type = 'nativeraster')
 if (FALSE) {
   grid.newpage(); grid.raster(nr, interpolate = FALSE)
 }

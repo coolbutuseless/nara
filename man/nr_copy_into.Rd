@@ -34,7 +34,7 @@ nr_copy_into(nr1, nr2)
 plot(nr1)
 
 # Copy with mask
-logo <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
 src <- nr_duplicate(logo)
 dst <- nr_duplicate(logo)
 nr_fill(src, 'hotpink')

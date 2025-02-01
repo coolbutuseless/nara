@@ -97,8 +97,8 @@ if (FALSE) {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Array
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  im <- system.file("img/Rlogo.png", package = "png", mustWork = TRUE)  
-  arr <- png::readPNG(im)
+  im <- system.file("image/deer-1.png", package = "nara", mustWork = TRUE)  
+  arr <- fastpng::read_png(im, type = 'array')
   
   plot(as.raster(arr), interpolate = FALSE)
   nr <- array_to_nr(arr)

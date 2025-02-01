@@ -40,9 +40,9 @@
 #' nr_blit(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
 #' plot(nr, T)
 #'
-#' nr <- nr_new(300, 200, 'grey80')
-#' sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-#' nr_blit(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
+#' nr <- nr_new(800, 600, 'grey80')
+#' sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
+#' nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
 #' plot(nr, T)
 #' 
 #' @export
@@ -112,7 +112,7 @@ nr_blit_bulk <- function(dst, src, config) {
 
 if (FALSE) {
   
-  logo <- fastpng::read_png(system.file("img", "Rlogo.png", package="png"), type = 'nativeraster')
+  logo <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
   nr <- nr_new(200, 200, 'grey80')
   nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, respect_alpha = F)
   plot(nr, T)
@@ -125,7 +125,7 @@ if (FALSE) {
   x11(type = 'cairo', antialias = 'none')
   dev.control('inhibit')
   
-  logo <- fastpng::read_png(system.file("img", "Rlogo.png", package="png"), type = 'nativeraster')
+  logo <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
   logo <- nr_scale(logo, 2, algo = 'bilinear')
   grid <- expand.grid(x = seq(-500, 1000, 220), y = seq(-500, 1000, 200))
   nr <- nr_new(500, 500, 'white')
@@ -154,7 +154,7 @@ if (FALSE) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if (FALSE) {
   
-  sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
+  sq <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
   
   angle <- 0
   # for (angle in seq(0, 2*pi, length.out = 20)) {

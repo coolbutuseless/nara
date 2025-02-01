@@ -67,9 +67,9 @@ sq <- nr_new(20, 20, 'darkblue')
 nr_blit(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
 plot(nr, T)
 
-nr <- nr_new(300, 200, 'grey80')
-sq <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)
-nr_blit(nr, src = sq, x = 180, y = 120, angle = pi/6, scale = 1)
+nr <- nr_new(800, 600, 'grey80')
+sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
+nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
 plot(nr, T)
 
 }

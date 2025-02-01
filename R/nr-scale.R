@@ -45,7 +45,7 @@ nr_resize <- function(nr, width, height, algo = 'nn') {
 
 if (FALSE) {
 
-  nr <- png::readPNG(system.file("img", "Rlogo.png", package="png"), native = TRUE)  
+  nr <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')  
   dim(nr)
   
   nr_scale(nr, 7) |> plot(T)
