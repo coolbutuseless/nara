@@ -37,7 +37,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (linewidth > 1) {
      nr_polyline_thick(nr, nr_width, nr_height, x, y, 
-                             npoints, color, linewidth, mitre_limit, close);
+                             npoints, color, linewidth, mitre_limit, close, draw_mode);
     return;
   } 
   
@@ -69,7 +69,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
 // @param color colour
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_) {
+SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_mode_) {
 
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -92,7 +92,7 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   nr_polyline(nr, nr_width, nr_height, x, y, N, color, linewidth, mitre_limit, Rf_asInteger(close_), draw_mode);
 

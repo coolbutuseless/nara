@@ -28,4 +28,4 @@
 //                               double miterLimit, double triangles[], int32_t triangleCapacity);
 
 void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y,
-                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close);
+                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close, draw_mode_t draw_mode);

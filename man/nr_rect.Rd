@@ -14,7 +14,8 @@ nr_rect(
   color = NA,
   hjust = 0,
   vjust = 0,
-  linewidth = 1
+  linewidth = 1,
+  mode = draw_mode$respect_alpha
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ Default (0, 0)}
 naive version of Bresenham is used to draw the points.  If linewidth 
 is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

@@ -106,8 +106,8 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = 
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1) {
-  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth, mode))
 }
 
 
@@ -176,8 +176,8 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' plot(nr, TRUE)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE) {
-  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close))
+nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close, mode))
 }
 
 
