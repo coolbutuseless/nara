@@ -19,7 +19,7 @@
 #include "nr-blit-rotozoom.h"
 
 
-void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool respect_alpha) {
+void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, draw_mode_t draw_mode) {
   
   if (angle == 0 && scale == 1) {
     nr_blit_ortho(
@@ -27,7 +27,7 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_
       src, src_width, src_height, xsrc, ysrc,
       w, h, 
       hjust, vjust,
-      respect_alpha
+      draw_mode
     );
   } else {
     nr_blit_rotozoom(
@@ -36,7 +36,7 @@ void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_
       w, h,
       hjust, vjust,
       angle, scale, 
-      respect_alpha
+      draw_mode
     );
   }
   
@@ -48,7 +48,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
               SEXP w_    , SEXP h_, 
               SEXP hjust_, SEXP vjust_, 
               SEXP angle_, SEXP scale_,
-              SEXP respect_alpha_) {
+              SEXP draw_mode_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -96,7 +96,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
             src, src_width, src_height, xsrc , ysrc, 
             w, h,
             Rf_asReal(hjust_), Rf_asReal(vjust_),
-            thetas[i], scales[i], Rf_asLogical(respect_alpha_));
+            thetas[i], scales[i], (draw_mode_t)Rf_asInteger(draw_mode_));
   }
   
   
@@ -150,7 +150,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   SEXP h_             = get_df_col_or_NULL(config_, "h");             // def: src_height
   SEXP hjust_         = get_df_col_or_NULL(config_, "hjust");         // def: 0
   SEXP vjust_         = get_df_col_or_NULL(config_, "vjust");         // def: 0
-  SEXP respect_alpha_ = get_df_col_or_NULL(config_, "respect_alpha"); // def: TRUE
+  SEXP draw_mode_     = get_df_col_or_NULL(config_, "draw_mode_");    // def: TRUE
   SEXP render_        = get_df_col_or_NULL(config_, "render");        // def: TRUE
   SEXP angle_         = get_df_col_or_NULL(config_, "angle");         // def: 0.0
   SEXP scale_         = get_df_col_or_NULL(config_, "scale");         // def: 1.0
@@ -175,7 +175,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   int *h             = Rf_isNull( h_)    ? NULL : as_int32_vec(h_   , N, &freeh);
   double *hjust      = Rf_isNull(hjust_) ? NULL : REAL(hjust_);
   double *vjust      = Rf_isNull(vjust_) ? NULL : REAL(vjust_);
-  int *respect_alpha = Rf_isNull(respect_alpha_) ? NULL : LOGICAL(respect_alpha_);
+  int *draw_mode     = Rf_isNull(draw_mode_)     ? NULL : INTEGER(draw_mode_);
   int *render        = Rf_isNull(render_)        ? NULL : LOGICAL(render_);
   double *angle      = Rf_isNull(angle_)         ? NULL : REAL(angle_);
   double *scale      = Rf_isNull(scale_)         ? NULL : REAL(scale_);
@@ -211,7 +211,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
     double this_angle = (angle == NULL) ? 0 : angle[i];
     double this_scale = (scale == NULL) ? 1 : scale[i];
     
-    int this_res_alpha = (respect_alpha == NULL) ? 1 : respect_alpha[i];
+    draw_mode_t this_draw_mode = (draw_mode == NULL) ? RESPECT_ALPHA : (draw_mode_t)draw_mode[i];
     
     nr_blit(
       dst, dst_width, dst_height, x[i]   , y[i],
@@ -219,7 +219,7 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
       this_w, this_h, 
       this_hjust, this_vjust,
       this_angle, this_scale,
-      this_res_alpha);
+      this_draw_mode);
   }
   
   

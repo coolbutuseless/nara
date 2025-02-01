@@ -17,7 +17,7 @@ nr_blit(
   vjust = 0.5,
   angle = 0,
   scale = 1,
-  respect_alpha = TRUE
+  mode = draw_mode$respect_alpha
 )
 }
 \arguments{
@@ -45,11 +45,7 @@ Default (0, 0)}
 
 \item{scale}{Zoom factor. Default: 1}
 
-\item{respect_alpha}{Should the alpha channel be respected when blitting?
-Default: TRUE means to carefully blend pixels at each location 
-using alpha values.  If FALSE, then contents at the \code{dst} will 
-just be replaced with \code{src} pixels
-which can be much much faster.}
+\item{mode}{drawing mode.}
 }
 \value{
 None. \code{dst} modified by-reference and returned invisibly.

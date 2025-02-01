@@ -28,25 +28,25 @@ extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_, 
-                     SEXP src_  , SEXP xsrc_   , SEXP ysrc_, 
-                    SEXP w_    , SEXP h_, 
-                    SEXP hjust_, SEXP vjust_, 
-                    SEXP respect_alpha_);
+extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_,
+                     SEXP src_  , SEXP xsrc_   , SEXP ysrc_,
+                    SEXP w_    , SEXP h_,
+                    SEXP hjust_, SEXP vjust_,
+                    SEXP draw_mode_);
 
-extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_, 
-                              SEXP src_, SEXP xsrc_, SEXP ysrc_, 
-                              SEXP w_, SEXP h_, 
-                              SEXP hjust_, SEXP vjust_, 
+extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
+                              SEXP src_, SEXP xsrc_, SEXP ysrc_,
+                              SEXP w_, SEXP h_,
+                              SEXP hjust_, SEXP vjust_,
                               SEXP angle_, SEXP sf_,
-                              SEXP respect_alpha_);
+                              SEXP draw_mode_);
 
 extern SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_, 
                      SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                      SEXP w_, SEXP h_, 
                      SEXP hjust_, SEXP vjust_, 
                      SEXP angle_, SEXP sf_,
-                     SEXP respect_alpha_);
+                     SEXP draw_mode_);
 
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 
@@ -67,17 +67,14 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_);
-extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_);
-extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_);
-extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_);
-extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_);
-extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_);
+extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP draw_mode_);
+extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_, SEXP draw_mode_);
+extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_, SEXP draw_mode_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_);
+extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_, SEXP draw_mode_);
+extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_line_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
-                               SEXP linewidth_, SEXP mitre_limit_);
-
-// SEXP nr_polyline_thick_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, 
-//                         SEXP mitre_limit_, SEXP close_);
+                               SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
 
 static const R_CallMethodDef CEntries[] = {
   
@@ -94,10 +91,10 @@ static const R_CallMethodDef CEntries[] = {
   {"resize_bilinear_", (DL_FUNC) &resize_bilinear_  , 3},
   {"resize_nn_"      , (DL_FUNC) &resize_nn_        , 3},
   
-  {"nr_blit_ortho_"   , (DL_FUNC) &nr_blit_ortho_   , 11},
-  {"nr_blit_bulk_"    , (DL_FUNC) &nr_blit_bulk_    ,  3},
-  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13},
+  {"nr_blit_ortho_"   , (DL_FUNC) &nr_blit_ortho_   , 11}, // subsumed into 'nr_blit_'
+  {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13}, // subsumed into 'nr_blit_'
   {"nr_blit_"         , (DL_FUNC) &nr_blit_         , 13},
+  {"nr_blit_bulk_"    , (DL_FUNC) &nr_blit_bulk_    ,  3},
   
   {"matrix_to_nr_", (DL_FUNC) &matrix_to_nr_  , 6},
   
@@ -109,13 +106,13 @@ static const R_CallMethodDef CEntries[] = {
   
   {"magick_to_nr_" , (DL_FUNC) &magick_to_nr_ , 2},
 
-  {"nr_point_"     , (DL_FUNC) &nr_point_     , 4},
-  {"nr_line_"      , (DL_FUNC) &nr_line_      , 7},
-  {"nr_text_basic_", (DL_FUNC) &nr_text_basic_, 6},
-  {"nr_rect_"      , (DL_FUNC) &nr_rect_      , 10},
-  {"nr_circle_"    , (DL_FUNC) &nr_circle_    , 6},
-  {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 7},
-  {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 8},
+  {"nr_point_"     , (DL_FUNC) &nr_point_     , 5},
+  {"nr_line_"      , (DL_FUNC) &nr_line_      , 8},
+  {"nr_text_basic_", (DL_FUNC) &nr_text_basic_, 7},
+  {"nr_rect_"      , (DL_FUNC) &nr_rect_      , 11},
+  {"nr_circle_"    , (DL_FUNC) &nr_circle_    , 7},
+  {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 8},
+  {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 9},
 
 
   {NULL , NULL, 0}
@@ -140,11 +137,6 @@ void R_init_nara(DllInfo *info) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "init-register.h" // Generated by data-raw/create-c-api-header.R
   // R_RegisterCCallable("nara", "nr_point"  , (DL_FUNC) &nr_point);
-  // R_RegisterCCallable("nara", "nr_line"   , (DL_FUNC) &nr_line);
-  // R_RegisterCCallable("nara", "nr_hline"  , (DL_FUNC) &nr_hline);
-  // R_RegisterCCallable("nara", "nr_circle" , (DL_FUNC) &nr_circle);
-  // R_RegisterCCallable("nara", "nr_polygon", (DL_FUNC) &nr_polygon);
-  // R_RegisterCCallable("nara", "nr_text_basic", (DL_FUNC) &nr_text_basic);
 }
 
 

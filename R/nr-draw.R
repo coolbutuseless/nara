@@ -5,6 +5,7 @@
 #' @inheritParams nr_fill
 #' @param x,y Vectors of point coordinates
 #' @param color Vector of colors
+#' @param mode drawing mode. 
 #'
 #' @return Original \code{nativeRaster} modified in-place
 #'
@@ -16,8 +17,8 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_point <- function(nr, x, y, color = 'black') {
-  invisible(.Call(nr_point_, nr, x, y, color))
+nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_point_, nr, x, y, color, mode))
 }
 
 
@@ -41,8 +42,8 @@ nr_point <- function(nr, x, y, color = 'black') {
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1) {
-  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth))
+nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth, mode))
 }
 
 
@@ -77,8 +78,8 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
-  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize))
+nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize, mode))
 }
 
 
@@ -105,8 +106,8 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L) {
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1) {
-  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth, mode))
 }
 
 
@@ -130,8 +131,8 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
-  invisible(.Call(nr_circle_, nr, x, y, r, fill, color))
+nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_circle_, nr, x, y, r, fill, color, mode))
 }
 
 
@@ -175,8 +176,8 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA) {
 #' plot(nr, TRUE)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE) {
-  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close))
+nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close, mode))
 }
 
 
@@ -206,8 +207,8 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth) {
-  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, mode = draw_mode$respect_alpha) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit, mode))
 }
 
 

@@ -11,7 +11,8 @@ nr_polyline(
   color = "black",
   linewidth = 1,
   mitre_limit = linewidth,
-  close = FALSE
+  close = FALSE,
+  mode = draw_mode$respect_alpha
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ linewidth which mostly looks OK.}
 
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
 the last point and the first point?   Default: FALSE}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

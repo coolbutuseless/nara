@@ -22,7 +22,8 @@ void nr_rect(uint32_t *nr,
              int w, int h, 
              uint32_t fill, uint32_t color, 
              double hjust, double vjust, 
-             double linewidth) {
+             double linewidth,
+             draw_mode_t draw_mode) {
 
   // Adjust handle on rectangle
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
@@ -30,7 +31,7 @@ void nr_rect(uint32_t *nr,
   
   if (!is_transparent(fill)) {
     for (int row = y; row < y + h; row++) {
-      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill);
+      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill, draw_mode);
     }
   }
   
@@ -42,12 +43,7 @@ void nr_rect(uint32_t *nr,
     bool close = true;
     double mitre_limit = linewidth;
     
-    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close);
-    
-    // nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color, linewidth);
+    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close, draw_mode);
   }
   
 }
@@ -64,7 +60,7 @@ void nr_rect(uint32_t *nr,
 // @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_) {
+                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -91,11 +87,11 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
   
-  
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   
   // Draw each rect
   for (int i = 0; i < N; i++) {
-    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i]);
+    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i], draw_mode);
   }
   
   

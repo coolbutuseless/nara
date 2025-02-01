@@ -12,7 +12,8 @@ nr_polygon(
   fill = "black",
   color = NA,
   linewidth = 1,
-  mitre_limit = linewidth
+  mitre_limit = linewidth,
+  mode = draw_mode$respect_alpha
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ rendered as polygons.}
 \item{mitre_limit}{Limit the size of the mitre when two lines meet at an 
 acute angle and linewidth is greater than 1. Default: same as line 
 linewidth which mostly looks OK.}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

@@ -5,6 +5,7 @@
 #'
 #' Single source blitted to one or more locations.
 #'
+#' @inheritParams nr_point
 #' @param dst,src source and destination native rasters
 #' @param x,y Where in \code{nr} to place the \code{sprite}. These values must
 #'        be vectors of the same length.  If the length is greater than 1, then
@@ -15,11 +16,6 @@
 #' @param xsrc,ysrc start coordiates within src
 #' @param w,h size within src. If size is negative, then the actual width/height of
 #'        the src is used
-#' @param respect_alpha Should the alpha channel be respected when blitting?
-#'        Default: TRUE means to carefully blend pixels at each location 
-#'        using alpha values.  If FALSE, then contents at the \code{dst} will 
-#'        just be replaced with \code{src} pixels
-#'        which can be much much faster.
 #' @param hjust,vjust specify horizontal and vertical justification of the 
 #'        \code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
 #'        starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
@@ -52,7 +48,7 @@ nr_blit <- function(dst, src, x, y,
                     w = -1L, h = -1L,
                     hjust = 0.5, vjust = 0.5, 
                     angle = 0, scale = 1,
-                    respect_alpha = TRUE) {
+                    mode = draw_mode$respect_alpha) {
   invisible(
     .Call(nr_blit_, 
           dst, x, y, 
@@ -60,7 +56,7 @@ nr_blit <- function(dst, src, x, y,
           w, h,
           hjust, vjust,
           angle, scale, 
-          respect_alpha)
+          mode)
   )
 }
 
@@ -78,7 +74,7 @@ nr_blit <- function(dst, src, x, y,
 #' @param dst destination native raster
 #' @param src list of native rasters
 #' @param config data.frame of configuration information for each blit which 
-#'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, respect_alpha, draw
+#'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw
 #' @return None. \code{dst} modifief by-reference and returned invisibly.
 #' @examples
 #' nr <- nr_new(90, 90, 'grey60')
@@ -94,7 +90,7 @@ nr_blit <- function(dst, src, x, y,
 #'   vjust = 0.5,
 #'   angle = c(0, 0, 0, pi/4),
 #'   scale = c(0.5, 1, 1, 1),
-#'   respect_alpha = TRUE,
+#'   mode = draw_mode$respect_alpha,
 #'   render = TRUE
 #' )
 #' nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
@@ -114,7 +110,7 @@ if (FALSE) {
   
   logo <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
   nr <- nr_new(200, 200, 'grey80')
-  nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, respect_alpha = F)
+  nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, mode = draw_mode$respect_alpha)
   plot(nr, T)
   
   
@@ -139,7 +135,7 @@ if (FALSE) {
     xoff <- 200 * sin(i/10 * 1/4 * pi)
     yoff <- 130 * sin(i/13 * 1/4 * pi + pi / 3)
     nr_fill(nr, 'white')
-    nr_blit(nr, logo, grid$x - xoff , grid$y - yoff, hjust = 0.5, vjust = 0.5, respect_alpha = T)
+    nr_blit(nr, logo, grid$x - xoff , grid$y - yoff, hjust = 0.5, vjust = 0.5, mode = draw_mode$respect_alpha)
     dev.hold()
     plot(nr)
     dev.flush()
@@ -161,9 +157,9 @@ if (FALSE) {
   nr <- nr_new(300, 200, 'grey80')
   nr_blit_rotozoom(nr, src = sq, x = 150, y = 100,
                    hjust = 0, vjust = 0,
-                   angle = -pi/4, scale = 1, respect_alpha = F)
+                   angle = -pi/4, scale = 1, mode = draw_mode$respect_alpha)
   nr_circle(nr, 150, 100, 2, fill = 'hotpink')
-  # nr_blit(nr, sq, 0, 0, respect_alpha = T)
+  
   plot(nr, T)
   # Sys.sleep(0.15)
   # }

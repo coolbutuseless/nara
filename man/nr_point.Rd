@@ -4,7 +4,7 @@
 \alias{nr_point}
 \title{Draw points on a \code{nativeRaster} image}
 \usage{
-nr_point(nr, x, y, color = "black")
+nr_point(nr, x, y, color = "black", mode = draw_mode$respect_alpha)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
@@ -12,6 +12,8 @@ nr_point(nr, x, y, color = "black")
 \item{x, y}{Vectors of point coordinates}
 
 \item{color}{Vector of colors}
+
+\item{mode}{drawing mode.}
 }
 \value{
 Original \code{nativeRaster} modified in-place

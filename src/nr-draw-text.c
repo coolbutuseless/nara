@@ -31,7 +31,8 @@
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
-void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize) {
+void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize,
+                   draw_mode_t draw_mode) {
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +52,6 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
     char_h = 12;
   }
   
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over letters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +68,7 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          nr_point(nr, nr_width, nr_height, col + i + x, y - char_h + row, color);
+          nr_point(nr, nr_width, nr_height, col + i + x, y - char_h + row, color, draw_mode);
         }
       }
     }
@@ -92,7 +92,7 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
 // @param color color
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_) {
+SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_, SEXP draw_mode_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -107,12 +107,14 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
   int y = Rf_asInteger(y_);
 
   const char *str = CHAR(Rf_asChar(str_));
+  
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = Rf_asInteger(fontsize_);
-  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize);
+  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize, draw_mode);
 
   
   return nr_;

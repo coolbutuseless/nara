@@ -23,7 +23,7 @@
 // @param x,y centre of circle
 // @param r radius
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, uint32_t fill, uint32_t color) {    
+void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, uint32_t fill, uint32_t color, draw_mode_t draw_mode) {    
   // Skip NAs
   if (x == NA_INTEGER || y == NA_INTEGER || r == NA_INTEGER) {
     return;
@@ -38,20 +38,22 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
   do {
     
     if (!is_transparent(fill) && !ydone[yoff]) {
-      nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill);
+      // Fill is not transparent, no need to worry about alpha
+      nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill, draw_mode);
       if (yoff != 0) {
         // vertical offset from centre
-        nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y - yoff, fill);
+        nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y - yoff, fill, draw_mode);
       }
       ydone[yoff] = 1;
     }
     
     if (!is_transparent(color)) {
-      nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color); /*   I. Quadrant */
-      nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color); /*  II. Quadrant */
+      // Outline is not transparent
+      nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color, draw_mode); /*   I. Quadrant */
+      nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color, draw_mode); /*  II. Quadrant */
       if (yoff != 0) {
-        nr_point(nr, nr_width, nr_height, x-xoff, y-yoff, color); /* III. Quadrant */
-        nr_point(nr, nr_width, nr_height, x+xoff, y-yoff, color); /*  IV. Quadrant */
+        nr_point(nr, nr_width, nr_height, x-xoff, y-yoff, color, draw_mode); /* III. Quadrant */
+        nr_point(nr, nr_width, nr_height, x+xoff, y-yoff, color, draw_mode); /*  IV. Quadrant */
       }
     }
     
@@ -67,7 +69,7 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw Circle. Vectorised [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
+SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_, SEXP draw_mode_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -89,10 +91,12 @@ SEXP nr_circle_(SEXP nr_, SEXP x_, SEXP y_, SEXP r_, SEXP fill_, SEXP color_) {
   bool freecol = false, freefill = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
+  
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
 
   // Draw each circle
   for (int idx = 0; idx < N; idx++) {
-    nr_circle(nr, nr_width, nr_height, xms[idx], yms[idx], rs[idx], fill[idx], color[idx]);  
+    nr_circle(nr, nr_width, nr_height, xms[idx], yms[idx], rs[idx], fill[idx], color[idx], draw_mode);  
   }
 
 

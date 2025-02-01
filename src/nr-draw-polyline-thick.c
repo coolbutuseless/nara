@@ -239,7 +239,7 @@ int32_t jvPolylineTriangulate(double const polyline[], int32_t polylineCount, do
 
 
 void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y,
-                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close) {
+                       int npoints, uint32_t color, double linewidth, double mitre_limit, bool close, draw_mode_t draw_mode) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // How many polylines are there?
@@ -304,7 +304,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
   double thickness_tri = 1; // ignored
   double mitre_limit_tri = 1; // ignored
   for (int i = 0; i < ntris; ++i) {
-    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color, TRANSPARENT_BLACK, thickness_tri, mitre_limit_tri);
+    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color, TRANSPARENT_BLACK, thickness_tri, mitre_limit_tri, draw_mode);
   }
   
   

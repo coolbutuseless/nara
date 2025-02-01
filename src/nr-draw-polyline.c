@@ -28,7 +28,7 @@
 // @param close should the polyline be closed?
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, double linewidth, double mitre_limit, bool close) {
+void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, double linewidth, double mitre_limit, bool close, draw_mode_t draw_mode) {
   
   if (is_transparent(color)) return;
   
@@ -37,7 +37,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (linewidth > 1) {
      nr_polyline_thick(nr, nr_width, nr_height, x, y, 
-                             npoints, color, linewidth, mitre_limit, close);
+                             npoints, color, linewidth, mitre_limit, close, draw_mode);
     return;
   } 
   
@@ -48,12 +48,12 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
   
   // Draw lines between pairs of points
   for (int i = 0; i < npoints - 1; i++) {
-    nr_line(nr, nr_width, nr_height, x[i], y[i], x[i+1], y[i+1], color, linewidth);
+    nr_line(nr, nr_width, nr_height, x[i], y[i], x[i+1], y[i+1], color, linewidth, draw_mode);
   }
   
   if (close) {
     // Join last point and first point if requested
-    nr_line(nr, nr_width, nr_height, x[npoints - 1], y[npoints - 1], x[0], y[0], color, linewidth);
+    nr_line(nr, nr_width, nr_height, x[npoints - 1], y[npoints - 1], x[0], y[0], color, linewidth, draw_mode);
   }
   
 }
@@ -69,7 +69,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
 // @param color colour
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_) {
+SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_mode_) {
 
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -92,7 +92,9 @@ SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP
   int *x = as_int32_vec(x_, N, &freex);
   int *y = as_int32_vec(y_, N, &freey);
   
-  nr_polyline(nr, nr_width, nr_height, x, y, N, color, linewidth, mitre_limit, Rf_asInteger(close_));
+  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  
+  nr_polyline(nr, nr_width, nr_height, x, y, N, color, linewidth, mitre_limit, Rf_asInteger(close_), draw_mode);
 
   // free and return
   if (freex) free(x);
