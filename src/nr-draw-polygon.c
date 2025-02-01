@@ -32,7 +32,7 @@ static int scanline_sort_x(const void *a, const void *b) {
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, 
-                uint32_t color, double linewidth, double mitre_limit) {
+                uint32_t color, double linewidth, double mitre_limit, draw_mode_t draw_mode) {
   
   if (!is_transparent(fill)) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,8 +83,6 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
         j = i; 
       }
     }
-    
-    draw_mode_t draw_mode = RESPECT_ALPHA;
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Loop through all the scanlines in the image which contain polygons
@@ -154,7 +152,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (!is_transparent(color)) {
     bool close = true;
-    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close);
+    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, draw_mode);
   }
 }
 
@@ -189,8 +187,10 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit);
+  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit, draw_mode);
   
   // free and return
   if (freex) free(x);
@@ -257,6 +257,8 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   int poly_id = id[0];
   int poly_start = 0;
   int poly_end = 1;
@@ -269,7 +271,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
     int len = poly_end - poly_start;
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
-    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i], color[i], linewidth, mitre_limit);
+    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i], color[i], linewidth, mitre_limit, draw_mode);
 
     poly_start = poly_end;
     poly_id    = id[poly_start];
@@ -280,7 +282,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   // Final polygon
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
-  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1], color[npolys - 1], linewidth, mitre_limit);
+  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1], color[npolys - 1], linewidth, mitre_limit, draw_mode);
   
   // free and return
   if (freeid)   free(id);

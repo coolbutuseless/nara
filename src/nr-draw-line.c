@@ -24,7 +24,8 @@
 // @param x1,y1,x2,y2 endpoints of line
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth) {
+void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth, 
+             draw_mode_t draw_mode) {
 
   if (linewidth > 1) {
     bool close = false;
@@ -32,7 +33,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
     int npoints = 2;
     int x[2] = {x1, x2};
     int y[2] = {y1, y2};
-    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close);
+    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, draw_mode);
     return;
   }
   
@@ -40,8 +41,6 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
   int dx =  abs(x2-x1), sx = x1<x2 ? 1 : -1;
   int dy = -abs(y2-y1), sy = y1<y2 ? 1 : -1;
   int err = dx+dy, e2;                                  /* error value e_xy */
-  
-  draw_mode_t draw_mode = RESPECT_ALPHA;
   
   for (;;) {                                                        /* loop */
     nr_point(nr, nr_width, nr_height, x1, y1, color, draw_mode);
@@ -89,8 +88,10 @@ SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEX
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   for (int i = 0; i < N; i++) {
-    nr_line(nr, nr_width, nr_height, x1[i], y1[i], x2[i], y2[i], color[i], linewidth[i]);
+    nr_line(nr, nr_width, nr_height, x1[i], y1[i], x2[i], y2[i], color[i], linewidth[i], draw_mode);
   }
 
   // free and return

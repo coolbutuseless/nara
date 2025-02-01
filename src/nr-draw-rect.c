@@ -44,12 +44,7 @@ void nr_rect(uint32_t *nr,
     bool close = true;
     double mitre_limit = linewidth;
     
-    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close);
-    
-    // nr_line(nr, nr_width, nr_height, x    , y  , x+w-1, y    , color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x+w-1, y+1, x+w-1, y+h-1, color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x+w-2, y+h-1, x+1, y+h-1, color, linewidth);
-    // nr_line(nr, nr_width, nr_height, x    , y+h-1, x  , y+1  , color, linewidth);
+    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close, draw_mode);
   }
   
 }

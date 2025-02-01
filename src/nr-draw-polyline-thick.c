@@ -301,10 +301,12 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
   
 #define TRANSPARENT_BLACK 0x00000000u
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   double thickness_tri = 1; // ignored
   double mitre_limit_tri = 1; // ignored
   for (int i = 0; i < ntris; ++i) {
-    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color, TRANSPARENT_BLACK, thickness_tri, mitre_limit_tri);
+    nr_polygon(nr, nr_width, nr_height, xs + 3 * i, ys + 3 * i, 3, color, TRANSPARENT_BLACK, thickness_tri, mitre_limit_tri, draw_mode);
   }
   
   
