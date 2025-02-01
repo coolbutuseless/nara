@@ -84,6 +84,8 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
       }
     }
     
+    draw_mode_t draw_mode = RESPECT_ALPHA;
+    
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Loop through all the scanlines in the image which contain polygons
     // This would be faster if this used an Active Edge List
@@ -135,7 +137,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
         if (nodeX[i + 1] >  0 ) {
           if (nodeX[i] < 0) nodeX[i] = 0;
           if (nodeX[i + 1] >= nr_width) nodeX[i + 1] = nr_width - 1;
-          nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, fill);
+          nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, fill, draw_mode);
         }
       }
     } // end for(scanline)

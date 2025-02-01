@@ -28,9 +28,11 @@ void nr_rect(uint32_t *nr,
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
   y = y - (int)round(vjust * (h - 1)); // vertical justification
   
+  draw_mode_t draw_mode = RESPECT_ALPHA;
+  
   if (!is_transparent(fill)) {
     for (int row = y; row < y + h; row++) {
-      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill);
+      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill, draw_mode);
     }
   }
   

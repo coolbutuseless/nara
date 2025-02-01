@@ -41,10 +41,10 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
     
     if (!is_transparent(fill) && !ydone[yoff]) {
       // Fill is not transparent, no need to worry about alpha
-      nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill);
+      nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill, draw_mode);
       if (yoff != 0) {
         // vertical offset from centre
-        nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y - yoff, fill);
+        nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y - yoff, fill, draw_mode);
       }
       ydone[yoff] = 1;
     }
