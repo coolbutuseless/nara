@@ -72,6 +72,7 @@ for (i in c(1:10, rep(10, 10))) { # sprite numbers
 
 <!-- badges: start -->
 ![](https://img.shields.io/badge/cool-useless-green.svg)
+[![CRAN](https://www.r-pkg.org/badges/version/rmonocypher)](https://CRAN.R-project.org/package=rmonocypher)
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
 ![](https://img.shields.io/badge/API-unstable-yellow.svg)
 ![](https://img.shields.io/badge/developing-rapidly-blue)

@@ -28,7 +28,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_hline(uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y, uint32_t color, draw_mode_t draw_mode) {
   
-  if (is_transparent(color) || y < 0 || y >= nr_height) {
+  if ((is_transparent(color) && draw_mode == RESPECT_ALPHA) || y < 0 || y >= nr_height) {
     return;
   }
   

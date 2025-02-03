@@ -34,7 +34,7 @@ static int scanline_sort_x(const void *a, const void *b) {
 void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, 
                 uint32_t color, double linewidth, double mitre_limit, draw_mode_t draw_mode) {
   
-  if (!is_transparent(fill)) {
+  if (!is_transparent(fill) || draw_mode == IGNORE_ALPHA) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Pairs of values in 'nodeX' will have points drawn between them on 
     // a scanline.
@@ -150,7 +150,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Outline
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!is_transparent(color)) {
+  if (!is_transparent(color) || draw_mode == IGNORE_ALPHA) {
     bool close = true;
     nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, draw_mode);
   }

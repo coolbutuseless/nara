@@ -1,7 +1,8 @@
 
 typedef enum {
   RESPECT_ALPHA = 1,
-  IGNORE_ALPHA  = 2
+  IGNORE_ALPHA  = 2,
+  BITWISE_OR    = 3
 } draw_mode_t;
 
 

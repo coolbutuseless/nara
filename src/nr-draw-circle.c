@@ -37,7 +37,7 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
   int xoff = -r, yoff = 0, err = 2-2*r; /* II. Quadrant */
   do {
     
-    if (!is_transparent(fill) && !ydone[yoff]) {
+    if ((!is_transparent(fill) && !ydone[yoff]) || draw_mode == IGNORE_ALPHA) {
       // Fill is not transparent, no need to worry about alpha
       nr_hline(nr, nr_width, nr_height, x + xoff, x - xoff, y + yoff, fill, draw_mode);
       if (yoff != 0) {
@@ -47,7 +47,7 @@ void nr_circle(uint32_t *nr, int nr_width, int nr_height, int x, int y, int r, u
       ydone[yoff] = 1;
     }
     
-    if (!is_transparent(color)) {
+    if (!is_transparent(color) || draw_mode == IGNORE_ALPHA) {
       // Outline is not transparent
       nr_point(nr, nr_width, nr_height, x-xoff, y+yoff, color, draw_mode); /*   I. Quadrant */
       nr_point(nr, nr_width, nr_height, x+xoff, y+yoff, color, draw_mode); /*  II. Quadrant */

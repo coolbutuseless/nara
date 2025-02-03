@@ -6,7 +6,8 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 draw_mode <- list(
   respect_alpha = 1L,
-  ignore_alpha  = 2L
+  ignore_alpha  = 2L,
+  bitwise_or    = 3L
 )
 
 

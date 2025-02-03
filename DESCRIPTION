@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9035
+Version: 0.1.1.9036
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com"),
     person("Julien", "Vernay", role = "ctb", email = "dev@jvernay.fr", comment = "Author of thick polyline algorithm which is in the public domain")
@@ -18,7 +18,7 @@ LinkingTo: colorfast
 Depends: 
     R (>= 2.10)
 Imports:
-    colorfast (>= 1.0.0.9000)
+    colorfast
 Suggests: 
     testthat (>= 3.0.0),
     jpeg,
@@ -33,5 +33,3 @@ Copyright: The included 'deer' sprites are by Calciumtrice and licensed under
    bitmap font 'spleen' was created by Frederic Cambus (c) 2018-2024. See
    'inst/LICENSE-spleen.txt' for full LICENSE
 VignetteBuilder: knitr
-Remotes:
-  coolbutuseless/colorfast

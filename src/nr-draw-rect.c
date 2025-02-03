@@ -29,14 +29,14 @@ void nr_rect(uint32_t *nr,
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
   y = y - (int)round(vjust * (h - 1)); // vertical justification
   
-  if (!is_transparent(fill)) {
+  if (!is_transparent(fill) || draw_mode == IGNORE_ALPHA) {
     for (int row = y; row < y + h; row++) {
       nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill, draw_mode);
     }
   }
   
   // Draw outline
-  if (!is_transparent(color)) {
+  if (!is_transparent(color) || draw_mode == IGNORE_ALPHA) {
     int xs[4] = {x, x + w - 1, x + w - 1, x};
     int ys[4] = {y, y, y + h - 1, y + h - 1};
     int npoints = 4;

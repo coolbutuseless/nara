@@ -5,7 +5,7 @@
 \alias{draw_mode}
 \title{Drawing modes}
 \format{
-An object of class \code{list} of length 2.
+An object of class \code{list} of length 3.
 }
 \usage{
 draw_mode

@@ -31,13 +31,13 @@ void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (y < 0 || y > nr_height - 1 || x < 0 || x > nr_width - 1) return;
   
-  // Check for transparent color
-  if (is_transparent(color)) return;
-
   if (draw_mode == IGNORE_ALPHA) {
     nr[y * nr_width + x] = color;
     return;
   }
+  
+  // Check for transparent color
+  if (is_transparent(color)) return;
   
   // Alpha channel for blending colors
   uint32_t alpha = (color >> 24) & 255;
