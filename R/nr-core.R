@@ -77,11 +77,6 @@ nr_fill <- function(nr, color) {
 #' required, use the \code{nr_blit()} function.
 #'
 #' @param src,dst Source and destination \code{nativeRaster} images
-#' @param mask Optional nativeRaster image to use as a mask. Default: NULL (no mask)
-#' @param color Copy the source pixels into the destination where the mask
-#'        matches this color.  See also the \code{invert} argument.
-#' @param invert Invert masking so that pixels are copied where the mask does 
-#'        not match the specified color. Default: FALSE
 #'
 #' @return The 'dst' \code{nativeRaster}
 #' 
@@ -89,22 +84,11 @@ nr_fill <- function(nr, color) {
 #' nr1 <- nr_new(200, 100, 'hotpink')
 #' nr2 <- nr_new(200, 100, 'green')
 #' nr_copy_into(nr1, nr2)
-#' plot(nr1)
-#' 
-#' # Copy with mask
-#' logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
-#' src <- nr_duplicate(logo)
-#' dst <- nr_duplicate(logo)
-#' nr_fill(src, 'hotpink')
-#' 
-#' nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)
-#' plot(dst, T)
-#' 
-#' 
+#' plot(nr1, T)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_copy_into <- function(dst, src, mask = NULL, color = 'black', invert = FALSE) {
-  invisible(.Call(copy_into_, dst, src, mask, color, invert))
+nr_copy_into <- function(dst, src) {
+  invisible(.Call(copy_into_, dst, src))
 }
 
 

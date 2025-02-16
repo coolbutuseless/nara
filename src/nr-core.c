@@ -60,7 +60,7 @@ SEXP nr_new_(SEXP nr_width_, SEXP nr_height_) {
 // Copy the contents of one nativeraster into another. [R interface]
 // Sizes must match
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP copy_into_(SEXP dst_, SEXP src_, SEXP mask_, SEXP col_, SEXP invert_) {
+SEXP copy_into_(SEXP dst_, SEXP src_) {
   
   assert_nativeraster(src_);
   assert_nativeraster(dst_);
@@ -75,31 +75,8 @@ SEXP copy_into_(SEXP dst_, SEXP src_, SEXP mask_, SEXP col_, SEXP invert_) {
     Rf_error("src and dst nativeRaster objects must be the same dimensions");
   }
   
-  if (Rf_isNull(mask_)) {
-    memcpy(INTEGER(dst_), INTEGER(src_), src_height * src_width * sizeof(uint32_t));
-  } else {
-    assert_nativeraster(mask_);
-    if (src_height != Rf_nrows(mask_) || src_width != Rf_ncols(mask_)) {
-      Rf_error("'mask' must be same dimensions as 'src' and 'dst'");
-    }
-    uint32_t *src  = (uint32_t *)INTEGER(src_);
-    uint32_t *dst  = (uint32_t *)INTEGER(dst_);
-    uint32_t *mask = (uint32_t *)INTEGER(mask_);
-    
-    uint32_t color = single_rcolor_to_int(col_);
-    bool invert = Rf_asInteger(invert_);
-    
-    for (int row = 0; row < src_height; ++row) {
-      for (int col = 0; col < src_width; ++col) {
-        int loc = row * src_width + col;
-        bool mask_set = mask[loc] == color;
-        if (mask_set ^ invert) {
-          dst[loc] = src[loc];
-        }
-      }
-    }
-  }
-  
+  memcpy(INTEGER(dst_), INTEGER(src_), src_height * src_width * sizeof(uint32_t));
+
   return dst_;
 }
 

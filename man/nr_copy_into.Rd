@@ -4,18 +4,10 @@
 \alias{nr_copy_into}
 \title{Copy the contents of one \code{nativeRaster} into another.}
 \usage{
-nr_copy_into(dst, src, mask = NULL, color = "black", invert = FALSE)
+nr_copy_into(dst, src)
 }
 \arguments{
 \item{src, dst}{Source and destination \code{nativeRaster} images}
-
-\item{mask}{Optional nativeRaster image to use as a mask. Default: NULL (no mask)}
-
-\item{color}{Copy the source pixels into the destination where the mask
-matches this color.  See also the \code{invert} argument.}
-
-\item{invert}{Invert masking so that pixels are copied where the mask does 
-not match the specified color. Default: FALSE}
 }
 \value{
 The 'dst' \code{nativeRaster}
@@ -31,16 +23,5 @@ required, use the \code{nr_blit()} function.
 nr1 <- nr_new(200, 100, 'hotpink')
 nr2 <- nr_new(200, 100, 'green')
 nr_copy_into(nr1, nr2)
-plot(nr1)
-
-# Copy with mask
-logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
-src <- nr_duplicate(logo)
-dst <- nr_duplicate(logo)
-nr_fill(src, 'hotpink')
-
-nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)
-plot(dst, T)
-
-
+plot(nr1, T)
 }
