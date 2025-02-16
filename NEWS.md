@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9035 2025-02-01
+# nara 0.1.1.9035 2025-02-16
 
+* [9037] Masked rendering
 * [9036] ignore transparency if draw_mode == IGNORE_ALPHA
 * [9035] C API Redux
 * [9034] can now select drawing mode on all drawing ops: "respect_alpha" or "ignore_alpha"
