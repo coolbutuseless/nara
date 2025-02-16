@@ -76,6 +76,14 @@ extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidt
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
                                SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Mask
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extern SEXP nr_mask_begin_(SEXP nr_, SEXP mask_);
+extern SEXP nr_mask_end_  (SEXP nr_);
+
+
 static const R_CallMethodDef CEntries[] = {
   
   {"nr_new_"   , (DL_FUNC) &nr_new_   , 2},
@@ -114,6 +122,8 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 8},
   {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 9},
 
+  {"nr_mask_begin_", (DL_FUNC) &nr_mask_begin_, 2},
+  {"nr_mask_end_"  , (DL_FUNC) &nr_mask_end_  , 1},
 
   {NULL , NULL, 0}
 };

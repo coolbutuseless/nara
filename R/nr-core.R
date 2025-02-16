@@ -269,6 +269,28 @@ nr_transpose <- function(nr) {
 }
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Print method
+#' 
+#' @param x nativeRaster object
+#' @param ... ignored
+#' @return None
+#' @examples
+#' nr <- nr_new(500, 400)
+#' print(nr)
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+print.nativeRaster <- function(x, ...) {
+  d <- dim(x)
+  cat(sprintf("<nativeRaster> object: rows:%i  cols:%i\n", d[1], d[2]))
+}
+
+
+
+
+
+
 if (FALSE) {
   logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
   plot(logo, T)
