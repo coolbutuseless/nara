@@ -45,7 +45,7 @@ uint32_t single_rcolor_to_int(SEXP color_) {
   } else if (Rf_isLogical(color_) && Rf_asLogical(color_) == NA_LOGICAL) {
     return 0x00FFFFFF; // transparent white 0xAABBGGRR
   } else if (TYPEOF(color_) == CHARSXP) {
-    return col_to_int(CHAR(color_));
+    return col_to_int(CHAR(color_)); // from {colorfast}
   } else {
     Rf_error("Color must be integer or character vector not '%s'", Rf_type2char((SEXPTYPE)TYPEOF(color_)));
   }

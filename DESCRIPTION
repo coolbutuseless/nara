@@ -1,7 +1,7 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9037
+Version: 0.1.1.9038
 Authors@R: c(
     person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com"),
     person("Julien", "Vernay", role = "ctb", email = "dev@jvernay.fr", comment = "Author of thick polyline algorithm which is in the public domain")
@@ -16,7 +16,7 @@ LazyData: true
 RoxygenNote: 7.3.2
 LinkingTo: colorfast
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1.0)
 Imports:
     colorfast
 Suggests: 

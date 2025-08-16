@@ -64,7 +64,7 @@ SEXP nr_mask_begin_(SEXP nr_, SEXP mask_) {
     
     int width = Rf_ncols(nr_);
     int height = Rf_nrows(nr_);
-    memcpy(INTEGER(cache_), INTEGER(nr_), width * height * sizeof(uint32_t));
+    memcpy(INTEGER(cache_), INTEGER(nr_), (size_t)width * (size_t)height * sizeof(uint32_t));
   }
   
   
@@ -140,7 +140,7 @@ SEXP nr_mask_end_(SEXP nr_) {
   }
   
   // Copy 'cache' back into 'nr'
-  memcpy(nr, cache, width * height * sizeof(uint32_t));
+  memcpy(nr, cache, (size_t)width * (size_t)height * sizeof(uint32_t));
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

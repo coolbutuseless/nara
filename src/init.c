@@ -51,7 +51,7 @@ extern SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Converstion
+// Conversion
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, SEXP dst_);
 
@@ -75,6 +75,14 @@ extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fi
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_line_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
                                SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Color twiddling
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+extern SEXP nr_desaturate_(SEXP nr_);
+extern SEXP nr_dither_(SEXP nr_, SEXP value_, SEXP algo_);
+extern SEXP nr_threshold_(SEXP nr_, SEXP value_);
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,6 +130,12 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_polyline_"  , (DL_FUNC) &nr_polyline_  , 8},
   {"nr_polygons_multi_"  , (DL_FUNC) &nr_polygons_multi_  , 9},
 
+  
+  {"nr_desaturate_", (DL_FUNC) &nr_desaturate_, 2},
+  {"nr_threshold_" , (DL_FUNC) &nr_threshold_,  2},
+  {"nr_dither_"    , (DL_FUNC) &nr_dither_    , 3},
+  
+  
   {"nr_mask_begin_", (DL_FUNC) &nr_mask_begin_, 2},
   {"nr_mask_end_"  , (DL_FUNC) &nr_mask_end_  , 1},
 

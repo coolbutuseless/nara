@@ -1,6 +1,8 @@
 
-# nara 0.1.1.9035 2025-02-16
+# nara 0.1.1.9038 2025-08-16
 
+* [9038] Color reduction: `nr_dither()`, `nr_desaturate()`, 
+         `nr_threshold()`
 * [9037] Masked rendering
 * [9036] ignore transparency if draw_mode == IGNORE_ALPHA
 * [9035] C API Redux
