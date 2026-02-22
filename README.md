@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 ![](https://img.shields.io/badge/cool-useless-green.svg)
-[![CRAN](https://www.r-pkg.org/badges/version/rmonocypher)](https://CRAN.R-project.org/package=rmonocypher)
+[![CRAN](https://www.r-pkg.org/badges/version/nara)](https://CRAN.R-project.org/package=nara)
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
 ![](https://img.shields.io/badge/API-unstable-yellow.svg)
 ![](https://img.shields.io/badge/developing-rapidly-blue)
