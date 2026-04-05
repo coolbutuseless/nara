@@ -215,6 +215,12 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  The rotated image fits within the original data storage - no new
+//  nativeRaster is needed.
+// 
+//  - copy the matrix data into a temp buffer
+//  - copy from the tmp buffer back into the matrix in order to rotate the data
+//  - set the dimensions accordingly
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rotate_(SEXP nr_, SEXP angle_) {
   

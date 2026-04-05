@@ -18,7 +18,7 @@ to enable fast graphics rendering.
 ### Why?
 
 `nativeRaster` buffers are fast enough to use for rendering at speed
-\>30 frames-per-second.  
+\>30 frames-per-second.\
 This makes them useful for games and other interactive applications.
 
 # Details
@@ -138,7 +138,7 @@ nr_text_basic(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 ## Static Rendering: Displaying Sprites
 
@@ -155,7 +155,7 @@ nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" alt="" width="100%" />
 
 #### Dynamic (realtime) Rendering: Animated deer
 

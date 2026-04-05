@@ -22,7 +22,7 @@ Invisibly return the original \code{cairo raster} object
 These functions are used to globally set a mask
 }
 \examples{
-\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 logo_file <- system.file("img/logo-rainbow.png", package = 'cara', mustWork = TRUE)
 logo <- nr_read_png(logo_file)
 plot(logo, T)

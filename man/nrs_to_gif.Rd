@@ -24,7 +24,7 @@ None.
 Magick conversion - possibly won't be in final version of 'nara' pkg
 }
 \examples{
-\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) withAutoprint(\{ # examplesIf}
 im <- magick::logo
 nr1 <- magick_to_nr(im)
 nr2 <- nr_duplicate(nr1)

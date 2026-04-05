@@ -109,16 +109,8 @@ SEXP nr_to_array_(SEXP nr_) {
   int height = Rf_nrows(nr_);
   int width  = Rf_ncols(nr_);
   
-  SEXP arr_ = PROTECT(Rf_allocVector(REALSXP, height * width * 4));
-  SET_CLASS(arr_, Rf_mkString("array"));
-  
-  SEXP arr_dim = PROTECT(Rf_allocVector(INTSXP, 3));
-  INTEGER(arr_dim)[0] = height;
-  INTEGER(arr_dim)[1] = width;
-  INTEGER(arr_dim)[2] = 4;
-  SET_DIM(arr_, arr_dim);
-  UNPROTECT(1);
-  
+  SEXP arr_ = PROTECT(Rf_alloc3DArray(REALSXP, height, width, 4));
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Copy the data - from column major matrix to row major nativeRaster
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
