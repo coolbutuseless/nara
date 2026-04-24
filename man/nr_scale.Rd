@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-scale.R
 \name{nr_scale}
 \alias{nr_scale}
-\title{Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng}
+\title{Resize a \code{nativeRaster} using a scale factor}
 \usage{
 nr_scale(nr, scale, algo = "nn")
 }
@@ -18,9 +18,14 @@ bilinear interpolation.}
 New \code{nativeRaster}
 }
 \description{
-Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng
+Resize a \code{nativeRaster} using a scale factor
 }
 \examples{
 big <- nr_scale(deer_sprites[[1]], 2)
 plot(big)
 }
+\seealso{
+Other resizing functions: 
+\code{\link{nr_resize}()}
+}
+\concept{resizing functions}

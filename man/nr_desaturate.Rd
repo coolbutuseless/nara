@@ -23,3 +23,9 @@ plot(nr, T)
 nr_desaturate(nr)
 plot(nr, T)
 }
+\seealso{
+Other color manipulation functions: 
+\code{\link{nr_dither}()},
+\code{\link{nr_threshold}()}
+}
+\concept{color manipulation functions}

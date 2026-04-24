@@ -149,11 +149,11 @@ if (FALSE) {
   
   angle <- 0
   # for (angle in seq(0, 2*pi, length.out = 20)) {
-  nr <- nr_new(300, 200, 'grey80')
-  nr_blit_rotozoom(nr, src = sq, x = 150, y = 100,
+  nr <- nr_new(600, 400, 'grey80')
+  nr_blit(nr, src = sq, x = 150, y = 100,
                    hjust = 0, vjust = 0,
-                   angle = -pi/4, scale = 1, mode = draw_mode$respect_alpha)
-  nr_circle(nr, 150, 100, 2, fill = 'hotpink')
+                   angle = -pi/4, scale = 10, mode = draw_mode$ignore_alpha)
+  # nr_circle(nr, 150, 100, 2, fill = 'hotpink')
   
   plot(nr, T)
   # Sys.sleep(0.15)

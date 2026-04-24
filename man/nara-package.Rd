@@ -20,10 +20,5 @@ Useful links:
 \author{
 \strong{Maintainer}: Mike Cheng \email{mikefc@coolbutuseless.com} [copyright holder]
 
-Other contributors:
-\itemize{
-  \item Julien Vernay \email{dev@jvernay.fr} (Author of thick polyline algorithm which is in the public domain) [contributor]
-}
-
 }
 \keyword{internal}

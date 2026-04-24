@@ -1,6 +1,7 @@
 
-# nara 0.1.1.9038 2025-08-16
+# nara 0.1.1.9039 2026-04-24
 
+* [9039] Tidy.  Rename `nr_duplicate()` to `nr_copy()`
 * [9038] Color reduction: `nr_dither()`, `nr_desaturate()`, 
          `nr_threshold()`
 * [9037] Masked rendering

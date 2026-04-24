@@ -1,10 +1,9 @@
 Package: nara
 Type: Package
 Title: Native Raster Image Tools
-Version: 0.1.1.9038
+Version: 0.1.1.9039
 Authors@R: c(
-    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com"),
-    person("Julien", "Vernay", role = "ctb", email = "dev@jvernay.fr", comment = "Author of thick polyline algorithm which is in the public domain")
+    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
     )
 Maintainer: Mike Cheng <mikefc@coolbutuseless.com>
 Description: Tools for 'nativeRaster' images.

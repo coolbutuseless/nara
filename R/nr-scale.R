@@ -2,7 +2,7 @@
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng
+#' Resize a \code{nativeRaster} using a scale factor
 #' 
 #' @inheritParams nr_fill
 #' @param scale scale factor
@@ -13,6 +13,7 @@
 #' @examples
 #' big <- nr_scale(deer_sprites[[1]], 2)
 #' plot(big)
+#' @family resizing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_scale <- function(nr, scale, algo = 'nn') {
@@ -21,7 +22,7 @@ nr_scale <- function(nr, scale, algo = 'nn') {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Scale a nativeRaster 
+#' Resize a native raster by specifying the output dimensions
 #' 
 #' @param nr native raster
 #' @param algo 'nn' for nearest neighbour (the default), or 'bilinear' for 
@@ -31,6 +32,7 @@ nr_scale <- function(nr, scale, algo = 'nn') {
 #' @examples
 #' stretched <- nr_resize(deer_sprites[[1]], 100, 40, algo = 'nn')
 #' plot(stretched)
+#' @family resizing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_resize <- function(nr, width, height, algo = 'nn') {

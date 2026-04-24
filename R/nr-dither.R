@@ -13,6 +13,7 @@
 #' plot(nr, T)
 #' nr_desaturate(nr)
 #' plot(nr, T)
+#' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_desaturate <- function(nr, factor = 1) {
@@ -33,6 +34,7 @@ nr_desaturate <- function(nr, factor = 1) {
 #' plot(nr, T)
 #' nr_dither(nr, 0.99)
 #' plot(nr, T)
+#' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_dither <- function(nr, value = 0.5, algo = 'fs') {
@@ -51,6 +53,7 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 #' plot(nr, T)
 #' nr_threshold(nr, 0.9)
 #' plot(nr, T)
+#' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_threshold <- function(nr, value = 0.5) {
