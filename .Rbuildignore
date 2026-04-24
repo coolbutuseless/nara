@@ -9,3 +9,5 @@
 ^.devcontainer$
 ^LICENSE.md$
 ^man/figures$
+^\.positai$
+^\.claude$

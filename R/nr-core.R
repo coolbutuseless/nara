@@ -1,5 +1,4 @@
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Drawing modes
 #' @export
@@ -11,10 +10,29 @@ draw_mode <- list(
 )
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Check if object is a native raster image
+#' 
+#' @param x object to check
+#' 
+#' @return logical. TRUE if object is a native raster image
+#' 
+#' @examples
+#' is_nativeraster(mtcars)
+#' 
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+is_nativeraster <- function(x) {
+  inherits(x, 'nativeRaster')
+}
+
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Create a \code{nativeRaster} image
+#' Create a native raster image
 #'
-#' A \code{nativeRaster} in R looks like an integer matrix, but is interpreted
+#' A native raster image in R looks like an integer matrix, but is interpreted
 #' differently by graphics devices:
 #'
 #' \itemize{
@@ -24,18 +42,21 @@ draw_mode <- list(
 #' }
 #'
 #' @param width,height Image dimensions in pixels
+#' @param nr native raster image to use as the template for the size of the 
+#'        new image
 #' @param fill Background fill color as a character string. Either a standard R color
 #'        (e.g. 'blue', 'white')
 #'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 #'        or \code{#rgb}
 #'
-#' @return \code{nativeRaster}
+#' @return native raster image
 #' 
 #' @examples
 #' nr <- nr_new(400, 300, 'hotpink')
 #' plot(nr)
 #' 
 #' @import colorfast
+#' @family image creation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
@@ -45,40 +66,50 @@ nr_new <- function(width, height, fill = 'white') {
 }
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Fill a \code{nativeRaster} image with the given color
-#'
-#' @param nr \code{nativeRaster}
-#' @param color Color as a character string. Either a standard R color
-#'        (e.g. 'blue', 'white')
-#'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
-#'        or \code{#rgb}
-#'        
-#' @return The original \code{nativeRaster} modified in-place.        
-#' 
-#' @examples
-#' nr <- nr_new(400, 300, 'hotpink')
-#' nr_fill(nr, 'blue')
-#' plot(nr)
-#' 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @rdname nr_new
 #' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_fill <- function(nr, color) {
-  invisible(.Call(fill_, nr, color))
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_new_from <- function(nr, fill = 'white') {
+  nr_new(width = ncol(nr), height = nrow(nr), fill = fill)
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Copy the contents of one \code{nativeRaster} into another.
+#' Create a new native raster image and copy the dimensions and
+#' contents from an existing image
 #'
-#' The source and destination \code{nativeRaster} images must have the same dimensions.
+#' @inheritParams nr_fill
+#' 
+#' @return New native raster image
+#' 
+#' @examples
+#' nr1 <- nr_new(200, 200, 'hotpink')
+#' nr2 <- nr_copy(nr1)
+#' plot(nr2)
+#' @family image creation functions
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_copy <- function(nr) {
+  .Call(duplicate_, nr)
+}
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Copy the contents of one native raster image into another.
 #'
-#' If the \code{nativeRaster} images are of different sizes or alpha blending is
+#' The source and destination native raster images must have the same dimensions.
+#'
+#' If the native raster images are of different sizes or alpha blending is
 #' required, use the \code{nr_blit()} function.
 #'
-#' @param src,dst Source and destination \code{nativeRaster} images
+#' @param src,dst Source and destination native raster images
 #'
-#' @return The 'dst' \code{nativeRaster}
+#' @return Invisibly return the supplied 'dst' native raster image which was been
+#'         modified in-place
 #' 
 #' @examples
 #' nr1 <- nr_new(200, 100, 'hotpink')
@@ -92,35 +123,41 @@ nr_copy_into <- function(dst, src) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Create a new \code{nativeRaster} image and copy the dimensions and
-#' contents from an existing image
+#' Fill a native raster image with the given color
 #'
-#' @inheritParams nr_fill
-#' 
-#' @return New \code{nativeRaster}
+#' @param nr native raster image
+#' @param color Color as a character string. Either a standard R color
+#'        (e.g. 'blue', 'white')
+#'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
+#'        or \code{#rgb}
+#'        
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place       
 #' 
 #' @examples
-#' nr1 <- nr_new(200, 200, 'hotpink')
-#' nr2 <- nr_duplicate(nr1)
-#' plot(nr2)
+#' nr <- nr_new(400, 300, 'hotpink')
+#' nr_fill(nr, 'blue')
+#' plot(nr)
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_duplicate <- function(nr) {
-  .Call(duplicate_, nr)
+nr_fill <- function(nr, color) {
+  invisible(.Call(fill_, nr, color))
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Crop a section out of a nativeRaster into a new nativeRaster
+#' Crop a section out of a native raster image into a new image
 #' 
 #' @inheritParams nr_fill
 #' @param x,y,w,h dimensions of cropped section
 #' @param loc dimensions of cropped section. A vector of 4 values 
 #'        i.e. \code{c(x, y, w, h)}
 #' 
-#' @return New \code{nativeRaster}
+#' @return New native raster image
 #' 
 #' @examples
 #' nr <- nr_new(400, 400, 'hotpink')
@@ -149,12 +186,14 @@ nr_crop2 <- function(nr, loc) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Flip a \code{nativeRaster} vertically
+#' Flip a native raster image vertically
 #' 
 #' @inheritParams nr_fill
 #' 
-#' @return Original \code{nativeRaster} modified in-place
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place
 #' 
 #' @examples
 #' nr <- nr_new(400, 200, 'white')
@@ -162,7 +201,7 @@ nr_crop2 <- function(nr, loc) {
 #' plot(nr)
 #' nr_flipv(nr)
 #' plot(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_flipv <- function(nr) {
@@ -170,12 +209,14 @@ nr_flipv <- function(nr) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Flip a \code{nativeRaster} horizontally
+#' Flip a native raster image horizontally
 #' 
 #' @inheritParams nr_fill
 #' 
-#' @return Original \code{nativeRaster} modified in-place
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place
 #' 
 #' @examples
 #' nr <- nr_new(400, 200, 'white')
@@ -183,7 +224,7 @@ nr_flipv <- function(nr) {
 #' plot(nr)
 #' nr_fliph(nr)
 #' plot(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fliph <- function(nr) {
@@ -191,40 +232,21 @@ nr_fliph <- function(nr) {
 }
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Replace colours in a native raster
-#' 
-#' @inheritParams nr_fill
-#' @param old Vector of old colours
-#' @param new Vector of replacement colours
-#' 
-#' @return Original \code{nativeRaster} modified in-place
-#' 
-#' @examples
-#' nr <- nr_new(10, 10, 'hotpink')
-#' nr_replace(nr, 'hotpink', 'grey80')
-#' plot(nr)
-#' 
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_replace <- function(nr, old, new) {
-  invisible(.Call(replace_, nr, old, new))
-}
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Rotate a native raster by 90,180,270 degrees
+#' Rotate a native raster image by 90,180,270 degrees
 #' @inheritParams nr_fill
 #' @param angle one of 0,90,180,270
 #' 
-#' @return Original \code{nativeRaster} modified in-place
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place
 #' 
 #' @examples
 #' nr <- nr_new(20, 10, 'hotpink')
 #' dim(nr)
 #' nr_rotate(nr, 90)
 #' dim(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rotate <- function(nr, angle) {
@@ -234,16 +256,18 @@ nr_rotate <- function(nr, angle) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Transpose
 #' @inheritParams nr_fill
-#' @return Original \code{nativeRaster} modified in-place
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place
 #' @examples
 #' nr <- nr_new(20, 10, 'hotpink')
 #' dim(nr)
 #' nr_transpose(nr)
 #' dim(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_transpose <- function(nr) {
@@ -257,7 +281,7 @@ nr_transpose <- function(nr) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Print method
 #' 
-#' @param x nativeRaster object
+#' @param x native raster image
 #' @param ... ignored
 #' @return None
 #' @examples
@@ -272,20 +296,29 @@ print.nativeRaster <- function(x, ...) {
 
 
 
-
-
-
-if (FALSE) {
-  logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
-  plot(logo, T)
-
-  src <- nr_duplicate(logo)
-  dst <- nr_duplicate(logo)
-  nr_fill(src, 'hotpink')
-
-  nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)
-  plot(dst, T)
-  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Plot a native raster image
+#' 
+#' @param x native raster image
+#' @param y any argument here will cause \code{grid::grid.newpage()} to 
+#'        be called prior to drawing the image
+#' @param ... other arguments passed to \code{grid::grid.raster()}
+#'
+#' @return Invisibly return the supplied native raster image
+#' 
+#' @examples
+#' nr <- nr_new(200, 100, 'hotpink')
+#' plot(nr)
+#' 
+#' @import grid
+#' @importFrom grDevices dev.flush dev.hold
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+plot.nativeRaster <- function(x, y, ...) {
+  if (!missing(y)) grid::grid.newpage()
+  grDevices::dev.hold()
+  grid::grid.raster(x, interpolate = FALSE, ...)
+  grDevices::dev.flush()
+  invisible(x)
 }
-
 

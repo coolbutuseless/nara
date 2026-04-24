@@ -324,7 +324,7 @@ void nr_polyline_thick(uint32_t *nr, int nr_width, int nr_height, int *x, int *y
 // @param nr native raster (modified in-place)
 // @param nr_width,nr_height dimensions
 // @param x,y locations
-// @param color colour
+// @param color color
 // @param linewidth line linewidth
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

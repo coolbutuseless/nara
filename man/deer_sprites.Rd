@@ -3,7 +3,7 @@
 \docType{data}
 \name{deer_sprites}
 \alias{deer_sprites}
-\title{List of deer native rasters}
+\title{Deer images - a list of native raster images}
 \format{
 An object of class \code{list} of length 15.
 }

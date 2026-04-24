@@ -24,7 +24,7 @@
 // Convert raster to native raster
 // 
 // @param ras_ Raster object. i.e. character matrix
-// @param dst_ Optional pre-allocated destination nativeRaster
+// @param dst_ Optional pre-allocated destination native raster image
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   
@@ -48,13 +48,13 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+      Rf_error("Supplied 'dst' image dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
             Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(dst_);
 
@@ -73,7 +73,7 @@ SEXP raster_to_nr_(SEXP ras_, SEXP dst_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// nativeRaster to raster
+// native raster image to raster
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_to_raster_(SEXP nr_) {
   assert_nativeraster(nr_);
@@ -85,7 +85,7 @@ SEXP nr_to_raster_(SEXP nr_) {
   SET_CLASS(ras_, class_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   

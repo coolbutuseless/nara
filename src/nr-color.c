@@ -33,9 +33,15 @@ SEXP nr_desaturate_(SEXP nr_, SEXP factor_) {
     for (int x = 0; x < width; x++) {
       // uint8_t i = (p[0] + p[1] + p[2]) / 3.0;
       double i = (0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) ;
-      p[0] = p[0] + (uint8_t)((i - p[0]) * factor);
-      p[1] = p[1] + (uint8_t)((i - p[1]) * factor);
-      p[2] = p[2] + (uint8_t)((i - p[2]) * factor);
+      
+      double val = (i - p[0]) * factor;
+      p[0] = p[0] + (uint8_t)(val < 0 ? 0 : val);
+      
+      val = (i - p[1]) * factor;
+      p[1] = p[1] + (uint8_t)(val < 0 ? 0 : val);
+      
+      val = (i - p[2]) * factor;
+      p[2] = p[2] + (uint8_t)(val < 0 ? 0 : val);
       p += 4;
     }
   }

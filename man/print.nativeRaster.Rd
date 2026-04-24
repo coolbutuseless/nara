@@ -7,7 +7,7 @@
 \method{print}{nativeRaster}(x, ...)
 }
 \arguments{
-\item{x}{nativeRaster object}
+\item{x}{native raster image}
 
 \item{...}{ignored}
 }

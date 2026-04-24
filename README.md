@@ -12,54 +12,48 @@
 ![](https://img.shields.io/badge/developing-rapidly-blue)
 <!-- badges: end -->
 
-`{nara}` provides tools for working with R’s `nativeRaster` image format
-to enable fast graphics rendering.
+`{nara}` is a package for working with R’s native raster image format.
 
-### Why?
-
-`nativeRaster` buffers are fast enough to use for rendering at speed
-\>30 frames-per-second.  
-This makes them useful for games and other interactive applications.
-
-# Details
+Native raster images are fast to manipulate and render, and open the
+possibility for realtime rendering e.g. games and interactive
+applications.
 
 `{nara}`:
 
-- is an *off-screen* rendering buffer.
-- is fast to render.
+- uses C to speed up operations
 - uses *in-place* operations to avoid memory allocations.
-- is focussed on rendering discrete pixels, so all dimensions are
-  rounded to integer values prior to rendering.
+- renders discrete, non-aliased pixels (internally all coordinates are
+  rounded to integer values)
 - includes basic drawing primitives e.g. rectangles, lines, circles
 
-### What is a `nativeRaster` and why is it fast?
+### What’s in the box
 
-A `nativeRaster` is a built-in datatype in R.
+- Image creation
+  - `nr_new()`, `nr_new_from()`
+- Conversion
+  - `array_to_nr()`, `nr_to_array()`
+  - `raster_to_nr()`, `nr_to_raster()`
+  - `matrix_to_nr()`
+  - `magick_to_nr()`
+  - `nrs_to_mp4()`
+  - `nrs_to_gif()`
+- Drawing
+  - `nr_fill()`
+  - `nr_rect()`, `nr_circle()`, `nr_polyline()`, `nr_polygon()`, …
+- Selection and Combination
+  - `nr_copy()`, `nr_copy_into()`
+  - `nr_crop()`
+  - `nr_blit()`
+  - `nr_transpose()`, `nr_rotate()`
+  - `nr_resize()`, `nr_scale()`
+- Color manipulation
+  - `nr_dither()`, `nr_desaturate()`, `nr_threshold()`,
+    `nr_color_replace()`
+- Sample images
+  - `deer_sprites`
 
-It is an integer matrix where each integer represents the RGBA color at
-a single pixel. The 32-bit integer at each location is interpreted
-within R to be four color channels (RGBA) represented by 8 bits each.
-
-This way of encoding color information is closer to the internal
-representation used by graphics devices, and therefore can be faster to
-render and manipulate.
-
-Native rasters do **not** use pre-multiplied alpha.
-
-### In-place operation
-
-`{nara}` is targeted at fast rendering (\>30fps), and tries to minimise
-R function calls and memory allocations.
-
-When updating `nativeRaster` objects with this package, changes are done
-*in place* on the current image i.e. a new image is **not** created.
-
-### Anti-aliasing/Interpolation
-
-No anti-aliasing is done by the draw methods in this package.
-
-No interpolation is done - `x` and `y` values for drawing coordinates
-are always rounded to integers.
+Reading and writing native raster images is supported by `{jpeg}`,
+`{png}`, and `{fastpng}` packages.
 
 ## Installation
 
@@ -73,7 +67,7 @@ remotes::install_github('coolbutuseless/nara')
 
 ## Vignettes
 
-- [Creating, transforming, reading, writing nativeRaster
+- [Creating, transforming, reading, writing native raster
   images](https://coolbutuseless.github.io/package/nara/articles/conversion.html)
 
 ## Static Rendering: Example
@@ -81,7 +75,7 @@ remotes::install_github('coolbutuseless/nara')
 The following is a rendering of a single scene with multiple elements.
 
 The interesting thing about this scene that drawing all the objects into
-the `nativeRaster` image and rendering to screen can take as little as 5
+the native raster image and rendering to screen can take as little as 5
 millseconds.
 
 This means that this scene could render at around 200 frames-per-second.
@@ -138,7 +132,7 @@ nr_text_basic(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 ## Static Rendering: Displaying Sprites
 
@@ -155,19 +149,19 @@ nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" alt="" width="100%" />
 
 #### Dynamic (realtime) Rendering: Animated deer
 
 The reason to use `{nara}` is that operations are fast enough that
-`nativeRaster` can be used as an *in-memory* buffer for a
+native raster images can be used as an *in-memory* buffer for a
 double-bufferred rendering system.
 
 `Double-buffered` rendering is where two buffers are used for rendering
 with one buffer being shown to the user, and the other existing in
 memory as a place to render.
 
-In this example, the `deer` sprite is rendered to a `nativeRaster`
+In this example, the `deer` sprite is rendered to a larger native raster
 image. This *in-memory* buffer is then displayed to the user using
 `grid.raster()`.
 
@@ -187,16 +181,16 @@ library(grid)
 x11(type = 'cairo', antialias = 'none')
 dev.control('inhibit')
 
-# Create the in-memory nativeRaster canvas
+# Create the in-memory native raster image
 nr <- nr_new(100, 32, 'grey80')
 
 # Clear, blit and render => animation!
 for (i in -30:110) {
-  nr_fill(nr, 'grey80')                    # Clear the nativeRaster
+  nr_fill(nr, 'grey80')                    # Clear the native raster image
   sprite_idx <- floor((i/3) %% 5) + 11
-  nr_blit(dst = nr, src = deer_sprites[[sprite_idx]], x = i, y = 15) # copy deer to nativeRaster
+  nr_blit(dst = nr, src = deer_sprites[[sprite_idx]], x = i, y = 15) # copy deer to the image
   dev.hold()
-  grid.raster(nr, interpolate = FALSE)     # copy nativeRaster to screen
+  grid.raster(nr, interpolate = FALSE)     # copy image to screen
   dev.flush()
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
@@ -267,9 +261,38 @@ for (frame in 1:1000) {
 
 <img src="man/figures/multiball.gif" />
 
-# Conventions and Terminology
+## Technical bits
 
-## Dimension ordering
+### What is a native raster image and why is it fast?
+
+A native raster image is a built-in datatype in R.
+
+It is an integer matrix where each integer represents the RGBA color at
+a single pixel. The 32-bit integer at each location is interpreted
+within R to be four color channels (RGBA) represented by 8 bits each.
+
+This way of encoding color information is closer to the internal
+representation used by graphics devices, and therefore can be faster to
+render and manipulate.
+
+Native rasters do **not** use pre-multiplied alpha.
+
+### In-place operation
+
+`{nara}` is targeted at fast rendering (\>30fps), and tries to minimise
+R function calls and memory allocations.
+
+When updating native raster image with this package, changes are done
+*in place* on the current image i.e. a new image is **not** created.
+
+### Anti-aliasing/Interpolation
+
+No anti-aliasing is done by the draw methods in this package.
+
+No interpolation is done - `x` and `y` values for drawing coordinates
+are always rounded to integers.
+
+### Dimension ordering
 
 All arguments specifying dimensions are in the order **horizontal** then
 **vertical** i.e.
@@ -278,14 +301,12 @@ All arguments specifying dimensions are in the order **horizontal** then
 - width, height
 - hjust, vjust
 
-## Coordinate System
+### Coordinate System
 
-The coordinate system for `nara` nativeRaster objects has its origins at
-the **top left corner** of the image with coordinates `(0, 0)`.
+The coordinate system for `nara` native raster image has the origin at
+the **top left corner** with coordinates `(0, 0)`.
 
 This is equivalent to `{grid}` graphics using `native` units.
 
 It is also how `{magick}` represents image coordinates, as well as the
 majority of C graphics libraries.
-
-<!-- <img src="man/figures/coords.png" width="50%" /> -->

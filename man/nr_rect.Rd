@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_rect}
 \alias{nr_rect}
-\title{Draw rectangles on a \code{nativeRaster} image}
+\title{Draw rectangles on a native raster image}
 \usage{
 nr_rect(
   nr,
@@ -19,7 +19,7 @@ nr_rect(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{coordinates of lower left corner of rectangle.  [vector]}
 
@@ -43,10 +43,11 @@ rendered as polygons.}
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Draw rectangles on a \code{nativeRaster} image
+Draw rectangles on a native raster image
 }
 \examples{
 N <- 200
@@ -54,5 +55,11 @@ nr <- nr_new(N, N, 'grey80')
 nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
         fill = 'blue', color = c('red', 'green'), linewidth = 3)
 plot(nr, TRUE)
-
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_circle}()},
+\code{\link{nr_polygon}()},
+\code{\link{nr_polyline}()}
+}
+\concept{drawing functions}

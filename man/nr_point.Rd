@@ -2,12 +2,12 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_point}
 \alias{nr_point}
-\title{Draw points on a \code{nativeRaster} image}
+\title{Draw points on a native raster image}
 \usage{
 nr_point(nr, x, y, color = "black", mode = draw_mode$respect_alpha)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{Vectors of point coordinates}
 
@@ -16,10 +16,11 @@ nr_point(nr, x, y, color = "black", mode = draw_mode$respect_alpha)
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Draw points on a \code{nativeRaster} image
+Draw points on a native raster image
 }
 \examples{
 N <- 20

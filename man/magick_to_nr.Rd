@@ -3,7 +3,7 @@
 \name{magick_to_nr}
 \alias{magick_to_nr}
 \alias{nr_to_magick}
-\title{Convert a 'magick' image to \code{nativeRaster}}
+\title{Convert a 'magick' image to native raster image}
 \usage{
 magick_to_nr(im, dst = NULL)
 
@@ -12,22 +12,36 @@ nr_to_magick(nr)
 \arguments{
 \item{im}{image from the \code{magick} package}
 
-\item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
-new \code{nativeRaster} will be created  If a \code{nativeRaster} 
+\item{dst}{destination native raster image. If NULL (the default) a 
+new native raster image will be created  If a native raster image 
 is supplied here, it must have the exact dimensions to match the matrix}
 
-\item{nr}{\code{nativeRaster} object}
+\item{nr}{native raster image}
 }
 \value{
-\code{nativeRaster}
+New native raster image
 }
 \description{
-Convert a 'magick' image to \code{nativeRaster}
+Convert a 'magick' image to native raster image
 }
 \examples{
-\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) withAutoprint(\{ # examplesIf}
 im <- magick::logo
 nr <- magick_to_nr(im)
 plot(nr)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other conversion functions: 
+\code{\link{matrix_to_nr}()},
+\code{\link{nr_to_raster}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+
+Other conversion functions: 
+\code{\link{matrix_to_nr}()},
+\code{\link{nr_to_raster}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+}
+\concept{conversion functions}

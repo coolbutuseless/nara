@@ -7,10 +7,11 @@
 nr_transpose(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 Transpose
@@ -20,5 +21,11 @@ nr <- nr_new(20, 10, 'hotpink')
 dim(nr)
 nr_transpose(nr)
 dim(nr)
-
 }
+\seealso{
+Other transformation functions: 
+\code{\link{nr_fliph}()},
+\code{\link{nr_flipv}()},
+\code{\link{nr_rotate}()}
+}
+\concept{transformation functions}

@@ -2,25 +2,30 @@
 % Please edit documentation in R/nr-scale.R
 \name{nr_scale}
 \alias{nr_scale}
-\title{Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng}
+\title{Resize a native raster image using a scale factor}
 \usage{
 nr_scale(nr, scale, algo = "nn")
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{scale}{scale factor}
 
-\item{algo}{'nn' for nearest neighbour (the default), or 'bilinear' for 
+\item{algo}{'nn' for nearest neighbor (the default), or 'bilinear' for 
 bilinear interpolation.}
 }
 \value{
-New \code{nativeRaster}
+New native raster image
 }
 \description{
-Scale the size of a \code{nativeRaster} using Nearest Neighbour resizinng
+Resize a native raster image using a scale factor
 }
 \examples{
 big <- nr_scale(deer_sprites[[1]], 2)
 plot(big)
 }
+\seealso{
+Other resizing functions: 
+\code{\link{nr_resize}()}
+}
+\concept{resizing functions}

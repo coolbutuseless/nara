@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_polygon}
 \alias{nr_polygon}
-\title{Draw multiple polygon on a \code{nativeRaster} image}
+\title{Draw multiple polygons on a native raster image}
 \usage{
 nr_polygon(
   nr,
@@ -17,7 +17,7 @@ nr_polygon(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{Vectors of point coordinates}
 
@@ -45,10 +45,11 @@ linewidth which mostly looks OK.}
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Draw multiple polygon on a \code{nativeRaster} image
+Draw multiple polygons on a native raster image
 }
 \examples{
 N <- 200
@@ -56,5 +57,11 @@ nr <- nr_new(N, N, 'grey80')
 nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
            color = 'red', linewidth = 5)
 plot(nr, TRUE)
-
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_circle}()},
+\code{\link{nr_polyline}()},
+\code{\link{nr_rect}()}
+}
+\concept{drawing functions}

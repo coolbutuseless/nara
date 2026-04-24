@@ -2,18 +2,19 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_flipv}
 \alias{nr_flipv}
-\title{Flip a \code{nativeRaster} vertically}
+\title{Flip a native raster image vertically}
 \usage{
 nr_flipv(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Flip a \code{nativeRaster} vertically
+Flip a native raster image vertically
 }
 \examples{
 nr <- nr_new(400, 200, 'white')
@@ -21,5 +22,11 @@ nr_rect(nr, 0, 0, 30, 15)
 plot(nr)
 nr_flipv(nr)
 plot(nr)
-
 }
+\seealso{
+Other transformation functions: 
+\code{\link{nr_fliph}()},
+\code{\link{nr_rotate}()},
+\code{\link{nr_transpose}()}
+}
+\concept{transformation functions}

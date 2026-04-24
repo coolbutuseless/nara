@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-blit.R
 \name{nr_blit}
 \alias{nr_blit}
-\title{Copy one \code{nativeRaster} image into another at an arbitrary location.}
+\title{Copy a native raster image into another at an arbitrary location, scale and rotation}
 \usage{
 nr_blit(
   dst,
@@ -21,13 +21,13 @@ nr_blit(
 )
 }
 \arguments{
-\item{dst, src}{source and destination native rasters}
+\item{dst, src}{source and destination native raster images}
 
 \item{x, y}{Where in \code{nr} to place the \code{sprite}. These values must
 be vectors of the same length.  If the length is greater than 1, then
 the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
-origin of \code{nativeraster} images is the top-left
+origin of native raster images is the top-left
 where the coordinates are (0, 0).}
 
 \item{xsrc, ysrc}{start coordiates within src}
@@ -51,7 +51,7 @@ Default (0, 0)}
 None. \code{dst} modified by-reference and returned invisibly.
 }
 \description{
-Single source blitted to one or more locations.
+Copy a native raster image into another at an arbitrary location, scale and rotation
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
@@ -67,5 +67,9 @@ nr <- nr_new(800, 600, 'grey80')
 sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
 nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
 plot(nr, T)
-
 }
+\seealso{
+Other blitting functions: 
+\code{\link{nr_blit_bulk}()}
+}
+\concept{blitting functions}

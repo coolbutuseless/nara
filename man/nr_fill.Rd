@@ -2,12 +2,12 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_fill}
 \alias{nr_fill}
-\title{Fill a \code{nativeRaster} image with the given color}
+\title{Fill a native raster image with the given color}
 \usage{
 nr_fill(nr, color)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{color}{Color as a character string. Either a standard R color
 (e.g. 'blue', 'white')
@@ -15,10 +15,11 @@ or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 }
 \value{
-The original \code{nativeRaster} modified in-place.
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Fill a \code{nativeRaster} image with the given color
+Fill a native raster image with the given color
 }
 \examples{
 nr <- nr_new(400, 300, 'hotpink')

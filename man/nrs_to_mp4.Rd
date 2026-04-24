@@ -7,7 +7,7 @@
 nrs_to_mp4(nr_list, filename, verbose = FALSE, ...)
 }
 \arguments{
-\item{nr_list}{list of nativeRasters}
+\item{nr_list}{list of native raster image}
 
 \item{filename}{mp4 filename}
 
@@ -22,10 +22,18 @@ None.
 Magick conversion - possible won't be in final version of 'nara' pkg
 }
 \examples{
-\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) withAutoprint(\{ # examplesIf}
 im <- magick::logo
 nr1 <- magick_to_nr(im)
-nr2 <- nr_duplicate(nr1)
+nr2 <- nr_copy(nr1)
 nrs_to_mp4(list(nr1, nr2), "nothing.mp4")
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nr_to_raster}()},
+\code{\link{nrs_to_gif}()}
+}
+\concept{conversion functions}

@@ -66,7 +66,7 @@ void nr_polyline(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int 
 // @param nr native raster (modified in-place)
 // @param nr_width,nr_height dimensions
 // @param x,y locations
-// @param color colour
+// @param color color
 // @param close should the polyline be closed
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_polyline_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_mode_) {

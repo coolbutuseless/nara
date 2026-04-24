@@ -1,18 +1,18 @@
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Convert a 'magick' image to \code{nativeRaster}
+#' Convert a 'magick' image to native raster image
 #' 
 #' @inheritParams matrix_to_nr
 #' @inheritParams array_to_nr
 #' @param im image from the \code{magick} package
 #' 
-#' @return \code{nativeRaster}
+#' @return New native raster image
 #' 
 #' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
 #' im <- magick::logo
 #' nr <- magick_to_nr(im)
 #' plot(nr)
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_to_nr <- function(im, dst = NULL) {
@@ -32,8 +32,10 @@ magick_to_nr <- function(im, dst = NULL) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname magick_to_nr
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_magick <- function(nr) {
@@ -46,10 +48,11 @@ nr_to_magick <- function(nr) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Magick conversion - possibly won't be in final version of 'nara' pkg
 #' 
-#' @param nr_list list of nativeRasters
+#' @param nr_list list of native raster image
 #' @param filename filename of gif
 #' @param verbose logical. default FALSE
 #' @param framerate frames per second
@@ -58,8 +61,9 @@ nr_to_magick <- function(nr) {
 #' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
 #' im <- magick::logo
 #' nr1 <- magick_to_nr(im)
-#' nr2 <- nr_duplicate(nr1)
+#' nr2 <- nr_copy(nr1)
 #' nrs_to_gif(list(nr1, nr2), "nothing.gif")
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) {
@@ -74,10 +78,11 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Magick conversion - possible won't be in final version of 'nara' pkg
 #' 
-#' @param nr_list list of nativeRasters
+#' @param nr_list list of native raster image
 #' @param filename mp4 filename
 #' @param verbose logical. default FALSE
 #' @param ... other arguments passed to \code{magick::image_write_video()}
@@ -85,8 +90,9 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
 #' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
 #' im <- magick::logo
 #' nr1 <- magick_to_nr(im)
-#' nr2 <- nr_duplicate(nr1)
+#' nr2 <- nr_copy(nr1)
 #' nrs_to_mp4(list(nr1, nr2), "nothing.mp4")
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_mp4 <- function(nr_list, filename, verbose = FALSE, ...) {

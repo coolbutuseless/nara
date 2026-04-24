@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_polyline}
 \alias{nr_polyline}
-\title{Draw polyline on a \code{nativeRaster} image}
+\title{Draw a polyline on a native raster image}
 \usage{
 nr_polyline(
   nr,
@@ -16,7 +16,7 @@ nr_polyline(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{Vectors of point coordinates}
 
@@ -40,10 +40,11 @@ the last point and the first point?   Default: FALSE}
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Draw polyline on a \code{nativeRaster} image
+Draw a polyline on a native raster image
 }
 \examples{
 N <- 20
@@ -67,3 +68,10 @@ nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10),
            color = 'black', close = TRUE)
 plot(nr, TRUE)
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_circle}()},
+\code{\link{nr_polygon}()},
+\code{\link{nr_rect}()}
+}
+\concept{drawing functions}

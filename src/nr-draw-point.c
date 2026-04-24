@@ -22,7 +22,7 @@
 // @param nr native raster (modified in-place)
 // @param nr_width,nr_height dimensions
 // @param x,y location
-// @param color colour
+// @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color, draw_mode_t draw_mode) {
   

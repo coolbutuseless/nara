@@ -5,7 +5,7 @@
 \alias{raster_to_nr}
 \alias{nr_to_array}
 \alias{array_to_nr}
-\title{Convert \code{nativeRaster} images to/from other R objects}
+\title{Convert native raster images to/from other R objects}
 \usage{
 nr_to_raster(nr)
 
@@ -16,24 +16,30 @@ nr_to_array(nr)
 array_to_nr(arr, dst = NULL)
 }
 \arguments{
-\item{nr}{\code{nativeRaster} object}
+\item{nr}{native raster image}
 
 \item{ras}{standard R raster i.e. a character matrix of hex color values}
 
-\item{dst}{destination \code{nativeRaster} If NULL (the default) a new \code{nativeRaster}
-will be created.}
+\item{dst}{destination native raster image. If NULL (the default) a new}
 
 \item{arr}{3d numeric array representing R,G,B,A values with dimensions [nrow, ncol, 4] or
 [nrow, ncol, 3]. Each value is in range [0,1].}
 }
 \value{
-raster, array or \code{nativeRaster}
+raster, array or native raster image
 }
 \description{
-Convert \code{nativeRaster} images to/from other R objects
+Convert native raster images to/from other R objects
 }
 \examples{
 nr <- nr_new(12, 8, 'hotpink')
 nr_to_raster(nr)
-
 }
+\seealso{
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+}
+\concept{conversion functions}
