@@ -174,11 +174,11 @@ SEXP fliph_(SEXP nr_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Replace old colours with new colours
+// Replace old colors with new colors
 // 
 // @param nr modified in-place
-// @param old_cols vector of old colours
-// @param new_cols vector of new colours
+// @param old_cols vector of old colors
+// @param new_cols vector of new colors
 //
 // @return modified nr
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

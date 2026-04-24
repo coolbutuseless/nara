@@ -1,6 +1,6 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' List of deer native rasters
+#' Deer images - a list of native raster images 
 #' 
 #' The 'deer' sprites are by Calciumtrice and licensed under CC BY 3.0.  
 #' See 'inst/LICENSE-deer.txt' for more details. To view license information:

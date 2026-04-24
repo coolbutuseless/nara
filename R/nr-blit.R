@@ -40,7 +40,7 @@
 #' sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
 #' nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
 #' plot(nr, T)
-#' 
+#' @family blitting functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit <- function(dst, src, x, y, 
@@ -59,12 +59,6 @@ nr_blit <- function(dst, src, x, y,
           mode)
   )
 }
-
-
-
-
-
-
 
 
 
@@ -95,6 +89,7 @@ nr_blit <- function(dst, src, x, y,
 #' )
 #' nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
 #' plot(nr, T)
+#' @family blitting functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_blit_bulk <- function(dst, src, config) {

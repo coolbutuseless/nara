@@ -24,6 +24,8 @@ draw_mode <- list(
 #' }
 #'
 #' @param width,height Image dimensions in pixels
+#' @param nr \code{native raster} to use as the template for the size of the 
+#'        new image
 #' @param fill Background fill color as a character string. Either a standard R color
 #'        (e.g. 'blue', 'white')
 #'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
@@ -36,6 +38,7 @@ draw_mode <- list(
 #' plot(nr)
 #' 
 #' @import colorfast
+#' @family image creation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
@@ -43,6 +46,39 @@ nr_new <- function(width, height, fill = 'white') {
   .Call(fill_, nr, fill)
   nr
 }
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' @rdname nr_new
+#' @family image creation functions
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_new_from <- function(nr, fill = 'white') {
+  nr_new(width = ncol(nr), height = nrow(nr), fill = fill)
+}
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a new \code{nativeRaster} image and copy the dimensions and
+#' contents from an existing image
+#'
+#' @inheritParams nr_fill
+#' 
+#' @return New \code{nativeRaster}
+#' 
+#' @examples
+#' nr1 <- nr_new(200, 200, 'hotpink')
+#' nr2 <- nr_copy(nr1)
+#' plot(nr2)
+#' @family image creation functions
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_copy <- function(nr) {
+  .Call(duplicate_, nr)
+}
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +104,7 @@ nr_fill <- function(nr, color) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Copy the contents of one \code{nativeRaster} into another.
 #'
@@ -91,25 +128,6 @@ nr_copy_into <- function(dst, src) {
   invisible(.Call(copy_into_, dst, src))
 }
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Create a new \code{nativeRaster} image and copy the dimensions and
-#' contents from an existing image
-#'
-#' @inheritParams nr_fill
-#' 
-#' @return New \code{nativeRaster}
-#' 
-#' @examples
-#' nr1 <- nr_new(200, 200, 'hotpink')
-#' nr2 <- nr_duplicate(nr1)
-#' plot(nr2)
-#' 
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_duplicate <- function(nr) {
-  .Call(duplicate_, nr)
-}
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,7 +180,7 @@ nr_crop2 <- function(nr, loc) {
 #' plot(nr)
 #' nr_flipv(nr)
 #' plot(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_flipv <- function(nr) {
@@ -183,7 +201,7 @@ nr_flipv <- function(nr) {
 #' plot(nr)
 #' nr_fliph(nr)
 #' plot(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fliph <- function(nr) {
@@ -192,11 +210,11 @@ nr_fliph <- function(nr) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Replace colours in a native raster
+#' Replace colors in a native raster
 #' 
 #' @inheritParams nr_fill
-#' @param old Vector of old colours
-#' @param new Vector of replacement colours
+#' @param old Vector of old colors
+#' @param new Vector of replacement colors
 #' 
 #' @return Original \code{nativeRaster} modified in-place
 #' 
@@ -224,7 +242,7 @@ nr_replace <- function(nr, old, new) {
 #' dim(nr)
 #' nr_rotate(nr, 90)
 #' dim(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rotate <- function(nr, angle) {
@@ -243,7 +261,7 @@ nr_rotate <- function(nr, angle) {
 #' dim(nr)
 #' nr_transpose(nr)
 #' dim(nr)
-#' 
+#' @family transformation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_transpose <- function(nr) {
@@ -279,8 +297,8 @@ if (FALSE) {
   logo <- fastpng::read_png(system.file("image/deer-1.png", package = "nara"), type = 'nativeraster')
   plot(logo, T)
 
-  src <- nr_duplicate(logo)
-  dst <- nr_duplicate(logo)
+  src <- nr_copy(logo)
+  dst <- nr_copy(logo)
   nr_fill(src, 'hotpink')
 
   nr_copy_into(dst, src, mask = logo, col = 0L, invert = TRUE)

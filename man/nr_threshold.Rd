@@ -17,3 +17,9 @@ Original \code{nativeRaster} modified in-place
 \description{
 Threshold to binary image
 }
+\examples{
+nr <- nr_copy(deer_sprites[[1]])
+plot(nr, T)
+nr_threshold(nr, 0.9)
+plot(nr, T)
+}

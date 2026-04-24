@@ -50,7 +50,7 @@ if (FALSE) {
 }
 
 plot(deer, T)
-deer2 <- nr_duplicate(deer)
+deer2 <- nr_copy(deer)
 nr_rect(deer2, 0, 0, 32, 32, fill = NA, color = '#0000ff30')
 plot(deer2)
 

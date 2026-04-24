@@ -40,12 +40,12 @@
 * Fixed(?) off-by-one bug in blitter core
 * Drop inspection of "channels" attribute all together.
 * As of 0.1.1.9009 2024-06-08 coordinate system is now (0, 0) at top-left
-* Fixed rendering of borders for rectangles when both colour and fill are 
+* Fixed rendering of borders for rectangles when both color and fill are 
   translucent.
 * Rationalize 'blit' methods (still need C implementations)
 * Move all 'magick' related functions into single R file.  Include gif and mp4 output.
 * Use fast hashed lookup for R color names like 'red', 'blue', etc
-* Handle logical NAs as transparent colour
+* Handle logical NAs as transparent color
 * pass through more arguments for `nrs_to_gif()` and `nrs_to_mp4()`
 * `hjust` and `vjust` added for 
     * `nr_blit()`

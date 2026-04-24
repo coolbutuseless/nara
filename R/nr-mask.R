@@ -2,20 +2,23 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Start/end region of masked drawing
 #' 
-#' These functions are used to globally set a mask
+#' These functions are used to globally set a mask which affects where
+#' pixels are affected by drawing functions.
+#' 
+#' Drawing operations between
+#' \code{nr_mask_begin()} and \code{nr_mask_end()} calls will only affect pixels
+#' where the \code{mask} is not transparent.
+#' 
 #' @inheritParams nr_rect
-#' @param mask Image (cairo raster) to use as mask.  This image does not need 
-#'        to be the same size as \code{cr}
-#' @return Invisibly return the original \code{cairo raster} object
+#' @param mask \code{native raster} to use as mask. Must be the same size as
+#'        \code{nr}.
+#' @return Invisibly return the original \code{native raster} object
 #' @examplesIf interactive()
-#' logo_file <- system.file("img/logo-rainbow.png", package = 'cara', mustWork = TRUE)
-#' logo <- nr_read_png(logo_file)
-#' plot(logo, T)
-#' img <- nr_new(600, 400)
+#' mask <- deer_sprites[[1]] |> nr_resize(600, 400)
+#' plot(mask)
+#' img <- nr_new_from(mask)
 #' 
-#' nr_params_set(img, cpar(line_width = 10))
-#' 
-#' nr_mask_begin(img, mask = logo)
+#' nr_mask_begin(img, mask = mask)
 #' nr_circle(img, 300, 200, 200, fill = 'blue', color = 'black')
 #' nr_circle(img, 350, 200, 100, fill = 'darkgreen', color = 'black')
 #' nr_mask_end(img)
@@ -41,17 +44,3 @@ nr_mask_end <- function(nr) {
   )
 }
 
-
-if (FALSE) {
-  logo_file <- system.file("img/logo-rainbow.png", package = 'cara', mustWork = TRUE)
-  logo <- fastpng::read_png(logo_file, type = 'nativeraster')
-  plot(logo, T)
-  img <- nr_new(600, 400)
-  
-  nr_mask_begin(img, mask = logo)
-  nr_circle(img, 300, 200, 200, fill = 'blue', color = 'black')
-  nr_circle(img, 350, 200, 100, fill = 'darkgreen', color = 'black')
-  nr_mask_end(img)
-  
-  plot(img, T)
-}

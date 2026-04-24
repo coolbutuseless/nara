@@ -56,5 +56,11 @@ nr <- nr_new(N, N, 'grey80')
 nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
            color = 'red', linewidth = 5)
 plot(nr, TRUE)
-
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_circle}()},
+\code{\link{nr_polyline}()},
+\code{\link{nr_rect}()}
+}
+\concept{drawing functions}

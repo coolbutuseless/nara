@@ -14,7 +14,7 @@
 #' @examples
 #' nr <- nr_new(12, 8, 'hotpink')
 #' nr_to_raster(nr)
-#' 
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_raster <- function(nr) {
@@ -24,6 +24,7 @@ nr_to_raster <- function(nr) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 raster_to_nr <- function(ras, dst = NULL) {
@@ -33,6 +34,7 @@ raster_to_nr <- function(ras, dst = NULL) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_array <- function(nr) {
@@ -42,6 +44,7 @@ nr_to_array <- function(nr) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 array_to_nr <- function(arr, dst = NULL) {
@@ -71,7 +74,7 @@ array_to_nr <- function(arr, dst = NULL) {
 #' palette <- colorfast::col_to_int(rainbow(12))
 #' nr <- matrix_to_nr(m, palette) 
 #' plot(nr)
-#' 
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 matrix_to_nr <- function(mat, palette, fill = 'transparent', min = 0.0, max = 1.0, dst = NULL) {

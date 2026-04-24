@@ -2,22 +2,22 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_replace}
 \alias{nr_replace}
-\title{Replace colours in a native raster}
+\title{Replace colors in a native raster}
 \usage{
 nr_replace(nr, old, new)
 }
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{old}{Vector of old colours}
+\item{old}{Vector of old colors}
 
-\item{new}{Vector of replacement colours}
+\item{new}{Vector of replacement colors}
 }
 \value{
 Original \code{nativeRaster} modified in-place
 }
 \description{
-Replace colours in a native raster
+Replace colors in a native raster
 }
 \examples{
 nr <- nr_new(10, 10, 'hotpink')

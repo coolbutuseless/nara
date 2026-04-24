@@ -55,8 +55,8 @@ void nr_rect(uint32_t *nr,
 // @param width,height dimensions
 // @param x,y locations
 // @param w,h widths and heights
-// @param fill fill colour
-// @param color outline colour
+// @param fill fill color
+// @param color outline color
 // @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,

@@ -35,5 +35,30 @@ Convert \code{nativeRaster} images to/from other R objects
 \examples{
 nr <- nr_new(12, 8, 'hotpink')
 nr_to_raster(nr)
-
 }
+\seealso{
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{matrix_to_nr}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+}
+\concept{conversion functions}

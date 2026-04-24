@@ -67,5 +67,9 @@ nr <- nr_new(800, 600, 'grey80')
 sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
 nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
 plot(nr, T)
-
 }
+\seealso{
+Other blitting functions: 
+\code{\link{nr_blit_bulk}()}
+}
+\concept{blitting functions}

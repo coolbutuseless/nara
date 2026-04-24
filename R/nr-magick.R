@@ -13,6 +13,7 @@
 #' im <- magick::logo
 #' nr <- magick_to_nr(im)
 #' plot(nr)
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_to_nr <- function(im, dst = NULL) {
@@ -34,6 +35,7 @@ magick_to_nr <- function(im, dst = NULL) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname magick_to_nr
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_magick <- function(nr) {
@@ -58,8 +60,9 @@ nr_to_magick <- function(nr) {
 #' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
 #' im <- magick::logo
 #' nr1 <- magick_to_nr(im)
-#' nr2 <- nr_duplicate(nr1)
+#' nr2 <- nr_copy(nr1)
 #' nrs_to_gif(list(nr1, nr2), "nothing.gif")
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) {
@@ -85,8 +88,9 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
 #' @examplesIf interactive() && requireNamespace('magick', quietly = TRUE)
 #' im <- magick::logo
 #' nr1 <- magick_to_nr(im)
-#' nr2 <- nr_duplicate(nr1)
+#' nr2 <- nr_copy(nr1)
 #' nrs_to_mp4(list(nr1, nr2), "nothing.mp4")
+#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nrs_to_mp4 <- function(nr_list, filename, verbose = FALSE, ...) {

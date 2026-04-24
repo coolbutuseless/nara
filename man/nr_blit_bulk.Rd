@@ -40,3 +40,8 @@ config <- data.frame(
 nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
 plot(nr, T)
 }
+\seealso{
+Other blitting functions: 
+\code{\link{nr_blit}()}
+}
+\concept{blitting functions}

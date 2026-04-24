@@ -12,25 +12,28 @@ nr_mask_end(nr)
 \arguments{
 \item{nr}{\code{nativeRaster}}
 
-\item{mask}{Image (cairo raster) to use as mask.  This image does not need 
-to be the same size as \code{cr}}
+\item{mask}{\code{native raster} to use as mask. Must be the same size as
+\code{nr}.}
 }
 \value{
-Invisibly return the original \code{cairo raster} object
+Invisibly return the original \code{native raster} object
 }
 \description{
-These functions are used to globally set a mask
+These functions are used to globally set a mask which affects where
+pixels are affected by drawing functions.
+}
+\details{
+Drawing operations between
+\code{nr_mask_begin()} and \code{nr_mask_end()} calls will only affect pixels
+where the \code{mask} is not transparent.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
-logo_file <- system.file("img/logo-rainbow.png", package = 'cara', mustWork = TRUE)
-logo <- nr_read_png(logo_file)
-plot(logo, T)
-img <- nr_new(600, 400)
+mask <- deer_sprites[[1]] |> nr_resize(600, 400)
+plot(mask)
+img <- nr_new_from(mask)
 
-nr_params_set(img, cpar(line_width = 10))
-
-nr_mask_begin(img, mask = logo)
+nr_mask_begin(img, mask = mask)
 nr_circle(img, 300, 200, 200, fill = 'blue', color = 'black')
 nr_circle(img, 350, 200, 100, fill = 'darkgreen', color = 'black')
 nr_mask_end(img)

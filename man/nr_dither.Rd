@@ -20,3 +20,9 @@ Original \code{nativeRaster} modified in-place
 \description{
 Dither to binary image
 }
+\examples{
+nr <- nr_copy(deer_sprites[[1]])
+plot(nr, T)
+nr_dither(nr, 0.99)
+plot(nr, T)
+}

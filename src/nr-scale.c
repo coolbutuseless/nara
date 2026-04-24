@@ -69,10 +69,10 @@ SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Linearly Interpolate between two RGBA colours
+// Linearly Interpolate between two RGBA colors
 //
-// @param first,second packed RGBA colours
-// @param frac distance between two colours. Frac is between [0, 1]
+// @param first,second packed RGBA colors
+// @param frac distance between two colors. Frac is between [0, 1]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 uint32_t lerp(uint32_t first, uint32_t second, float frac) {
     // uint32_t val = 0;

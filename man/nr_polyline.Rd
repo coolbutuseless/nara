@@ -67,3 +67,10 @@ nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10),
            color = 'black', close = TRUE)
 plot(nr, TRUE)
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_circle}()},
+\code{\link{nr_polygon}()},
+\code{\link{nr_rect}()}
+}
+\concept{drawing functions}

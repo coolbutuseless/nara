@@ -21,5 +21,11 @@ nr_rect(nr, 0, 0, 30, 15)
 plot(nr)
 nr_flipv(nr)
 plot(nr)
-
 }
+\seealso{
+Other transformation functions: 
+\code{\link{nr_fliph}()},
+\code{\link{nr_rotate}()},
+\code{\link{nr_transpose}()}
+}
+\concept{transformation functions}

@@ -24,7 +24,7 @@
 // @param nr_width,nr_height dimensions
 // @param y location
 // @param x1,x2 points to draw between
-// @param color colour
+// @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_hline(uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y, uint32_t color, draw_mode_t draw_mode) {
   

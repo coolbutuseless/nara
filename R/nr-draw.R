@@ -103,7 +103,7 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = 
 #' nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
 #'         fill = 'blue', color = c('red', 'green'), linewidth = 3)
 #' plot(nr, TRUE)
-#' 
+#' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1, mode = draw_mode$respect_alpha) {
@@ -128,7 +128,7 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #' nr <- nr_new(N, N, 'grey80')
 #' nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
 #' plot(nr, TRUE)
-#'
+#' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$respect_alpha) {
@@ -174,6 +174,7 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$
 #' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
 #'            color = 'black', close = TRUE)
 #' plot(nr, TRUE)
+#' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE, mode = draw_mode$respect_alpha) {
@@ -204,7 +205,7 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 #' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
 #'            color = 'red', linewidth = 5)
 #' plot(nr, TRUE)
-#'
+#' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, mode = draw_mode$respect_alpha) {

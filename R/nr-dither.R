@@ -8,6 +8,11 @@
 #' @inheritParams nr_fill
 #' @param factor desaturation factor. Default: 1 (fully desaturate)
 #' @return Original \code{nativeRaster} modified in-place
+#' @examples
+#' nr <- nr_copy(deer_sprites[[1]])
+#' plot(nr, T)
+#' nr_desaturate(nr)
+#' plot(nr, T)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_desaturate <- function(nr, factor = 1) {
@@ -23,6 +28,11 @@ nr_desaturate <- function(nr, factor = 1) {
 #' @param algo Dithering algorithm. 'fs' (floyd-steinberg) or 'atkinson'. 
 #'        Default: 'fs'
 #' @return Original \code{nativeRaster} modified in-place
+#' @examples
+#' nr <- nr_copy(deer_sprites[[1]])
+#' plot(nr, T)
+#' nr_dither(nr, 0.99)
+#' plot(nr, T)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_dither <- function(nr, value = 0.5, algo = 'fs') {
@@ -36,6 +46,11 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 #' @inheritParams nr_fill
 #' @param value Threshold value. Default: 0.5  (valid range [0, 1])
 #' @return Original \code{nativeRaster} modified in-place
+#' @examples
+#' nr <- nr_copy(deer_sprites[[1]])
+#' plot(nr, T)
+#' nr_threshold(nr, 0.9)
+#' plot(nr, T)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_threshold <- function(nr, value = 0.5) {

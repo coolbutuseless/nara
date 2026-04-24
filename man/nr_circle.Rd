@@ -38,5 +38,11 @@ N <- 201
 nr <- nr_new(N, N, 'grey80')
 nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
 plot(nr, TRUE)
-
 }
+\seealso{
+Other drawing functions: 
+\code{\link{nr_polygon}()},
+\code{\link{nr_polyline}()},
+\code{\link{nr_rect}()}
+}
+\concept{drawing functions}

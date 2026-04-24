@@ -17,3 +17,9 @@ Original \code{nativeRaster} modified in-place
 \description{
 A naive desaturation in RGB space
 }
+\examples{
+nr <- nr_copy(deer_sprites[[1]])
+plot(nr, T)
+nr_desaturate(nr)
+plot(nr, T)
+}

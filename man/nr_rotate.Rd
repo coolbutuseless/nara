@@ -22,5 +22,11 @@ nr <- nr_new(20, 10, 'hotpink')
 dim(nr)
 nr_rotate(nr, 90)
 dim(nr)
-
 }
+\seealso{
+Other transformation functions: 
+\code{\link{nr_fliph}()},
+\code{\link{nr_flipv}()},
+\code{\link{nr_transpose}()}
+}
+\concept{transformation functions}

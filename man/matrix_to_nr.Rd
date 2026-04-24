@@ -35,5 +35,12 @@ m <- matrix(1:12, 3, 4)
 palette <- colorfast::col_to_int(rainbow(12))
 nr <- matrix_to_nr(m, palette) 
 plot(nr)
-
 }
+\seealso{
+Other conversion functions: 
+\code{\link{magick_to_nr}()},
+\code{\link{nr_to_raster}()},
+\code{\link{nrs_to_gif}()},
+\code{\link{nrs_to_mp4}()}
+}
+\concept{conversion functions}
