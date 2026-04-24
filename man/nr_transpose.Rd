@@ -7,10 +7,11 @@
 nr_transpose(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 Transpose

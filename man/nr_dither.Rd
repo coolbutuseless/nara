@@ -7,7 +7,7 @@
 nr_dither(nr, value = 0.5, algo = "fs")
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{value}{Threshold value. Default: 0.5  (valid range [0, 1])}
 
@@ -15,7 +15,8 @@ nr_dither(nr, value = 0.5, algo = "fs")
 Default: 'fs'}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 Dither to binary image

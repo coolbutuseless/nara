@@ -19,10 +19,10 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Convert magick image to nativeRaster
+// Convert magick image to native raster image
 //
 // @param im_data_ the data part of a magick image: magick::image_data(im)
-// @param dst_ optional pre-allocated destination nativeRaster
+// @param dst_ optional pre-allocated destination native raster image
 //
 // @return dst_
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,13 +54,13 @@ SEXP magick_to_nr_(SEXP im_data_, SEXP dst_) {
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+      Rf_error("Supplied 'dst' image dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
             Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the RGBA bytes directly into the nativeRaster
+  // Copy the RGBA bytes directly into the native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   memcpy(INTEGER(dst_), RAW(im_data_), (size_t)width * (size_t)height * sizeof(uint32_t));
   

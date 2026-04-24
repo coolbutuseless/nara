@@ -54,7 +54,7 @@
 * added `nr_blit_list()` and `nr_blit_grid()`.
 * added `nr_resize_nn()` and `nr_resize_bilinear()`. `nr_scale()` is now a wrapper around `nr_resize_nn()`
 * Fixed bug in polygon rendering
-* Parse image sequences from `magick` into nativeRaster
+* Parse image sequences from `magick` into native raster images
 * Export C functions for use in other packages via `LinkingTo`
     * draw points
 * Enhanced `nr_polygon()` to process multiple polygons in a single call

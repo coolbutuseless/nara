@@ -7,12 +7,13 @@
 nr_desaturate(nr, factor = 1)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{factor}{desaturation factor. Default: 1 (fully desaturate)}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 A naive desaturation in RGB space

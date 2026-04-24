@@ -7,7 +7,7 @@
 nrs_to_gif(nr_list, filename, verbose = FALSE, framerate = 30, ...)
 }
 \arguments{
-\item{nr_list}{list of nativeRasters}
+\item{nr_list}{list of native raster image}
 
 \item{filename}{filename of gif}
 

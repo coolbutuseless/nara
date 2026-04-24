@@ -52,13 +52,13 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+      Rf_error("Supplied 'dst' image dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
             Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   double *mat = REAL(mat_);
   
@@ -134,13 +134,13 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, S
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+      Rf_error("Supplied 'dst' image dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
             Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(dst_);
   int *mat = INTEGER(mat_);

@@ -6,7 +6,7 @@
 \alias{nara-package}
 \title{nara: Native Raster Image Tools}
 \description{
-Tools for 'nativeRaster' images.
+Tools for native raster images.
 }
 \seealso{
 Useful links:

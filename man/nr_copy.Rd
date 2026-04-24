@@ -2,19 +2,19 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_copy}
 \alias{nr_copy}
-\title{Create a new \code{nativeRaster} image and copy the dimensions and
+\title{Create a new native raster image and copy the dimensions and
 contents from an existing image}
 \usage{
 nr_copy(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 }
 \value{
-New \code{nativeRaster}
+New native raster image
 }
 \description{
-Create a new \code{nativeRaster} image and copy the dimensions and
+Create a new native raster image and copy the dimensions and
 contents from an existing image
 }
 \examples{

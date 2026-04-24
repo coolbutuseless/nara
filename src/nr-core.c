@@ -34,7 +34,7 @@ void assert_nativeraster(SEXP nr_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Create a new nativeRaster object
+// Create a new native raster image
 //
 // @param width,height dimensions
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,7 +57,7 @@ SEXP nr_new_(SEXP nr_width_, SEXP nr_height_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Copy the contents of one nativeraster into another. [R interface]
+// Copy the contents of one native raster image into another. [R interface]
 // Sizes must match
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP copy_into_(SEXP dst_, SEXP src_) {
@@ -72,7 +72,7 @@ SEXP copy_into_(SEXP dst_, SEXP src_) {
   size_t  dst_width  = (size_t)Rf_ncols(dst_);
   
   if (src_height != dst_height || src_width != dst_width) {
-    Rf_error("src and dst nativeRaster objects must be the same dimensions");
+    Rf_error("src and dst images must be the same dimensions");
   }
   
   memcpy(INTEGER(dst_), INTEGER(src_), src_height * src_width * sizeof(uint32_t));
@@ -216,7 +216,7 @@ SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  The rotated image fits within the original data storage - no new
-//  nativeRaster is needed.
+//  native raster image is needed.
 // 
 //  - copy the matrix data into a temp buffer
 //  - copy from the tmp buffer back into the matrix in order to rotate the data

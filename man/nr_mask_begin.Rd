@@ -10,13 +10,14 @@ nr_mask_begin(nr, mask)
 nr_mask_end(nr)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
-\item{mask}{\code{native raster} to use as mask. Must be the same size as
+\item{mask}{native raster image to use as mask. Must be the same size as
 \code{nr}.}
 }
 \value{
-Invisibly return the original \code{native raster} object
+Invisibly return the original native raster image which has been 
+        modified in-place
 }
 \description{
 These functions are used to globally set a mask which affects where

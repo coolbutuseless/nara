@@ -2,12 +2,12 @@
 % Please edit documentation in R/nr-scale.R
 \name{nr_scale}
 \alias{nr_scale}
-\title{Resize a \code{nativeRaster} using a scale factor}
+\title{Resize a native raster image using a scale factor}
 \usage{
 nr_scale(nr, scale, algo = "nn")
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{scale}{scale factor}
 
@@ -15,10 +15,10 @@ nr_scale(nr, scale, algo = "nn")
 bilinear interpolation.}
 }
 \value{
-New \code{nativeRaster}
+New native raster image
 }
 \description{
-Resize a \code{nativeRaster} using a scale factor
+Resize a native raster image using a scale factor
 }
 \examples{
 big <- nr_scale(deer_sprites[[1]], 2)

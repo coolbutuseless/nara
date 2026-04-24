@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_text_basic}
 \alias{nr_text_basic}
-\title{Draw text on a \code{nativeRaster} image using the built-in \code{spleen} 
+\title{Draw text on a native raster image using the built-in \code{spleen} 
 bitmapped font.}
 \usage{
 nr_text_basic(
@@ -16,7 +16,7 @@ nr_text_basic(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{coordinates of lower-left corner of text}
 
@@ -33,7 +33,8 @@ Default: 8.}
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 The only font currently available is 'spleen' - a monospace

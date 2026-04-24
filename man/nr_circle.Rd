@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_circle}
 \alias{nr_circle}
-\title{Draw circles on a \code{nativeRaster} image}
+\title{Draw circles on a native raster image}
 \usage{
 nr_circle(
   nr,
@@ -15,7 +15,7 @@ nr_circle(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y}{coordinates of centre of circle.  [vector]}
 
@@ -28,10 +28,11 @@ nr_circle(
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Draw circles on a \code{nativeRaster} image
+Draw circles on a native raster image
 }
 \examples{
 N <- 201

@@ -7,7 +7,7 @@
 nrs_to_mp4(nr_list, filename, verbose = FALSE, ...)
 }
 \arguments{
-\item{nr_list}{list of nativeRasters}
+\item{nr_list}{list of native raster image}
 
 \item{filename}{mp4 filename}
 

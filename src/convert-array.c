@@ -56,13 +56,13 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
   } else {
     assert_nativeraster(dst_);
     if (height != Rf_nrows(dst_) || width !=  Rf_ncols(dst_)) {
-      Rf_error("Supplied 'dst' nativeRaster dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
+      Rf_error("Supplied 'dst' image dimensions (w:%i, h:%i) do not match source matrix (w:%i, h:%i)", 
             Rf_ncols(dst_), Rf_nrows(dst_), width, height);
     }
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(dst_);
   double *r = REAL(arr_) + width * height * 0;
@@ -102,7 +102,7 @@ SEXP array_to_nr_(SEXP arr_, SEXP dst_) {
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// nativeRaster to array (depth = 4)
+// native raster image to array (depth = 4)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_to_array_(SEXP nr_) {
   assert_nativeraster(nr_);
@@ -112,7 +112,7 @@ SEXP nr_to_array_(SEXP nr_) {
   SEXP arr_ = PROTECT(Rf_alloc3DArray(REALSXP, height, width, 4));
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Copy the data - from column major matrix to row major nativeRaster
+  // Copy the data - from column major matrix to row major native raster image
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   double *r = REAL(arr_) + width * height * 0;

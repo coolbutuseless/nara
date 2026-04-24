@@ -2,20 +2,21 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_rotate}
 \alias{nr_rotate}
-\title{Rotate a native raster by 90,180,270 degrees}
+\title{Rotate a native raster image by 90,180,270 degrees}
 \usage{
 nr_rotate(nr, angle)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{angle}{one of 0,90,180,270}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
-Rotate a native raster by 90,180,270 degrees
+Rotate a native raster image by 90,180,270 degrees
 }
 \examples{
 nr <- nr_new(20, 10, 'hotpink')

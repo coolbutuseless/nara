@@ -7,12 +7,13 @@
 nr_threshold(nr, value = 0.5)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{value}{Threshold value. Default: 0.5  (valid range [0, 1])}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 Threshold to binary image

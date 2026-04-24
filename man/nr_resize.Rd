@@ -7,7 +7,7 @@
 nr_resize(nr, width, height, algo = "nn")
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{width, height}{dimensions for output image}
 
@@ -15,7 +15,7 @@ nr_resize(nr, width, height, algo = "nn")
 bilinear interpolation.}
 }
 \value{
-New \code{nativeRaster}
+New native raster image
 }
 \description{
 Resize a native raster by specifying the output dimensions

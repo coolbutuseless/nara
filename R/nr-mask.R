@@ -9,10 +9,13 @@
 #' \code{nr_mask_begin()} and \code{nr_mask_end()} calls will only affect pixels
 #' where the \code{mask} is not transparent.
 #' 
-#' @inheritParams nr_rect
-#' @param mask \code{native raster} to use as mask. Must be the same size as
+#' @inheritParams nr_fill
+#' @param mask native raster image to use as mask. Must be the same size as
 #'        \code{nr}.
-#' @return Invisibly return the original \code{native raster} object
+#'        
+#' @return Invisibly return the original native raster image which has been 
+#'         modified in-place
+#'         
 #' @examplesIf interactive()
 #' mask <- deer_sprites[[1]] |> nr_resize(600, 400)
 #' plot(mask)

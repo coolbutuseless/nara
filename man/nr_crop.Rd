@@ -3,14 +3,14 @@
 \name{nr_crop}
 \alias{nr_crop}
 \alias{nr_crop2}
-\title{Crop a section out of a nativeRaster into a new nativeRaster}
+\title{Crop a section out of a native raster image into a new image}
 \usage{
 nr_crop(nr, x, y, w, h)
 
 nr_crop2(nr, loc)
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x, y, w, h}{dimensions of cropped section}
 
@@ -18,10 +18,10 @@ nr_crop2(nr, loc)
 i.e. \code{c(x, y, w, h)}}
 }
 \value{
-New \code{nativeRaster}
+New native raster image
 }
 \description{
-Crop a section out of a nativeRaster into a new nativeRaster
+Crop a section out of a native raster image into a new image
 }
 \examples{
 nr <- nr_new(400, 400, 'hotpink')

@@ -2,21 +2,22 @@
 % Please edit documentation in R/nr-core.R
 \name{nr_copy_into}
 \alias{nr_copy_into}
-\title{Copy the contents of one \code{nativeRaster} into another.}
+\title{Copy the contents of one native raster image into another.}
 \usage{
 nr_copy_into(dst, src)
 }
 \arguments{
-\item{src, dst}{Source and destination \code{nativeRaster} images}
+\item{src, dst}{Source and destination native raster images}
 }
 \value{
-The 'dst' \code{nativeRaster}
+Invisibly return the supplied 'dst' native raster image which was been
+        modified in-place
 }
 \description{
-The source and destination \code{nativeRaster} images must have the same dimensions.
+The source and destination native raster images must have the same dimensions.
 }
 \details{
-If the \code{nativeRaster} images are of different sizes or alpha blending is
+If the native raster images are of different sizes or alpha blending is
 required, use the \code{nr_blit()} function.
 }
 \examples{

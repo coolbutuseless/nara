@@ -3,7 +3,7 @@
 \name{nr_new}
 \alias{nr_new}
 \alias{nr_new_from}
-\title{Create a \code{nativeRaster} image}
+\title{Create a native raster image}
 \usage{
 nr_new(width, height, fill = "white")
 
@@ -17,14 +17,14 @@ nr_new_from(nr, fill = "white")
 or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 
-\item{nr}{\code{native raster} to use as the template for the size of the 
+\item{nr}{native raster image to use as the template for the size of the 
 new image}
 }
 \value{
-\code{nativeRaster}
+native raster image
 }
 \description{
-A \code{nativeRaster} in R looks like an integer matrix, but is interpreted
+A native raster image in R looks like an integer matrix, but is interpreted
 differently by graphics devices:
 }
 \details{

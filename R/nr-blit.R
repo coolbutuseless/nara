@@ -1,17 +1,15 @@
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Copy one \code{nativeRaster} image into another at an arbitrary location.
-#'
-#' Single source blitted to one or more locations.
+#' Copy a native raster image into another at an arbitrary location, scale and rotation
 #'
 #' @inheritParams nr_point
-#' @param dst,src source and destination native rasters
+#' @param dst,src source and destination native raster images
 #' @param x,y Where in \code{nr} to place the \code{sprite}. These values must
 #'        be vectors of the same length.  If the length is greater than 1, then
 #'        the \code{sprite} will be pasted into \code{nr} at multiple locations.
 #'        Note that the
-#'        origin of \code{nativeraster} images is the top-left
+#'        origin of native raster images is the top-left
 #'        where the coordinates are (0, 0).
 #' @param xsrc,ysrc start coordiates within src
 #' @param w,h size within src. If size is negative, then the actual width/height of

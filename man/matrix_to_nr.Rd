@@ -2,7 +2,7 @@
 % Please edit documentation in R/conversion.R
 \name{matrix_to_nr}
 \alias{matrix_to_nr}
-\title{Matrix to \code{nativeRaster}}
+\title{Convert a numeric matrix to native raster image}
 \usage{
 matrix_to_nr(mat, palette, fill = "transparent", min = 0, max = 1, dst = NULL)
 }
@@ -20,15 +20,15 @@ Default: 'transparent'.}
 will be interpolated using this range as the extents.  An error
 will occur if a value lies outside this range. Default: (0, 1)}
 
-\item{dst}{destination \code{nativeRaster} object. If NULL (the default) a 
-new \code{nativeRaster} will be created  If a \code{nativeRaster} 
+\item{dst}{destination native raster image. If NULL (the default) a 
+new native raster image will be created  If a native raster image 
 is supplied here, it must have the exact dimensions to match the matrix}
 }
 \value{
-\code{nativeRaster}
+native raster image
 }
 \description{
-Matrix to \code{nativeRaster}
+Convert a numeric matrix to native raster image
 }
 \examples{
 m <- matrix(1:12, 3, 4)

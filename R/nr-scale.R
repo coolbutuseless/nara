@@ -2,11 +2,11 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Resize a native raster by specifying the output dimensions
 #' 
-#' @inheritParams nr_rect
+#' @inheritParams nr_fill
 #' @param algo 'nn' for nearest neighbor (the default), or 'bilinear' for 
 #'        bilinear interpolation.
 #' @param width,height dimensions for output image
-#' @return New \code{nativeRaster}
+#' @return New native raster image
 #' @examples
 #' stretched <- nr_resize(deer_sprites[[1]], 100, 40, algo = 'nn')
 #' plot(stretched)
@@ -24,12 +24,12 @@ nr_resize <- function(nr, width, height, algo = 'nn') {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Resize a \code{nativeRaster} using a scale factor
+#' Resize a native raster image using a scale factor
 #' 
 #' @inheritParams nr_resize
 #' @param scale scale factor
 #' 
-#' @return New \code{nativeRaster}
+#' @return New native raster image
 #' @examples
 #' big <- nr_scale(deer_sprites[[1]], 2)
 #' plot(big)

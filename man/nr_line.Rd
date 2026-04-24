@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-draw.R
 \name{nr_line}
 \alias{nr_line}
-\title{Draw lines on a \code{nativeRaster} image}
+\title{Draw lines on a native raster image}
 \usage{
 nr_line(
   nr,
@@ -16,7 +16,7 @@ nr_line(
 )
 }
 \arguments{
-\item{nr}{\code{nativeRaster}}
+\item{nr}{native raster image}
 
 \item{x1, y1, x2, y2}{Vectors of coordinates of endpoints of line}
 
@@ -33,7 +33,8 @@ rendered as polygons.}
 \item{mode}{drawing mode.}
 }
 \value{
-Original \code{nativeRaster} modified in-place
+Invisibly return the supplied native raster image which was been
+        modified in-place
 }
 \description{
 Uses Bresenham's algorithm to draw lines. No antialiasing.
