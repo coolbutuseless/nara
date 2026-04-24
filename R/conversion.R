@@ -22,9 +22,9 @@ nr_to_raster <- function(nr) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
-#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 raster_to_nr <- function(ras, dst = NULL) {
@@ -32,9 +32,9 @@ raster_to_nr <- function(ras, dst = NULL) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
-#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_to_array <- function(nr) {
@@ -42,14 +42,15 @@ nr_to_array <- function(nr) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname nr_to_raster
-#' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 array_to_nr <- function(arr, dst = NULL) {
   .Call(array_to_nr_, arr, dst)
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,6 +81,7 @@ array_to_nr <- function(arr, dst = NULL) {
 matrix_to_nr <- function(mat, palette, fill = 'transparent', min = 0.0, max = 1.0, dst = NULL) {
   .Call(matrix_to_nr_, mat, palette, fill, min, max, dst)
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,18 +127,4 @@ if (FALSE) {
   identical(dim(ras), dim(ras2))
   identical(unclass(ras), toupper(unclass(ras2)))
 }
-
-
-if (FALSE) {
-  mat <- matrix(seq(0, 10, length.out = 10)/ 10, 2, 5)
-  
-  palette <- rainbow(100) |> colorfast::col_to_int()
-  matrix_to_nr(mat, palette = palette)
-  
-}
-
-
-
-
-
 

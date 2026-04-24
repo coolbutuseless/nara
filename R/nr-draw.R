@@ -22,6 +22,7 @@ nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) 
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Draw lines on a \code{nativeRaster} image
 #'
@@ -45,6 +46,7 @@ nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) 
 nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, mode = draw_mode$respect_alpha) {
   invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth, mode))
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,6 +85,7 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = 
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Draw rectangles on a \code{nativeRaster} image
 #'
@@ -111,6 +114,7 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Draw circles on a \code{nativeRaster} image
 #'
@@ -134,6 +138,7 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$respect_alpha) {
   invisible(.Call(nr_circle_, nr, x, y, r, fill, color, mode))
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -183,8 +188,6 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 
 
 
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Draw multiple polygon on a \code{nativeRaster} image
 #'
@@ -211,34 +214,4 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, mode = draw_mode$respect_alpha) {
   invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit, mode))
 }
-
-
-
-if (FALSE) {
-  
-  x <- c(0, 100, 100,   0,  0,  100,   25, 75, 75, 25)
-  y <- c(0,   0, 100,   0, 100, 100,   25, 25, 75, 75)
-  id <- c(1, 1, 1, 2, 2, 2, 8, 8, 8, 8)
-  
-  nr <- nr_new(100, 100)
-  
-  nr_polygon(nr, x = x, y = y, id = id, fill = c('grey20', 'blue', 'hotpink'), color = c('black', 'black', 'black'))
-  plot(nr)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

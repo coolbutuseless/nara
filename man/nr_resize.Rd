@@ -7,11 +7,11 @@
 nr_resize(nr, width, height, algo = "nn")
 }
 \arguments{
-\item{nr}{native raster}
+\item{nr}{\code{nativeRaster}}
 
-\item{width, height}{new dimensions}
+\item{width, height}{dimensions for output image}
 
-\item{algo}{'nn' for nearest neighbour (the default), or 'bilinear' for 
+\item{algo}{'nn' for nearest neighbor (the default), or 'bilinear' for 
 bilinear interpolation.}
 }
 \value{

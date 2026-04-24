@@ -42,23 +42,5 @@ Other conversion functions:
 \code{\link{matrix_to_nr}()},
 \code{\link{nrs_to_gif}()},
 \code{\link{nrs_to_mp4}()}
-
-Other conversion functions: 
-\code{\link{magick_to_nr}()},
-\code{\link{matrix_to_nr}()},
-\code{\link{nrs_to_gif}()},
-\code{\link{nrs_to_mp4}()}
-
-Other conversion functions: 
-\code{\link{magick_to_nr}()},
-\code{\link{matrix_to_nr}()},
-\code{\link{nrs_to_gif}()},
-\code{\link{nrs_to_mp4}()}
-
-Other conversion functions: 
-\code{\link{magick_to_nr}()},
-\code{\link{matrix_to_nr}()},
-\code{\link{nrs_to_gif}()},
-\code{\link{nrs_to_mp4}()}
 }
 \concept{conversion functions}

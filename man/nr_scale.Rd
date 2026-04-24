@@ -11,7 +11,7 @@ nr_scale(nr, scale, algo = "nn")
 
 \item{scale}{scale factor}
 
-\item{algo}{'nn' for nearest neighbour (the default), or 'bilinear' for 
+\item{algo}{'nn' for nearest neighbor (the default), or 'bilinear' for 
 bilinear interpolation.}
 }
 \value{

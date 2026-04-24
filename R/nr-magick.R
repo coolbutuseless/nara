@@ -1,5 +1,4 @@
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Convert a 'magick' image to \code{nativeRaster}
 #' 
@@ -33,6 +32,7 @@ magick_to_nr <- function(im, dst = NULL) {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname magick_to_nr
 #' @family conversion functions
@@ -46,6 +46,7 @@ nr_to_magick <- function(nr) {
     NULL
   }
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,6 +76,7 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
   }
   invisible()
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

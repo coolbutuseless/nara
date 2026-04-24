@@ -1,5 +1,4 @@
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Convert image to gray
 #' 
@@ -19,6 +18,7 @@
 nr_desaturate <- function(nr, factor = 1) {
   .Call(nr_desaturate_, nr, factor)
 }
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +42,7 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 }
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Threshold to binary image
 #' 
@@ -59,6 +60,4 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 nr_threshold <- function(nr, value = 0.5) {
   .Call(nr_threshold_, nr, value)
 }
-
-
 
