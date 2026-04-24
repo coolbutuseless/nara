@@ -40,7 +40,7 @@ SEXP nr_desaturate_(SEXP nr_, SEXP factor_) {
       val = (i - p[1]) * factor;
       p[1] = p[1] + (uint8_t)(val < 0 ? 0 : val);
       
-      val = (i - p[0]) * factor;
+      val = (i - p[2]) * factor;
       p[2] = p[2] + (uint8_t)(val < 0 ? 0 : val);
       p += 4;
     }

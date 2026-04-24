@@ -233,29 +233,6 @@ nr_fliph <- function(nr) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Replace colors in a native raster image
-#' 
-#' @inheritParams nr_fill
-#' @param old Vector of old colors
-#' @param new Vector of replacement colors
-#' 
-#' @return Invisibly return the supplied native raster image which was been
-#'         modified in-place
-#' 
-#' @examples
-#' nr <- nr_new(10, 10, 'hotpink')
-#' nr_replace(nr, 'hotpink', 'grey80')
-#' plot(nr)
-#' 
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_replace <- function(nr, old, new) {
-  invisible(.Call(replace_, nr, old, new))
-}
-
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Rotate a native raster image by 90,180,270 degrees
 #' @inheritParams nr_fill

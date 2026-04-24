@@ -70,3 +70,26 @@ nr_threshold <- function(nr, value = 0.5) {
   .Call(nr_threshold_, nr, value)
 }
 
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Replace colors in a native raster image
+#' 
+#' @inheritParams nr_fill
+#' @param old Vector of old colors
+#' @param new Vector of replacement colors
+#' 
+#' @return Invisibly return the supplied native raster image which was been
+#'         modified in-place
+#' 
+#' @examples
+#' nr <- nr_new(10, 10, 'hotpink')
+#' nr_color_replace(nr, 'hotpink', 'grey80')
+#' plot(nr)
+#' @family color manipulation functions
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr_color_replace <- function(nr, old, new) {
+  invisible(.Call(replace_, nr, old, new))
+}
+

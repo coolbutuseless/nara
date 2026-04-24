@@ -37,7 +37,7 @@ test_that("nr-core works", {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
   nr <- nr_new(4, 3, 'white')
   nr2 <- nr_new(4, 3, 'black')
-  nr_replace(nr, 'white', 'black')
+  nr_color_replace(nr, 'white', 'black')
   expect_equal(nr, nr2)
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
