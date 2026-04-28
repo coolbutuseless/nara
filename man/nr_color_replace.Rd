@@ -24,5 +24,11 @@ Replace colors in a native raster image
 nr <- nr_new(10, 10, 'hotpink')
 nr_color_replace(nr, 'hotpink', 'grey80')
 plot(nr)
-
 }
+\seealso{
+Other color manipulation functions: 
+\code{\link{nr_desaturate}()},
+\code{\link{nr_dither}()},
+\code{\link{nr_threshold}()}
+}
+\concept{color manipulation functions}

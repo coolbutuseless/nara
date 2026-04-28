@@ -44,6 +44,7 @@ plot(nr, TRUE)
 Other drawing functions: 
 \code{\link{nr_polygon}()},
 \code{\link{nr_polyline}()},
-\code{\link{nr_rect}()}
+\code{\link{nr_rect}()},
+\code{\link{nr_tri_mesh}()}
 }
 \concept{drawing functions}
