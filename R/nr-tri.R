@@ -142,8 +142,8 @@ if (FALSE) {
   
   # obj <- rgl::readOBJ("working/obj/newell_teaset/teapot.obj")
   obj <- rgl::readOBJ('working/obj/bunny2.obj')
-  obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj") 
-  # obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj") 
+  # obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj") 
+  obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj")
   obj <- rgl::addNormals(obj)
   obj |> lobstr::obj_size()
   

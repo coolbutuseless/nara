@@ -46,14 +46,13 @@ int max3(int a, int b, int c) {
   return (c > temp) ? c : temp;
 }
 
+
 bool is_left_top_edge(int x0, int y0, int x1, int y1) {
-  // const edge = new Vector(end);
-  // edge.sub(start);
-  // 
-  // const isLeftEdge = edge[1] > 0;
-  // const isTopEdge = edge[1] == 0 && edge[0] < 0;
-  // return isLeftEdge || isTopEdge;
-  return false;
+  bool is_left_edge = y1 > y0;
+  bool is_top_edge  = (y1 == y0) && (x1 < x0);
+  
+  
+  return is_left_edge || is_top_edge;
 }
 
 
@@ -73,17 +72,33 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   //  - cull (i.e. don't draw)
   //  - invert (reject valid tris, and keep invalid tris)
   //  - correct all triangles to be valid?
+  
+  // Calculate the determinant using the full resolution 'double' data.
+  // If we round to integer to calculate the overall triangle area, then
+  // small triangles are going to have all 3 vertices collapse to a single
+  // coordinate.  The det(a, b, c) where a,b,c are all the same point 
+  // evaluates to zero.  So every small triangle with all vertices the same
+  // will be "facing" the camera and rendered. This leads to freckles/noise
+  // in the output.
   bool tri_ok = det_dbl(x0d, y0d, x1d, y1d, x2d, y2d) >= 0;
-  // if (!tri_ok) return;
+  if (!tri_ok) return;
 
-  if (!tri_ok) {
-    // swap 2 verts to make it ok
-    double tmp;
-    tmp = x0d; x0d = x1d; x1d = tmp;
-    tmp = y0d; y0d = y1d; y1d = tmp;
-  } else {
-    return;
-  }
+  // if (!tri_ok) {
+  //   // swap 2 verts to make it ok
+  //   double tmp;
+  //   tmp = x0d; x0d = x1d; x1d = tmp;
+  //   tmp = y0d; y0d = y1d; y1d = tmp;
+  // } else {
+  //   return;
+  // }
+  
+  
+  // if (!tri_ok) {
+  //   // swap 2 verts to make it ok
+  //   double tmp;
+  //   tmp = x0d; x0d = x1d; x1d = tmp;
+  //   tmp = y0d; y0d = y1d; y1d = tmp;
+  // }
   
   int x0 = (int)round(x0d);
   int y0 = (int)round(y0d);
@@ -124,6 +139,13 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   int dx1 = y2 - y1; int dy1 = x1 - x2;
   int dx2 = y0 - y2; int dy2 = x2 - x0;
   
+  
+  // Correct for edge overlap
+  w00 += (is_left_top_edge(x0, y0, x1, y1)) ? -1 : 0;
+  w10 += (is_left_top_edge(x1, y1, x2, y2)) ? -1 : 0;
+  w20 += (is_left_top_edge(x2, y2, x0, y0)) ? -1 : 0;
+  
+  
   // Loop over the bounding box
   //   calc 3 determinants at each point
   //   if all three are >= 0, the point is interior to triangle
@@ -141,11 +163,6 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
       // int w0 = det(x0, y0, x1, y1, x, y);
       // int w1 = det(x1, y1, x2, y2, x, y);
       // int w2 = det(x2, y2, x0, y0, x, y);
-      
-      // Correct for edge overlap
-      // if (is_left_top_edge(x0, y0, x1, y1)) w0--;
-      // if (is_left_top_edge(x1, y1, x2, y2)) w1--;
-      // if (is_left_top_edge(x2, y2, x0, y0)) w2--;
       
       if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
         nr_point(nr, nr_width, nr_height, x, y, color, draw_mode);
