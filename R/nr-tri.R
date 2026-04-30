@@ -109,16 +109,44 @@ if (FALSE) {
   obj <- rgl::readOBJ('working/obj/bunny2.obj')
   obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj") 
   obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj") 
+  obj <- rgl::addNormals(obj)
   obj |> lobstr::obj_size()
-  # obj <- rgl::addNormals(obj)
-  # obj <- rgl::icosahedron3d()
+  
+  {
+    # Get centroid (or at least one point on tri)
+    
+    # Set light point (1000, 10000, 10000)
+    # Calculate vector from light to centroid
+    # Calcualte dot produce (light.vector x normal)
+    # Use this to create a shaded colour
+    i <- obj$it[1,]
+    centroids <- obj$vb[1:3, i]
+    to_light  <- c(2, 2, 2) - centroids
+    
+    mag <- sqrt(colSums(to_light ^ 2))
+    mag <- rbind(mag, mag, mag)
+    to_light <- to_light / mag
+    
+    vert_norm <- obj$normals[1:3,]
+    face_norm <- vert_norm[,i]
+    dotprod <- colSums(to_light * face_norm)
+    
+    dotprod <- -dotprod
+    dotprod[dotprod < 0] <- 0
+    dotprod[dotprod > 1] <- 1
+    
+    cols_fun <- colorRamp(c('royalblue', 'lightblue'))
+    cols <- cols_fun(dotprod)  
+    cols <- rgb(cols[,1], cols[,2], cols[,3], alpha = 255, maxColorValue = 255)
+  }
+  
   
   ntri <- ncol(obj$it)
   vertices <- with(obj, vb[, obj$it])
   vertices <- (vertices * 1000) + off
   
   # cols <- viridisLite::inferno(ntri, begin = 0.1, end = 0.3) |> sample() # colors for triangles
-  cols <- 'royalblue'
+  # cols <- 'royalblue'
   pvertices <- vertices
   pvertices[] <- vertices
   
