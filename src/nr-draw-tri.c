@@ -22,23 +22,23 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // is (cx, cy) to the left of the line from (ax, ay) to (bx, by)?
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// double left_of(double ax, double ay, double bx, double by, double cx, double cy) {
+// int left_of(int ax, int ay, int bx, int by, int cx, int cy) {
 //   return ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay)) >= 0;
 // }
 
-double det(double ax, double ay, double bx, double by, double cx, double cy) {
+int det(int ax, int ay, int bx, int by, int cx, int cy) {
   return ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
 }
 
 
-double min3(double a, double b, double c) {
-  double temp = (a < b)    ? a : b;
+int min3(int a, int b, int c) {
+  int temp = (a < b)    ? a : b;
   return (c < temp) ? c : temp;
 }
 
 
-double max3(double a, double b, double c) {
-  double temp = (a > b) ? a : b;
+int max3(int a, int b, int c) {
+  int temp = (a > b) ? a : b;
   return (c > temp) ? c : temp;
 }
 
@@ -47,28 +47,29 @@ double max3(double a, double b, double c) {
 // 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_tri(uint32_t *nr, int nr_width, int nr_height, 
-              double x0, double y0, 
-              double x1, double y1, 
-              double x2, double y2,
+              int x0, int y0, 
+              int x1, int y1, 
+              int x2, int y2,
               int color, 
               draw_mode_t draw_mode) {
   
   // // Do nothing if triangle not oriented correctly
   bool tri_ok = det(x0, y0, x1, y1, x2, y2) >= 0;
-  if (!tri_ok) return;
+  
+  // if (!tri_ok) return;
 
-  // if (!tri_ok) {
-  //   // swap 2 verts to make it ok
-    // double tmp;
-    // tmp = x0; x0 = x1; x1 = tmp;
-    // tmp = y0; y0 = y1; y1 = tmp;
-  // }
+  if (!tri_ok) {
+    // swap 2 verts to make it ok
+  int tmp;
+  tmp = x0; x0 = x1; x1 = tmp;
+  tmp = y0; y0 = y1; y1 = tmp;
+  }
   
   
-  double xmin = min3(x0, x1, x2);
-  double xmax = max3(x0, x1, x2);
-  double ymin = min3(y0, y1, y2);
-  double ymax = max3(y0, y1, y2);
+  int xmin = min3(x0, x1, x2);
+  int xmax = max3(x0, x1, x2);
+  int ymin = min3(y0, y1, y2);
+  int ymax = max3(y0, y1, y2);
   
   xmin = xmin < 0 ? 0 : xmin;
   xmax = xmax > nr_width ? nr_width : xmax;
@@ -81,7 +82,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
           det(x1, y1, x2, y2, x, y) >= 0 &&
           det(x2, y2, x0, y0, x, y) >= 0) {
         nr_point(nr, nr_width, nr_height, x, y, color, draw_mode);
-      } 
+      }
     }
   }
   
@@ -89,7 +90,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   // nr_line(nr, nr_width, nr_height, x0, y0, x1, y1, 0xFF000000, 1, draw_mode);
   // nr_line(nr, nr_width, nr_height, x1, y1, x2, y2, 0xFF000000, 1, draw_mode);
   // nr_line(nr, nr_width, nr_height, x2, y2, x0, y0, 0xFF000000, 1, draw_mode);
-  // 
+
   // nr_point(nr, nr_width, nr_height, x0, y0, color, draw_mode);
   // nr_point(nr, nr_width, nr_height, x1, y1, color, draw_mode);
   // nr_point(nr, nr_width, nr_height, x2, y2, color, draw_mode);
@@ -122,7 +123,8 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP draw_all_, SEXP fo
     Rf_error("nr_tri_coords_(): Long data not supported yet");
   }
   
-  double *coords = REAL(coords_);
+  bool free_coords = false;
+  int *coords = as_int32_vec(coords_, Rf_length(coords_), &free_coords);
   int n_tris = n_coords / 3;
 
   bool free_color = false;
@@ -143,8 +145,8 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP draw_all_, SEXP fo
   }
   
   
-  
-  if (free_color) free(color);
+  if (free_coords) free(coords);
+  if (free_color)  free(color);
   return nr_;
 }
 

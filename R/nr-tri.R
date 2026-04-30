@@ -77,12 +77,9 @@ if (FALSE) {
   vertices <- with(obj, vb[, obj$it])
   vertices <- (vertices * 40) + off
   
-  pvertices <- vertices
-  pvertices[] <- vertices
-  
   nr <- nr_new(w, h)
-  nr_tri_coords(nr, pvertices, cols)
-  grid.raster(nr, interpolate = FALSE)
+  nr_tri_coords(nr, vertices, cols)
+  grid.newpage(); grid.raster(nr, interpolate = FALSE)
   
 }
 
@@ -157,8 +154,41 @@ if (FALSE) {
     
   }
   print(Sys.time() - start)
-  
+ 
+  tigr_close(window)
+   
 }
 
+
+
+if (FALSE) {
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Investigate the 'double-draw' bug when rastering two triangles 
+  # with a shared edge
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  library(grid)
+  library(insitu)
+  
+  w   <- 20
+  h   <- 20
+  fac <- 5
+  
+  vertices <- matrix(c(
+    10, 10,
+    100, 100,
+    100, 10, 
+    
+    10, 10, 
+    10, 100, 
+    100, 100
+  ), nrow = 2) / 10
+  
+  cols <- scales::alpha(c('red', 'blue'), 0.2)
+  nr <- nr_new(w, h)
+  nr_tri_coords(nr, vertices, cols)
+  grid.raster(nr, interpolate = FALSE)
+  
+}
 
 
