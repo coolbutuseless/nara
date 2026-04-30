@@ -7,7 +7,7 @@
 \usage{
 nr_tri_mesh(nr, vertices, indices, col, draw_all = FALSE, format = "auto")
 
-nr_tri_coords(nr, coords, col, draw_all = FALSE, format = "auto")
+nr_tri_coords(nr, coords, col, tri_mode = "ccw", format = "auto")
 }
 \arguments{
 \item{nr}{native raster image}
@@ -23,11 +23,11 @@ one-triangle-per-matrix-coloumn (wide)}
 
 \item{col}{color specification. Single color or one color per tri}
 
-\item{draw_all}{adjust all triangles to be the correct orientation}
-
 \item{format}{format of data. i.e. 'tall', 'wide' or 'auto'. Default: 'auto'}
 
 \item{coords}{direct coordinate data for each triangle.  Can be 'tall' or 'wide'}
+
+\item{tri_mode}{'ccw', 'cw', 'all'}
 }
 \value{
 Invisibly return native raster

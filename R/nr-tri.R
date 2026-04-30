@@ -13,7 +13,7 @@
 #' @param coords direct coordinate data for each triangle.  Can be 'tall' or 'wide'
 #' @param col color specification. Single color or one color per tri
 #' @param format format of data. i.e. 'tall', 'wide' or 'auto'. Default: 'auto'
-#' @param draw_all adjust all triangles to be the correct orientation
+#' @param tri_mode 'ccw', 'cw', 'all' 
 #' 
 #' @return Invisibly return native raster
 #' @family drawing functions
@@ -29,31 +29,12 @@ nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE, format = '
 #' @rdname nr_tri_mesh
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_coords <- function(nr, coords, col, draw_all = FALSE, format = 'auto') {
+nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw', format = 'auto') {
   invisible(
-    .Call(nr_tri_coords_, nr, coords, col, draw_all, format)
+    .Call(nr_tri_coords_, nr, coords, col, tri_mode, format)
   )
 }
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw an outline wireframe mesh only
-#' 
-#' @inheritParams nr_tri_mesh
-#' @return nr
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_wireframe_mesh <- function(nr, vertices, indices, col, draw_all = FALSE, format = 'auto') {
-  stop("nr_wireframe_mesh(): not done yet")
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' @rdname nr_wireframe_mesh
-#' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_wireframe_coords <- function(nr, coords, col, draw_all = FALSE, format = 'auto') {
-  stop("nr_wireframe_coords(): not done yet")
-}
 
 
 
@@ -83,12 +64,14 @@ if (FALSE) {
   pvertices <- vertices
   pvertices[] <- vertices
   
+  nr <- nr_new(w, h)
+  
   nframes <- 300
   start <- Sys.time()
   for (frame in seq_len(nframes)) {
     
     nr_fill(nr, 'black')
-    nr_tri_coords(nr, pvertices, cols)
+    nr_tri_coords(nr, pvertices, cols, tri_mode = 'ccw')
     tigr_update(window, nr)
     
     # The transformation function is dependent upon the frame number
@@ -141,9 +124,9 @@ if (FALSE) {
   # ntri <- ncol(vertices) / 3
   
   # obj <- rgl::readOBJ("working/obj/newell_teaset/teapot.obj")
-  obj <- rgl::readOBJ('working/obj/bunny2.obj')
-  # obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj") 
-  obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj")
+  # obj <- rgl::readOBJ('working/obj/bunny2.obj')
+  obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj")
+  # obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj")
   obj <- rgl::addNormals(obj)
   obj |> lobstr::obj_size()
   

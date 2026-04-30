@@ -56,6 +56,9 @@ bool is_left_top_edge(int x0, int y0, int x1, int y1) {
 }
 
 
+#define TRI_CCW 1
+#define TRI_CW  2
+#define TRI_ALL 3
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +69,9 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
               double x1d, double y1d, 
               double x2d, double y2d,
               int color, 
-              draw_mode_t draw_mode) {
+              draw_mode_t draw_mode,
+              int tri_mode
+              ) {
   
   // What should be done if triangle not oriented correctly?
   //  - cull (i.e. don't draw)
@@ -80,20 +85,20 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   // evaluates to zero.  So every small triangle with all vertices the same
   // will be "facing" the camera and rendered. This leads to freckles/noise
   // in the output.
-  bool tri_ok = det_dbl(x0d, y0d, x1d, y1d, x2d, y2d) >= 0;
-  if (!tri_ok) return;
-
-  // if (!tri_ok) {
-  //   // swap 2 verts to make it ok
-  //   double tmp;
-  //   tmp = x0d; x0d = x1d; x1d = tmp;
-  //   tmp = y0d; y0d = y1d; y1d = tmp;
-  // } else {
-  //   return;
-  // }
+  bool oriented_ccw = det_dbl(x0d, y0d, x1d, y1d, x2d, y2d) >= 0;
+  
+  if (tri_mode == TRI_CCW && !oriented_ccw) return;
+  if (tri_mode == TRI_CW  &&  oriented_ccw) return;
+  
+  if (!oriented_ccw) {
+    // swap 2 verts to make it ok
+    double tmp;
+    tmp = x0d; x0d = x1d; x1d = tmp;
+    tmp = y0d; y0d = y1d; y1d = tmp;
+  }
   
   
-  // if (!tri_ok) {
+  // if (!oriented_ccw) {
   //   // swap 2 verts to make it ok
   //   double tmp;
   //   tmp = x0d; x0d = x1d; x1d = tmp;
@@ -194,9 +199,21 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Integer coordinates only
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP draw_all_, SEXP format_) {
+SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, SEXP format_) {
   
   assert_nativeraster(nr_);
+  
+  const char *tri_mode_str = CHAR(STRING_ELT(tri_mode_, 0));
+  int tri_mode = TRI_CCW;
+  if (strcmp(tri_mode_str, "ccw") == 0) {
+    tri_mode = TRI_CCW;
+  } else if (strcmp(tri_mode_str, "cw") == 0) {
+    tri_mode = TRI_CW;
+  } else if (strcmp(tri_mode_str, "all") == 0) {
+    tri_mode = TRI_ALL;
+  } else {
+    Rf_error("nr_tri_coords_(): tri_mode not understood: '%s'", tri_mode_str);
+  }
   
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   
@@ -234,7 +251,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP draw_all_, SEXP fo
              coords[stride * 0 + i], coords[stride * 0 + i + 1],
              coords[stride * 1 + i], coords[stride * 1 + i + 1],
              coords[stride * 2 + i], coords[stride * 2 + i + 1],
-             color[col_idx], draw_mode); 
+             color[col_idx], draw_mode, tri_mode); 
     col_idx++;
   }
   

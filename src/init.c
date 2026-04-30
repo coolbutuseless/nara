@@ -77,7 +77,7 @@ extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , S
                                SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
 
 
-extern SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP col_, SEXP draw_all_, SEXP format_);
+extern SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP col_, SEXP tri_mode_, SEXP format_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Color twiddling
