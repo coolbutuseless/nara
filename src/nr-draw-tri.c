@@ -26,6 +26,10 @@
 //   return ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay)) >= 0;
 // }
 
+double det_dbl(double ax, double ay, double bx, double by, double cx, double cy) {
+  return ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
+}
+
 int det(int ax, int ay, int bx, int by, int cx, int cy) {
   return ((by - ay) * (cx - ax) - (bx - ax) * (cy - ay));
 }
@@ -59,9 +63,9 @@ bool is_left_top_edge(int x0, int y0, int x1, int y1) {
 // 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void draw_tri(uint32_t *nr, int nr_width, int nr_height, 
-              int x0, int y0, 
-              int x1, int y1, 
-              int x2, int y2,
+              double x0d, double y0d, 
+              double x1d, double y1d, 
+              double x2d, double y2d,
               int color, 
               draw_mode_t draw_mode) {
   
@@ -69,18 +73,24 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   //  - cull (i.e. don't draw)
   //  - invert (reject valid tris, and keep invalid tris)
   //  - correct all triangles to be valid?
-  bool tri_ok = det(x0, y0, x1, y1, x2, y2) >= 0;
-  
-  if (!tri_ok) return;
+  bool tri_ok = det_dbl(x0d, y0d, x1d, y1d, x2d, y2d) >= 0;
+  // if (!tri_ok) return;
 
-  // if (!tri_ok) {
-  //   // swap 2 verts to make it ok
-  //   int tmp;
-  //   tmp = x0; x0 = x1; x1 = tmp;
-  //   tmp = y0; y0 = y1; y1 = tmp;
-  // } else { 
-  //   return;
-  // }
+  if (!tri_ok) {
+    // swap 2 verts to make it ok
+    double tmp;
+    tmp = x0d; x0d = x1d; x1d = tmp;
+    tmp = y0d; y0d = y1d; y1d = tmp;
+  } else {
+    return;
+  }
+  
+  int x0 = (int)round(x0d);
+  int y0 = (int)round(y0d);
+  int x1 = (int)round(x1d);
+  int y1 = (int)round(y1d);
+  int x2 = (int)round(x2d);
+  int y2 = (int)round(y2d);
   
   
   // Calculate bounding box of the triangle
@@ -191,7 +201,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP draw_all_, SEXP fo
   }
   
   bool free_coords = false;
-  int *coords = as_int32_vec(coords_, Rf_length(coords_), &free_coords);
+  double *coords = as_double_vec(coords_, Rf_length(coords_), &free_coords);
   int n_tris = n_coords / 3;
 
   bool free_color = false;
