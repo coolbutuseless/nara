@@ -60,6 +60,7 @@ nr_wireframe_coords <- function(nr, coords, col, draw_all = FALSE, format = 'aut
 if (FALSE) {
   library(grid)
   library(insitu)
+  library(naratigr)
   
   w   <- 200
   h   <- 200
@@ -67,6 +68,8 @@ if (FALSE) {
   
   obj <- rgl::icosahedron3d()
   ntri <- ncol(obj$it)
+  window <- naratigr::tigr_open(w, h)
+  
   set.seed(2)
   cols <- viridisLite::inferno(ntri) |> sample() # colors for triangles
   
@@ -77,9 +80,41 @@ if (FALSE) {
   vertices <- with(obj, vb[, obj$it])
   vertices <- (vertices * 40) + off
   
-  nr <- nr_new(w, h)
-  nr_tri_coords(nr, vertices, cols)
-  grid.newpage(); grid.raster(nr, interpolate = FALSE)
+  pvertices <- vertices
+  pvertices[] <- vertices
+  
+  nframes <- 300
+  start <- Sys.time()
+  for (frame in seq_len(nframes)) {
+    
+    nr_fill(nr, 'black')
+    nr_tri_coords(nr, pvertices, cols)
+    tigr_update(window, nr)
+    
+    # The transformation function is dependent upon the frame number
+    # in order to get a nice sinusoidal rotation effect
+    frac <- (frame - 1)/nframes
+    tf <- tf3_new() |> 
+      tf3_add_translate(x = -off, y = -off, z = -off) |>
+      tf3_add_rotate_x(2   * sin(2 * pi * frac + pi/4)) |>
+      tf3_add_rotate_y(1   * sin(2 * pi * frac)) |>
+      tf3_add_rotate_z(1.5 * sin(2 * pi * frac + pi/3)) |>
+      # tf3_add_rotate_y(7 * nframes/300 * cos(frac * 2 + pi/4)) |>
+      # tf3_add_rotate_z(3 * nframes/300 * sin(frac * 8 + pi/2)) |>
+      tf3_add_translate(x = off, y = off, z = off)
+    
+    # Start with the raw vertex data and transform it, ready for the next frame
+    br_copy(pvertices, vertices)
+    pvertices |>
+      br_mat_transpose() |>
+      tf3_apply(tf) |>
+      br_mat_transpose()
+    
+  }
+  print(Sys.time() - start)
+  
+  
+  tigr_close(window)
   
 }
 

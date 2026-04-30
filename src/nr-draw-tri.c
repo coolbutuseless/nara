@@ -65,7 +65,10 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
               int color, 
               draw_mode_t draw_mode) {
   
-  // // Do nothing if triangle not oriented correctly
+  // What should be done if triangle not oriented correctly?
+  //  - cull (i.e. don't draw)
+  //  - invert (reject valid tris, and keep invalid tris)
+  //  - correct all triangles to be valid?
   bool tri_ok = det(x0, y0, x1, y1, x2, y2) >= 0;
   
   if (!tri_ok) return;
@@ -75,14 +78,18 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   //   int tmp;
   //   tmp = x0; x0 = x1; x1 = tmp;
   //   tmp = y0; y0 = y1; y1 = tmp;
+  // } else { 
+  //   return;
   // }
   
   
+  // Calculate bounding box of the triangle
   int xmin = min3(x0, x1, x2);
   int xmax = max3(x0, x1, x2);
   int ymin = min3(y0, y1, y2);
   int ymax = max3(y0, y1, y2);
   
+  // If bounding box is off the edge of the canvas, clamp it to the canvas limits
   xmin = xmin < 0 ? 0 : xmin;
   xmax = xmax > nr_width ? nr_width : xmax;
   ymin = ymin < 0 ? 0 : ymin;
@@ -92,32 +99,30 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   // Only need to calculate the determinant once, 
   // and then the determinant at every other position is just a 
   // linear offset.
-  // So the det at each point can be done with an addition, 
-  // rather than a full recalculation
+  // So the det at each point can be done with just 3 additions, 
+  // rather than 3 calls to det()
   
-  // Find determinants at top of bbox
+  // Find determinants at top left of bbox
   int w00 = det(x0, y0, x1, y1, xmin, ymin);
   int w10 = det(x1, y1, x2, y2, xmin, ymin);
   int w20 = det(x2, y2, x0, y0, xmin, ymin);
 
   // Find how much the determinant changes for a 1-pixel
-  // change in x and y directions
-  int dx0 = det(x0, y0, x1, y1, xmin + 1, ymin    ) - w00;
-  int dy0 = det(x0, y0, x1, y1, xmin    , ymin + 1) - w00;
-
-  int dx1 = det(x1, y1, x2, y2, xmin + 1, ymin    ) - w10;
-  int dy1 = det(x1, y1, x2, y2, xmin    , ymin + 1) - w10;
-
-  int dx2 = det(x2, y2, x0, y0, xmin + 1, ymin    ) - w20;
-  int dy2 = det(x2, y2, x0, y0, xmin    , ymin + 1) - w20;
+  // change in cx and cy by doing some manual 
+  // maths on the det() function 
+  int dx0 = y1 - y0; int dy0 = x0 - x1;
+  int dx1 = y2 - y1; int dy1 = x1 - x2;
+  int dx2 = y0 - y2; int dy2 = x2 - x0;
   
-  
+  // Loop over the bounding box
+  //   calc 3 determinants at each point
+  //   if all three are >= 0, the point is interior to triangle
   for (int y = ymin; y < ymax; y++) {
   
     // Calculate determinant at start of this row  
-    int w0 = w00 + (y - ymin) * dy0;
-    int w1 = w10 + (y - ymin) * dy1;
-    int w2 = w20 + (y - ymin) * dy2;
+    int w0 = w00;
+    int w1 = w10;
+    int w2 = w20;
     
     for (int x = xmin; x < xmax; x++) {
       
@@ -136,12 +141,16 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
         nr_point(nr, nr_width, nr_height, x, y, color, draw_mode);
       }
       
-      // Recalc determinant for next pixel
+      // Update determinants for next pixel in this row
       w0 += dx0;
       w1 += dx1;
       w2 += dx2;
-      
     }
+    
+    // Update determinants for next row
+    w00 += dy0;
+    w10 += dy1;
+    w20 += dy2;
   }
   
   
