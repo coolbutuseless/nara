@@ -42,6 +42,18 @@ int max3(int a, int b, int c) {
   return (c > temp) ? c : temp;
 }
 
+bool is_left_top_edge(int x0, int y0, int x1, int y1) {
+  // const edge = new Vector(end);
+  // edge.sub(start);
+  // 
+  // const isLeftEdge = edge[1] > 0;
+  // const isTopEdge = edge[1] == 0 && edge[0] < 0;
+  // return isLeftEdge || isTopEdge;
+  return false;
+}
+
+
+
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 
@@ -56,14 +68,14 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   // // Do nothing if triangle not oriented correctly
   bool tri_ok = det(x0, y0, x1, y1, x2, y2) >= 0;
   
-  // if (!tri_ok) return;
+  if (!tri_ok) return;
 
-  if (!tri_ok) {
-    // swap 2 verts to make it ok
-  int tmp;
-  tmp = x0; x0 = x1; x1 = tmp;
-  tmp = y0; y0 = y1; y1 = tmp;
-  }
+  // if (!tri_ok) {
+  //   // swap 2 verts to make it ok
+  //   int tmp;
+  //   tmp = x0; x0 = x1; x1 = tmp;
+  //   tmp = y0; y0 = y1; y1 = tmp;
+  // }
   
   
   int xmin = min3(x0, x1, x2);
@@ -76,13 +88,59 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   ymin = ymin < 0 ? 0 : ymin;
   ymax = ymax > nr_height ? nr_height : ymax;
   
-  for (int x = xmin; x < xmax; x++) {
-    for (int y = ymin; y < ymax; y++) {
-      if (det(x0, y0, x1, y1, x, y) >= 0 &&
-          det(x1, y1, x2, y2, x, y) >= 0 &&
-          det(x2, y2, x0, y0, x, y) >= 0) {
+  
+  // Only need to calculate the determinant once, 
+  // and then the determinant at every other position is just a 
+  // linear offset.
+  // So the det at each point can be done with an addition, 
+  // rather than a full recalculation
+  
+  // Find determinants at top of bbox
+  int w00 = det(x0, y0, x1, y1, xmin, ymin);
+  int w10 = det(x1, y1, x2, y2, xmin, ymin);
+  int w20 = det(x2, y2, x0, y0, xmin, ymin);
+
+  // Find how much the determinant changes for a 1-pixel
+  // change in x and y directions
+  int dx0 = det(x0, y0, x1, y1, xmin + 1, ymin    ) - w00;
+  int dy0 = det(x0, y0, x1, y1, xmin    , ymin + 1) - w00;
+
+  int dx1 = det(x1, y1, x2, y2, xmin + 1, ymin    ) - w10;
+  int dy1 = det(x1, y1, x2, y2, xmin    , ymin + 1) - w10;
+
+  int dx2 = det(x2, y2, x0, y0, xmin + 1, ymin    ) - w20;
+  int dy2 = det(x2, y2, x0, y0, xmin    , ymin + 1) - w20;
+  
+  
+  for (int y = ymin; y < ymax; y++) {
+  
+    // Calculate determinant at start of this row  
+    int w0 = w00 + (y - ymin) * dy0;
+    int w1 = w10 + (y - ymin) * dy1;
+    int w2 = w20 + (y - ymin) * dy2;
+    
+    for (int x = xmin; x < xmax; x++) {
+      
+      // This is what we'd do if we wanted to fully calculate the
+      // determinant at every pixel location
+      // int w0 = det(x0, y0, x1, y1, x, y);
+      // int w1 = det(x1, y1, x2, y2, x, y);
+      // int w2 = det(x2, y2, x0, y0, x, y);
+      
+      // Correct for edge overlap
+      // if (is_left_top_edge(x0, y0, x1, y1)) w0--;
+      // if (is_left_top_edge(x1, y1, x2, y2)) w1--;
+      // if (is_left_top_edge(x2, y2, x0, y0)) w2--;
+      
+      if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
         nr_point(nr, nr_width, nr_height, x, y, color, draw_mode);
       }
+      
+      // Recalc determinant for next pixel
+      w0 += dx0;
+      w1 += dx1;
+      w2 += dx2;
+      
     }
   }
   

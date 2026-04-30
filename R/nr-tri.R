@@ -107,14 +107,18 @@ if (FALSE) {
   
   # obj <- rgl::readOBJ("working/obj/newell_teaset/teapot.obj")
   obj <- rgl::readOBJ('working/obj/bunny2.obj')
+  obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj") 
+  obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj") 
+  obj |> lobstr::obj_size()
   # obj <- rgl::addNormals(obj)
   # obj <- rgl::icosahedron3d()
   
   ntri <- ncol(obj$it)
   vertices <- with(obj, vb[, obj$it])
-  vertices <- (vertices * 100) + off
+  vertices <- (vertices * 1000) + off
   
-  cols <- viridisLite::inferno(ntri) |> sample() # colors for triangles
+  # cols <- viridisLite::inferno(ntri, begin = 0.1, end = 0.3) |> sample() # colors for triangles
+  cols <- 'royalblue'
   pvertices <- vertices
   pvertices[] <- vertices
   
@@ -126,7 +130,7 @@ if (FALSE) {
   start <- Sys.time()
   for (frame in seq_len(nframes)) {
 
-    nr_fill(nr, 'white')
+    nr_fill(nr, 'black')
     nr_tri_coords(nr, pvertices, cols)
     # dev.hold()
     # grid.raster(nr, interpolate = FALSE)
@@ -152,6 +156,8 @@ if (FALSE) {
       tf3_apply(tf) |>
       br_mat_transpose()
     
+    
+    # if (frame == 10) break;
   }
   print(Sys.time() - start)
  
@@ -170,8 +176,8 @@ if (FALSE) {
   library(grid)
   library(insitu)
   
-  w   <- 20
-  h   <- 20
+  w   <- 40
+  h   <- 40
   fac <- 5
   
   vertices <- matrix(c(
@@ -181,10 +187,19 @@ if (FALSE) {
     
     10, 10, 
     10, 100, 
-    100, 100
-  ), nrow = 2) / 10
+    100, 100,
+    
+    10, 100,
+    50, 120,
+    100, 100,
+    
+    100, 100,
+    150, 50,
+    100, 10
+  ), nrow = 2) / 5
   
-  cols <- scales::alpha(c('red', 'blue'), 0.2)
+  cols <- scales::alpha(c('red', 'blue', 'green', 'yellow'), 0.2)
+  
   nr <- nr_new(w, h)
   nr_tri_coords(nr, vertices, cols)
   grid.raster(nr, interpolate = FALSE)
