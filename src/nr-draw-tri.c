@@ -91,9 +91,9 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   
   // If bounding box is off the edge of the canvas, clamp it to the canvas limits
   xmin = xmin < 0 ? 0 : xmin;
-  xmax = xmax > nr_width ? nr_width : xmax;
+  xmax = xmax >= nr_width ? nr_width - 1 : xmax;
   ymin = ymin < 0 ? 0 : ymin;
-  ymax = ymax > nr_height ? nr_height : ymax;
+  ymax = ymax >= nr_height ? nr_height - 1 : ymax;
   
   
   // Only need to calculate the determinant once, 
@@ -117,14 +117,14 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   // Loop over the bounding box
   //   calc 3 determinants at each point
   //   if all three are >= 0, the point is interior to triangle
-  for (int y = ymin; y < ymax; y++) {
+  for (int y = ymin; y <= ymax; y++) {
   
     // Calculate determinant at start of this row  
     int w0 = w00;
     int w1 = w10;
     int w2 = w20;
     
-    for (int x = xmin; x < xmax; x++) {
+    for (int x = xmin; x <= xmax; x++) {
       
       // This is what we'd do if we wanted to fully calculate the
       // determinant at every pixel location
