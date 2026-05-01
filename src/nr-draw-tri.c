@@ -180,7 +180,11 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Integer coordinates only
+// Coordinate matrix input
+//    - rows represnet x,y,... coordinates
+//    - only first 2 coordinates are used.  Others are skipped
+//    - Each triangle defined by a sequence of three columns giving the 
+//      three coordinates for the vertices
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, 
                     SEXP draw_mode_) {
@@ -250,4 +254,110 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
   if (free_color)  free(color);
   return nr_;
 }
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Coordinate matrix input
+//    - rows represnet x,y,... coordinates
+//    - only first 2 coordinates are used.  Others are skipped
+//    - Each triangle defined by a sequence of three columns giving the 
+//      three coordinates for the vertices
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_, 
+                  SEXP tri_mode_, SEXP draw_mode_) {
+  
+  // Sanity Check
+  assert_nativeraster(nr_);
+  
+  // Which triangles are we rendering?
+  const char *tri_mode_str = CHAR(STRING_ELT(tri_mode_, 0));
+  int tri_mode = TRI_CCW;
+  if (strcmp(tri_mode_str, "ccw") == 0) {
+    tri_mode = TRI_CCW;
+  } else if (strcmp(tri_mode_str, "cw") == 0) {
+    tri_mode = TRI_CW;
+  } else if (strcmp(tri_mode_str, "all") == 0) {
+    tri_mode = TRI_ALL;
+  } else {
+    Rf_error("nr_tri_mesh_(): tri_mode not understood: '%s'", tri_mode_str);
+  }
+  
+  // Unpack the native raster
+  uint32_t *nr = (uint32_t *)INTEGER(nr_);
+  int nr_height = Rf_nrows(nr_);
+  int nr_width  = Rf_ncols(nr_);
+  
+  // Sanity check coords
+  if (!Rf_isMatrix(vertices_)) {
+    Rf_error("nr_tri_mesh_(): 'vertices' data must a matrix");
+  }
+  if (!Rf_isMatrix(indices_)) {
+    Rf_error("nr_tri_mesh_(): 'indices' data must a matrix");
+  }
+  if (Rf_nrows(indices_) != 3) {
+    Rf_error("nr_tri_mesh_(): 'indices' must have exactly 3 rows");
+  }
+  
+  // Infer the number of coordinates and the stride
+  // The stride gives an indication of how far apart the coordiantes are.
+  // This is because a user might give:
+  //  * matrix with 2 rows x,y
+  //  * matrix with 3 rows x,y,z
+  int n_tris  = Rf_ncols(indices_);
+  int n_verts = Rf_ncols(vertices_);
+  int n_dims  = Rf_nrows(vertices_);
+  
+  // Unpack the vertex data as 'double' values
+  bool free_vertices = false;
+  double *vertices = as_double_vec(vertices_, Rf_length(vertices_), &free_vertices);
+
+  // Unpack the index data as integers
+  bool free_indices = false;
+  int *indices = as_int32_vec(indices_, Rf_length(indices_), &free_indices);
+
+
+  // Unpack a color per triangle
+  bool free_color = false;
+  uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
+
+  draw_mode_t draw_mode = Rf_asInteger(draw_mode_);
+
+  Rprintf("tris: %i  indices: %i  verts: %i\n", n_tris, Rf_length(indices_), n_verts);
+  
+  int *ip = indices;
+  for (int i = 0; i < n_tris; i++) {
+
+    int v0 = ip[0] - 1; // Convert from R 1-indexed to C 0-indexed
+    int v1 = ip[1] - 1; // Convert from R 1-indexed to C 0-indexed
+    int v2 = ip[2] - 1; // Convert from R 1-indexed to C 0-indexed
+
+    draw_tri(
+      nr, nr_width, nr_height,
+      //                      x,                         y
+      vertices[v0 * n_dims + 0], vertices[v0 * n_dims + 1],
+      vertices[v1 * n_dims + 0], vertices[v1 * n_dims + 1],
+      vertices[v2 * n_dims + 0], vertices[v2 * n_dims + 1],
+      color[i], draw_mode, tri_mode
+    );
+    
+    ip += 3;
+  }
+
+
+  if (free_vertices) free(vertices);
+  if (free_indices)  free(indices);
+  if (free_color)    free(color);
+  return nr_;
+}
+
+
+
+
+
+
+
+
+
+
+
 

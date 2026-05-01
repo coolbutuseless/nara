@@ -25,7 +25,9 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_tri_mesh <- function(nr, vertices, indices, col, tri_mode = 'ccw', mode = draw_mode$respect_alpha) {
-  stop("nr_tri_mesh(): Not done yet")
+  invisible(
+    .Call(nr_tri_mesh_, nr, vertices, indices, col, tri_mode, mode)
+  )
 }
 
 
@@ -40,6 +42,30 @@ nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw', mode = draw_mode$re
   )
 }
 
+
+if (FALSE) {
+  library(grid)
+  library(insitu)
+  library(naratigr)
+  
+  w   <- 200
+  h   <- 200
+  fac <- 5
+  
+  obj <- rgl::icosahedron3d()
+  obj$vb <- obj$vb * 40 + w/2
+  ntri <- ncol(obj$it)
+  cols <- viridisLite::magma(ntri)
+  
+  window <- naratigr::tigr_open(w, h)
+  
+  nr <- nr_new(w, h)
+  nr_fill(nr, 'black')
+  nr_tri_mesh(nr, obj$vb, obj$it, cols, tri_mode = 'ccw')
+  tigr_update(window, nr)
+  
+  tigr_close(window)
+}
 
 
 
