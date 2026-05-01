@@ -105,6 +105,7 @@ for realtime rendering e.g. games and interactive applications.
 * Drawing
     * `nr_fill()`
     * `nr_rect()`, `nr_circle()`, `nr_polyline()`, `nr_polygon()`, ...
+    * `nr_tri_coords()`, `nr_tri_mesh()`
 * Selection and Combination
     * `nr_copy()`, `nr_copy_into()`
     * `nr_crop()`
