@@ -97,14 +97,6 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
     tmp = y0d; y0d = y1d; y1d = tmp;
   }
   
-  
-  // if (!oriented_ccw) {
-  //   // swap 2 verts to make it ok
-  //   double tmp;
-  //   tmp = x0d; x0d = x1d; x1d = tmp;
-  //   tmp = y0d; y0d = y1d; y1d = tmp;
-  // }
-  
   int x0 = (int)round(x0d);
   int y0 = (int)round(y0d);
   int x1 = (int)round(x1d);
@@ -152,11 +144,10 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
   
   
   // Loop over the bounding box
-  //   calc 3 determinants at each point
-  //   if all three are >= 0, the point is interior to triangle
+  //   if all three determinants are >= 0, the point is interior to triangle
   for (int y = ymin; y <= ymax; y++) {
   
-    // Calculate determinant at start of this row  
+    // Initialise determinants at start of this row  
     int w0 = w00;
     int w1 = w10;
     int w2 = w20;
@@ -177,7 +168,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
       w0 += dx0;
       w1 += dx1;
       w2 += dx2;
-    }
+    } // end of row
     
     // Update determinants for next row
     w00 += dy0;
@@ -185,21 +176,14 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
     w20 += dy2;
   }
   
-  
-  // nr_line(nr, nr_width, nr_height, x0, y0, x1, y1, 0xFF000000, 1, draw_mode);
-  // nr_line(nr, nr_width, nr_height, x1, y1, x2, y2, 0xFF000000, 1, draw_mode);
-  // nr_line(nr, nr_width, nr_height, x2, y2, x0, y0, 0xFF000000, 1, draw_mode);
-
-  // nr_point(nr, nr_width, nr_height, x0, y0, color, draw_mode);
-  // nr_point(nr, nr_width, nr_height, x1, y1, color, draw_mode);
-  // nr_point(nr, nr_width, nr_height, x2, y2, color, draw_mode);
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Integer coordinates only
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_) {
+SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, 
+                    SEXP draw_mode_) {
   
   // Sanity Check
   assert_nativeraster(nr_);
@@ -248,7 +232,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_) {
   bool free_color = false;
   uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
   
-  draw_mode_t draw_mode = 1; // respect alpha
+  draw_mode_t draw_mode = Rf_asInteger(draw_mode_);
   int col_idx = 0;
   for (int i = 0; i < n_coords * stride; i += 3 * stride) {
     

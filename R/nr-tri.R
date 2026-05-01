@@ -3,6 +3,7 @@
 #' Draw multiple triangles from mesh data
 #' 
 #' @inheritParams nr_fill
+#' @inheritParams nr_rect
 #' @param vertices matrix of vertex coordinates. x,y in columns (wide) or 
 #'        rows (tall).  Extra coordinates are ignored i.e. if coordiantes 
 #'        given as (x, y, z) or (x, y, z, w), 
@@ -10,7 +11,12 @@
 #' @param indices integer matrix of index information. 3 indices per triangle - 
 #'        either in one-triangle-per-matrix_row (tall) or 
 #'        one-triangle-per-matrix-column (wide)
-#' @param coords direct coordinate data for each triangle.  Can be 'tall' or 'wide'
+#' @param coords Numeric atrix of direct coordinate data for each triangle.  
+#'        The coordinates for
+#'        each vertex are in columns. Each group of 3 columns defines one
+#'        triangle.  There may be extra rows in the 
+#'        matrix, but only the first two will be used (as x and y 
+#'        respectively)
 #' @param col color specification. Single color or one color per tri
 #' @param tri_mode 'ccw', 'cw', 'all' 
 #' 
@@ -18,7 +24,7 @@
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE) {
+nr_tri_mesh <- function(nr, vertices, indices, col, tri_mode = 'ccw', mode = draw_mode$respect_alpha) {
   stop("nr_tri_mesh(): Not done yet")
 }
 
@@ -28,9 +34,9 @@ nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE) {
 #' @rdname nr_tri_mesh
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw') {
+nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw', mode = draw_mode$respect_alpha) {
   invisible(
-    .Call(nr_tri_coords_, nr, coords, col, tri_mode)
+    .Call(nr_tri_coords_, nr, coords, col, tri_mode, mode)
   )
 }
 

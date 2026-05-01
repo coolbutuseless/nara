@@ -5,9 +5,22 @@
 \alias{nr_tri_coords}
 \title{Draw multiple triangles from mesh data}
 \usage{
-nr_tri_mesh(nr, vertices, indices, col, draw_all = FALSE)
+nr_tri_mesh(
+  nr,
+  vertices,
+  indices,
+  col,
+  tri_mode = "ccw",
+  mode = draw_mode$respect_alpha
+)
 
-nr_tri_coords(nr, coords, col, tri_mode = "ccw")
+nr_tri_coords(
+  nr,
+  coords,
+  col,
+  tri_mode = "ccw",
+  mode = draw_mode$respect_alpha
+)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -23,9 +36,16 @@ one-triangle-per-matrix-column (wide)}
 
 \item{col}{color specification. Single color or one color per tri}
 
-\item{coords}{direct coordinate data for each triangle.  Can be 'tall' or 'wide'}
-
 \item{tri_mode}{'ccw', 'cw', 'all'}
+
+\item{mode}{drawing mode.}
+
+\item{coords}{Numeric atrix of direct coordinate data for each triangle.
+The coordinates for
+each vertex are in columns. Each group of 3 columns defines one
+triangle.  There may be extra rows in the 
+matrix, but only the first two will be used (as x and y 
+respectively)}
 }
 \value{
 Invisibly return native raster
