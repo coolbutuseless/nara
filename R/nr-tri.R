@@ -300,6 +300,7 @@ if (FALSE) {
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   library(grid)
   library(insitu)
+  library(naratigr)
   
   w   <- 800
   h   <- 800
@@ -333,7 +334,7 @@ if (FALSE) {
   # start <- Sys.time()
   # for (frame in seq_len(300)) {
   bench::mark(
-    nr_tri_coords(nr, vertices, cols, tri_mode = 'all')
+    nr_tri_coords(nr, vertices, cols, tri_mode = 'ccw')
   )
     tigr_update(window, nr)
     

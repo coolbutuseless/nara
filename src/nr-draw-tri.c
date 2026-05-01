@@ -50,8 +50,6 @@ int max3(int a, int b, int c) {
 bool is_left_top_edge(int x0, int y0, int x1, int y1) {
   bool is_left_edge = y1 > y0;
   bool is_top_edge  = (y1 == y0) && (x1 < x0);
-  
-  
   return is_left_edge || is_top_edge;
 }
 
@@ -72,11 +70,6 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
               draw_mode_t draw_mode,
               int tri_mode
               ) {
-  
-  // What should be done if triangle not oriented correctly?
-  //  - cull (i.e. don't draw)
-  //  - invert (reject valid tris, and keep invalid tris)
-  //  - correct all triangles to be valid?
   
   // Calculate the determinant using the full resolution 'double' data.
   // If we round to integer to calculate the overall triangle area, then
@@ -221,7 +214,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
   //  * matrix with 2 rows x,y
   //  * matrix with 3 rows x,y,z
   int n_coords = Rf_ncols(coords_);
-  int stride   = Rf_nrows(coords_);
+  int n_dims   = Rf_nrows(coords_);
   
   // Unpack the coordinates data as 'double' values
   bool free_coords = false;
@@ -237,16 +230,25 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
   uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
   
   draw_mode_t draw_mode = Rf_asInteger(draw_mode_);
-  int col_idx = 0;
-  for (int i = 0; i < n_coords * stride; i += 3 * stride) {
+  
+  double *pc = coords;
+  
+  for (int i = 0; i < n_tris; i++) {
     
-    draw_tri(nr, nr_width, nr_height, 
-             coords[stride * 0 + i], coords[stride * 0 + i + 1],
-             coords[stride * 1 + i], coords[stride * 1 + i + 1],
-             coords[stride * 2 + i], coords[stride * 2 + i + 1],
-             color[col_idx], draw_mode, tri_mode); 
+    double *pc0 = pc + 0 * n_dims; // 1st column of coordiantes
+    double *pc1 = pc + 1 * n_dims; // 2nd column of coordiantes
+    double *pc2 = pc + 2 * n_dims; // 3rd column of coordiantes
     
-    col_idx++;
+    draw_tri(
+      nr, nr_width, nr_height, 
+      pc0[0], pc0[1], // first + second element in column => (x, y) coords
+      pc1[0], pc1[1],
+      pc2[0], pc2[1],
+      color[i], draw_mode, tri_mode
+    ); 
+    
+    // Skip ahead to the next triplet of vertex coordinates
+    pc += 3 * n_dims;
   }
   
   
