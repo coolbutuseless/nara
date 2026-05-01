@@ -199,10 +199,12 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Integer coordinates only
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, SEXP format_) {
+SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_) {
   
+  // Sanity Check
   assert_nativeraster(nr_);
   
+  // Which triangles are we rendering?
   const char *tri_mode_str = CHAR(STRING_ELT(tri_mode_, 0));
   int tri_mode = TRI_CCW;
   if (strcmp(tri_mode_str, "ccw") == 0) {
@@ -215,43 +217,47 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, SEXP fo
     Rf_error("nr_tri_coords_(): tri_mode not understood: '%s'", tri_mode_str);
   }
   
+  // Unpack the native raster
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
-  
   int nr_height = Rf_nrows(nr_);
   int nr_width  = Rf_ncols(nr_);
   
-  if (TYPEOF(coords_) != REALSXP) {
-    Rf_error("nr_tri_coords_(): 'coords' data must be numeric");
-  }
+  // Sanity check coords
   if (!Rf_isMatrix(coords_)) {
     Rf_error("nr_tri_coords_(): 'coords' data must a matrix");
   }
   
+  // Infer the number of coordinates and the stride
+  // The stride gives an indication of how far apart the coordiantes are.
+  // This is because a user might give:
+  //  * matrix with 2 rows x,y
+  //  * matrix with 3 rows x,y,z
   int n_coords = Rf_ncols(coords_);
   int stride   = Rf_nrows(coords_);
-  // int format   = FMT_WIDE;
-  if (stride > n_coords) {
-    Rf_error("nr_tri_coords_(): Long data not supported yet");
-  }
   
+  // Unpack the coordinates data as 'double' values
   bool free_coords = false;
   double *coords = as_double_vec(coords_, Rf_length(coords_), &free_coords);
+  
+  if (n_coords % 3 != 0) {
+    Rf_error("nr_tri_coords_(): ncols(coords) is not a multiple of 3: %i", n_coords);
+  }
   int n_tris = n_coords / 3;
 
+  // Unpack a color per triangle
   bool free_color = false;
   uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
   
-  // Rprintf("%i / %i\n", n_coords, n_tris);
   draw_mode_t draw_mode = 1; // respect alpha
   int col_idx = 0;
   for (int i = 0; i < n_coords * stride; i += 3 * stride) {
-    // Rprintf("[%i] (%.2f, %.2f)\n", i, coords[i], coords[i + 1]);
-    // nr_point(nr, nr_width, nr_height, coords[i], coords[i + 1], color[i], draw_mode);
+    
     draw_tri(nr, nr_width, nr_height, 
              coords[stride * 0 + i], coords[stride * 0 + i + 1],
              coords[stride * 1 + i], coords[stride * 1 + i + 1],
              coords[stride * 2 + i], coords[stride * 2 + i + 1],
              color[col_idx], draw_mode, tri_mode); 
+    
     col_idx++;
   }
   

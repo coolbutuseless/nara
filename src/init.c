@@ -77,7 +77,7 @@ extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , S
                                SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
 
 
-extern SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP col_, SEXP tri_mode_, SEXP format_);
+extern SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP col_, SEXP tri_mode_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Color twiddling
@@ -131,7 +131,7 @@ static const R_CallMethodDef CEntries[] = {
   {"nr_circle_"        , (DL_FUNC) &nr_circle_        , 7},
   {"nr_polyline_"      , (DL_FUNC) &nr_polyline_      , 8},
   {"nr_polygons_multi_", (DL_FUNC) &nr_polygons_multi_, 9},
-  {"nr_tri_coords_"    , (DL_FUNC) &nr_tri_coords_    , 5},
+  {"nr_tri_coords_"    , (DL_FUNC) &nr_tri_coords_    , 4},
 
   
   {"nr_desaturate_", (DL_FUNC) &nr_desaturate_, 2},

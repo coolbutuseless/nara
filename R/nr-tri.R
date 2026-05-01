@@ -9,17 +9,16 @@
 #'        only the first two coordinates will be used for plotting.
 #' @param indices integer matrix of index information. 3 indices per triangle - 
 #'        either in one-triangle-per-matrix_row (tall) or 
-#'        one-triangle-per-matrix-coloumn (wide)
+#'        one-triangle-per-matrix-column (wide)
 #' @param coords direct coordinate data for each triangle.  Can be 'tall' or 'wide'
 #' @param col color specification. Single color or one color per tri
-#' @param format format of data. i.e. 'tall', 'wide' or 'auto'. Default: 'auto'
 #' @param tri_mode 'ccw', 'cw', 'all' 
 #' 
 #' @return Invisibly return native raster
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE, format = 'auto') {
+nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE) {
   stop("nr_tri_mesh(): Not done yet")
 }
 
@@ -29,9 +28,9 @@ nr_tri_mesh <- function(nr, vertices, indices, col, draw_all = FALSE, format = '
 #' @rdname nr_tri_mesh
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw', format = 'auto') {
+nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw') {
   invisible(
-    .Call(nr_tri_coords_, nr, coords, col, tri_mode, format)
+    .Call(nr_tri_coords_, nr, coords, col, tri_mode)
   )
 }
 
@@ -251,5 +250,74 @@ if (FALSE) {
   grid.raster(nr, interpolate = FALSE)
   
 }
+
+
+
+if (FALSE) {
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Investigate the 'double-draw' bug when rastering two triangles 
+  # with a shared edge
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  library(grid)
+  library(insitu)
+  
+  w   <- 800
+  h   <- 800
+
+  N  <- 100000
+  xs <- runif(N, 1, w)
+  ys <- runif(N, 1, h)
+  
+  off <- c(-(3:9), 3:9)
+  dx1 <- sample(off, N, T)
+  dx2 <- sample(off, N, T)
+  
+  dy1 <- sample(off, N, T)
+  dy2 <- sample(off, N, T)
+  
+  xs <- as.vector(rbind(xs, xs + dx1, xs + dx2))
+  ys <- as.vector(rbind(ys, ys + dy1, ys + dy2))
+  
+  vertices <- rbind(xs, ys)
+  
+  
+  
+  window <- tigr_open(w, h, expand = 2)
+  
+  nr <- nr_new(w, h, 'black')
+  tigr_update(window, nr)
+  
+  cols <- viridis::magma(N)
+  # cols <- scales::alpha(cols, 0.3)
+  
+  # start <- Sys.time()
+  # for (frame in seq_len(300)) {
+  bench::mark(
+    nr_tri_coords(nr, vertices, cols, tri_mode = 'all')
+  )
+    tigr_update(window, nr)
+    
+    # vertices <- ((vertices - w/2) * 1.005) + w/2
+    
+  # }
+  # print(Sys.time() - start)
+  
+  
+  
+  tigr_close(window)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 

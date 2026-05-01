@@ -5,9 +5,9 @@
 \alias{nr_tri_coords}
 \title{Draw multiple triangles from mesh data}
 \usage{
-nr_tri_mesh(nr, vertices, indices, col, draw_all = FALSE, format = "auto")
+nr_tri_mesh(nr, vertices, indices, col, draw_all = FALSE)
 
-nr_tri_coords(nr, coords, col, tri_mode = "ccw", format = "auto")
+nr_tri_coords(nr, coords, col, tri_mode = "ccw")
 }
 \arguments{
 \item{nr}{native raster image}
@@ -19,11 +19,9 @@ only the first two coordinates will be used for plotting.}
 
 \item{indices}{integer matrix of index information. 3 indices per triangle - 
 either in one-triangle-per-matrix_row (tall) or 
-one-triangle-per-matrix-coloumn (wide)}
+one-triangle-per-matrix-column (wide)}
 
 \item{col}{color specification. Single color or one color per tri}
-
-\item{format}{format of data. i.e. 'tall', 'wide' or 'auto'. Default: 'auto'}
 
 \item{coords}{direct coordinate data for each triangle.  Can be 'tall' or 'wide'}
 
