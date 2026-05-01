@@ -51,18 +51,25 @@ if (FALSE) {
   w   <- 200
   h   <- 200
   fac <- 5
+  window <- naratigr::tigr_open(w, h)
   
   obj <- rgl::icosahedron3d()
-  obj$vb <- obj$vb * 40 + w/2
+  obj <- rgl::readOBJ("working/obj/newell_teaset/teapot.obj")
+  # obj <- rgl::readOBJ('working/obj/bunny2.obj')
+  # obj <- rgl::readOBJ("~/projectsdata/obj/bunny.obj")
+  obj <- rgl::readOBJ("~/projectsdata/obj/stanford-bunny.obj")
+  obj$vb[2,] <- obj$vb[2,] - 0.1
+  
+  obj$vb <- obj$vb * 1000 + w/2
   ntri <- ncol(obj$it)
   cols <- viridisLite::magma(ntri)
-  
-  window <- naratigr::tigr_open(w, h)
   
   nr <- nr_new(w, h)
   nr_fill(nr, 'black')
   nr_tri_mesh(nr, obj$vb, obj$it, cols, tri_mode = 'ccw')
   tigr_update(window, nr)
+  
+  
   
   tigr_close(window)
 }
