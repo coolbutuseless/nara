@@ -26,6 +26,7 @@ plot(nr, T)
 }
 \seealso{
 Other color manipulation functions: 
+\code{\link{nr_color_replace}()},
 \code{\link{nr_desaturate}()},
 \code{\link{nr_dither}()}
 }
