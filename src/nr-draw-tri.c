@@ -333,15 +333,23 @@ SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_,
     int v1 = ip[1] - 1; // Convert from R 1-indexed to C 0-indexed
     int v2 = ip[2] - 1; // Convert from R 1-indexed to C 0-indexed
 
+    if (v0 < 0 || v1 < 0 || v2 < 0 ||
+        v0 >= n_verts ||
+        v1 >= n_verts ||
+        v2 >= n_verts) {
+      Rf_error("nr_tri_mesh_(): vertex index out of range");
+    }
+    
     draw_tri(
       nr, nr_width, nr_height,
-      //                      x,                         y
+      //                     x,                         y
       vertices[v0 * n_dims + 0], vertices[v0 * n_dims + 1],
       vertices[v1 * n_dims + 0], vertices[v1 * n_dims + 1],
       vertices[v2 * n_dims + 0], vertices[v2 * n_dims + 1],
       color[i], draw_mode, tri_mode
     );
     
+    // Advance to next set of indices
     ip += 3;
   }
 

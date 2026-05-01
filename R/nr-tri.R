@@ -17,16 +17,58 @@
 #'        triangle.  There may be extra rows in the 
 #'        matrix, but only the first two will be used (as x and y 
 #'        respectively)
-#' @param col color specification. Single color or one color per tri
-#' @param tri_mode 'ccw', 'cw', 'all' 
+#' @param color color specification. Single color or one color per tri
+#' @param tris Which triangles should be drawn?  Valid options: 'all' (default), 
+#'        'ccw', 'cw'. The options 'ccw' and 'cw' limit plotting to those triangles
+#'        where the order of the vertices are defined in a counter-clockwise
+#'        or clockwise manner respectively.  Note: when considering orientation
+#'        or triangles remmeber that the y-axis is defined vertically \emph{down}
+#'        the screen. 
 #' 
-#' @return Invisibly return native raster
+#' @examples
+#' #' Using direct coordinates
+#' set.seed(1)
+#' w <- 100
+#' h <-  80
+#' nr <- nr_new(w, h)
+#' 
+#' n_tri <- 10
+#' xs <- runif(n_tri * 3, 0, w - 1)
+#' ys <- runif(n_tri * 3, 0, h - 1)
+#' coords <- rbind(xs, ys)
+#' cols <- rainbow(n_tri)
+#' 
+#' nr_tri_coords(nr, coords, cols, tris = 'all')
+#' grid::grid.newpage()
+#' grid::grid.raster(nr, interpolate = FALSE)
+#' 
+#' # Using a standard mesh structure
+#' # i.e. a matrix of vertices, and a matrix of indices 
+#' nr <- nr_new(w, h)
+#' 
+#' # Matrix of coordinates
+#' xs <- rep(seq(0, w - 1, length.out = 10), 10)
+#' ys <- rep(seq(0, h - 1, length.out = 10), each = 10)
+#' vertices <- rbind(xs, ys)
+#' nr_point(nr, xs, ys)
+#' 
+#' grid::grid.newpage()
+#' grid::grid.raster(nr, interpolate = FALSE)
+#' 
+#' # Matrix of idices indicating which vertices make up each triangle
+#' indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
+#' 
+#' nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')
+#' grid.newpage()
+#' grid::grid.raster(nr, interpolate = FALSE)
+#' 
+#' @return Invisibly return the supplied native raster image which was been modified in-place
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_mesh <- function(nr, vertices, indices, col, tri_mode = 'ccw', mode = draw_mode$respect_alpha) {
+nr_tri_mesh <- function(nr, vertices, indices, color, tris = 'all', mode = draw_mode$respect_alpha) {
   invisible(
-    .Call(nr_tri_mesh_, nr, vertices, indices, col, tri_mode, mode)
+    .Call(nr_tri_mesh_, nr, vertices, indices, color, tris, mode)
   )
 }
 
@@ -36,9 +78,9 @@ nr_tri_mesh <- function(nr, vertices, indices, col, tri_mode = 'ccw', mode = dra
 #' @rdname nr_tri_mesh
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_coords <- function(nr, coords, col, tri_mode = 'ccw', mode = draw_mode$respect_alpha) {
+nr_tri_coords <- function(nr, coords, color, tris = 'all', mode = draw_mode$respect_alpha) {
   invisible(
-    .Call(nr_tri_coords_, nr, coords, col, tri_mode, mode)
+    .Call(nr_tri_coords_, nr, coords, color, tris, mode)
   )
 }
 
@@ -66,7 +108,7 @@ if (FALSE) {
   
   nr <- nr_new(w, h)
   nr_fill(nr, 'black')
-  nr_tri_mesh(nr, obj$vb, obj$it, cols, tri_mode = 'ccw')
+  nr_tri_mesh(nr, obj$vb, obj$it, cols, tris = 'ccw')
   tigr_update(window, nr)
   
   
@@ -109,7 +151,7 @@ if (FALSE) {
   for (frame in seq_len(nframes)) {
     
     nr_fill(nr, 'black')
-    nr_tri_coords(nr, pvertices, cols, tri_mode = 'ccw')
+    nr_tri_coords(nr, pvertices, cols, tris = 'ccw')
     tigr_update(window, nr)
     
     # The transformation function is dependent upon the frame number
@@ -334,7 +376,7 @@ if (FALSE) {
   # start <- Sys.time()
   # for (frame in seq_len(300)) {
   bench::mark(
-    nr_tri_coords(nr, vertices, cols, tri_mode = 'ccw')
+    nr_tri_coords(nr, vertices, cols, tris = 'ccw')
   )
     tigr_update(window, nr)
     

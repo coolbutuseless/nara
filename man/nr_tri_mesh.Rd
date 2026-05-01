@@ -9,7 +9,7 @@ nr_tri_mesh(
   nr,
   vertices,
   indices,
-  col,
+  color,
   tri_mode = "ccw",
   mode = draw_mode$respect_alpha
 )
@@ -17,7 +17,7 @@ nr_tri_mesh(
 nr_tri_coords(
   nr,
   coords,
-  col,
+  color,
   tri_mode = "ccw",
   mode = draw_mode$respect_alpha
 )
@@ -34,7 +34,7 @@ only the first two coordinates will be used for plotting.}
 either in one-triangle-per-matrix_row (tall) or 
 one-triangle-per-matrix-column (wide)}
 
-\item{col}{color specification. Single color or one color per tri}
+\item{color}{color specification. Single color or one color per tri}
 
 \item{tri_mode}{'ccw', 'cw', 'all'}
 
@@ -52,6 +52,39 @@ Invisibly return native raster
 }
 \description{
 Draw multiple triangles from mesh data
+}
+\examples{
+#' Using direct coordinates
+w <- 100
+h <-  80
+nr <- nr_new(w, h)
+
+n_tri <- 10
+xs <- runif(n_tri * 3, 0, w - 1)
+ys <- runif(n_tri * 3, 0, h - 1)
+coords <- rbind(xs, ys)
+cols <- rainbow(n_tri)
+
+nr_tri_coords(nr, coords, cols, tri_mode = 'all')
+grid::grid.newpage()
+grid::grid.raster(nr, interpolate = FALSE)
+
+# Using a standard mesh structure
+# i.e. a matrix of vertices, and a matrix of indices 
+nr <- nr_new(w, h)
+xs <- rep(seq(0, w - 1, length.out = 10), 10)
+ys <- rep(seq(0, h - 1, length.out = 10), each = 10)
+vertices <- rbind(xs, ys)
+nr_point(nr, xs, ys)
+
+grid::grid.newpage()
+grid::grid.raster(nr, interpolate = FALSE)
+indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
+
+nr_tri_mesh(nr, vertices, indices, cols, tri_mode = 'all')
+grid.newpage()
+grid::grid.raster(nr, interpolate = FALSE)
+
 }
 \seealso{
 Other drawing functions: 
