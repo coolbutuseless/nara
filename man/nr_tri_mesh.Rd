@@ -10,17 +10,11 @@ nr_tri_mesh(
   vertices,
   indices,
   color,
-  tri_mode = "ccw",
+  tris = "all",
   mode = draw_mode$respect_alpha
 )
 
-nr_tri_coords(
-  nr,
-  coords,
-  color,
-  tri_mode = "ccw",
-  mode = draw_mode$respect_alpha
-)
+nr_tri_coords(nr, coords, color, tris = "all", mode = draw_mode$respect_alpha)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -36,7 +30,12 @@ one-triangle-per-matrix-column (wide)}
 
 \item{color}{color specification. Single color or one color per tri}
 
-\item{tri_mode}{'ccw', 'cw', 'all'}
+\item{tris}{Which triangles should be drawn?  Valid options: 'all' (default), 
+'ccw', 'cw'. The options 'ccw' and 'cw' limit plotting to those triangles
+where the order of the vertices are defined in a counter-clockwise
+or clockwise manner respectively.  Note: when considering orientation
+or triangles remmeber that the y-axis is defined vertically \emph{down}
+the screen.}
 
 \item{mode}{drawing mode.}
 
@@ -48,13 +47,14 @@ matrix, but only the first two will be used (as x and y
 respectively)}
 }
 \value{
-Invisibly return native raster
+Invisibly return the supplied native raster image which was been modified in-place
 }
 \description{
 Draw multiple triangles from mesh data
 }
 \examples{
 #' Using direct coordinates
+set.seed(1)
 w <- 100
 h <-  80
 nr <- nr_new(w, h)
@@ -65,13 +65,15 @@ ys <- runif(n_tri * 3, 0, h - 1)
 coords <- rbind(xs, ys)
 cols <- rainbow(n_tri)
 
-nr_tri_coords(nr, coords, cols, tri_mode = 'all')
+nr_tri_coords(nr, coords, cols, tris = 'all')
 grid::grid.newpage()
 grid::grid.raster(nr, interpolate = FALSE)
 
 # Using a standard mesh structure
 # i.e. a matrix of vertices, and a matrix of indices 
 nr <- nr_new(w, h)
+
+# Matrix of coordinates
 xs <- rep(seq(0, w - 1, length.out = 10), 10)
 ys <- rep(seq(0, h - 1, length.out = 10), each = 10)
 vertices <- rbind(xs, ys)
@@ -79,10 +81,12 @@ nr_point(nr, xs, ys)
 
 grid::grid.newpage()
 grid::grid.raster(nr, interpolate = FALSE)
+
+# Matrix of idices indicating which vertices make up each triangle
 indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
 
-nr_tri_mesh(nr, vertices, indices, cols, tri_mode = 'all')
-grid.newpage()
+nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')
+grid::grid.newpage()
 grid::grid.raster(nr, interpolate = FALSE)
 
 }

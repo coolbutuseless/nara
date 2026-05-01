@@ -59,7 +59,7 @@
 #' indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
 #' 
 #' nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')
-#' grid.newpage()
+#' grid::grid.newpage()
 #' grid::grid.raster(nr, interpolate = FALSE)
 #' 
 #' @return Invisibly return the supplied native raster image which was been modified in-place
