@@ -216,7 +216,7 @@ if (FALSE) {
     # Set light point (1000, 10000, 10000)
     # Calculate vector from light to centroid
     # Calcualte dot produce (light.vector x normal)
-    # Use this to create a shaded colour
+    # Use this to create a shaded color
     i <- obj$it[1,]
     centroids <- obj$vb[1:3, i]
     to_light  <- c(2, 2, 2) - centroids

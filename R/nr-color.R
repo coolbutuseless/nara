@@ -1,8 +1,6 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Convert image to gray
-#' 
-#' A naive desaturation in RGB space
+#' Move image colors to gray
 #' 
 #' @inheritParams nr_fill
 #' @param factor desaturation factor. Default: 1 (fully desaturate)
@@ -19,7 +17,9 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_desaturate <- function(nr, factor = 1) {
-  .Call(nr_desaturate_, nr, factor)
+  invisible(
+    .Call(nr_desaturate_, nr, factor)
+  )
 }
 
 
@@ -44,7 +44,9 @@ nr_desaturate <- function(nr, factor = 1) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_dither <- function(nr, value = 0.5, algo = 'fs') {
-  .Call(nr_dither_, nr, value, algo)
+  invisible(
+    .Call(nr_dither_, nr, value, algo)
+  )
 }
 
 
@@ -67,7 +69,9 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_threshold <- function(nr, value = 0.5) {
-  .Call(nr_threshold_, nr, value)
+  invisible(
+    .Call(nr_threshold_, nr, value)
+  )
 }
 
 
@@ -90,6 +94,8 @@ nr_threshold <- function(nr, value = 0.5) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_color_replace <- function(nr, old, new) {
-  invisible(.Call(replace_, nr, old, new))
+  invisible(
+    .Call(replace_, nr, old, new)
+  )
 }
 

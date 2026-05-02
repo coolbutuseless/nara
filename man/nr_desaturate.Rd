@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-color.R
 \name{nr_desaturate}
 \alias{nr_desaturate}
-\title{Convert image to gray}
+\title{Move image colors to gray}
 \usage{
 nr_desaturate(nr, factor = 1)
 }
@@ -16,7 +16,7 @@ Invisibly return the supplied native raster image which was been
         modified in-place
 }
 \description{
-A naive desaturation in RGB space
+Move image colors to gray
 }
 \examples{
 nr <- nr_copy(deer_sprites[[1]])

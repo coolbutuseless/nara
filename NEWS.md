@@ -1,6 +1,7 @@
 
 # nara 0.1.1.9040 2026-05-02
 
+* [9041] Tidy `nr_desaturate()`
 * [9040] Add triangle drawing `nr_tri_mesh()`, `nr_tri_coords()`
 * [9039] Tidy.  Rename `nr_duplicate()` to `nr_copy()`
 * [9038] Color reduction: `nr_dither()`, `nr_desaturate()`, 

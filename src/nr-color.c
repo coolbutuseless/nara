@@ -16,8 +16,7 @@
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// desaturate: 
-// TODO: should really do this in HSV space
+// desaturate - move colors towards gray
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_desaturate_(SEXP nr_, SEXP factor_) {
   
@@ -27,21 +26,20 @@ SEXP nr_desaturate_(SEXP nr_, SEXP factor_) {
   uint8_t *p = (uint8_t *)INTEGER(nr_);
   
   double factor = Rf_asReal(factor_);
-  
+  if (factor < 0) factor = 0.0;
+  if (factor > 1) factor = 1.0;
   
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
-      // uint8_t i = (p[0] + p[1] + p[2]) / 3.0;
-      double i = (0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2]) ;
       
-      double val = (i - p[0]) * factor;
-      p[0] = p[0] + (uint8_t)(val < 0 ? 0 : val);
+      // Calculate grey level
+      double grey = (0.299 * (double)p[0] + 0.587 * (double)p[1] + 0.114 * (double)p[2]) ;
       
-      val = (i - p[1]) * factor;
-      p[1] = p[1] + (uint8_t)(val < 0 ? 0 : val);
+      // Move all color channels towards this grey level
+      p[0] += (grey - (double)p[0]) * factor;
+      p[1] += (grey - (double)p[1]) * factor;
+      p[2] += (grey - (double)p[2]) * factor;
       
-      val = (i - p[2]) * factor;
-      p[2] = p[2] + (uint8_t)(val < 0 ? 0 : val);
       p += 4;
     }
   }
