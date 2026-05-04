@@ -8,16 +8,16 @@
 #' @param width,height dimensions for output image
 #' @return New native raster image
 #' @examples
-#' stretched <- nr_resize(deer_sprites[[1]], 100, 40, algo = 'nn')
+#' stretched <- nr_resize(deer[[1]], 100, 40, algo = 'nn')
 #' plot(stretched)
 #' @family resizing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_resize <- function(nr, width, height, algo = 'nn') {
   if (algo == 'nn') {
-    .Call(resize_nn_, nr, width, height)
+    .Call(nr_resize_nn_, nr, width, height)
   } else {
-    .Call(resize_bilinear_, nr, width, height)
+    .Call(nr_resize_bilinear_, nr, width, height)
   }
 }
 
@@ -31,7 +31,7 @@ nr_resize <- function(nr, width, height, algo = 'nn') {
 #' 
 #' @return New native raster image
 #' @examples
-#' big <- nr_scale(deer_sprites[[1]], 2)
+#' big <- nr_scale(deer[[1]], 2)
 #' plot(big)
 #' @family resizing functions
 #' @export

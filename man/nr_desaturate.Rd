@@ -19,7 +19,7 @@ Invisibly return the supplied native raster image which was been
 Move image colors to gray
 }
 \examples{
-nr <- nr_copy(deer_sprites[[1]])
+nr <- nr_copy(deer[[1]])
 plot(nr, T)
 nr_desaturate(nr)
 plot(nr, T)

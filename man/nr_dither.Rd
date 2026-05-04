@@ -22,7 +22,7 @@ Invisibly return the supplied native raster image which was been
 Dither to binary image
 }
 \examples{
-nr <- nr_copy(deer_sprites[[1]])
+nr <- nr_copy(deer[[1]])
 plot(nr, T)
 nr_dither(nr, 0.99)
 plot(nr, T)

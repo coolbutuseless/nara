@@ -162,7 +162,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
   
   assert_nativeraster(nr_);
   
@@ -176,7 +176,7 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
   int nr_width  = Rf_ncols(nr_);
   
   uint32_t color = single_rcolor_to_int(color_);
-  uint32_t fill   = single_rcolor_to_int(fill_);
+  uint32_t fill   = single_rcolor_to_int(nr_fill_);
   
   // get an int* from a numeric from R
   bool freex = false, freey = false;
@@ -202,12 +202,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP fill_, SEXP color_, SE
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
   
   // Can we just do single polygon handling?
   if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygons_single_(nr_, x_, y_, fill_, color_, linewidth_, mitre_limit_, draw_mode_);
+    return nr_polygons_single_(nr_, x_, y_, nr_fill_, color_, linewidth_, mitre_limit_, draw_mode_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -251,7 +251,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP fill_, SEXP c
   // Colors
   bool freecol = false, freefill = false;
   uint32_t *color = multi_rcolors_to_ints(color_, npolys, &freecol);
-  uint32_t *fill  = multi_rcolors_to_ints(fill_ , npolys, &freefill);
+  uint32_t *fill  = multi_rcolors_to_ints(nr_fill_ , npolys, &freefill);
   
   
   double linewidth = Rf_asReal(linewidth_);

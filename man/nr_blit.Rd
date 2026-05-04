@@ -23,14 +23,14 @@ nr_blit(
 \arguments{
 \item{dst, src}{source and destination native raster images}
 
-\item{x, y}{Where in \code{nr} to place the \code{sprite}. These values must
+\item{x, y}{Where in \code{dst} to place the \code{src}. These values must
 be vectors of the same length.  If the length is greater than 1, then
 the \code{sprite} will be pasted into \code{nr} at multiple locations.
 Note that the
 origin of native raster images is the top-left
 where the coordinates are (0, 0).}
 
-\item{xsrc, ysrc}{start coordiates within src}
+\item{xsrc, ysrc}{start coordinates within src}
 
 \item{w, h}{size within src. If size is negative, then the actual width/height of
 the src is used}
@@ -48,14 +48,15 @@ Default (0, 0)}
 \item{mode}{drawing mode.}
 }
 \value{
-None. \code{dst} modified by-reference and returned invisibly.
+Invisibly return the supplied \code{dst} native raster image which was been
+        modified in-place
 }
 \description{
 Copy a native raster image into another at an arbitrary location, scale and rotation
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
-nr_blit(dst = nr, src = deer_sprites[[1]], x = 25, y = 25)
+nr_blit(dst = nr, src = deer[[1]], x = 25, y = 25)
 plot(nr, T)
 
 nr <- nr_new(300, 200, 'grey80')

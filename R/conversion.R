@@ -72,6 +72,7 @@ array_to_nr <- function(arr, dst = NULL) {
 #'
 #' @examples
 #' m <- matrix(1:12, 3, 4)
+#' m
 #' palette <- colorfast::col_to_int(rainbow(12))
 #' nr <- matrix_to_nr(m, palette) 
 #' plot(nr)

@@ -9,13 +9,14 @@ nr_blit_bulk(dst, src, config)
 \arguments{
 \item{dst}{destination native raster}
 
-\item{src}{list of native rasters}
+\item{src}{list of native raster images.}
 
 \item{config}{data.frame of configuration information for each blit which 
 most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw}
 }
 \value{
-None. \code{dst} modifief by-reference and returned invisibly.
+Invisibly return the supplied \code{dst} native raster image which was been
+        modified in-place
 }
 \description{
 Multiple blit operations in a single call
@@ -37,8 +38,8 @@ config <- data.frame(
   mode = draw_mode$respect_alpha,
   render = TRUE
 )
-nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
-plot(nr, T)
+nr_blit_bulk(dst = nr, src = deer, config = config)
+plot(nr)
 }
 \seealso{
 Other blitting functions: 

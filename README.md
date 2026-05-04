@@ -40,6 +40,7 @@ applications.
 - Drawing
   - `nr_fill()`
   - `nr_rect()`, `nr_circle()`, `nr_polyline()`, `nr_polygon()`, …
+  - `nr_tri_coords()`, `nr_tri_mesh()`
 - Selection and Combination
   - `nr_copy()`, `nr_copy_into()`
   - `nr_crop()`
@@ -50,7 +51,7 @@ applications.
   - `nr_dither()`, `nr_desaturate()`, `nr_threshold()`,
     `nr_color_replace()`
 - Sample images
-  - `deer_sprites`
+  - `deer`
 
 Reading and writing native raster images is supported by `{jpeg}`,
 `{png}`, and `{fastpng}` packages.
@@ -102,7 +103,7 @@ nr_rect(nr, x = coords$x, y = coords$y, w = 27, h = 27, fill = colors)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Draw a bunch of deer sprites
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit(dst = nr, src = deer_sprites[[1]], 
+nr_blit(dst = nr, src = deer[[1]], 
         x = sample(300, 15), y = sample(200, 15))
 
 
@@ -137,7 +138,7 @@ grid.raster(nr, interpolate = FALSE)
 ## Static Rendering: Displaying Sprites
 
 Included with `{nara}` are 16 frames of an animated deer character - see
-`deer_sprites` data.
+`deer` data.
 
 #### Blit the first `deer` frame onto a native raster canvas.
 
@@ -145,7 +146,7 @@ Included with `{nara}` are 16 frames of an animated deer character - see
 library(grid)
 
 nr <- nr_new(100, 32, 'grey80')
-nr_blit(dst = nr, src = deer_sprites[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
+nr_blit(dst = nr, src = deer[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
 grid.raster(nr, interpolate = FALSE)
 ```
 
@@ -188,7 +189,7 @@ nr <- nr_new(100, 32, 'grey80')
 for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the native raster image
   sprite_idx <- floor((i/3) %% 5) + 11
-  nr_blit(dst = nr, src = deer_sprites[[sprite_idx]], x = i, y = 15) # copy deer to the image
+  nr_blit(dst = nr, src = deer[[sprite_idx]], x = i, y = 15) # copy deer to the image
   dev.hold()
   grid.raster(nr, interpolate = FALSE)     # copy image to screen
   dev.flush()
@@ -240,7 +241,7 @@ for (frame in 1:1000) {
   # Clear the nativeraster and blit in all the deer
   nr_fill(nr, 'white') 
   deer_idx <- floor((frame/3) %% 5 + 11)
-  nr_blit(dst = nr, src = deer_sprites[[deer_idx]], x, y)
+  nr_blit(dst = nr, src = deer[[deer_idx]], x, y)
   
   # Draw the nativeraster to screen
   dev.hold()

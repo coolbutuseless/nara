@@ -9,7 +9,7 @@
 #'         modified in-place
 #'         
 #' @examples
-#' nr <- nr_copy(deer_sprites[[1]])
+#' nr <- nr_copy(deer[[1]])
 #' plot(nr, T)
 #' nr_desaturate(nr)
 #' plot(nr, T)
@@ -36,7 +36,7 @@ nr_desaturate <- function(nr, factor = 1) {
 #'         modified in-place
 #'         
 #' @examples
-#' nr <- nr_copy(deer_sprites[[1]])
+#' nr <- nr_copy(deer[[1]])
 #' plot(nr, T)
 #' nr_dither(nr, 0.99)
 #' plot(nr, T)
@@ -61,7 +61,7 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 #'         modified in-place
 #'         
 #' @examples
-#' nr <- nr_copy(deer_sprites[[1]])
+#' nr <- nr_copy(deer[[1]])
 #' plot(nr, T)
 #' nr_threshold(nr, 0.9)
 #' plot(nr, T)
@@ -95,7 +95,7 @@ nr_threshold <- function(nr, value = 0.5) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_color_replace <- function(nr, old, new) {
   invisible(
-    .Call(replace_, nr, old, new)
+    .Call(nr_color_replace_, nr, old, new)
   )
 }
 

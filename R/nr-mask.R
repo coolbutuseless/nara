@@ -2,7 +2,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' Start/end region of masked drawing
 #' 
-#' These functions are used to globally set a mask which affects where
+#' These functions are used to globally set a mask which determines where
 #' pixels are affected by drawing functions.
 #' 
 #' Drawing operations between
@@ -17,7 +17,7 @@
 #'         modified in-place
 #'         
 #' @examplesIf interactive()
-#' mask <- deer_sprites[[1]] |> nr_resize(600, 400)
+#' mask <- deer[[1]] |> nr_resize(600, 400)
 #' plot(mask)
 #' img <- nr_new_from(mask)
 #' 

@@ -60,7 +60,7 @@ SEXP nr_new_(SEXP nr_width_, SEXP nr_height_) {
 // Copy the contents of one native raster image into another. [R interface]
 // Sizes must match
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP copy_into_(SEXP dst_, SEXP src_) {
+SEXP nr_copy_into_(SEXP dst_, SEXP src_) {
   
   assert_nativeraster(src_);
   assert_nativeraster(dst_);
@@ -86,7 +86,7 @@ SEXP copy_into_(SEXP dst_, SEXP src_) {
 // Create/allocate a new nativeraster and copy the contents of the original
 // [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP duplicate_(SEXP nr_) {
+SEXP nr_copy_(SEXP nr_) {
   assert_nativeraster(nr_);
   return Rf_duplicate(nr_);
 }
@@ -96,7 +96,7 @@ SEXP duplicate_(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Fill raster with value - R interface
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP fill_(SEXP nr_, SEXP color_) {
+SEXP nr_fill_(SEXP nr_, SEXP color_) {
 
   assert_nativeraster(nr_);
 
@@ -126,7 +126,7 @@ SEXP fill_(SEXP nr_, SEXP color_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Flip vertically
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP flipv_(SEXP nr_) {
+SEXP nr_flipv_(SEXP nr_) {
   
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -135,7 +135,7 @@ SEXP flipv_(SEXP nr_) {
   
   int *tmp = (int *)malloc(width * sizeof(int));
   if (tmp == NULL) {
-    Rf_error("flipv_(): malloc() failure");
+    Rf_error("nr_flipv_(): malloc() failure");
   }
   
   for (size_t row = 0; row < height/2; row++) {
@@ -152,7 +152,7 @@ SEXP flipv_(SEXP nr_) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Flip horizontally (in-place)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP fliph_(SEXP nr_) {
+SEXP nr_fliph_(SEXP nr_) {
   
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
@@ -182,7 +182,7 @@ SEXP fliph_(SEXP nr_) {
 //
 // @return modified nr
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
+SEXP nr_color_replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_) {
   
   assert_nativeraster(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);

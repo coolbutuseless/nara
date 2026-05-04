@@ -20,7 +20,7 @@ Invisibly return the original native raster image which has been
         modified in-place
 }
 \description{
-These functions are used to globally set a mask which affects where
+These functions are used to globally set a mask which determines where
 pixels are affected by drawing functions.
 }
 \details{
@@ -30,7 +30,7 @@ where the \code{mask} is not transparent.
 }
 \examples{
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
-mask <- deer_sprites[[1]] |> nr_resize(600, 400)
+mask <- deer[[1]] |> nr_resize(600, 400)
 plot(mask)
 img <- nr_new_from(mask)
 

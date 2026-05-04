@@ -26,8 +26,7 @@ magick_to_nr <- function(im, dst = NULL) {
       })
     }
   } else {
-    message("Please install the 'magick' package in order to use this function");
-    NULL
+    stop("magick_to_nr() requires the {magick} package")
   }
 }
 
@@ -42,8 +41,7 @@ nr_to_magick <- function(nr) {
   if (requireNamespace('magick', quietly = TRUE)) {
     magick::image_read(nr)
   } else {
-    message("Please install the 'magick' package in order to use this function");
-    NULL
+    stop("nr_to_magick() requires the {magick} package")
   }
 }
 
@@ -72,9 +70,9 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
     ims <- do.call(magick::image_join, nr_list)
     magick::image_write_gif(ims, path = filename, progress = verbose, delay = 1/framerate, ...)
   } else {
-    stop("need to install {magick}")
+    stop("nrs_to_gif() requires the {magick} package")
   }
-  invisible()
+  invisible(nr_list)
 }
 
 
@@ -101,7 +99,8 @@ nrs_to_mp4 <- function(nr_list, filename, verbose = FALSE, ...) {
     ims <- do.call(magick::image_join, nr_list)
     magick::image_write_video(ims, path = filename, verbose = verbose, ...)
   } else {
-    stop("need to install {magick}")
+    stop("nrs_to_mp4() requires the {magick} package")
   }
-  invisible()
+  invisible(nr_list)
 }
+

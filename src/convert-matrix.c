@@ -99,7 +99,7 @@ SEXP numeric_matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP min_, SEXP max_, SEXP 
 //
 // @return native raster
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, SEXP dst_) {
+SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP nr_fill_, SEXP min_, SEXP max_, SEXP dst_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -122,7 +122,7 @@ SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, S
   int height = Rf_nrows(mat_);
   int width  = Rf_ncols(mat_);
   
-  uint32_t fill = single_rcolor_to_int(fill_);
+  uint32_t fill = single_rcolor_to_int(nr_fill_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Prep native raster

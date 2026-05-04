@@ -7,5 +7,5 @@
 #' 
 #' \code{cat(readLines(system.file('LICENSE-deer.txt', package = 'nara')), sep = "\n")}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"deer_sprites"
+"deer"
 

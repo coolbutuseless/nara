@@ -5,8 +5,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 draw_mode <- list(
   respect_alpha = 1L,
-  ignore_alpha  = 2L,
-  bitwise_or    = 3L
+  ignore_alpha  = 2L
 )
 
 
@@ -61,7 +60,7 @@ is_nativeraster <- function(x) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_new <- function(width, height, fill = 'white') {
   nr <- .Call(nr_new_, width, height)
-  .Call(fill_, nr, fill)
+  .Call(nr_fill_, nr, fill)
   nr
 }
 
@@ -93,7 +92,7 @@ nr_new_from <- function(nr, fill = 'white') {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_copy <- function(nr) {
-  .Call(duplicate_, nr)
+  .Call(nr_copy_, nr)
 }
 
 
@@ -115,11 +114,11 @@ nr_copy <- function(nr) {
 #' nr1 <- nr_new(200, 100, 'hotpink')
 #' nr2 <- nr_new(200, 100, 'green')
 #' nr_copy_into(nr1, nr2)
-#' plot(nr1, T)
+#' plot(nr1)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_copy_into <- function(dst, src) {
-  invisible(.Call(copy_into_, dst, src))
+  invisible(.Call(nr_copy_into_, dst, src))
 }
 
 
@@ -144,7 +143,7 @@ nr_copy_into <- function(dst, src) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fill <- function(nr, color) {
-  invisible(.Call(fill_, nr, color))
+  invisible(.Call(nr_fill_, nr, color))
 }
 
 
@@ -205,7 +204,7 @@ nr_crop2 <- function(nr, loc) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_flipv <- function(nr) {
-  invisible(.Call(flipv_, nr))
+  invisible(.Call(nr_flipv_, nr))
 }
 
 
@@ -228,7 +227,7 @@ nr_flipv <- function(nr) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr_fliph <- function(nr) {
-  invisible(.Call(fliph_, nr))
+  invisible(.Call(nr_fliph_, nr))
 }
 
 
@@ -292,6 +291,7 @@ nr_transpose <- function(nr) {
 print.nativeRaster <- function(x, ...) {
   d <- dim(x)
   cat(sprintf("<nativeRaster> object: rows:%i  cols:%i\n", d[1], d[2]))
+  invisible(x)
 }
 
 

@@ -13,17 +13,17 @@
 // Core
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 extern SEXP nr_new_(SEXP height_, SEXP width_);
-extern SEXP copy_into_(SEXP dst_, SEXP src_);
-extern SEXP duplicate_(SEXP nr_);
-extern SEXP fill_(SEXP nr_, SEXP color_);
-extern SEXP flipv_(SEXP nr_);
-extern SEXP fliph_(SEXP nr_);
-extern SEXP replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
+extern SEXP nr_copy_into_(SEXP dst_, SEXP src_);
+extern SEXP nr_copy_(SEXP nr_);
+extern SEXP nr_fill_(SEXP nr_, SEXP color_);
+extern SEXP nr_flipv_(SEXP nr_);
+extern SEXP nr_fliph_(SEXP nr_);
+extern SEXP nr_color_replace_(SEXP nr_, SEXP old_cols_, SEXP new_cols_);
 extern SEXP nr_rotate_(SEXP nr_, SEXP angle_);
 extern SEXP nr_transpose_(SEXP nr_);
 
-extern SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_);
-extern SEXP resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
+extern SEXP nr_resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_);
+extern SEXP nr_resize_nn_      (SEXP nr_, SEXP width_, SEXP height_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Blit
@@ -53,7 +53,7 @@ extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Conversion
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP fill_, SEXP min_, SEXP max_, SEXP dst_);
+extern SEXP matrix_to_nr_(SEXP mat_, SEXP palette_, SEXP nr_fill_, SEXP min_, SEXP max_, SEXP dst_);
 
 extern SEXP raster_to_nr_(SEXP ras_, SEXP dst_);
 extern SEXP nr_to_raster_(SEXP nr_);
@@ -70,10 +70,10 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP draw_mode_);
 extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_, SEXP draw_mode_);
 extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_, SEXP draw_mode_);
-extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_);
-extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP fill_, SEXP color_, SEXP draw_mode_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_);
+extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP nr_fill_, SEXP color_, SEXP draw_mode_);
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_line_);
-extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP fill_, SEXP color_, 
+extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP nr_fill_, SEXP color_, 
                                SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
 
 
@@ -100,17 +100,17 @@ extern SEXP nr_mask_end_  (SEXP nr_);
 static const R_CallMethodDef CEntries[] = {
   
   {"nr_new_"   , (DL_FUNC) &nr_new_   , 2},
-  {"copy_into_", (DL_FUNC) &copy_into_, 2},
-  {"duplicate_", (DL_FUNC) &duplicate_, 1},
-  {"fill_"     , (DL_FUNC) &fill_     , 2},
-  {"flipv_"    , (DL_FUNC) &flipv_    , 1},
-  {"fliph_"    , (DL_FUNC) &fliph_    , 1},
-  {"replace_"  , (DL_FUNC) &replace_  , 3},
+  {"nr_copy_into_", (DL_FUNC) &nr_copy_into_, 2},
+  {"nr_copy_", (DL_FUNC) &nr_copy_, 1},
+  {"nr_fill_"     , (DL_FUNC) &nr_fill_     , 2},
+  {"nr_flipv_"    , (DL_FUNC) &nr_flipv_    , 1},
+  {"nr_fliph_"    , (DL_FUNC) &nr_fliph_    , 1},
+  {"nr_color_replace_"  , (DL_FUNC) &nr_color_replace_  , 3},
   {"nr_rotate_", (DL_FUNC) &nr_rotate_, 2},
   {"nr_transpose_", (DL_FUNC) &nr_transpose_, 1},
   
-  {"resize_bilinear_", (DL_FUNC) &resize_bilinear_  , 3},
-  {"resize_nn_"      , (DL_FUNC) &resize_nn_        , 3},
+  {"nr_resize_bilinear_", (DL_FUNC) &nr_resize_bilinear_  , 3},
+  {"nr_resize_nn_"      , (DL_FUNC) &nr_resize_nn_        , 3},
   
   {"nr_blit_ortho_"   , (DL_FUNC) &nr_blit_ortho_   , 11}, // subsumed into 'nr_blit_'
   {"nr_blit_rotozoom_", (DL_FUNC) &nr_blit_rotozoom_, 13}, // subsumed into 'nr_blit_'

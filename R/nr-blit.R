@@ -5,13 +5,13 @@
 #'
 #' @inheritParams nr_point
 #' @param dst,src source and destination native raster images
-#' @param x,y Where in \code{nr} to place the \code{sprite}. These values must
+#' @param x,y Where in \code{dst} to place the \code{src}. These values must
 #'        be vectors of the same length.  If the length is greater than 1, then
 #'        the \code{sprite} will be pasted into \code{nr} at multiple locations.
 #'        Note that the
 #'        origin of native raster images is the top-left
 #'        where the coordinates are (0, 0).
-#' @param xsrc,ysrc start coordiates within src
+#' @param xsrc,ysrc start coordinates within src
 #' @param w,h size within src. If size is negative, then the actual width/height of
 #'        the src is used
 #' @param hjust,vjust specify horizontal and vertical justification of the 
@@ -22,11 +22,12 @@
 #' @param angle Rotation angle (clockwise) in radians. Default: 0
 #' @param scale Zoom factor. Default: 1
 #'
-#' @return None. \code{dst} modified by-reference and returned invisibly.
+#' @return Invisibly return the supplied \code{dst} native raster image which was been
+#'         modified in-place
 #' 
 #' @examples
 #' nr <- nr_new(50, 50, 'grey80')
-#' nr_blit(dst = nr, src = deer_sprites[[1]], x = 25, y = 25)
+#' nr_blit(dst = nr, src = deer[[1]], x = 25, y = 25)
 #' plot(nr, T)
 #' 
 #' nr <- nr_new(300, 200, 'grey80')
@@ -64,10 +65,13 @@ nr_blit <- function(dst, src, x, y,
 #' Multiple blit operations in a single call
 #' 
 #' @param dst destination native raster
-#' @param src list of native rasters
+#' @param src list of native raster images.
 #' @param config data.frame of configuration information for each blit which 
 #'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw
-#' @return None. \code{dst} modifief by-reference and returned invisibly.
+#'    
+#' @return Invisibly return the supplied \code{dst} native raster image which was been
+#'         modified in-place
+#'           
 #' @examples
 #' nr <- nr_new(90, 90, 'grey60')
 #' config <- data.frame(
@@ -85,8 +89,8 @@ nr_blit <- function(dst, src, x, y,
 #'   mode = draw_mode$respect_alpha,
 #'   render = TRUE
 #' )
-#' nr_blit_bulk(dst = nr, src = deer_sprites, config = config)
-#' plot(nr, T)
+#' nr_blit_bulk(dst = nr, src = deer, config = config)
+#' plot(nr)
 #' @family blitting functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

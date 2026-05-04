@@ -21,7 +21,7 @@ New native raster image
 Resize a native raster by specifying the output dimensions
 }
 \examples{
-stretched <- nr_resize(deer_sprites[[1]], 100, 40, algo = 'nn')
+stretched <- nr_resize(deer[[1]], 100, 40, algo = 'nn')
 plot(stretched)
 }
 \seealso{

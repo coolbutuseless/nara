@@ -60,7 +60,7 @@ void nr_rect(uint32_t *nr,
 // @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_) {
+                SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -85,7 +85,7 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   // Colors
   bool freecol = false, freefill = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
-  uint32_t *fill  = multi_rcolors_to_ints(fill_ , N, &freefill);
+  uint32_t *fill  = multi_rcolors_to_ints(nr_fill_ , N, &freefill);
   
   draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
   

@@ -21,7 +21,7 @@
 //
 // @param width,height desired output dimensions
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
+SEXP nr_resize_nn_(SEXP nr_, SEXP width_, SEXP height_) {
   
   assert_nativeraster(nr_);
   
@@ -127,7 +127,7 @@ void lerp_row(uint32_t *in_row, int in_width, uint32_t *out_row, int out_width, 
 // Resize with bilinear intepolation.
 // This interpolates in RGBA space - which isn't great.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
+SEXP nr_resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   
   assert_nativeraster(nr_);
   
@@ -139,7 +139,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   int out_height = Rf_asInteger(height_);
   
   if (out_width <= 2 || out_height <= 2) {
-    Rf_error("resize_bilinear_(): new height/width must be 2 pixels or greater");
+    Rf_error("nr_resize_bilinear_(): new height/width must be 2 pixels or greater");
   }
   
   // Create nativeraster and copy contents
@@ -155,7 +155,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   float *frac_row = malloc((unsigned long)out_height * sizeof(float));
   
   if (left_col == NULL || upper_row == NULL || frac_col == NULL || frac_row == NULL) {
-    Rf_error("resize_bilinear_(): Memory allocation error");
+    Rf_error("nr_resize_bilinear_(): Memory allocation error");
   }
   
   for (int i = 0; i < out_width; i++) {
@@ -191,7 +191,7 @@ SEXP resize_bilinear_(SEXP nr_, SEXP width_, SEXP height_) {
   uint32_t *upper_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
   uint32_t *lower_row_cache = malloc((unsigned long)out_width * sizeof(uint32_t));
   if (lower_row_cache == NULL || upper_row_cache == NULL) {
-    Rf_error("resize_bilinear_(): Memory allocation error for row cache");
+    Rf_error("nr_resize_bilinear_(): Memory allocation error for row cache");
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
