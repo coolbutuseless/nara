@@ -66,6 +66,16 @@ with:
 remotes::install_github('coolbutuseless/nara')
 ```
 
+## Demonstration 
+
+Realtime rendering of 11 overlapping parallax layers with a samurai figure running out front.
+
+
+
+https://github.com/user-attachments/assets/c3daeccc-0d21-4f0d-ba1e-655fd836c9c3
+
+
+
 ## Vignettes
 
 - [Creating, transforming, reading, writing native raster
