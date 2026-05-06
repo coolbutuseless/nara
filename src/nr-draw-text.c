@@ -32,7 +32,7 @@
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
 void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize,
-                   draw_mode_t draw_mode) {
+                   bool use_alpha) {
   
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +68,7 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
     for (int row = 0; row < char_h; row ++) {
       for (int i = 0; i < char_w; i++) {
         if (letter[row] & (1 << (8 - i))) {
-          nr_point(nr, nr_width, nr_height, col + i + x, y - char_h + row, color, draw_mode);
+          nr_point(nr, nr_width, nr_height, col + i + x, y - char_h + row, color, use_alpha);
         }
       }
     }
@@ -92,7 +92,7 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
 // @param color color
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_, SEXP draw_mode_) {
+SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_, SEXP use_alpha_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -108,13 +108,13 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
 
   const char *str = CHAR(Rf_asChar(str_));
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = Rf_asInteger(fontsize_);
-  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize, draw_mode);
+  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize, use_alpha);
 
   
   return nr_;

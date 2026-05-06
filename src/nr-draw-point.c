@@ -24,14 +24,14 @@
 // @param x,y location
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color, draw_mode_t draw_mode) {
+void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t color, bool use_alpha) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Out of bounds
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (y < 0 || y > nr_height - 1 || x < 0 || x > nr_width - 1) return;
   
-  if (draw_mode == IGNORE_ALPHA) {
+  if (!use_alpha) {
     nr[y * nr_width + x] = color;
     return;
   }
@@ -72,7 +72,7 @@ void nr_point(uint32_t *nr, int nr_width, int nr_height, int x, int y, uint32_t 
 // @param x,y locations
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP draw_mode_) {
+SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP use_alpha_) {
 
   assert_nativeraster(nr_);
 
@@ -91,10 +91,10 @@ SEXP nr_point_(SEXP nr_, SEXP x_, SEXP y_, SEXP color_, SEXP draw_mode_) {
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   for (int i = 0 ; i < N; i++) {
-    nr_point(nr, nr_width, nr_height, x[i], y[i], color[i], draw_mode);
+    nr_point(nr, nr_width, nr_height, x[i], y[i], color[i], use_alpha);
   }
 
   // free and return

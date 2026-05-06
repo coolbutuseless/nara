@@ -26,9 +26,9 @@
 // @param x1,x2 points to draw between
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void nr_hline(uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y, uint32_t color, draw_mode_t draw_mode) {
+void nr_hline(uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y, uint32_t color, bool use_alpha) {
   
-  if ((is_transparent(color) && draw_mode == RESPECT_ALPHA) || y < 0 || y >= nr_height) {
+  if ((is_transparent(color) && !use_alpha) || y < 0 || y >= nr_height) {
     return;
   }
   
@@ -44,7 +44,7 @@ void nr_hline(uint32_t *nr, int nr_width, int nr_height, int x1, int x2, int y, 
   if (x1 < 0) x1 = 0;
   if (x2 >= nr_width) x2 = nr_width - 1;
   
-  if (draw_mode == IGNORE_ALPHA || is_opaque(color)) {
+  if (!use_alpha || is_opaque(color)) {
     // draw direct. no need to consider alpha
     for (int x = x1; x <= x2; x++) {
       nr[y * nr_width + x] = color;  

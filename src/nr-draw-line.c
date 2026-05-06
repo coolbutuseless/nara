@@ -25,7 +25,7 @@
 // @param color color
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, int y2, uint32_t color, double linewidth, 
-             draw_mode_t draw_mode) {
+             bool use_alpha) {
 
   if (linewidth > 1) {
     bool close = false;
@@ -33,7 +33,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
     int npoints = 2;
     int x[2] = {x1, x2};
     int y[2] = {y1, y2};
-    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, draw_mode);
+    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, use_alpha);
     return;
   }
   
@@ -43,7 +43,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
   int err = dx+dy, e2;                                  /* error value e_xy */
   
   for (;;) {                                                        /* loop */
-    nr_point(nr, nr_width, nr_height, x1, y1, color, draw_mode);
+    nr_point(nr, nr_width, nr_height, x1, y1, color, use_alpha);
 
     e2 = 2*err;
     if (e2 >= dy) {                                       /* e_xy+e_x > 0 */
@@ -65,7 +65,7 @@ void nr_line(uint32_t *nr, int nr_width, int nr_height, int x1, int y1, int x2, 
 // @param x1,y1,x2,y2 line endpoints
 // @param color colors
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP linewidth_, SEXP draw_mode_) {
+SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEXP linewidth_, SEXP use_alpha_) {
 
   assert_nativeraster(nr_);
 
@@ -88,10 +88,10 @@ SEXP nr_line_(SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_, SEXP color_, SEX
   bool freecol = false;
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   for (int i = 0; i < N; i++) {
-    nr_line(nr, nr_width, nr_height, x1[i], y1[i], x2[i], y2[i], color[i], linewidth[i], draw_mode);
+    nr_line(nr, nr_width, nr_height, x1[i], y1[i], x2[i], y2[i], color[i], linewidth[i], use_alpha);
   }
 
   // free and return

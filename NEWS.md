@@ -1,13 +1,15 @@
 
 # nara 0.1.1.9040 2026-05-02
 
+* [9041] `draw_mode` removed in favour of `use_alpha` as XOR drawing - which
+         is required for AnotherWorld rendering - is no longer supported.
 * [9041] Tidy `nr_desaturate()`
 * [9040] Add triangle drawing `nr_tri_mesh()`, `nr_tri_coords()`
 * [9039] Tidy.  Rename `nr_duplicate()` to `nr_copy()`
 * [9038] Color reduction: `nr_dither()`, `nr_desaturate()`, 
          `nr_threshold()`
 * [9037] Masked rendering
-* [9036] ignore transparency if draw_mode == IGNORE_ALPHA
+* [9036] ignore transparency if !use_alpha
 * [9035] C API Redux
 * [9034] can now select drawing mode on all drawing ops: "respect_alpha" or "ignore_alpha"
 * [9033] most line drawing operations now take a `linewidth` argument
