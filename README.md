@@ -6,10 +6,8 @@
 <!-- badges: start -->
 
 ![](https://img.shields.io/badge/cool-useless-green.svg)
-[![CRAN](https://www.r-pkg.org/badges/version/nara)](https://CRAN.R-project.org/package=nara)
+<!-- [![CRAN](https://www.r-pkg.org/badges/version/nara)](https://CRAN.R-project.org/package=nara) -->
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
-![](https://img.shields.io/badge/API-unstable-yellow.svg)
-![](https://img.shields.io/badge/developing-rapidly-blue)
 <!-- badges: end -->
 
 `{nara}` is a package for working with R’s native raster image format.
@@ -66,20 +64,14 @@ with:
 remotes::install_github('coolbutuseless/nara')
 ```
 
-## Demonstration 
+## Demonstration
 
-Realtime rendering of 11 overlapping parallax layers with a samurai figure running out front.
+Realtime rendering of a
+[forest](https://edermunizz.itch.io/free-pixel-art-forest) (made of 11
+overlapping parallax layers with alpha blending) with a [samurai
+figure](https://xzany.itch.io/samurai-2d-pixel-art) running out front.
 
-
-
-https://github.com/user-attachments/assets/c3daeccc-0d21-4f0d-ba1e-655fd836c9c3
-
-
-
-## Vignettes
-
-- [Creating, transforming, reading, writing native raster
-  images](https://coolbutuseless.github.io/package/nara/articles/conversion.html)
+<https://github.com/user-attachments/assets/c3daeccc-0d21-4f0d-ba1e-655fd836c9c3>
 
 ## Static Rendering: Example
 
