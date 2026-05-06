@@ -4,7 +4,7 @@
 \alias{nr_point}
 \title{Draw points on a native raster image}
 \usage{
-nr_point(nr, x, y, color = "black", mode = draw_mode$respect_alpha)
+nr_point(nr, x, y, color = "black", use_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -13,7 +13,7 @@ nr_point(nr, x, y, color = "black", mode = draw_mode$respect_alpha)
 
 \item{color}{Vector of colors}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

@@ -4,16 +4,7 @@
 \alias{nr_line}
 \title{Draw lines on a native raster image}
 \usage{
-nr_line(
-  nr,
-  x1,
-  y1,
-  x2,
-  y2,
-  color = "black",
-  linewidth = 1,
-  mode = draw_mode$respect_alpha
-)
+nr_line(nr, x1, y1, x2, y2, color = "black", linewidth = 1, use_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -30,7 +21,7 @@ naive version of Bresenham is used to draw the points.  If linewidth
 is greater than 1, then the line is convert to a triangle strip and
 rendered as polygons.}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

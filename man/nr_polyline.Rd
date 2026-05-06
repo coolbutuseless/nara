@@ -12,7 +12,7 @@ nr_polyline(
   linewidth = 1,
   mitre_limit = linewidth,
   close = FALSE,
-  mode = draw_mode$respect_alpha
+  use_alpha = TRUE
 )
 }
 \arguments{
@@ -37,7 +37,7 @@ linewidth which mostly looks OK.}
 \item{close}{Should the polyline be closed? I.e. should a line be drawn between
 the last point and the first point?   Default: FALSE}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

@@ -12,7 +12,7 @@ nr_blit_bulk(dst, src, config)
 \item{src}{list of native raster images.}
 
 \item{config}{data.frame of configuration information for each blit which 
-most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw}
+most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, use_alpha, draw}
 }
 \value{
 Invisibly return the supplied \code{dst} native raster image which was been
@@ -35,7 +35,7 @@ config <- data.frame(
   vjust = 0.5,
   angle = c(0, 0, 0, pi/4),
   scale = c(0.5, 1, 1, 1),
-  mode = draw_mode$respect_alpha,
+  use_alpha = TRUE,
   render = TRUE
 )
 nr_blit_bulk(dst = nr, src = deer, config = config)

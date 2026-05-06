@@ -66,9 +66,9 @@
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_mesh <- function(nr, vertices, indices, color, tris = 'all', mode = draw_mode$respect_alpha) {
+nr_tri_mesh <- function(nr, vertices, indices, color, tris = 'all', use_alpha = TRUE) {
   invisible(
-    .Call(nr_tri_mesh_, nr, vertices, indices, color, tris, mode)
+    .Call(nr_tri_mesh_, nr, vertices, indices, color, tris, use_alpha)
   )
 }
 
@@ -78,9 +78,9 @@ nr_tri_mesh <- function(nr, vertices, indices, color, tris = 'all', mode = draw_
 #' @rdname nr_tri_mesh
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_tri_coords <- function(nr, coords, color, tris = 'all', mode = draw_mode$respect_alpha) {
+nr_tri_coords <- function(nr, coords, color, tris = 'all', use_alpha = TRUE) {
   invisible(
-    .Call(nr_tri_coords_, nr, coords, color, tris, mode)
+    .Call(nr_tri_coords_, nr, coords, color, tris, use_alpha)
   )
 }
 

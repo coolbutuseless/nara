@@ -5,7 +5,7 @@
 #' @inheritParams nr_fill
 #' @param x,y Vectors of point coordinates
 #' @param color Vector of colors
-#' @param mode drawing mode. 
+#' @param use_alpha Use alpha channel when drawing? Logical. Default: TRUE 
 #'
 #' @return Invisibly return the supplied native raster image which was been
 #'         modified in-place
@@ -18,8 +18,8 @@
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_point_, nr, x, y, color, mode))
+nr_point <- function(nr, x, y, color = 'black', use_alpha = TRUE) {
+  invisible(.Call(nr_point_, nr, x, y, color, use_alpha))
 }
 
 
@@ -45,8 +45,8 @@ nr_point <- function(nr, x, y, color = 'black', mode = draw_mode$respect_alpha) 
 #'
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth, mode))
+nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, use_alpha = TRUE) {
+  invisible(.Call(nr_line_, nr, x1, y1, x2, y2, color, linewidth, use_alpha))
 }
 
 
@@ -83,8 +83,8 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, mode = d
 #' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize, mode))
+nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, use_alpha = TRUE) {
+  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize, use_alpha))
 }
 
 
@@ -113,8 +113,8 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, mode = 
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth, mode))
+nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust = 0, linewidth = 1, use_alpha = TRUE) {
+  invisible(.Call(nr_rect_, nr,  x, y, w, h, fill, color, hjust, vjust, linewidth, use_alpha))
 }
 
 
@@ -140,8 +140,8 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_circle_, nr, x, y, r, fill, color, mode))
+nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, use_alpha = TRUE) {
+  invisible(.Call(nr_circle_, nr, x, y, r, fill, color, use_alpha))
 }
 
 
@@ -188,8 +188,8 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, mode = draw_mode$
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close, mode))
+nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = linewidth, close = FALSE, use_alpha = TRUE) {
+  invisible(.Call(nr_polyline_, nr, x, y, color, linewidth, mitre_limit, close, use_alpha))
 }
 
 
@@ -218,7 +218,7 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, mode = draw_mode$respect_alpha) {
-  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit, mode))
+nr_polygon <- function(nr, x, y, id = NULL, fill = 'black', color = NA, linewidth = 1, mitre_limit = linewidth, use_alpha = TRUE) {
+  invisible(.Call(nr_polygons_multi_, nr, x, y, id = id, fill, color, linewidth, mitre_limit, use_alpha))
 }
 

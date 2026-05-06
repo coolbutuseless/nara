@@ -13,7 +13,7 @@ nr_polygon(
   color = NA,
   linewidth = 1,
   mitre_limit = linewidth,
-  mode = draw_mode$respect_alpha
+  use_alpha = TRUE
 )
 }
 \arguments{
@@ -42,7 +42,7 @@ rendered as polygons.}
 acute angle and linewidth is greater than 1. Default: same as line 
 linewidth which mostly looks OK.}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

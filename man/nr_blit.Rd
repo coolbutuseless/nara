@@ -17,7 +17,7 @@ nr_blit(
   vjust = 0.5,
   angle = 0,
   scale = 1,
-  mode = draw_mode$respect_alpha
+  use_alpha = TRUE
 )
 }
 \arguments{
@@ -45,7 +45,7 @@ Default (0, 0)}
 
 \item{scale}{Zoom factor. Default: 1}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied \code{dst} native raster image which was been

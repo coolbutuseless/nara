@@ -41,10 +41,10 @@ SEXP my_func(SEXP nr_) {
   int nr_height = Rf_nrows(nr_);
   uint32_t *nr = (uint32_t *)INTEGER(nr_);
   uint32_t col = 0xFF0000FFu; // 0xAABBGGRR Red
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  bool use_alpha = true;
 
-  //      nr, nr_width, nr_height, x1, y1,  x2,  y2, color, linewidth, draw_mode
-  nr_line(nr, nr_width, nr_height,  0,  0, 200, 150, col  , 1,         draw_mode);
+  //      nr, nr_width, nr_height, x1, y1,  x2,  y2, color, linewidth, use_alpha
+  nr_line(nr, nr_width, nr_height,  0,  0, 200, 150, col  , 1,         use_alpha);
 
   return nr_;
 }

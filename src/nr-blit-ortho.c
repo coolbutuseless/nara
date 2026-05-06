@@ -33,7 +33,7 @@
 // @param src_width,src_height dimensions of source
 // @param xsrc,ysrc starting position within source
 // @param w,h dimensions of region to copy
-// @param draw_mode draw_mode_t enum
+// @param use_alpha bool
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
                    uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 

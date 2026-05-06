@@ -3,7 +3,6 @@
 S3method(plot,nativeRaster)
 S3method(print,nativeRaster)
 export(array_to_nr)
-export(draw_mode)
 export(is_nativeraster)
 export(magick_to_nr)
 export(matrix_to_nr)

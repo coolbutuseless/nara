@@ -5,16 +5,9 @@
 \alias{nr_tri_coords}
 \title{Draw multiple triangles from mesh data}
 \usage{
-nr_tri_mesh(
-  nr,
-  vertices,
-  indices,
-  color,
-  tris = "all",
-  mode = draw_mode$respect_alpha
-)
+nr_tri_mesh(nr, vertices, indices, color, tris = "all", use_alpha = TRUE)
 
-nr_tri_coords(nr, coords, color, tris = "all", mode = draw_mode$respect_alpha)
+nr_tri_coords(nr, coords, color, tris = "all", use_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -37,7 +30,7 @@ or clockwise manner respectively.  Note: when considering orientation
 or triangles remmeber that the y-axis is defined vertically \emph{down}
 the screen.}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 
 \item{coords}{Numeric atrix of direct coordinate data for each triangle.
 The coordinates for

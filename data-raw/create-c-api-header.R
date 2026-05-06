@@ -83,13 +83,6 @@ decl_to_func <- function(decl) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 typedefs <- r"(
 
-
-typedef enum {
-  IGNORE_ALPHA  = 0
-  RESPECT_ALPHA = 1
-} draw_mode_t;
-
-
 )"
 
 
