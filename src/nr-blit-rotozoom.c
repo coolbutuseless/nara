@@ -36,7 +36,7 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
                       int w, int h,
                       double hjust, double vjust,
                       double angle, double scale, 
-                      draw_mode_t draw_mode) {
+                      bool use_alpha) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
@@ -139,8 +139,8 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
       bool within_src = xs >= xsrc && ys >= ysrc && xs < xsrc + w && ys < ysrc + h;
       if (within_src) {
         uint32_t col = src[(int)(ys * src_width + xs)];
-        if (draw_mode == RESPECT_ALPHA) {
-          nr_point(dst, dst_width, dst_height, x + xd, y + yd, col, draw_mode);
+        if (use_alpha) {
+          nr_point(dst, dst_width, dst_height, x + xd, y + yd, col, use_alpha);
         } else {
           // the range xmin/xmax and ymin/ymax are guarantted by the 
           // checks above to always be in the range of 'dst'
@@ -157,11 +157,11 @@ void nr_blit_rotozoom(uint32_t *dst, int dst_width, int dst_height, int x, int y
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (0) {
     double linewidth = 1;
-    draw_mode_t draw_mode = RESPECT_ALPHA;
-    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymax, x + (int)xmax, y + (int)ymax, RC_RED, linewidth, draw_mode);
-    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymax, x + (int)xmax, y + (int)ymin, RC_RED, linewidth, draw_mode);
-    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymin, x + (int)xmin, y + (int)ymin, RC_RED, linewidth, draw_mode);
-    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymin, x + (int)xmin, y + (int)ymax, RC_RED, linewidth, draw_mode);
+    bool use_alpha = true;
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymax, x + (int)xmax, y + (int)ymax, RC_RED, linewidth, use_alpha);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymax, x + (int)xmax, y + (int)ymin, RC_RED, linewidth, use_alpha);
+    nr_line(dst, dst_width, dst_height, x + (int)xmax,  y + (int)ymin, x + (int)xmin, y + (int)ymin, RC_RED, linewidth, use_alpha);
+    nr_line(dst, dst_width, dst_height, x + (int)xmin,  y + (int)ymin, x + (int)xmin, y + (int)ymax, RC_RED, linewidth, use_alpha);
   }
   
   
@@ -173,7 +173,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                        SEXP w_    , SEXP h_, 
                        SEXP hjust_, SEXP vjust_, 
                        SEXP angle_, SEXP scale_,
-                       SEXP draw_mode_) {  
+                       SEXP use_alpha_) {  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity check
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -220,7 +220,7 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                      src, src_width, src_height, xsrc , ysrc, 
                      w, h,
                      Rf_asReal(hjust_), Rf_asReal(vjust_),
-                     angles[i], scales[i], (draw_mode_t)Rf_asInteger(draw_mode_));
+                     angles[i], scales[i], (bool)Rf_asLogical(use_alpha_));
   }
   
 

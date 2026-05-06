@@ -32,9 +32,9 @@ static int scanline_sort_x(const void *a, const void *b) {
 // get me 30fps in "Another World" so I'm moving on.  Patches/PR welcomed!
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, 
-                uint32_t color, double linewidth, double mitre_limit, draw_mode_t draw_mode) {
+                uint32_t color, double linewidth, double mitre_limit, bool use_alpha) {
   
-  if (!is_transparent(fill) || draw_mode == IGNORE_ALPHA) {
+  if (!is_transparent(fill) || !use_alpha) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Pairs of values in 'nodeX' will have points drawn between them on 
     // a scanline.
@@ -135,7 +135,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
         if (nodeX[i + 1] >  0 ) {
           if (nodeX[i] < 0) nodeX[i] = 0;
           if (nodeX[i + 1] >= nr_width) nodeX[i + 1] = nr_width - 1;
-          nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, fill, draw_mode);
+          nr_hline(nr, nr_width, nr_height, nodeX[i], nodeX[i+1], scanline, fill, use_alpha);
         }
       }
     } // end for(scanline)
@@ -150,9 +150,9 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Outline
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (!is_transparent(color) || draw_mode == IGNORE_ALPHA) {
+  if (!is_transparent(color) || !use_alpha) {
     bool close = true;
-    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, draw_mode);
+    nr_polyline(nr, nr_width, nr_height, x, y, npoints, color, linewidth, mitre_limit, close, use_alpha);
   }
 }
 
@@ -162,7 +162,7 @@ void nr_polygon(uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int n
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
+SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP use_alpha_) {
   
   assert_nativeraster(nr_);
   
@@ -187,10 +187,10 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP nr_fill_, SEXP color_,
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   // Rprintf("Polygon Fill: %i\n", fill);
-  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit, draw_mode);
+  nr_polygon(nr, nr_width, nr_height, x, y, Rf_length(x_), fill, color, linewidth, mitre_limit, use_alpha);
   
   // free and return
   if (freex) free(x);
@@ -202,12 +202,12 @@ SEXP nr_polygons_single_(SEXP nr_, SEXP x_, SEXP y_, SEXP nr_fill_, SEXP color_,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // R Polygon [R interface]
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_) {
+SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP use_alpha_) {
   
   // Can we just do single polygon handling?
   if (Rf_isNull(id_)) {
     // Rprintf("Calling single\n");
-    return nr_polygons_single_(nr_, x_, y_, nr_fill_, color_, linewidth_, mitre_limit_, draw_mode_);
+    return nr_polygons_single_(nr_, x_, y_, nr_fill_, color_, linewidth_, mitre_limit_, use_alpha_);
   }
   // Rprintf("Processing multiple\n");
   
@@ -257,7 +257,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEX
   double linewidth = Rf_asReal(linewidth_);
   double mitre_limit = Rf_asReal(mitre_limit_);
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   int poly_id = id[0];
   int poly_start = 0;
@@ -271,7 +271,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEX
     int len = poly_end - poly_start;
     
     // Rprintf("Fill [%i] = %i\n", i, fill[i]);
-    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i], color[i], linewidth, mitre_limit, draw_mode);
+    nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [i], color[i], linewidth, mitre_limit, use_alpha);
 
     poly_start = poly_end;
     poly_id    = id[poly_start];
@@ -282,7 +282,7 @@ SEXP nr_polygons_multi_(SEXP nr_, SEXP x_, SEXP y_, SEXP id_, SEXP nr_fill_, SEX
   // Final polygon
   int len = N - poly_start;
   // Rprintf("Final len: %i\n", len);
-  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1], color[npolys - 1], linewidth, mitre_limit, draw_mode);
+  nr_polygon (nr, nr_width, nr_height, x + poly_start, y + poly_start, len, fill [npolys - 1], color[npolys - 1], linewidth, mitre_limit, use_alpha);
   
   // free and return
   if (freeid)   free(id);

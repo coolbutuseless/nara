@@ -32,21 +32,21 @@ extern SEXP nr_blit_ortho_(SEXP dst_  , SEXP x_    , SEXP y_,
                      SEXP src_  , SEXP xsrc_   , SEXP ysrc_,
                     SEXP w_    , SEXP h_,
                     SEXP hjust_, SEXP vjust_,
-                    SEXP draw_mode_);
+                    SEXP use_alpha_);
 
 extern SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
                               SEXP src_, SEXP xsrc_, SEXP ysrc_,
                               SEXP w_, SEXP h_,
                               SEXP hjust_, SEXP vjust_,
                               SEXP angle_, SEXP sf_,
-                              SEXP draw_mode_);
+                              SEXP use_alpha_);
 
 extern SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_, 
                      SEXP src_, SEXP xsrc_, SEXP ysrc_, 
                      SEXP w_, SEXP h_, 
                      SEXP hjust_, SEXP vjust_, 
                      SEXP angle_, SEXP sf_,
-                     SEXP draw_mode_);
+                     SEXP use_alpha_);
 
 extern SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_);
 
@@ -67,20 +67,20 @@ extern SEXP magick_to_nr_(SEXP im_, SEXP dst_);
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Draw
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP draw_mode_);
-extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_, SEXP draw_mode_);
-extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_, SEXP draw_mode_);
-extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_);
-extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP nr_fill_, SEXP color_, SEXP draw_mode_);
+extern SEXP nr_point_   (SEXP nr_, SEXP x_ , SEXP y_                               , SEXP color_, SEXP use_alpha_);
+extern SEXP nr_line_    (SEXP nr_, SEXP x1_, SEXP y1_, SEXP x2_, SEXP y2_          , SEXP color_, SEXP linewidth_, SEXP use_alpha_);
+extern SEXP nr_text_basic_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP str_                   , SEXP color_, SEXP fontsize_, SEXP use_alpha_);
+extern SEXP nr_rect_    (SEXP nr_, SEXP x_ , SEXP y_ , SEXP w_, SEXP h_, SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP use_alpha_);
+extern SEXP nr_circle_  (SEXP nr_, SEXP x_ , SEXP y_ , SEXP r_         , SEXP nr_fill_, SEXP color_, SEXP use_alpha_);
 extern SEXP nr_polyline_(SEXP nr_, SEXP x_ , SEXP y_, SEXP color_, SEXP linewidth_, SEXP mitre_limit_, SEXP close_, SEXP draw_line_);
 extern SEXP nr_polygons_multi_(SEXP nr_, SEXP x_ , SEXP y_, SEXP id_         , SEXP nr_fill_, SEXP color_, 
-                               SEXP linewidth_, SEXP mitre_limit_, SEXP draw_mode_);
+                               SEXP linewidth_, SEXP mitre_limit_, SEXP use_alpha_);
 
 
 extern SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP col_, SEXP tri_mode_, 
-                           SEXP draw_mode_);
+                           SEXP use_alpha_);
 extern SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_, 
-                         SEXP tri_mode_, SEXP draw_mode_);
+                         SEXP tri_mode_, SEXP use_alpha_);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Color twiddling

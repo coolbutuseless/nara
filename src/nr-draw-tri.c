@@ -67,7 +67,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
               double x1d, double y1d, 
               double x2d, double y2d,
               int color, 
-              draw_mode_t draw_mode,
+              bool use_alpha,
               int tri_mode
               ) {
   
@@ -154,7 +154,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
       // int w2 = det(x2, y2, x0, y0, x, y);
       
       if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-        nr_point(nr, nr_width, nr_height, x, y, color, draw_mode);
+        nr_point(nr, nr_width, nr_height, x, y, color, use_alpha);
       }
       
       // Update determinants for next pixel in this row
@@ -180,7 +180,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
 //      three coordinates for the vertices
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_, 
-                    SEXP draw_mode_) {
+                    SEXP use_alpha_) {
   
   // Sanity Check
   assert_nativeraster(nr_);
@@ -229,7 +229,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
   bool free_color = false;
   uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
   
-  draw_mode_t draw_mode = Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   double *pc = coords;
   
@@ -244,7 +244,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
       pc0[0], pc0[1], // first + second element in column => (x, y) coords
       pc1[0], pc1[1],
       pc2[0], pc2[1],
-      color[i], draw_mode, tri_mode
+      color[i], use_alpha, tri_mode
     ); 
     
     // Skip ahead to the next triplet of vertex coordinates
@@ -266,7 +266,7 @@ SEXP nr_tri_coords_(SEXP nr_, SEXP coords_, SEXP color_, SEXP tri_mode_,
 //      three coordinates for the vertices
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_, 
-                  SEXP tri_mode_, SEXP draw_mode_) {
+                  SEXP tri_mode_, SEXP use_alpha_) {
   
   // Sanity Check
   assert_nativeraster(nr_);
@@ -322,7 +322,7 @@ SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_,
   bool free_color = false;
   uint32_t *color = multi_rcolors_to_ints(color_, n_tris, &free_color);
 
-  draw_mode_t draw_mode = Rf_asInteger(draw_mode_);
+  bool use_alpha = Rf_asLogical(use_alpha_);
 
   Rprintf("tris: %i  indices: %i  verts: %i\n", n_tris, Rf_length(indices_), n_verts);
   
@@ -346,7 +346,7 @@ SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_,
       vertices[v0 * n_dims + 0], vertices[v0 * n_dims + 1],
       vertices[v1 * n_dims + 0], vertices[v1 * n_dims + 1],
       vertices[v2 * n_dims + 0], vertices[v2 * n_dims + 1],
-      color[i], draw_mode, tri_mode
+      color[i], use_alpha, tri_mode
     );
     
     // Advance to next set of indices

@@ -47,7 +47,7 @@ nr_blit <- function(dst, src, x, y,
                     w = -1L, h = -1L,
                     hjust = 0.5, vjust = 0.5, 
                     angle = 0, scale = 1,
-                    mode = draw_mode$respect_alpha) {
+                    use_alpha = TRUE) {
   invisible(
     .Call(nr_blit_, 
           dst, x, y, 
@@ -55,7 +55,7 @@ nr_blit <- function(dst, src, x, y,
           w, h,
           hjust, vjust,
           angle, scale, 
-          mode)
+          use_alpha)
   )
 }
 
@@ -67,7 +67,7 @@ nr_blit <- function(dst, src, x, y,
 #' @param dst destination native raster
 #' @param src list of native raster images.
 #' @param config data.frame of configuration information for each blit which 
-#'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, draw_mode, draw
+#'    most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, use_alpha, draw
 #'    
 #' @return Invisibly return the supplied \code{dst} native raster image which was been
 #'         modified in-place
@@ -86,7 +86,7 @@ nr_blit <- function(dst, src, x, y,
 #'   vjust = 0.5,
 #'   angle = c(0, 0, 0, pi/4),
 #'   scale = c(0.5, 1, 1, 1),
-#'   mode = draw_mode$respect_alpha,
+#'   use_alpha = TRUE,
 #'   render = TRUE
 #' )
 #' nr_blit_bulk(dst = nr, src = deer, config = config)
@@ -107,7 +107,7 @@ if (FALSE) {
   
   logo <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
   nr <- nr_new(200, 200, 'grey80')
-  nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, mode = draw_mode$respect_alpha)
+  nr_blit(nr, logo, 0, 0, hjust = 0.5, vjust = 0.5, use_alpha = TRUE)
   plot(nr, T)
   
   
@@ -132,7 +132,7 @@ if (FALSE) {
     xoff <- 200 * sin(i/10 * 1/4 * pi)
     yoff <- 130 * sin(i/13 * 1/4 * pi + pi / 3)
     nr_fill(nr, 'white')
-    nr_blit(nr, logo, grid$x - xoff , grid$y - yoff, hjust = 0.5, vjust = 0.5, mode = draw_mode$respect_alpha)
+    nr_blit(nr, logo, grid$x - xoff , grid$y - yoff, hjust = 0.5, vjust = 0.5, use_alpha = TRUE)
     dev.hold()
     plot(nr)
     dev.flush()
@@ -154,7 +154,7 @@ if (FALSE) {
   nr <- nr_new(600, 400, 'grey80')
   nr_blit(nr, src = sq, x = 150, y = 100,
                    hjust = 0, vjust = 0,
-                   angle = -pi/4, scale = 10, mode = draw_mode$ignore_alpha)
+                   angle = -pi/4, scale = 10, use_alpha = FALSE)
   # nr_circle(nr, 150, 100, 2, fill = 'hotpink')
   
   plot(nr, T)

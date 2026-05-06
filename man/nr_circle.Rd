@@ -4,15 +4,7 @@
 \alias{nr_circle}
 \title{Draw circles on a native raster image}
 \usage{
-nr_circle(
-  nr,
-  x,
-  y,
-  r,
-  fill = "black",
-  color = NA,
-  mode = draw_mode$respect_alpha
-)
+nr_circle(nr, x, y, r, fill = "black", color = NA, use_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -25,7 +17,7 @@ nr_circle(
 
 \item{color}{outline color. Default: NA. [vector]}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

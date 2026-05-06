@@ -23,27 +23,27 @@ void nr_rect(uint32_t *nr,
              uint32_t fill, uint32_t color, 
              double hjust, double vjust, 
              double linewidth,
-             draw_mode_t draw_mode) {
+             bool use_alpha) {
 
   // Adjust handle on rectangle
   x = x - (int)round(hjust * (w - 1)); // horizontal justification
   y = y - (int)round(vjust * (h - 1)); // vertical justification
   
-  if (!is_transparent(fill) || draw_mode == IGNORE_ALPHA) {
+  if (!is_transparent(fill) || !use_alpha) {
     for (int row = y; row < y + h; row++) {
-      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill, draw_mode);
+      nr_hline(nr, nr_width, nr_height, x, x + w - 1, row, fill, use_alpha);
     }
   }
   
   // Draw outline
-  if (!is_transparent(color) || draw_mode == IGNORE_ALPHA) {
+  if (!is_transparent(color) || !use_alpha) {
     int xs[4] = {x, x + w - 1, x + w - 1, x};
     int ys[4] = {y, y, y + h - 1, y + h - 1};
     int npoints = 4;
     bool close = true;
     double mitre_limit = linewidth;
     
-    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close, draw_mode);
+    nr_polyline(nr, nr_width, nr_height, xs, ys, npoints, color, linewidth, mitre_limit, close, use_alpha);
   }
   
 }
@@ -60,7 +60,7 @@ void nr_rect(uint32_t *nr,
 // @param hjust,vjust the handle on the rect.
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
-                SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP draw_mode_) {
+                SEXP nr_fill_, SEXP color_, SEXP hjust_, SEXP vjust_, SEXP linewidth_, SEXP use_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -87,11 +87,11 @@ SEXP nr_rect_(SEXP nr_, SEXP x_, SEXP y_, SEXP w_, SEXP h_,
   uint32_t *color = multi_rcolors_to_ints(color_, N, &freecol);
   uint32_t *fill  = multi_rcolors_to_ints(nr_fill_ , N, &freefill);
   
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   
   // Draw each rect
   for (int i = 0; i < N; i++) {
-    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i], draw_mode);
+    nr_rect(nr, nr_width, nr_height, xs[i], ys[i], ws[i], hs[i], fill[i], color[i], hjust, vjust, linewidth[i], use_alpha);
   }
   
   

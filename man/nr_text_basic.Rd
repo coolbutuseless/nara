@@ -5,15 +5,7 @@
 \title{Draw text on a native raster image using the built-in \code{spleen} 
 bitmapped font.}
 \usage{
-nr_text_basic(
-  nr,
-  x,
-  y,
-  str,
-  color = "black",
-  fontsize = 8L,
-  mode = draw_mode$respect_alpha
-)
+nr_text_basic(nr, x, y, str, color = "black", fontsize = 8L, use_alpha = TRUE)
 }
 \arguments{
 \item{nr}{native raster image}
@@ -30,7 +22,7 @@ or \code{#rgb}}
 \item{fontsize}{height of font in pizels.  Only valid values are 8, 12 and 16.
 Default: 8.}
 
-\item{mode}{drawing mode.}
+\item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 }
 \value{
 Invisibly return the supplied native raster image which was been

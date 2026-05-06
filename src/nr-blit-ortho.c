@@ -33,13 +33,13 @@
 // @param src_width,src_height dimensions of source
 // @param xsrc,ysrc starting position within source
 // @param w,h dimensions of region to copy
-// @param draw_mode draw_mode_t enum
+// @param use_alpha bool
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y , 
                    uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                    int w, int h,
                    double hjust, double vjust,
-                   draw_mode_t draw_mode) {
+                   bool use_alpha) {
   
   
   
@@ -91,15 +91,15 @@ void nr_blit_ortho(uint32_t *dst, int dst_width, int dst_height, int x   , int y
   if (w == 0 || h == 0) return;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // If 'respect_alpha', then copy pixel by pixel
+  // If 'use_alpha', then have to copy pixel by pixel
+  // otherwise we can just memcpy
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (draw_mode == RESPECT_ALPHA) {
-    draw_mode_t draw_mode = RESPECT_ALPHA;
+  if (use_alpha) {
     for (int yoff = 0; yoff < h; yoff++) {
       int y1 = ysrc + yoff ;
       for (int xoff = 0; xoff < w; xoff++) {
         uint32_t src_col = src[y1 * src_width + xsrc + xoff];
-        nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, draw_mode);
+        nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, use_alpha);
       }
     }
   } else {
@@ -127,7 +127,7 @@ void nr_blit_ortho_naive(uint32_t *dst, int dst_width, int dst_height, int x, in
                       uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, 
                       int w, int h) {
   
-  draw_mode_t draw_mode = RESPECT_ALPHA;
+  bool use_alpha = true;
   
   for (int yoff = 0; yoff < h; yoff++) {
     int y1 = src_height - ysrc - yoff;
@@ -135,7 +135,7 @@ void nr_blit_ortho_naive(uint32_t *dst, int dst_width, int dst_height, int x, in
       
       uint32_t src_col = src[y1 * src_width + xsrc + xoff - 1];
       
-      nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, draw_mode);
+      nr_point(dst, dst_width, dst_height, x + xoff, y + yoff, src_col, use_alpha);
     }
   }
 }
@@ -148,7 +148,7 @@ SEXP nr_blit_ortho_(SEXP dst_, SEXP x_    , SEXP y_,
                     SEXP src_, SEXP xsrc_   , SEXP ysrc_, 
                     SEXP w_    , SEXP h_,
                     SEXP hjust_, SEXP vjust_, 
-                    SEXP draw_mode_) {
+                    SEXP use_alpha_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Sanity checks
@@ -196,14 +196,14 @@ SEXP nr_blit_ortho_(SEXP dst_, SEXP x_    , SEXP y_,
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   uint32_t *dst = (uint32_t *)INTEGER(dst_);
   uint32_t *src = (uint32_t *)INTEGER(src_);
-  draw_mode_t draw_mode = (draw_mode_t)Rf_asInteger(draw_mode_);
+  bool use_alpha = (bool)Rf_asLogical(use_alpha_);
   for (int i = 0; i < Rf_length(x_); i++) {
     nr_blit_ortho(
       dst, dst_width, dst_height, x[i], y[i], 
       src, src_width, src_height, xsrc, ysrc, 
       w, h, 
       Rf_asReal(hjust_), Rf_asReal(vjust_),
-      draw_mode);
+      use_alpha);
   }
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
