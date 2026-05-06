@@ -4,8 +4,8 @@
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 draw_mode <- list(
-  respect_alpha = 1L,
-  ignore_alpha  = 0L
+  ignore_alpha  = 0L,
+  respect_alpha = 1L
 )
 
 
