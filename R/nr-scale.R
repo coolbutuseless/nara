@@ -8,7 +8,9 @@
 #' @param width,height dimensions for output image
 #' @return New native raster image
 #' @examples
-#' stretched <- nr_resize(deer[[1]], 100, 40, algo = 'nn')
+#' stretched <- deer[[1]] |> 
+#'     nr_copy() |> 
+#'     nr_resize(100, 40, algo = 'nn')
 #' plot(stretched)
 #' @family resizing functions
 #' @export
@@ -31,7 +33,7 @@ nr_resize <- function(nr, width, height, algo = 'nn') {
 #' 
 #' @return New native raster image
 #' @examples
-#' big <- nr_scale(deer[[1]], 2)
+#' big <- deer[[1]] |> nr_scale(2)
 #' plot(big)
 #' @family resizing functions
 #' @export

@@ -20,7 +20,7 @@ test_that("numeric matrix to nr works", {
   mat <- matrix(seq(0, 1, length = 24), 8, 3)
   
   nr <- matrix_to_nr(mat, palette = rainbow(24))
-  # plot(nr, T)
+  # plot(nr)
   
   colorfast::col_to_int(rainbow(24))
   

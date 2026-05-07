@@ -41,9 +41,11 @@ To view LICENSE:
  sep = "\n")}
 }
 \examples{
-N <- 20
-nr <- nr_new(N, N, 'grey80')
-nr_text_basic(nr, x = 0, y = N/2, str = "Hi!")
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
+
+nr_text_basic(nr, x = 0, y = h/2, str = "Hello RStats!")
 plot(nr)
 
 }

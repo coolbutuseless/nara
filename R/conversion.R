@@ -14,6 +14,8 @@
 #' @examples
 #' nr <- nr_new(12, 8, 'hotpink')
 #' nr_to_raster(nr)
+#' 
+#' nr_to_array(nr)
 #' @family conversion functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,7 +61,8 @@ array_to_nr <- function(arr, dst = NULL) {
 #' @param mat integer matrix
 #' @param palette vector of colors.  For an integer matrix, this palette must 
 #'        contain at least as many colors as the maximum integer value in \code{mat}. 
-#'        For a numeric matrix, any length palette is allowed.
+#'        For a numeric matrix, any length palette is allowed, and the nearest
+#'        corresponding color is chosen (no interpolation is done).
 #' @param dst destination native raster image. If NULL (the default) a 
 #'        new native raster image will be created  If a native raster image 
 #'        is supplied here, it must have the exact dimensions to match the matrix        
@@ -71,10 +74,18 @@ array_to_nr <- function(arr, dst = NULL) {
 #' @return native raster image
 #'
 #' @examples
+#' # integer matrix
 #' m <- matrix(1:12, 3, 4)
 #' m
-#' palette <- colorfast::col_to_int(rainbow(12))
+#' palette <- rainbow(12)
 #' nr <- matrix_to_nr(m, palette) 
+#' plot(nr)
+#' 
+#' 
+#' # numeric matrix
+#' m <- matrix(runif(20 * 30), 20, 30)
+#' palette <- c('red', 'blue', 'black', 'green', 'blue', 'yellow')
+#' nr <- matrix_to_nr(m, palette)
 #' plot(nr)
 #' @family conversion functions
 #' @export
@@ -108,7 +119,7 @@ if (FALSE) {
   
   plot(as.raster(arr), interpolate = FALSE)
   nr <- array_to_nr(arr)
-  plot(nr, T)  
+  plot(nr)  
   arr2 <- nr_to_array(nr)
   identical(dim(arr), dim(arr2))
   identical(unclass(arr), unclass(arr2))
@@ -120,7 +131,7 @@ if (FALSE) {
   plot(ras, interpolate = FALSE)
   
   nr <- raster_to_nr(ras)
-  plot(nr, T)
+  plot(nr)
 
   ras2 <- nr_to_raster(nr)
   plot(ras2, interpolate = FALSE)

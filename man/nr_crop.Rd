@@ -24,8 +24,11 @@ New native raster image
 Crop a section out of a native raster image into a new image
 }
 \examples{
-nr <- nr_new(400, 400, 'hotpink')
-nr2 <- nr_crop(nr, 0, 0, 10, 10)
+nr <- deer[[1]]
+dim(nr)
+plot(nr)
+
+nr2 <- nr_crop(nr, 16, 0, 16, 16)
 dim(nr2)
 plot(nr2)
 }

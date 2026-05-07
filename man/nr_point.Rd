@@ -23,9 +23,13 @@ Invisibly return the supplied native raster image which was been
 Draw points on a native raster image
 }
 \examples{
-N <- 20
-nr <- nr_new(N, N, 'grey80')
-nr_point(nr, x = seq(N), y = seq(N), color = rainbow(N)) 
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
+
+coords <- expand.grid(x = seq(w) - 1, y = seq(h) - 1)
+cols   <- sample(rainbow(nrow(coords)))
+nr_point(nr, x = coords$x, y = coords$y, color = cols) 
 plot(nr)
 
 }

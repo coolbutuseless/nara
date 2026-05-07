@@ -168,17 +168,18 @@ SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
   // Optional. If not present then use default.
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   bool freexsrc = false, freeysrc = false;
-  bool freew = false, freeh = false;
-  int *xsrc          = Rf_isNull(xsrc_)  ? NULL : as_int32_vec(xsrc_, N, &freexsrc);
-  int *ysrc          = Rf_isNull(ysrc_)  ? NULL : as_int32_vec(ysrc_, N, &freeysrc);
-  int *w             = Rf_isNull( w_)    ? NULL : as_int32_vec(w_   , N, &freew);
-  int *h             = Rf_isNull( h_)    ? NULL : as_int32_vec(h_   , N, &freeh);
-  double *hjust      = Rf_isNull(hjust_) ? NULL : REAL(hjust_);
-  double *vjust      = Rf_isNull(vjust_) ? NULL : REAL(vjust_);
-  int *use_alpha     = Rf_isNull(use_alpha_)     ? NULL : LOGICAL(use_alpha_);
-  int *render        = Rf_isNull(render_)        ? NULL : LOGICAL(render_);
-  double *angle      = Rf_isNull(angle_)         ? NULL : REAL(angle_);
-  double *scale      = Rf_isNull(scale_)         ? NULL : REAL(scale_);
+  bool freew    = false, freeh    = false;
+  
+  int    *xsrc       = Rf_isNull(xsrc_)      ? NULL : as_int32_vec(xsrc_, N, &freexsrc);
+  int    *ysrc       = Rf_isNull(ysrc_)      ? NULL : as_int32_vec(ysrc_, N, &freeysrc);
+  int    *w          = Rf_isNull( w_)        ? NULL : as_int32_vec(w_   , N, &freew);
+  int    *h          = Rf_isNull( h_)        ? NULL : as_int32_vec(h_   , N, &freeh);
+  double *hjust      = Rf_isNull(hjust_)     ? NULL : REAL(hjust_);
+  double *vjust      = Rf_isNull(vjust_)     ? NULL : REAL(vjust_);
+  int    *use_alpha  = Rf_isNull(use_alpha_) ? NULL : LOGICAL(use_alpha_);
+  int    *render     = Rf_isNull(render_)    ? NULL : LOGICAL(render_);
+  double *angle      = Rf_isNull(angle_)     ? NULL : REAL(angle_);
+  double *scale      = Rf_isNull(scale_)     ? NULL : REAL(scale_);
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Do the loop

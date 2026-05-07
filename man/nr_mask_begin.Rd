@@ -32,13 +32,13 @@ where the \code{mask} is not transparent.
 \dontshow{if (interactive()) withAutoprint(\{ # examplesIf}
 mask <- deer[[1]] |> nr_resize(600, 400)
 plot(mask)
-img <- nr_new_from(mask)
+nr <- nr_new_from(mask)
 
-nr_mask_begin(img, mask = mask)
-nr_circle(img, 300, 200, 200, fill = 'blue', color = 'black')
-nr_circle(img, 350, 200, 100, fill = 'darkgreen', color = 'black')
-nr_mask_end(img)
+nr_mask_begin(nr, mask = mask)
+nr_circle(nr, 300, 200, 200, fill = 'blue', color = 'black')
+nr_circle(nr, 350, 200, 100, fill = 'darkgreen', color = 'black')
+nr_mask_end(nr)
 
-plot(img, T)
+plot(nr)
 \dontshow{\}) # examplesIf}
 }

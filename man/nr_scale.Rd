@@ -21,7 +21,7 @@ New native raster image
 Resize a native raster image using a scale factor
 }
 \examples{
-big <- nr_scale(deer[[1]], 2)
+big <- deer[[1]] |> nr_scale(2)
 plot(big)
 }
 \seealso{

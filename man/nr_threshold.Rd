@@ -20,9 +20,10 @@ Threshold to binary image
 }
 \examples{
 nr <- nr_copy(deer[[1]])
-plot(nr, T)
+plot(nr)
+
 nr_threshold(nr, 0.9)
-plot(nr, T)
+plot(nr)
 }
 \seealso{
 Other color manipulation functions: 

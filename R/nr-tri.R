@@ -39,8 +39,7 @@
 #' cols <- rainbow(n_tri)
 #' 
 #' nr_tri_coords(nr, coords, cols, tris = 'all')
-#' grid::grid.newpage()
-#' grid::grid.raster(nr, interpolate = FALSE)
+#' plot(nr)
 #' 
 #' # Using a standard mesh structure
 #' # i.e. a matrix of vertices, and a matrix of indices 
@@ -52,15 +51,13 @@
 #' vertices <- rbind(xs, ys)
 #' nr_point(nr, xs, ys)
 #' 
-#' grid::grid.newpage()
-#' grid::grid.raster(nr, interpolate = FALSE)
+#' plot(nr)
 #' 
 #' # Matrix of idices indicating which vertices make up each triangle
 #' indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
 #' 
 #' nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')
-#' grid::grid.newpage()
-#' grid::grid.raster(nr, interpolate = FALSE)
+#' plot(nr)
 #' 
 #' @return Invisibly return the supplied native raster image which was been modified in-place
 #' @family drawing functions
@@ -258,9 +255,7 @@ if (FALSE) {
 
     nr_fill(nr, 'black')
     nr_tri_coords(nr, pvertices, cols)
-    # dev.hold()
-    # grid.raster(nr, interpolate = FALSE)
-    # dev.flush()
+    
     tigr_update(window, nr)
     
     # The transformation function is dependent upon the frame number
@@ -328,7 +323,7 @@ if (FALSE) {
   
   nr <- nr_new(w, h)
   nr_tri_coords(nr, vertices, cols)
-  grid.raster(nr, interpolate = FALSE)
+  plot(nr)
   
 }
 

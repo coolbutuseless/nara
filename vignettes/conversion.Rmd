@@ -45,20 +45,20 @@ jpg_file <- system.file("image", "deer-1.jpg", package="nara")
 ```{r}
 nr <- fastpng::read_png(png_file, type = 'nativeraster')
 class(nr)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 
 ```{r}
 nr <- png::readPNG(png_file, native = TRUE)
 class(nr)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 ```{r}
 nr <- jpeg::readJPEG(jpg_file, native = TRUE)
 class(nr)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 
@@ -84,7 +84,7 @@ grid.raster(ras, interpolate = FALSE)
 nr <- nara::raster_to_nr(ras)
 nr
 class(nr)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 ## Convert a regular R `array` image to/from native raster image format
@@ -106,7 +106,7 @@ grid.raster(arr, interpolate = FALSE)
 nr <- nara::array_to_nr(arr)
 nr
 class(nr)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 

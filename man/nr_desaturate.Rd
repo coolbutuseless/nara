@@ -20,9 +20,10 @@ Move image colors to gray
 }
 \examples{
 nr <- nr_copy(deer[[1]])
-plot(nr, T)
+plot(nr)
+
 nr_desaturate(nr)
-plot(nr, T)
+plot(nr)
 }
 \seealso{
 Other color manipulation functions: 

@@ -10,9 +10,10 @@
 #'         
 #' @examples
 #' nr <- nr_copy(deer[[1]])
-#' plot(nr, T)
+#' plot(nr)
+#' 
 #' nr_desaturate(nr)
-#' plot(nr, T)
+#' plot(nr)
 #' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,9 +38,10 @@ nr_desaturate <- function(nr, factor = 1) {
 #'         
 #' @examples
 #' nr <- nr_copy(deer[[1]])
-#' plot(nr, T)
+#' plot(nr)
+#' 
 #' nr_dither(nr, 0.99)
-#' plot(nr, T)
+#' plot(nr)
 #' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,9 +64,10 @@ nr_dither <- function(nr, value = 0.5, algo = 'fs') {
 #'         
 #' @examples
 #' nr <- nr_copy(deer[[1]])
-#' plot(nr, T)
+#' plot(nr)
+#' 
 #' nr_threshold(nr, 0.9)
-#' plot(nr, T)
+#' plot(nr)
 #' @family color manipulation functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

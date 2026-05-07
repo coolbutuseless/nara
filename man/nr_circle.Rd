@@ -27,10 +27,25 @@ Invisibly return the supplied native raster image which was been
 Draw circles on a native raster image
 }
 \examples{
-N <- 201
-nr <- nr_new(N, N, 'grey80')
-nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
-plot(nr, TRUE)
+set.seed(1)
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'black')
+
+N <- 10
+coords <- expand.grid(x = seq(2, w, length.out = N), 
+                      y = seq(2, h, length.out = N))
+
+cols <- sample(grDevices::terrain.colors(nrow(coords)))
+
+nr_circle(
+  nr,
+  x = coords$x,
+  y = coords$y,
+  r = w/N/1.3,
+  fill = cols
+)
+plot(nr)
 }
 \seealso{
 Other drawing functions: 

@@ -11,7 +11,8 @@ matrix_to_nr(mat, palette, fill = "transparent", min = 0, max = 1, dst = NULL)
 
 \item{palette}{vector of colors.  For an integer matrix, this palette must 
 contain at least as many colors as the maximum integer value in \code{mat}. 
-For a numeric matrix, any length palette is allowed.}
+For a numeric matrix, any length palette is allowed, and the nearest
+corresponding color is chosen (no interpolation is done).}
 
 \item{fill}{Color to be used for values < 1 when input is an integer matrix.
 Default: 'transparent'.}
@@ -31,10 +32,18 @@ native raster image
 Convert a numeric matrix to native raster image
 }
 \examples{
+# integer matrix
 m <- matrix(1:12, 3, 4)
 m
-palette <- colorfast::col_to_int(rainbow(12))
+palette <- rainbow(12)
 nr <- matrix_to_nr(m, palette) 
+plot(nr)
+
+
+# numeric matrix
+m <- matrix(seq(0, 1, length.out = 30 * 20), 20, 30)
+palette <- c('red', 'blue', 'black')
+nr <- matrix_to_nr(m, palette)
 plot(nr)
 }
 \seealso{

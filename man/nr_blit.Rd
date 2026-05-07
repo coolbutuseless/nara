@@ -23,23 +23,24 @@ nr_blit(
 \arguments{
 \item{dst, src}{source and destination native raster images}
 
-\item{x, y}{Where in \code{dst} to place the \code{src}. These values must
+\item{x, y}{Location in \code{dst} to place the \code{src} image. These values must
 be vectors of the same length.  If the length is greater than 1, then
-the \code{sprite} will be pasted into \code{nr} at multiple locations.
-Note that the
-origin of native raster images is the top-left
-where the coordinates are (0, 0).}
+the \code{src} will be pasted into \code{dst} at multiple locations.}
 
-\item{xsrc, ysrc}{start coordinates within src}
+\item{xsrc, ysrc}{Upper-left coordinates of the bounding box within the \code{src}
+image to copy.  Default: (0, 0)}
 
-\item{w, h}{size within src. If size is negative, then the actual width/height of
-the src is used}
+\item{w, h}{Width and height of the bounding box within the \code{src} to copy.
+If size is negative, then the actual width/height of
+the src is used. Default: (-1, -1)}
 
 \item{hjust, vjust}{specify horizontal and vertical justification of the 
-\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
-starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
-to treat the centre of the \code{src_} as the blitting origin.
-Default (0, 0)}
+handle on the \code{src} image to be placed at \code{(x, y)} within 
+the \code{dst} image.
+Default (0, 0) is to use the top-left corner of the image as the 
+handle.
+Use (0.5, 0.5) to centre the \code{src} image at the \code{dst} 
+location \code{(x, y)}}
 
 \item{angle}{Rotation angle (clockwise) in radians. Default: 0}
 
@@ -52,22 +53,23 @@ Invisibly return the supplied \code{dst} native raster image which was been
         modified in-place
 }
 \description{
-Copy a native raster image into another at an arbitrary location, scale and rotation
+Copy a whole image, or subset of an image, into the destination image and 
+configure the angle and size of the copied image.
 }
 \examples{
 nr <- nr_new(50, 50, 'grey80')
 nr_blit(dst = nr, src = deer[[1]], x = 25, y = 25)
-plot(nr, T)
+plot(nr)
 
 nr <- nr_new(300, 200, 'grey80')
 sq <- nr_new(20, 20, 'darkblue')
 nr_blit(nr, src = sq, x = 100, y = 100, angle = pi/3, scale = 5)
-plot(nr, T)
+plot(nr)
 
 nr <- nr_new(800, 600, 'grey80')
 sq <- fastpng::read_png(system.file("image/deer-1.png", package="nara"), type = 'nativeraster')
 nr_blit(nr, src = sq, x = 300, y = 240, angle = pi/2, scale = 1)
-plot(nr, T)
+plot(nr)
 }
 \seealso{
 Other blitting functions: 

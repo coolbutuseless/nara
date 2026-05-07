@@ -47,26 +47,18 @@ Invisibly return the supplied native raster image which was been
 Draw a polyline on a native raster image
 }
 \examples{
-N <- 20
-nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-plot(nr, TRUE)
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
 
-N <- 200
-nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
-                  linewidth = 5, mitre_limit = 3)
-nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
-plot(nr, TRUE)
+N  <- 20
+theta <- seq(0, 2 * pi, length.out = N)
+xs <- w/2 + 50 * cos(theta)
+ys <- h/2 + 50 * sin(theta)
 
-
-N <- 200
-nr <- nr_new(N, N, 'grey80')
-nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-                  color = 'red', linewidth = 10, mitre_limit = 5, close = TRUE)
-nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-           color = 'black', close = TRUE)
-plot(nr, TRUE)
+nr_polyline(nr, xs, ys)
+nr_point(nr, xs, ys, col = 'red')
+plot(nr)
 }
 \seealso{
 Other drawing functions: 

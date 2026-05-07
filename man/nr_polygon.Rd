@@ -52,11 +52,18 @@ Invisibly return the supplied native raster image which was been
 Draw multiple polygons on a native raster image
 }
 \examples{
-N <- 200
-nr <- nr_new(N, N, 'grey80')
-nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
-           color = 'red', linewidth = 5)
-plot(nr, TRUE)
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
+
+N  <- 20
+theta <- seq(0, 2 * pi, length.out = N)
+xs <- w/2 + 50 * cos(theta)
+ys <- h/2 + 50 * sin(theta)
+
+nr_polygon(nr, xs, ys, fill = 'grey50', col = 'black')
+nr_point(nr, xs, ys, col = 'red')
+plot(nr)
 }
 \seealso{
 Other drawing functions: 

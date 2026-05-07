@@ -18,7 +18,7 @@ The source and destination native raster images must have the same dimensions.
 }
 \details{
 If the native raster images are of different sizes or alpha blending is
-required, use the \code{nr_blit()} function.
+required, use the \code{\link{nr_blit}()} function.
 }
 \examples{
 nr1 <- nr_new(200, 100, 'hotpink')

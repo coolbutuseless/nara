@@ -31,10 +31,18 @@ Invisibly return the supplied native raster image which was been
 Uses Bresenham's algorithm to draw lines. No antialiasing.
 }
 \examples{
-N <- 20
-nr <- nr_new(N, N, 'grey80')
-nr_line(nr, x1 = c(0, N-1), y1 = c(0, 0), x2 = c(N-1, 0), y2 = c(N-1, N-1), 
-        color = c('red', 'black'))
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
+
+N <- 40
+nr_line(
+  nr,
+  x1 = seq(0, 2*w, length.out =  N), y1 = 0,
+  x2 = 0, y2 = seq(0, 2 * h, length.out = N),
+  color = rainbow(N)
+)
+
 plot(nr)
 
 }

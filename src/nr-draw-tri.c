@@ -324,7 +324,7 @@ SEXP nr_tri_mesh_(SEXP nr_, SEXP vertices_, SEXP indices_, SEXP color_,
 
   bool use_alpha = Rf_asLogical(use_alpha_);
 
-  Rprintf("tris: %i  indices: %i  verts: %i\n", n_tris, Rf_length(indices_), n_verts);
+  // Rprintf("tris: %i  indices: %i  verts: %i\n", n_tris, Rf_length(indices_), n_verts);
   
   int *ip = indices;
   for (int i = 0; i < n_tris; i++) {

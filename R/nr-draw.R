@@ -11,9 +11,13 @@
 #'         modified in-place
 #'
 #' @examples
-#' N <- 20
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_point(nr, x = seq(N), y = seq(N), color = rainbow(N)) 
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' coords <- expand.grid(x = seq(w) - 1, y = seq(h) - 1)
+#' cols   <- sample(rainbow(nrow(coords)))
+#' nr_point(nr, x = coords$x, y = coords$y, color = cols) 
 #' plot(nr)
 #' 
 #' @export
@@ -37,10 +41,18 @@ nr_point <- function(nr, x, y, color = 'black', use_alpha = TRUE) {
 #'         modified in-place
 #' 
 #' @examples
-#' N <- 20
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_line(nr, x1 = c(0, N-1), y1 = c(0, 0), x2 = c(N-1, 0), y2 = c(N-1, N-1), 
-#'         color = c('red', 'black'))
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' N <- 40
+#' nr_line(
+#'   nr,
+#'   x1 = seq(0, 2*w, length.out =  N), y1 = 0,
+#'   x2 = 0, y2 = seq(0, 2 * h, length.out = N),
+#'   color = rainbow(N)
+#' )
+#' 
 #' plot(nr)
 #'
 #' @export
@@ -76,9 +88,11 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, use_alph
 #'         modified in-place
 #'
 #' @examples
-#' N <- 20
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_text_basic(nr, x = 0, y = N/2, str = "Hi!")
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' nr_text_basic(nr, x = 0, y = h/2, str = "Hello RStats!")
 #' plot(nr)
 #' 
 #' @export
@@ -105,11 +119,26 @@ nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, use_alp
 #'         modified in-place
 #' 
 #' @examples
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-#'         fill = 'blue', color = c('red', 'green'), linewidth = 3)
-#' plot(nr, TRUE)
+#' set.seed(1)
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' N <- 10
+#' coords <- expand.grid(x = seq(2, w, length.out = N), 
+#'                       y = seq(2, h, length.out = N))
+#' 
+#' cols <- sample(grDevices::heat.colors(nrow(coords)))
+#' 
+#' nr_rect(
+#'   nr,
+#'   x = coords$x,
+#'   y = coords$y,
+#'   w = w/N - 1,
+#'   h = h/N - 1,
+#'   fill = cols
+#' )
+#' plot(nr)
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,10 +162,25 @@ nr_rect <- function(nr, x, y, w, h, fill = 'black', color = NA, hjust = 0, vjust
 #'         modified in-place
 #'
 #' @examples
-#' N <- 201
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_circle(nr, x = N/2, y = N/2, r = c(N/3, N/4), fill = c('darkred', 'black'))
-#' plot(nr, TRUE)
+#' set.seed(1)
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'black')
+#' 
+#' N <- 10
+#' coords <- expand.grid(x = seq(2, w, length.out = N), 
+#'                       y = seq(2, h, length.out = N))
+#' 
+#' cols <- sample(grDevices::terrain.colors(nrow(coords)))
+#' 
+#' nr_circle(
+#'   nr,
+#'   x = coords$x,
+#'   y = coords$y,
+#'   r = w/N/1.3,
+#'   fill = cols
+#' )
+#' plot(nr)
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,26 +209,18 @@ nr_circle <- function(nr, x, y, r, fill = 'black', color = NA, use_alpha = TRUE)
 #'         modified in-place
 #'
 #' @examples
-#' N <- 20
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline(nr, x = c(0, N-1, 0), y = c(0, 0, N-1), color = 'red')
-#' plot(nr, TRUE)
-#'
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'red', 
-#'                   linewidth = 5, mitre_limit = 3)
-#' nr_polyline(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), color = 'black')
-#' plot(nr, TRUE)
-#'
-#'
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-#'                   color = 'red', linewidth = 10, mitre_limit = 5, close = TRUE)
-#' nr_polyline(nr, x = c(10, N-10, N-10, 10), y = c(10, 10, N-10, N-10), 
-#'            color = 'black', close = TRUE)
-#' plot(nr, TRUE)
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' N  <- 20
+#' theta <- seq(0, 2 * pi, length.out = N)
+#' xs <- w/2 + 50 * cos(theta)
+#' ys <- h/2 + 50 * sin(theta)
+#' 
+#' nr_polyline(nr, xs, ys)
+#' nr_point(nr, xs, ys, col = 'red')
+#' plot(nr)
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -210,11 +246,18 @@ nr_polyline <- function(nr, x, y, color = 'black', linewidth = 1, mitre_limit = 
 #'         modified in-place
 #'
 #' @examples
-#' N <- 200
-#' nr <- nr_new(N, N, 'grey80')
-#' nr_polygon(nr, x = c(10, N-10, 10), y = c(10, 10, N-10), fill = 'blue', 
-#'            color = 'red', linewidth = 5)
-#' plot(nr, TRUE)
+#' w <- 200
+#' h <- 150
+#' nr <- nr_new(w, h, 'grey80')
+#' 
+#' N  <- 20
+#' theta <- seq(0, 2 * pi, length.out = N)
+#' xs <- w/2 + 50 * cos(theta)
+#' ys <- h/2 + 50 * sin(theta)
+#' 
+#' nr_polygon(nr, xs, ys, fill = 'grey50', col = 'black')
+#' nr_point(nr, xs, ys, col = 'red')
+#' plot(nr)
 #' @family drawing functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

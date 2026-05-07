@@ -13,7 +13,7 @@ test_that("round trip from array works (with alpha)", {
   # plot(as.raster(arr), interpolate = FALSE)
 
   nr <- array_to_nr(arr)
-  # plot(nr, T)
+  # plot(nr)
   
   arr2 <- nr_to_array(nr)
   # plot(as.raster(arr2), interpolate = FALSE)
@@ -35,7 +35,7 @@ test_that("round trip from array works (without alpha)", {
   # plot(as.raster(arr), interpolate = FALSE)
   
   nr <- array_to_nr(arr)
-  # plot(nr, T)
+  # plot(nr)
   
   arr2 <- nr_to_array(nr)
   # plot(as.raster(arr2), interpolate = FALSE)

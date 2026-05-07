@@ -17,8 +17,7 @@ Invisibly return the supplied native raster image which was been
 Flip a native raster image vertically
 }
 \examples{
-nr <- nr_new(400, 200, 'white')
-nr_rect(nr, 0, 0, 30, 15)
+nr <- deer[[1]] |> nr_copy()
 plot(nr)
 nr_flipv(nr)
 plot(nr)

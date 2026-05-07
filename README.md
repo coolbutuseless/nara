@@ -132,7 +132,7 @@ nr_text_basic(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Copy image to the device
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
@@ -145,11 +145,9 @@ Included with `{nara}` are 16 frames of an animated deer character - see
 #### Blit the first `deer` frame onto a native raster canvas.
 
 ``` r
-library(grid)
-
 nr <- nr_new(100, 32, 'grey80')
 nr_blit(dst = nr, src = deer[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
-grid.raster(nr, interpolate = FALSE)
+plot(nr)
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" alt="" width="100%" />
@@ -166,7 +164,7 @@ memory as a place to render.
 
 In this example, the `deer` sprite is rendered to a larger native raster
 image. This *in-memory* buffer is then displayed to the user using
-`grid.raster()`.
+`plot()` (which just wraps a call to `grid.raster()`).
 
 By altering the position and animation frame every time the kind is
 shown, smooth animation is possible.
@@ -192,9 +190,7 @@ for (i in -30:110) {
   nr_fill(nr, 'grey80')                    # Clear the native raster image
   sprite_idx <- floor((i/3) %% 5) + 11
   nr_blit(dst = nr, src = deer[[sprite_idx]], x = i, y = 15) # copy deer to the image
-  dev.hold()
-  grid.raster(nr, interpolate = FALSE)     # copy image to screen
-  dev.flush()
+  plot(nr)
   Sys.sleep(0.03)                          # Stop animation running too fast.
 }
 ```
@@ -246,9 +242,7 @@ for (frame in 1:1000) {
   nr_blit(dst = nr, src = deer[[deer_idx]], x, y)
   
   # Draw the nativeraster to screen
-  dev.hold()
-  grid.raster(nr, interpolate = FALSE)
-  dev.flush()
+  plot(nr)
 
   # Update the position of each deer. 
   # Position wraps around

@@ -11,8 +11,23 @@ nr_blit_bulk(dst, src, config)
 
 \item{src}{list of native raster images.}
 
-\item{config}{data.frame of configuration information for each blit which 
-most contain: idx, x, y, xsrc, ysrc, w, h, hjust, vjust, use_alpha, draw}
+\item{config}{data.frame of configuration information for each blit.
+Columns in this data.frame match the arguments to \code{nr_blit()}.
+Requires columns:
+\describe{
+  \item{\code{idx}}{The index of the image in the \code{src} list i.e. \code{src[[idx]]}}
+  \item{\code{x,y}}{location in \code{dst} to place \code{src[[idx]]}}
+} 
+Optional columns which take a default value if not present:
+\describe{
+  \item{\code{xsrc,ysrc}}{start coordinates within src. Default: (0, 0)}
+  \item{\code{w,h}}{size within \code{src}. Default: use whole width/height}
+  \item{\code{hjust,vjust}}{Default: (0.5, 0.5)}
+  \item{\code{angle}}{Default: 0}
+  \item{\code{scale}}{Zoom factor. Default: 1}
+  \item{\code{use_alpha}}{Default: true}
+  \item{\code{render}}{Should this given operation be rendered? Default: true}
+}}
 }
 \value{
 Invisibly return the supplied \code{dst} native raster image which was been
@@ -23,6 +38,7 @@ Multiple blit operations in a single call
 }
 \examples{
 nr <- nr_new(90, 90, 'grey60')
+
 config <- data.frame(
   idx = c(1, 2, 3, 4),
   x = c(10, 10, 40, 40) + 15,
@@ -38,6 +54,7 @@ config <- data.frame(
   use_alpha = TRUE,
   render = TRUE
 )
+
 nr_blit_bulk(dst = nr, src = deer, config = config)
 plot(nr)
 }

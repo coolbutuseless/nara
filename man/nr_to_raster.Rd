@@ -34,6 +34,8 @@ Convert native raster images to/from other R objects
 \examples{
 nr <- nr_new(12, 8, 'hotpink')
 nr_to_raster(nr)
+
+nr_to_array(nr)
 }
 \seealso{
 Other conversion functions: 

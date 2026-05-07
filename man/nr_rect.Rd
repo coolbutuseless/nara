@@ -30,10 +30,12 @@ nr_rect(
 \item{color}{outline color. Default: NA. [vector]}
 
 \item{hjust, vjust}{specify horizontal and vertical justification of the 
-\code{src} image.  e.g. \code{hjust = vjust = 0} the blitting
-starts at the top-left of the image. Use \code{hjust = vjust = 0.5}
-to treat the centre of the \code{src_} as the blitting origin.
-Default (0, 0)}
+handle on the \code{src} image to be placed at \code{(x, y)} within 
+the \code{dst} image.
+Default (0, 0) is to use the top-left corner of the image as the 
+handle.
+Use (0.5, 0.5) to centre the \code{src} image at the \code{dst} 
+location \code{(x, y)}}
 
 \item{linewidth}{Line linewidth. Default: 1.  If \code{linewidth = 1} then a 
 naive version of Bresenham is used to draw the points.  If linewidth 
@@ -50,11 +52,26 @@ Invisibly return the supplied native raster image which was been
 Draw rectangles on a native raster image
 }
 \examples{
-N <- 200
-nr <- nr_new(N, N, 'grey80')
-nr_rect(nr, x = c(0, N/2 - 1), y = c(0, N/2 - 1), w = N/2, h = N/4, 
-        fill = 'blue', color = c('red', 'green'), linewidth = 3)
-plot(nr, TRUE)
+set.seed(1)
+w <- 200
+h <- 150
+nr <- nr_new(w, h, 'grey80')
+
+N <- 10
+coords <- expand.grid(x = seq(2, w, length.out = N), 
+                      y = seq(2, h, length.out = N))
+
+cols <- sample(grDevices::heat.colors(nrow(coords)))
+
+nr_rect(
+  nr,
+  x = coords$x,
+  y = coords$y,
+  w = w/N - 1,
+  h = h/N - 1,
+  fill = cols
+)
+plot(nr)
 }
 \seealso{
 Other drawing functions: 

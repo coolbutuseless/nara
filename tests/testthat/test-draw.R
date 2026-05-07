@@ -49,7 +49,7 @@ test_that("nr-draw rect works - justify 0,0", {
   
   nr <- nr_new(5, 5, 'white')
   nr_rect(nr, 2, 2, 3, 3, hjust = 0, vjust = 0)
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -72,7 +72,7 @@ test_that("nr-draw rect works - justify 1,1", {
   
   nr <- nr_new(5, 5, 'white')
   nr_rect(nr, 2, 2, 3, 3, hjust = 1, vjust = 1)
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -95,7 +95,7 @@ test_that("nr-draw rect works - justify 0.5, 0.5", {
   
   nr <- nr_new(5, 5, 'white')
   nr_rect(nr, 2, 2, 3, 3, hjust = 0.5, vjust = 0.5)
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -118,7 +118,7 @@ test_that("nr-draw rect works - justify 0.5, 0.5 border", {
   
   nr <- nr_new(5, 5, 'white')
   nr_rect(nr, 2, 2, 3, 3, hjust = 0.5, vjust = 0.5, color = 'red')
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -143,7 +143,7 @@ test_that("nr-draw circle works", {
   
   nr <- nr_new(5, 5, 'white')
   nr_circle(nr, 2, 2, 2)
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -166,7 +166,7 @@ test_that("nr-draw circle works with border", {
   
   nr <- nr_new(5, 5, 'white')
   nr_circle(nr, 2, 2, 2, col = 'red')
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -192,7 +192,7 @@ test_that("nr-draw polyline works", {
   
   nr <- nr_new(5, 5, 'white')
   nr_polyline(nr, c(0, 0, 4), c(4, 0, 0))
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -217,7 +217,7 @@ test_that("nr-draw polyline works with close", {
   
   nr <- nr_new(5, 5, 'white')
   nr_polyline(nr, c(0, 0, 4), c(4, 0, 0), close = TRUE)
-  # plot(nr, T)
+  # plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -242,7 +242,7 @@ test_that("nr-draw polygon works", {
   nr <- nr_new(5, 5, 'white')
   # nr_polygon(nr, c(0, 0, 4), c(4, 0, 0))
   nr_polygon(nr, c(4, 0, 0), c(0, 0, 4))
-  if (interactive()) plot(nr, T)
+  if (interactive()) plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -265,7 +265,7 @@ test_that("nr-draw polygon works with outline", {
   
   nr <- nr_new(5, 5, 'white')
   nr_polygon(nr, c(4, 0, 0), c(0, 0, 4), color = 'green')
-  if (interactive()) plot(nr, T)
+  if (interactive()) plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('white')
@@ -288,7 +288,7 @@ test_that("nr-draw text works", {
   
   nr <- nr_new(width = 5, height = 5, 'azure')
   nr_text_basic(nr, 0, 5, ".")
-  if (interactive()) plot(nr, T)
+  if (interactive()) plot(nr)
   
   black <- colorfast::col_to_int('black')
   white <- colorfast::col_to_int('azure')

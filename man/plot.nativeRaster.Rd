@@ -2,15 +2,14 @@
 % Please edit documentation in R/nr-core.R
 \name{plot.nativeRaster}
 \alias{plot.nativeRaster}
-\title{Plot a native raster image}
+\title{Plot a native raster image (after first clearning the device)}
 \usage{
 \method{plot}{nativeRaster}(x, y, ...)
 }
 \arguments{
 \item{x}{native raster image}
 
-\item{y}{any argument here will cause \code{grid::grid.newpage()} to 
-be called prior to drawing the image}
+\item{y}{ignored}
 
 \item{...}{other arguments passed to \code{grid::grid.raster()}}
 }
@@ -18,7 +17,7 @@ be called prior to drawing the image}
 Invisibly return the supplied native raster image
 }
 \description{
-Plot a native raster image
+Plot a native raster image (after first clearning the device)
 }
 \examples{
 nr <- nr_new(200, 100, 'hotpink')

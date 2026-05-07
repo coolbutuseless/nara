@@ -59,8 +59,7 @@ coords <- rbind(xs, ys)
 cols <- rainbow(n_tri)
 
 nr_tri_coords(nr, coords, cols, tris = 'all')
-grid::grid.newpage()
-grid::grid.raster(nr, interpolate = FALSE)
+plot(nr)
 
 # Using a standard mesh structure
 # i.e. a matrix of vertices, and a matrix of indices 
@@ -72,15 +71,13 @@ ys <- rep(seq(0, h - 1, length.out = 10), each = 10)
 vertices <- rbind(xs, ys)
 nr_point(nr, xs, ys)
 
-grid::grid.newpage()
-grid::grid.raster(nr, interpolate = FALSE)
+plot(nr)
 
 # Matrix of idices indicating which vertices make up each triangle
 indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
 
 nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')
-grid::grid.newpage()
-grid::grid.raster(nr, interpolate = FALSE)
+plot(nr)
 
 }
 \seealso{

@@ -18,4 +18,7 @@ Check if object is a native raster image
 \examples{
 is_nativeraster(mtcars)
 
+nr <- nr_new(100, 100)
+is_nativeraster(nr)
+
 }

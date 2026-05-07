@@ -63,6 +63,6 @@ callme::compile(code, PKG_CPPFLAGS = cpp_include)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr <- nr_new(400, 300, 'grey70')
 nr <- my_func(nr)
-plot(nr, T)
+plot(nr)
 ```
 

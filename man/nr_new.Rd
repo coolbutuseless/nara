@@ -18,7 +18,7 @@ or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
 or \code{#rgb}}
 
 \item{nr}{native raster image to use as the template for the size of the 
-new image}
+new image in \code{nr_new_from()}}
 }
 \value{
 native raster image

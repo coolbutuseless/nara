@@ -11,6 +11,9 @@
 #' @examples
 #' is_nativeraster(mtcars)
 #' 
+#' nr <- nr_new(100, 100)
+#' is_nativeraster(nr)
+#' 
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 is_nativeraster <- function(x) {
@@ -33,7 +36,7 @@ is_nativeraster <- function(x) {
 #'
 #' @param width,height Image dimensions in pixels
 #' @param nr native raster image to use as the template for the size of the 
-#'        new image
+#'        new image in \code{nr_new_from()}
 #' @param fill Background fill color as a character string. Either a standard R color
 #'        (e.g. 'blue', 'white')
 #'        or a hex color of the form \code{#rrggbbaa}, \code{#rrggbb}, \code{#rgba}
@@ -94,7 +97,7 @@ nr_copy <- function(nr) {
 #' The source and destination native raster images must have the same dimensions.
 #'
 #' If the native raster images are of different sizes or alpha blending is
-#' required, use the \code{nr_blit()} function.
+#' required, use the \code{\link{nr_blit}()} function.
 #'
 #' @param src,dst Source and destination native raster images
 #'
@@ -150,8 +153,11 @@ nr_fill <- function(nr, color) {
 #' @return New native raster image
 #' 
 #' @examples
-#' nr <- nr_new(400, 400, 'hotpink')
-#' nr2 <- nr_crop(nr, 0, 0, 10, 10)
+#' nr <- deer[[1]]
+#' dim(nr)
+#' plot(nr)
+#' 
+#' nr2 <- nr_crop(nr, 16, 0, 16, 16)
 #' dim(nr2)
 #' plot(nr2)
 #' @export
@@ -186,8 +192,7 @@ nr_crop2 <- function(nr, loc) {
 #'         modified in-place
 #' 
 #' @examples
-#' nr <- nr_new(400, 200, 'white')
-#' nr_rect(nr, 0, 0, 30, 15)
+#' nr <- deer[[1]] |> nr_copy()
 #' plot(nr)
 #' nr_flipv(nr)
 #' plot(nr)
@@ -288,11 +293,10 @@ print.nativeRaster <- function(x, ...) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Plot a native raster image
+#' Plot a native raster image (after first clearning the device)
 #' 
 #' @param x native raster image
-#' @param y any argument here will cause \code{grid::grid.newpage()} to 
-#'        be called prior to drawing the image
+#' @param y ignored
 #' @param ... other arguments passed to \code{grid::grid.raster()}
 #'
 #' @return Invisibly return the supplied native raster image
@@ -306,7 +310,7 @@ print.nativeRaster <- function(x, ...) {
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 plot.nativeRaster <- function(x, y, ...) {
-  if (!missing(y)) grid::grid.newpage()
+  grid::grid.newpage()
   grDevices::dev.hold()
   grid::grid.raster(x, interpolate = FALSE, ...)
   grDevices::dev.flush()
