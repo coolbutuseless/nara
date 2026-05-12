@@ -17,9 +17,11 @@
 "tileset"
 
 
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' A data.frame of configuration information which can be used with 
 #' \code{nr_blit_bulk()} and the \code{tileset} data.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "tileset_config"
+
 

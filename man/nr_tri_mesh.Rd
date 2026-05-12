@@ -12,14 +12,12 @@ nr_tri_coords(nr, coords, color, tris = "all", use_alpha = TRUE)
 \arguments{
 \item{nr}{native raster image}
 
-\item{vertices}{matrix of vertex coordinates. x,y in columns (wide) or 
-rows (tall).  Extra coordinates are ignored i.e. if coordiantes 
-given as (x, y, z) or (x, y, z, w), 
-only the first two coordinates will be used for plotting.}
+\item{vertices}{Wide matrix of vertex coordinates where the first two rows are
+x and y coordinates.  Extra coordinates are ignored.}
 
-\item{indices}{integer matrix of index information. 3 indices per triangle - 
-either in one-triangle-per-matrix_row (tall) or 
-one-triangle-per-matrix-column (wide)}
+\item{indices}{3xN wide integer matrix of index information. Each column 
+holds the 3 indices which indicate the column index of the triangle vertices defined in the
+\code{vertices} argument.}
 
 \item{color}{color specification. Single color or one color per tri}
 
@@ -32,18 +30,17 @@ the screen.}
 
 \item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
 
-\item{coords}{Numeric atrix of direct coordinate data for each triangle.
-The coordinates for
-each vertex are in columns. Each group of 3 columns defines one
-triangle.  There may be extra rows in the 
-matrix, but only the first two will be used (as x and y 
-respectively)}
+\item{coords}{Wide numeric matrix of direct coordinate data for each triangle where
+the first two rows are x and y coordinates (extra rows are ignored)
+Each group of 3 columns defines the (x,y) coordinates for one
+triangle.}
 }
 \value{
 Invisibly return the supplied native raster image which was been modified in-place
 }
 \description{
-Draw multiple triangles from mesh data
+Mesh data is a similar format to the \code{mesh3d} class of data 
+defined in the \code{rgl} package.
 }
 \examples{
 #' Using direct coordinates
