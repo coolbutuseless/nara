@@ -6,6 +6,10 @@
 #' Copy a whole image, or subset of an image, into the destination image and 
 #' configure the angle and size of the copied image.
 #'
+#' This operation is vectorised such that a single \code{src} image can be 
+#' pasted multiple times into the \code{dst} image with varying location, 
+#' angle and scale.
+#'
 #' @inheritParams nr_point
 #' @param dst,src source and destination native raster images
 #' @param x,y Location in \code{dst} to place the \code{src} image. These values must
@@ -23,8 +27,11 @@
 #'        handle.
 #'        Use (0.5, 0.5) to centre the \code{src} image at the \code{dst} 
 #'        location \code{(x, y)}
-#' @param angle Rotation angle (clockwise) in radians. Default: 0
-#' @param scale Zoom factor. Default: 1
+#' @param angle Rotation angle (clockwise) in radians. Default: 0.
+#'        If this is a vector, then the \code{src} will be pasted into the
+#'        \code{dst} at multiple angles.
+#' @param scale Zoom factor. Default: 1.  IF this is a vector, then the \code{src}
+#'        will be pasted into \code{dst} at multiple scales.
 #'
 #' @return Invisibly return the supplied \code{dst} native raster image which was been
 #'         modified in-place

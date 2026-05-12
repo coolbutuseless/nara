@@ -1,0 +1,56 @@
+---
+title: "Using Masks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using Masks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo=FALSE}
+set.seed(1)
+library(nara)
+```
+
+
+`{nara}` supports masked rendering of most drawing operations.
+
+`blit_mask_begin()` and `blit_mask_end()` are used to delineate the use
+of a mask on an image.  Within these bounds, any operation will only 
+affect the pixels in the image corresponding to where the mask is not transparent
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Setup a drawing canvas and an image to use as a mask
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+w <- 300
+h <- 300
+canvas <- nr_new(w, h, fill = 'lightblue')
+mask   <- nr_new(w, h, fill = 'transparent')
+
+# Set the top-left area of the mask to be the active area by making it 
+# not transparent
+nr_rect(mask, x=0, y=0, w=w/2, h=h/2)
+plot(mask)
+
+# Attach the mask to the canvas
+nr_mask_begin(canvas, mask)
+{
+  # Draw random circles
+  xs <- runif(50, 0, w)
+  ys <- runif(50, 0, h)
+  nr_circle(canvas, xs, ys, 20, rainbow(50))
+}
+nr_mask_end(canvas) # Finalise the masked operation
+
+
+plot(canvas)
+```
+

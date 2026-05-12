@@ -1,0 +1,181 @@
+---
+title: "Blitting"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Blitting}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(1)
+```
+
+```{r setup, echo = FALSE}
+library(nara)
+```
+
+[Blitting](https://en.wikipedia.org/wiki/Bit_blit) is a term used in computer
+graphics to describe the copying of whole or part of one image into another.
+
+This copying is optinised for speed and forms a significant part of the 
+underlying mechanics for 2D games and interactive applications.  For example:
+
+* putting a players character on the scrolling background in a game
+* Assembling a background image from a small library of tiled images
+* Placing pre-rendered pieces on a game board
+
+
+`{nara}` includes two blitting functions:
+
+* `nr_blit()`
+    * Blit a single source image at one (or multiple) locations in the destination
+      image.
+* `nr_blit_bulk()`
+    * Define a complex sequence of blitting operations using a data.frame
+    
+# `nr_blit()`
+
+Use `nr_blit()` when you want to use a single source image only
+    
+### Blit a single image
+
+```{r}
+library(nara)
+
+# Create a canvas to draw on
+w <- 300
+h <- 300
+nr <- nr_new(w, h, 'grey90')
+
+# Place a deer on the canvas
+nr_blit(nr, deer[[1]], w/2, h/2)
+
+plot(nr)
+```    
+    
+    
+### Blit a single image to multiple locations
+
+
+```{r}
+# Create a canvas to draw on
+nr <- nr_new(w, h, 'grey90')
+
+# Place a deer on the canvas at many locations
+xs <- runif(20, 0, w)
+ys <- runif(20, 0, h)
+nr_blit(nr, deer[[1]], xs, ys)
+
+plot(nr)
+```
+    
+    
+### Blit a single image to multiple locations with varying angles and scales
+
+
+```{r}
+# Create a canvas to draw on
+nr <- nr_new(w, h, 'grey90')
+
+# Place a deer on the canvas at many locations
+xs <- runif(20, 0, w)
+ys <- runif(20, 0, h)
+angles <- runif(20, 0, 2*pi)
+scales <- runif(20, 0.5, 2)
+nr_blit(nr, deer[[1]], xs, ys, angle = angles, scale = scales)
+
+plot(nr)
+```
+
+
+
+# `nr_blit_bulk()`
+
+If you have multiple source images to blit, there are two possible approaches:
+
+* Loop over the images and blit them one-at-a-time with `nr_blit()`
+* Set-up a configuration data.frame and blit them all-at-once with `nr_blit_bulk()`
+
+For most simple tasks, `nr_blit()` should be sufficient.
+
+For larger structures, it may be useful to store blitting parameters in a data.frame
+for organisation purposes. 
+
+The `{nara}` packages includes a `tileset` (a list of nativerasters which 
+can *tile* together to form an image) and a `tileset_config` giving one 
+possible arrangement of tiles.
+
+Combining `tileset` with `tileset_config` in `nr_blit_bulk()` creates a 
+complex image with a single function call.
+
+
+```{r}
+head(tileset_config)
+
+w <- 70 * 11
+h <- 70 * 8
+nr <- nr_new(w, h, fill = 'lightblue')
+nr_blit_bulk(nr, tileset, config = tileset_config)
+
+plot(nr)
+```
+
+
+
+
+
+### Blit with a mask
+
+`{nara}` supports masked rendering of most drawing operations.
+
+`blit_mask_begin()` and `blit_mask_end()` are used to delineate the use
+of a mask on an image.
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Setup a drawing canvas and an image to use as a mask
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+w <- 300
+h <- 300
+canvas <- nr_new(w, h, fill = 'lightblue')
+mask   <- nr_new(w, h, fill = 'transparent')
+
+# Set the top-left area of the mask to be the active area by making it 
+# not transparent
+nr_rect(mask, x=0, y=0, w=w/2, h=h/2)
+plot(mask)
+
+# Attach the mask to the canvas
+nr_mask_begin(canvas, mask)
+{
+  # Draw random deer on the image - 
+  xs <- runif(50, 0, w)
+  ys <- runif(50, 0, h)
+  nr_blit(canvas, deer[[1]], xs, ys)
+}
+nr_mask_end(canvas) # Finalise the masked operation
+
+
+plot(canvas)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

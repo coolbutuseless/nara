@@ -197,9 +197,9 @@ SEXP nr_blit_rotozoom_(SEXP dst_, SEXP x_, SEXP y_,
   int N = calc_max_length(4 , x_, y_, angle_, scale_);
   
   bool freex = false, freey = false, freescale= false, freeangle = false;
-  int *xs        = as_int32_vec (x_    , N, &freex);
-  int *ys        = as_int32_vec (y_    , N, &freey);
-  double *scales    = as_double_vec(scale_   , N, &freescale);
+  int    *xs     = as_int32_vec (x_    , N, &freex);
+  int    *ys     = as_int32_vec (y_    , N, &freey);
+  double *scales = as_double_vec(scale_, N, &freescale);
   double *angles = as_double_vec(angle_, N, &freeangle);
 
   

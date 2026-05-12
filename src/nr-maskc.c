@@ -35,7 +35,8 @@ SEXP nr_mask_begin_(SEXP nr_, SEXP mask_) {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if ((Rf_nrows(nr_) != Rf_nrows(mask_)) || 
       (Rf_ncols(nr_) != Rf_ncols(mask_))) {
-    Rf_error("nr_mask_begin_(): 'mask' and 'nr' must have the same dimensions");
+    Rf_error("nr_mask_begin_(): 'mask' and 'nr' must have the same dimensions (%i, %i) != (%i, %i)", 
+             Rf_ncols(nr_), Rf_nrows(nr_), Rf_ncols(mask_), Rf_nrows(mask_));
   }
   
   
@@ -59,10 +60,11 @@ SEXP nr_mask_begin_(SEXP nr_, SEXP mask_) {
   if (!new_cache) {
     if ((Rf_nrows(nr_) != Rf_nrows(cache_)) || 
         (Rf_ncols(nr_) != Rf_ncols(cache_))) {
-      Rf_error("nr_mask_begin_(): 'cache' and 'nr' must have the same dimensions");
+      Rf_error("nr_mask_begin_(): 'cache' and 'nr' must have the same dimensions (%i,%i) != (%i,%i)",
+               Rf_ncols(nr_), Rf_nrows(nr_), Rf_ncols(cache_), Rf_nrows(cache_));
     }
     
-    int width = Rf_ncols(nr_);
+    int width  = Rf_ncols(nr_);
     int height = Rf_nrows(nr_);
     memcpy(INTEGER(cache_), INTEGER(nr_), (size_t)width * (size_t)height * sizeof(uint32_t));
   }

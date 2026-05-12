@@ -42,14 +42,16 @@ applications.
 - Selection and Combination
   - `nr_copy()`, `nr_copy_into()`
   - `nr_crop()`
-  - `nr_blit()`
+  - `nr_blit()`, `nr_blit_bulk()`
   - `nr_transpose()`, `nr_rotate()`
   - `nr_resize()`, `nr_scale()`
 - Color manipulation
   - `nr_dither()`, `nr_desaturate()`, `nr_threshold()`,
     `nr_color_replace()`
 - Sample images
-  - `deer`
+  - `deer` 16 frames of an animated deer character
+  - `tileset` and `tileset_config` for demonstrating tile sets and
+    `nr_blit_bulk()`
 
 Reading and writing native raster images is supported by `{jpeg}`,
 `{png}`, and `{fastpng}` packages.
@@ -71,20 +73,24 @@ Realtime rendering of a
 overlapping parallax layers with alpha blending) with a [samurai
 figure](https://xzany.itch.io/samurai-2d-pixel-art) running out front.
 
+General approach used to create this image:
+
+- For each frame
+  - stack the 11 layers into a single image
+  - *blit* a samurai on top
+- At the end of each frame
+  - adjust each layer with an offset based upon its depth
+    i.e. foreground images move faster than background images
+  - Advance to the next samurai frame
+
 <https://github.com/user-attachments/assets/c3daeccc-0d21-4f0d-ba1e-655fd836c9c3>
 
 ## Static Rendering: Example
 
-The following is a rendering of a single scene with multiple elements.
-
-The interesting thing about this scene that drawing all the objects into
-the native raster image and rendering to screen can take as little as 5
-millseconds.
-
-This means that this scene could render at around 200 frames-per-second.
+The following code is a demonstration of some of the different drawing
+and blitting commands in `{nara}`
 
 ``` r
-library(grid)
 library(nara)
 set.seed(1)
 
@@ -138,9 +144,6 @@ plot(nr)
 <img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
 ## Static Rendering: Displaying Sprites
-
-Included with `{nara}` are 16 frames of an animated deer character - see
-`deer` data.
 
 #### Blit the first `deer` frame onto a native raster canvas.
 

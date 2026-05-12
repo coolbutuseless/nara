@@ -1,0 +1,142 @@
+---
+title: "Animation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Animation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(nara)
+```
+
+
+Animating with `{nara}` is simply a matter of generating and displaying 
+multiple images - hopefully quickly enough to look smooth.
+
+There are two approaches:
+
+1. Render all the images into a list, and then save as a video file e.g. `.gif`, `.mp4`
+2. Display the images to a fast graphics device
+
+
+## Render to a video file
+
+To render to a video file, `{nara}` use `nrs_to_gif()` and `nrs_to_mp4()`.
+These functions are simple wrappers around the 
+[`{magick}`](https://cran.r-project.org/package=magick) package.
+
+The code below:
+
+* sets up `N` circles with positions and velocities
+* for each frame
+    * create a new image
+    * advance the circle positions
+    * draw circles
+    * add image to the list of all images
+* saves the list of images to a `.gif`
+
+```{r eval=FALSE}
+library(nara)
+w <- 320
+h <- 200
+
+set.seed(1)
+N <- 20
+xs   <- runif(N, 0, w)
+ys   <- runif(N, 0, h)
+rs   <- runif(N, 2, 6)  
+vx   <- rnorm(N, sd = 3)
+cols <- sample(heat.colors(N))
+
+# Storage for animation frames
+anim <- list()
+
+for (i in seq(30)) {
+  # create image
+  nr <- nr_new(w, h, fill = 'grey90')
+  
+  # update the x position and wraparound
+  xs <- xs + vx
+  xs <- ifelse(xs < 0, xs + w, xs)
+  xs <- ifelse(xs > w, xs - w, xs)
+  
+  # draw circles
+  nr_circle(nr, xs, ys, rs, cols)
+  
+  # store animatino frame
+  anim[[i]] <- nr  
+}
+
+nrs_to_gif(anim, "working/demo.gif")
+# nrs_to_mp4(anim, "working/demo.mp4")
+```
+
+
+## Render to a fast graphics device
+
+If your graphics device updates fast enough, then you can show images on this
+device quickly and have the appearance on smooth animation.
+
+A major problem for most platforms: **Rstudio and Positron graphics devices 
+are not fast enough to do this**
+
+Instead, if you are wanting to use a built-in graphics device, the
+`x11()` device is the preferred graphics output for animation.
+
+`x11()` device is supported on macos, linux and windows (where it a lightweight 
+wrapper around the standard `windows()` device).
+
+A good way to setup this device for fast animation is to:
+
+1. Call `x11()`
+2. Set the type to double buffered Cairo rendering `type = 'dbcairo'`
+3. Disable the *display list* as there's no need to record graphics operations
+4. Use `dev.hold()` and `dev.flush()` calls to synchronise the drawing command
+   with the graphics display update (this can prevent tearing).
+5. A small pause may be needed in the loop, otherwise things might go *too* fast!
+
+See code below for an example:
+
+```{r eval=FALSE}
+x11(..., type = 'dbcairo', antialias = 'none')
+dev.control(displaylist = 'inhibit')
+
+for (i in seq(nframes)) {
+  nr <- generate_image_somehow()
+  dev.hold()
+  plot(nr)
+  dev.flush()
+  Sys.sleep(0.03) # Sleep maybe?
+}
+```
+
+
+Note: Particular platforms may have differing parameters to give good results for
+realtime animation - you might need to experiment to get the best out of your 
+platform.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

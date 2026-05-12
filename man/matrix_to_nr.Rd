@@ -41,8 +41,8 @@ plot(nr)
 
 
 # numeric matrix
-m <- matrix(seq(0, 1, length.out = 30 * 20), 20, 30)
-palette <- c('red', 'blue', 'black')
+m <- matrix(runif(20 * 30), 20, 30)
+palette <- c('red', 'blue', 'black', 'green', 'blue', 'yellow')
 nr <- matrix_to_nr(m, palette)
 plot(nr)
 }

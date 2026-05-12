@@ -1,0 +1,68 @@
+---
+title: "Technical Notes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Technical Notes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nara)
+```
+
+
+
+### What is a native raster image and why is it fast?
+
+
+A native raster image is a built-in datatype in R.
+
+It is an integer matrix where each integer represents the RGBA color at 
+a single pixel.  The 32-bit integer at each location is interpreted within
+R to be four color channels (RGBA) represented by 8 bits each.
+
+This way of encoding color information is closer to the internal representation
+used by graphics devices, and therefore can be faster to render and manipulate.
+
+Native rasters do **not** use pre-multiplied alpha.
+
+### In-place operation
+
+`{nara}` tries to minimise
+R function calls and memory allocations in order to be fast.
+
+When updating native raster image with this package, changes are done
+*in place* on the current image i.e. a new image is **not** created.
+
+### Anti-aliasing/Interpolation
+
+No anti-aliasing is done by the draw methods in this package.
+
+No interpolation is done - `x` and `y` values for drawing coordinates are
+always rounded to integers.
+
+### Dimension ordering
+
+All arguments specifying dimensions are in the order **horizontal** then **vertical** i.e.
+
+* x, y
+* width, height
+* hjust, vjust
+
+### Coordinate System
+
+The coordinate system for `nara` native raster image has the origin
+at the **top left corner** with coordinates `(0, 0)`.
+
+This is equivalent to `{grid}` graphics using `native` units.
+
+It is also how `{magick}` represents image coordinates, as well as the majority
+of C graphics libraries.
