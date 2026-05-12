@@ -66,7 +66,7 @@ void draw_tri(uint32_t *nr, int nr_width, int nr_height,
               double x0d, double y0d, 
               double x1d, double y1d, 
               double x2d, double y2d,
-              int color, 
+              uint32_t color, 
               bool use_alpha,
               int tri_mode
               ) {
