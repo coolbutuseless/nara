@@ -1,0 +1,157 @@
+---
+title: "Triangles"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Triangles}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(nara)
+```
+
+
+`{nara}` has three ways to draw triangles:
+
+* `nr_polygon()`
+* `nr_tri_mesh()`
+* `nr_tri_coords()`
+
+For single triangles, `nr_polygon()` is sufficient.  For large numbers of
+polygons, the `nr_tri_*` functions will be much much faster.
+
+This vignette demonstrates the drawing of two triangles using each of these 
+functions.
+
+
+## Demo setup
+
+Define 5 points on the image which will be used as the vertices of two triangles
+
+
+```{r}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define image size 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+w <- h <- 300
+th <- 16 # text height
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define 5 points within the canvas
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ax <- w/2     ; ay <- 0 + th
+bx <- w/2     ; by <- h/2 + th     
+cx <-   0     ; cy <- h/2 + th     
+dx <- w/2     ; dy <- h            
+ex <- w - th/2; ey <- h/2 + th
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Label the points in an image
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+nr <- nr_new(w, h)
+nr_text_basic(nr, ax, ay, 'A', fontsize = th)
+nr_text_basic(nr, bx, by, 'B', fontsize = th)
+nr_text_basic(nr, cx, cy, 'C', fontsize = th)
+nr_text_basic(nr, dx, dy, 'D', fontsize = th)
+nr_text_basic(nr, ex, ey, 'E', fontsize = th)
+
+plot(nr)
+```
+
+
+
+# Render triangles with `nr_polygon()`
+
+Render two triangles by using two calls to `nr_polygon()`.
+
+```{r echo = FALSE}
+nr <- nr_new(w, h)
+
+nr_polygon(nr, c(ax, bx, cx), c(ay, by, cy), fill = "blue")
+nr_polygon(nr, c(bx, dx, ex), c(by, dy, cy), fill = "red")
+
+plot(nr)
+```
+
+
+# Render triangles with `nr_tri_mesh()`
+
+`nr_tri_mesh()` expects the triangles to be defined in two parts:
+
+1. A matrix of vertex coordinates 
+    *  `x` values in the first row, `y` values 
+        in the second row.  (Further rows are ignored)
+2. An integer matrix of indices.
+    * The first 3 values in each column define the columns in the `vertices`
+      matrix which define the triangle.
+      
+This mesh data definition is a similar format to the `mesh3d` class of data 
+defined in the `{rgl}` package.
+
+```{r}
+# define all the vertex coordinates
+vertices <- rbind(
+  c(ax, bx, cx, dx, ex),
+  c(ay, by, cy, dy, ey)
+)
+
+# Define the indices.  Each column in this matrix represents 1 triangle.
+# The three numbers reprsent the column index in the `vertices` data
+indices <- rbind(
+  # 1  2
+  c(1, 2),
+  c(2, 4),
+  c(3, 5)
+)
+
+
+nr <- nr_new(w, h)
+nr_tri_mesh(nr, vertices, indices, c('blue', 'red'))
+
+plot(nr)
+```
+
+
+# Render triangles with `nr_tri_coords()`
+
+`nr_tri_coords()` requires just the raw coordinates of all vertices in a single
+matrix.  The first row has the `x` coordinates, the second row has the `y`
+coordinates.
+
+Each group of 3 columns defines a triangle
+
+```{r}
+coords <- rbind(
+  # <<<  1 >>>    <<<  2 >>>>
+  c(ax, bx, cx,   bx, dx, ex),
+  c(ay, by, cy,   by, dy, ey)
+)
+
+nr <- nr_new(w, h)
+nr_tri_coords(nr, coords, color = c('blue', 'red'))
+
+plot(nr)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

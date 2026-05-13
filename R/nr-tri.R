@@ -21,7 +21,7 @@
 #'        'ccw', 'cw'. The options 'ccw' and 'cw' limit plotting to those triangles
 #'        where the order of the vertices are defined in a counter-clockwise
 #'        or clockwise manner respectively.  Note: when considering orientation
-#'        or triangles remmeber that the y-axis is defined vertically \emph{down}
+#'        or triangles remember that the y-axis is defined vertically \emph{down}
 #'        the screen. 
 #' 
 #' @examples

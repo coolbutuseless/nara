@@ -9,7 +9,8 @@
 #'         modified in-place
 #'         
 #' @examples
-#' nr <- nr_copy(deer[[1]])
+#' plot(deer[[1]])
+#' nr <- deer[[1]] |> nr_copy()
 #' plot(nr)
 #' 
 #' nr_desaturate(nr)
