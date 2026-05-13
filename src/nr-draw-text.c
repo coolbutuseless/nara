@@ -31,7 +31,9 @@
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #include "fonts.h"
-void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, const char *str, uint32_t color, int fontsize,
+void nr_text_mono(uint32_t *nr, int nr_width, int nr_height, int x, int y, 
+                   const char *str, uint32_t color, int fontsize,
+                   double hjust, double vjust,
                    bool use_alpha) {
   
   
@@ -52,10 +54,21 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
     char_h = 12;
   }
   
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // hjust
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  int nchars = (int)strlen(str);
+  int str_width  = char_w * nchars;
+  int str_height = char_h;
+  
+  x -= (int)(hjust * str_width);
+  y += (int)(vjust * str_height);
+  
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Loop over letters
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  int nchars = (int)strlen(str);
   int col = 0;
   
   for (int char_idx = 0; char_idx < nchars; char_idx++) {
@@ -92,7 +105,8 @@ void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x, int y, cons
 // @param color color
 // @param fontsize fontsize
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_, SEXP use_alpha_) {
+SEXP nr_text_mono_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fontsize_, 
+                    SEXP hjust_, SEXP vjust_, SEXP use_alpha_) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Unpack args
@@ -108,13 +122,16 @@ SEXP nr_text_basic_(SEXP nr_, SEXP x_, SEXP y_, SEXP str_, SEXP color_, SEXP fon
 
   const char *str = CHAR(Rf_asChar(str_));
   
+  double hjust = Rf_asReal(hjust_);
+  double vjust = Rf_asReal(vjust_);
+  
   bool use_alpha = (bool)Rf_asLogical(use_alpha_);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Choose font
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   int fontsize = Rf_asInteger(fontsize_);
-  nr_text_basic(nr, nr_width, nr_height, x, y, str, color, fontsize, use_alpha);
+  nr_text_mono(nr, nr_width, nr_height, x, y, str, color, fontsize, hjust, vjust, use_alpha);
 
   
   return nr_;

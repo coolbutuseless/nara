@@ -11,5 +11,5 @@ extern void nr_point     (uint32_t *nr, int nr_width, int nr_height, int x , int
 extern void nr_polygon   (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, uint32_t color, double linewidth, double mitre_limit, bool use_alpha);
 extern void nr_polyline  (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, double linewidth, double mitre_limit, bool close, bool use_alpha);
 extern void nr_rect      (uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust, double linewidth, bool use_alpha);
-extern void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x , int y , const char *str, uint32_t color, int fontsize, bool use_alpha);
+extern void nr_text_mono(uint32_t *nr, int nr_width, int nr_height, int x , int y , const char *str, uint32_t color, int fontsize, bool use_alpha);
 extern void nr_blit(uint32_t *dst, int dst_width, int dst_height, int x, int y, uint32_t *src, int src_width, int src_height, int xsrc, int ysrc, int w, int h, double hjust, double vjust, double angle, double scale, bool use_alpha); 

@@ -6,5 +6,5 @@ void nr_point     (uint32_t *nr, int nr_width, int nr_height, int x , int y , ui
 void nr_polygon   (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t fill, uint32_t color, double linewidth, double mitre_limit, bool use_alpha);
 void nr_polyline  (uint32_t *nr, int nr_width, int nr_height, int *x, int *y, int npoints, uint32_t color, double linewidth, double mitre_limit, bool close, bool use_alpha);
 void nr_rect      (uint32_t *nr, int nr_width, int nr_height, int x , int y , int w, int h, uint32_t fill, uint32_t color, double hjust, double vjust, double linewidth, bool use_alpha);
-void nr_text_basic(uint32_t *nr, int nr_width, int nr_height, int x , int y , const char *str, uint32_t color, int fontsize, bool use_alpha);
+void nr_text_mono(uint32_t *nr, int nr_width, int nr_height, int x , int y , const char *str, uint32_t color, int fontsize, double hjust, double vjust, bool use_alpha);
 

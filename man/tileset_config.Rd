@@ -4,7 +4,7 @@
 \name{tileset_config}
 \alias{tileset_config}
 \title{A data.frame of configuration information which can be used with 
-\code{nr_blit_bulk()} and the \code{tileset} data.}
+\code{nr_blit_multi()} and the \code{tileset} data.}
 \format{
 An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 51 rows and 6 columns.
 }
@@ -12,7 +12,6 @@ An object of class \code{spec_tbl_df} (inherits from \code{tbl_df}, \code{tbl}, 
 tileset_config
 }
 \description{
-A data.frame of configuration information which can be used with 
-\code{nr_blit_bulk()} and the \code{tileset} data.
+Use this configuration wtih \code{nr_blit_multi()}
 }
 \keyword{datasets}

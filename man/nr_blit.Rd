@@ -81,6 +81,6 @@ plot(nr)
 }
 \seealso{
 Other blitting functions: 
-\code{\link{nr_blit_bulk}()}
+\code{\link{nr_blit_multi}()}
 }
 \concept{blitting functions}

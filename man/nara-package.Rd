@@ -6,7 +6,7 @@
 \alias{nara-package}
 \title{nara: Native Raster Image Tools}
 \description{
-Tools for native raster images.
+Native rasters are a core R image format which use a compact color representation. This color representation closely aligns with graphics device internals meaning that these images can be rendered quickly. This package provides functions to quickly create, manipulate and composite native rasters.
 }
 \seealso{
 Useful links:

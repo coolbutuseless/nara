@@ -11,7 +11,6 @@
 #' @examples
 #' plot(deer[[1]])
 #' nr <- deer[[1]] |> nr_copy()
-#' plot(nr)
 #' 
 #' nr_desaturate(nr)
 #' plot(nr)

@@ -117,14 +117,14 @@ nr_blit <- function(dst, src, x, y,
 #'   render = TRUE
 #' )
 #' 
-#' nr_blit_bulk(dst = nr, src = deer, config = config)
+#' nr_blit_multi(dst = nr, src = deer, config = config)
 #' plot(nr)
 #' @family blitting functions
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_blit_bulk <- function(dst, src, config) {
+nr_blit_multi <- function(dst, src, config) {
   invisible(
-    .Call(nr_blit_bulk_, dst, src, config)
+    .Call(nr_blit_multi_, dst, src, config)
   )
 }
 

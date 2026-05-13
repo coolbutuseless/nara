@@ -114,7 +114,7 @@ SEXP nr_blit_(SEXP dst_, SEXP x_, SEXP y_,
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-SEXP nr_blit_bulk_(SEXP dst_, SEXP src_, SEXP config_) {
+SEXP nr_blit_multi_(SEXP dst_, SEXP src_, SEXP config_) {
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Check arguments are of correct type

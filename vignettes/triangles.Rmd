@@ -57,11 +57,11 @@ ex <- w - th/2; ey <- h/2 + th
 # Label the points in an image
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 nr <- nr_new(w, h)
-nr_text_basic(nr, ax, ay, 'A', fontsize = th)
-nr_text_basic(nr, bx, by, 'B', fontsize = th)
-nr_text_basic(nr, cx, cy, 'C', fontsize = th)
-nr_text_basic(nr, dx, dy, 'D', fontsize = th)
-nr_text_basic(nr, ex, ey, 'E', fontsize = th)
+nr_text_mono(nr, ax, ay, 'A', fontsize = th)
+nr_text_mono(nr, bx, by, 'B', fontsize = th)
+nr_text_mono(nr, cx, cy, 'C', fontsize = th)
+nr_text_mono(nr, dx, dy, 'D', fontsize = th)
+nr_text_mono(nr, ex, ey, 'E', fontsize = th)
 
 plot(nr)
 ```

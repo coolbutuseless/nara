@@ -35,7 +35,7 @@ underlying mechanics for 2D games and interactive applications.  For example:
 * `nr_blit()`
     * Blit a single source image at one (or multiple) locations in the destination
       image.
-* `nr_blit_bulk()`
+* `nr_blit_multi()`
     * Define a complex sequence of blitting operations using a data.frame
     
 # `nr_blit()`
@@ -94,12 +94,12 @@ plot(nr)
 
 
 
-# `nr_blit_bulk()`
+# `nr_blit_multi()`
 
 If you have multiple source images to blit, there are two possible approaches:
 
 * Loop over the images and blit them one-at-a-time with `nr_blit()`
-* Set-up a configuration data.frame and blit them all-at-once with `nr_blit_bulk()`
+* Set-up a configuration data.frame and blit them all-at-once with `nr_blit_multi()`
 
 For most simple tasks, `nr_blit()` should be sufficient.
 
@@ -110,7 +110,7 @@ The `{nara}` packages includes a `tileset` (a list of nativerasters which
 can *tile* together to form an image) and a `tileset_config` giving one 
 possible arrangement of tiles.
 
-Combining `tileset` with `tileset_config` in `nr_blit_bulk()` creates a 
+Combining `tileset` with `tileset_config` in `nr_blit_multi()` creates a 
 complex image with a single function call.
 
 
@@ -120,7 +120,7 @@ head(tileset_config)
 w <- 70 * 11
 h <- 70 * 8
 nr <- nr_new(w, h, fill = 'lightblue')
-nr_blit_bulk(nr, tileset, config = tileset_config)
+nr_blit_multi(nr, tileset, config = tileset_config)
 
 plot(nr)
 ```

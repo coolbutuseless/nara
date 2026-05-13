@@ -25,7 +25,7 @@ holds the 3 indices which indicate the column index of the triangle vertices def
 'ccw', 'cw'. The options 'ccw' and 'cw' limit plotting to those triangles
 where the order of the vertices are defined in a counter-clockwise
 or clockwise manner respectively.  Note: when considering orientation
-or triangles remmeber that the y-axis is defined vertically \emph{down}
+or triangles remember that the y-axis is defined vertically \emph{down}
 the screen.}
 
 \item{use_alpha}{Use alpha channel when drawing? Logical. Default: TRUE}
@@ -70,7 +70,7 @@ nr_point(nr, xs, ys)
 
 plot(nr)
 
-# Matrix of idices indicating which vertices make up each triangle
+# Matrix of indices indicating which vertices make up each triangle
 indices <- matrix(sample(length(xs), 3 * n_tri), nrow = 3) 
 
 nr_tri_mesh(nr, vertices, indices, cols, tris = 'all')

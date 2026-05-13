@@ -3,7 +3,7 @@
 \docType{data}
 \name{tileset}
 \alias{tileset}
-\title{A list of nativeraster tiles used for constructing a side-scrolling game}
+\title{A list of nativeraster tiles used for constructing a side-scrolling game.}
 \format{
 An object of class \code{list} of length 44.
 }
@@ -11,6 +11,7 @@ An object of class \code{list} of length 44.
 tileset
 }
 \description{
-A list of nativeraster tiles used for constructing a side-scrolling game
+The tiles in this list are of a common base size and can be conbined to 
+construct various scenes.
 }
 \keyword{datasets}

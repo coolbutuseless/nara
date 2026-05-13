@@ -12,7 +12,10 @@
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' A list of nativeraster tiles used for constructing a side-scrolling game
+#' A list of nativeraster tiles used for constructing a side-scrolling game.
+#' 
+#' The tiles in this list are of a common base size and can be conbined to 
+#' construct various scenes.
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "tileset"
 
@@ -20,7 +23,9 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' A data.frame of configuration information which can be used with 
-#' \code{nr_blit_bulk()} and the \code{tileset} data.
+#' \code{nr_blit_multi()} and the \code{tileset} data.
+#' 
+#' Use this configuration wtih \code{nr_blit_multi()}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "tileset_config"
 

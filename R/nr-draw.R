@@ -64,7 +64,7 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, use_alph
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Draw text on a native raster image using the built-in \code{spleen} 
+#' Draw text on a native raster image using the built-in monospaced
 #' bitmapped font.
 #'
 #' The only font currently available is 'spleen' - a monospace
@@ -81,6 +81,8 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, use_alph
 #' @inheritParams nr_point
 #' @param str character string
 #' @param x,y coordinates of lower-left corner of text
+#' @param hjust,vjust Justification of text relative to its \code{(x,y)}
+#'        location.  Default \code{(0.5, 0.5)} to centre the text at (x, y)
 #' @param fontsize height of font in pizels.  Only valid values are 8, 12 and 16.
 #'        Default: 8.
 #'
@@ -88,17 +90,21 @@ nr_line <- function(nr, x1, y1, x2, y2, color = 'black', linewidth = 1, use_alph
 #'         modified in-place
 #'
 #' @examples
-#' w <- 200
-#' h <- 150
+#' w <- 150
+#' h <- 30
 #' nr <- nr_new(w, h, 'grey80')
 #' 
-#' nr_text_basic(nr, x = 0, y = h/2, str = "Hello RStats!")
+#' nr_text_mono(nr, x = w/2, y = h/2, str = "Hello RStats!", fontsize = 16)
 #' plot(nr)
 #' 
+#' nr <- nr_new(w, h, 'grey80')
+#' nr_text_mono(nr, x = 0, y = 0, str = "Hello RStats!", hjust = 0, vjust = 1, fontsize = 16)
+#' plot(nr)
 #' @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_basic <- function(nr, x, y, str, color = 'black', fontsize = 8L, use_alpha = TRUE) {
-  invisible(.Call(nr_text_basic_, nr, x, y, str, color, fontsize, use_alpha))
+nr_text_mono <- function(nr, x, y, str, color = 'black', fontsize = 8L, 
+                          hjust = 0.5, vjust = 0.5, use_alpha = TRUE) {
+  invisible(.Call(nr_text_mono_, nr, x, y, str, color, fontsize, hjust, vjust, use_alpha))
 }
 
 

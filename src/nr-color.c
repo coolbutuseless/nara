@@ -36,10 +36,10 @@ SEXP nr_desaturate_(SEXP nr_, SEXP factor_) {
       double grey = (0.299 * (double)p[0] + 0.587 * (double)p[1] + 0.114 * (double)p[2]) ;
       
       // Move all color channels towards this grey level
-      p[0] += (uint8_t)trunc( (grey - (double)p[0]) * factor);
-      p[1] += (uint8_t)trunc( (grey - (double)p[1]) * factor);
-      p[2] += (uint8_t)trunc( (grey - (double)p[2]) * factor);
-      
+      p[0] += (int8_t)trunc( (grey - (double)p[0]) * factor);
+      p[1] += (int8_t)trunc( (grey - (double)p[1]) * factor);
+      p[2] += (int8_t)trunc( (grey - (double)p[2]) * factor);
+
       p += 4;
     }
   }

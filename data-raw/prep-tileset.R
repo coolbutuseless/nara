@@ -102,6 +102,6 @@ config1
 tileset_config <- config1
 usethis::use_data(tileset_config, internal = FALSE, overwrite = TRUE, compress = 'xz')
 
-nr_blit_bulk(nr, tileset, config1)
+nr_blit_multi(nr, tileset, config1)
 plot(nr)
 

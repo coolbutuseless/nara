@@ -42,7 +42,7 @@ applications.
 - Selection and Combination
   - `nr_copy()`, `nr_copy_into()`
   - `nr_crop()`
-  - `nr_blit()`, `nr_blit_bulk()`
+  - `nr_blit()`, `nr_blit_multi()`
   - `nr_transpose()`, `nr_rotate()`
   - `nr_resize()`, `nr_scale()`
 - Color manipulation
@@ -51,7 +51,7 @@ applications.
 - Sample images
   - `deer` 16 frames of an animated deer character
   - `tileset` and `tileset_config` for demonstrating tile sets and
-    `nr_blit_bulk()`
+    `nr_blit_multi()`
 
 Reading and writing native raster images is supported by `{jpeg}`,
 `{png}`, and `{fastpng}` packages.
@@ -133,7 +133,7 @@ nr_polygon(nr, x = x, y = y, fill = '#556688c0', color = 'blue')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Add text to the image
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-nr_text_basic(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
+nr_text_mono(nr, x = 180, y = 20, str = "Hello #RStats", fontsize = 16)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Copy image to the device
@@ -261,7 +261,7 @@ for (frame in 1:1000) {
 
 <img src="man/figures/multiball.gif" />
 
-## Technical bits
+## Technical notes
 
 ### What is a native raster image and why is it fast?
 

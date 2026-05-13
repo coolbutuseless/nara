@@ -8,5 +8,5 @@ R_RegisterCCallable("nara", "nr_point"   , (DL_FUNC) &nr_point);
 R_RegisterCCallable("nara", "nr_polygon"   , (DL_FUNC) &nr_polygon);
 R_RegisterCCallable("nara", "nr_polyline"   , (DL_FUNC) &nr_polyline);
 R_RegisterCCallable("nara", "nr_rect"   , (DL_FUNC) &nr_rect);
-R_RegisterCCallable("nara", "nr_text_basic"   , (DL_FUNC) &nr_text_basic);
+R_RegisterCCallable("nara", "nr_text_mono"   , (DL_FUNC) &nr_text_mono);
 R_RegisterCCallable("nara", "nr_blit"   , (DL_FUNC) &nr_blit);

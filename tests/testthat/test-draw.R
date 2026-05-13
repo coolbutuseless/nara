@@ -287,7 +287,7 @@ test_that("nr-draw polygon works with outline", {
 test_that("nr-draw text works", {
   
   nr <- nr_new(width = 5, height = 5, 'azure')
-  nr_text_basic(nr, 0, 5, ".")
+  nr_text_mono(nr, 0, 5, ".", hjust = 0, vjust = 0)
   if (interactive()) plot(nr)
   
   black <- colorfast::col_to_int('black')
