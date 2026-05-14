@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-magick.R
 \name{nrs_to_mp4}
 \alias{nrs_to_mp4}
-\title{Magick conversion - possible won't be in final version of 'nara' pkg}
+\title{Convert a list of native rasters to an mp4 video file}
 \usage{
 nrs_to_mp4(nr_list, filename, verbose = FALSE, ...)
 }
@@ -19,7 +19,7 @@ nrs_to_mp4(nr_list, filename, verbose = FALSE, ...)
 None.
 }
 \description{
-Magick conversion - possible won't be in final version of 'nara' pkg
+Convert a list of native rasters to an mp4 video file
 }
 \examples{
 \dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) withAutoprint(\{ # examplesIf}
