@@ -66,7 +66,22 @@ with:
 remotes::install_github('coolbutuseless/nara')
 ```
 
-## Demonstration
+Source/binary versions can also be installed from
+[R-universe](https://r-universe.dev)
+
+``` r
+install.packages('nara', repos = c('https://coolbutuseless.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+## Sample Images created with `{nara}`
+
+![pacman characters](man/figures/pacman-chars.gif) ![pacman
+characters](man/figures/spaceship.png) ![pacman
+characters](man/figures/icosahedron.png) ![pacman
+characters](man/figures/tilemap-2d.png) ![pacman
+characters](man/figures/tilemap-hex.png)
+
+#### Animated Forest
 
 Realtime rendering of a
 [forest](https://edermunizz.itch.io/free-pixel-art-forest) (made of 11
@@ -84,6 +99,16 @@ General approach used to create this image:
   - Advance to the next samurai frame
 
 <https://github.com/user-attachments/assets/c3daeccc-0d21-4f0d-ba1e-655fd836c9c3>
+
+<figure>
+<img src="man/figures/forest.png"
+alt="Samurai running through forrest" />
+<figcaption aria-hidden="true">Samurai running through
+forrest</figcaption>
+</figure>
+
+Note: The animated version of the scene above is only visible on the
+[github page](https://github.com/coolbutuseless/nara)
 
 ## Static Rendering: Example
 
@@ -143,23 +168,11 @@ plot(nr)
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" alt="" width="100%" />
 
-## Static Rendering: Displaying Sprites
-
-#### Blit the first `deer` frame onto a native raster canvas.
-
-``` r
-nr <- nr_new(100, 32, 'grey80')
-nr_blit(dst = nr, src = deer[[1]], x = 2, y = 0, hjust = 0, vjust = 0)
-plot(nr)
-```
-
-<img src="man/figures/README-unnamed-chunk-4-1.png" alt="" width="100%" />
-
 #### Dynamic (realtime) Rendering: Animated deer
 
 The reason to use `{nara}` is that operations are fast enough that
 native raster images can be used as an *in-memory* buffer for a
-double-bufferred rendering system.
+double-buffered rendering system.
 
 `Double-buffered` rendering is where two buffers are used for rendering
 with one buffer being shown to the user, and the other existing in
@@ -201,65 +214,6 @@ for (i in -30:110) {
 #### Live screen recording
 
 <img src="man/figures/deer.gif" />
-
-## Working with multiple sprites
-
-You can quickly *blit* (i.e. copy) a sprite into multiple locations on
-the nativeraster with `nr_blit()` and `nr_blit_list()`
-
-In this example 100 random positions and velocities are first created. A
-character sprite is then blitted to each of these 100 locations.
-
-The positions are updated using the velocities, and the next frame is
-rendered. In this way multiple sprites are rendered and animated on
-screen.
-
-``` r
-library(grid)
-
-# Setup a fast graphics device that can render quickly
-x11(type = 'dbcairo', antialias = 'none', width = 8, height = 6)
-dev.control('inhibit')
-
-# Number of sprites
-N <- 100
-
-# Canvas size
-w <- 400 
-h <- 300 
-
-# location and movement vector of all the sprites
-x  <- sample(w, N, replace = TRUE)
-y  <- sample(h, N, replace = TRUE)
-vx <- runif(N, 1, 5)
-
-
-# Create an empty nativeraster with a grey background
-nr <- nr_new(w, h, 'white')
-
-
-for (frame in 1:1000) {
-  # Clear the nativeraster and blit in all the deer
-  nr_fill(nr, 'white') 
-  deer_idx <- floor((frame/3) %% 5 + 11)
-  nr_blit(dst = nr, src = deer[[deer_idx]], x, y)
-  
-  # Draw the nativeraster to screen
-  plot(nr)
-
-  # Update the position of each deer. 
-  # Position wraps around
-  x <- x + vx
-  x <- ifelse(x > w , -32, x)
-
-  # slight pause. Otherwise everything runs too fast!
-  Sys.sleep(0.03)
-}
-```
-
-#### Live screen recording
-
-<img src="man/figures/multiball.gif" />
 
 ## Technical notes
 
@@ -310,3 +264,8 @@ This is equivalent to `{grid}` graphics using `native` units.
 
 It is also how `{magick}` represents image coordinates, as well as the
 majority of C graphics libraries.
+
+<figure>
+<img src="man/figures/coords.png" alt="coordinate system" />
+<figcaption aria-hidden="true">coordinate system</figcaption>
+</figure>

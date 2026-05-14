@@ -24,7 +24,10 @@ library(nara)
 
 `blit_mask_begin()` and `blit_mask_end()` are used to delineate the use
 of a mask on an image.  Within these bounds, any operation will only 
-affect the pixels in the image corresponding to where the mask is not transparent
+affect the pixels in the image corresponding to where the mask is not transparent.
+
+Note: masks to not need to be rectangular or contiguous.  Anywhere the
+mask is opaque is part of the valid masked area for drawing.
 
 ```{r}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

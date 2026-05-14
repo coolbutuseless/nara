@@ -48,10 +48,10 @@ th <- 16 # text height
 # Define 5 points within the canvas
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ax <- w/2     ; ay <- 0 + th
-bx <- w/2     ; by <- h/2 + th     
-cx <-   0     ; cy <- h/2 + th     
-dx <- w/2     ; dy <- h            
-ex <- w - th/2; ey <- h/2 + th
+bx <- w/2     ; by <- h/2     
+cx <-     th/2; cy <- h/2     
+dx <- w/2     ; dy <- h - th/2           
+ex <- w - th/2; ey <- h/2
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Label the points in an image
