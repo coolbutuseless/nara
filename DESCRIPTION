@@ -3,7 +3,9 @@ Type: Package
 Title: Native Raster Image Tools
 Version: 1.0.1
 Authors@R: c(
-    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com")
+    person("Mike", "Cheng", role = c("aut", "cre", 'cph'), email = "mikefc@coolbutuseless.com"),
+    person("Julien", "Vernay", role = "ctb", 
+    comment = "Author of public domain code for thick polylines")
     )
 Maintainer: Mike Cheng <mikefc@coolbutuseless.com>
 Description: Native rasters are a core R image format which use a compact
