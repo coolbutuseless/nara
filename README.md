@@ -8,6 +8,8 @@
 ![](https://img.shields.io/badge/cool-useless-green.svg)
 <!-- [![CRAN](https://www.r-pkg.org/badges/version/nara)](https://CRAN.R-project.org/package=nara) -->
 [![R-CMD-check](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/coolbutuseless/nara/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/nara)](https://CRAN.R-project.org/package=nara)
 <!-- badges: end -->
 
 `{nara}` is a package for working with R’s native raster image format.
