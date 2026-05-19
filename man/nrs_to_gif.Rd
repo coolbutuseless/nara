@@ -2,7 +2,7 @@
 % Please edit documentation in R/nr-magick.R
 \name{nrs_to_gif}
 \alias{nrs_to_gif}
-\title{Magick conversion - possibly won't be in final version of 'nara' pkg}
+\title{Convert a list of native rasters to an animated gif}
 \usage{
 nrs_to_gif(nr_list, filename, verbose = FALSE, framerate = 30, ...)
 }
@@ -21,7 +21,7 @@ nrs_to_gif(nr_list, filename, verbose = FALSE, framerate = 30, ...)
 None.
 }
 \description{
-Magick conversion - possibly won't be in final version of 'nara' pkg
+Convert a list of native rasters to an animated gif
 }
 \examples{
 \dontshow{if (interactive() && requireNamespace('magick', quietly = TRUE)) withAutoprint(\{ # examplesIf}

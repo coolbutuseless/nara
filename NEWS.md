@@ -1,4 +1,8 @@
 
+# nara 1.0.1 2026-05-19
+
+* Address spacing issue in DESCRIPTION
+
 # nara 1.0.0 2026-05-13
 
 * Completed internal refactor 

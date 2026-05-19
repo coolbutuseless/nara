@@ -48,7 +48,7 @@ nr_to_magick <- function(nr) {
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Magick conversion - possibly won't be in final version of 'nara' pkg
+#' Convert a list of native rasters to an animated gif
 #' 
 #' @param nr_list list of native raster image
 #' @param filename filename of gif
@@ -78,7 +78,7 @@ nrs_to_gif <- function(nr_list, filename, verbose = FALSE, framerate = 30, ...) 
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#' Magick conversion - possible won't be in final version of 'nara' pkg
+#' Convert a list of native rasters to an mp4 video file
 #' 
 #' @param nr_list list of native raster image
 #' @param filename mp4 filename
